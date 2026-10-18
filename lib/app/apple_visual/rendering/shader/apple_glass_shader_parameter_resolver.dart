@@ -11,13 +11,13 @@ final class AppleGlassShaderParameterResolver {
       saturation: _first(values, [
         'style.saturation',
         'style.blurs[0].saturation',
-      ]),
+      ], fallback: 1),
       brightnessResponse: _first(values, [
         'style.brightness',
         'style.brightnessResponse',
         'style.blurs[0].brightnessResponse',
         'style.blurs[0].brightness',
-      ]),
+      ], fallback: 1),
       distortionStrength: _first(values, [
         'style.distortion',
         'style.distortionStrength',
@@ -48,7 +48,7 @@ final class AppleGlassShaderParameterResolver {
     );
   }
 
-  double _first(Map<String, Object?> values, List<String> keys) {
+  double _first(Map<String, Object?> values, List<String> keys, {double fallback = 0}) {
     for (final key in keys) {
       final value = values[key];
 
@@ -57,7 +57,7 @@ final class AppleGlassShaderParameterResolver {
       }
     }
 
-    return 0;
+    return fallback;
   }
 
   double _number(Object? value) {

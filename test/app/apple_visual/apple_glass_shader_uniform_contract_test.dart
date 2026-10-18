@@ -49,4 +49,27 @@ void main() {
     expect(uniforms.chromaticAberration, 0.4);
   });
 
+  test('uses neutral shader defaults when source values are absent', () {
+    final recipe = AppleLiquidGlassRecipe(
+      family: AppleVisualFamily.ios27,
+      brightness: Brightness.light,
+      role: AppleGlassRole.smallControl,
+      state: AppleControlState.idle,
+      sourceIds: const ['source'],
+      sourceNames: const ['source'],
+      sourceValues: const {},
+      roleMappingEvidence: const ['test'],
+    );
+
+    final uniforms = const AppleGlassShaderUniformResolver().resolve(recipe);
+
+    expect(uniforms.saturation, 1);
+    expect(uniforms.brightness, 1);
+    expect(uniforms.distortion, 0);
+    expect(uniforms.depth, 0);
+    expect(uniforms.chromaticAberration, 0);
+    expect(uniforms.customGlassRadius, 0);
+    expect(uniforms.lighting, 0);
+  });
+
 }

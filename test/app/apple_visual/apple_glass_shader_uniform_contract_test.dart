@@ -32,4 +32,21 @@ void main() {
     expect(uniforms.depth, 0.4);
     expect(uniforms.lighting, 0.5);
   });
+  test('resolves source chromatic aberration multiplier', () {
+    final recipe = AppleLiquidGlassRecipe(
+      family: AppleVisualFamily.ios27,
+      brightness: Brightness.light,
+      role: AppleGlassRole.smallControl,
+      state: AppleControlState.idle,
+      sourceIds: const ['source'],
+      sourceNames: const ['source'],
+      sourceValues: const {'style.blurs[0].chromaticAberrationMultiplier': 0.4},
+      roleMappingEvidence: const ['test'],
+    );
+
+    final uniforms = const AppleGlassShaderUniformResolver().resolve(recipe);
+
+    expect(uniforms.chromaticAberration, 0.4);
+  });
+
 }

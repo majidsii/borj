@@ -37,6 +37,7 @@ final class AppleGlassShaderParameterResolver {
         'style.blurs[0].lighting',
       ]),
       chromaticAberration: _first(values, [
+        'style.blurs[0].chromaticAberrationMultiplier',
         'style.chromaticAberration',
         'style.blurs[0].chromaticAberration',
       ]),

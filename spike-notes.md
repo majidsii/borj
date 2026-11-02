@@ -51,6 +51,11 @@ Commit 54bc638 `spike: apply Flutter 3.47.5 pub get changes` holds these, applie
 - No hook errors. Result: Q3 = yes, native build hooks work in a Linux release build.
 
 ## Q1 Linux full glass (release, no flags)
+- Probe, debug run (`flutter test integration_test/liquid_glass_full_glass_probe_test.dart -d linux`, builds the real Linux debug app; file analyzes clean):
+  - No flags: `LG_PROBE negative edges=[48, 56, 64]` PASS; `LG_PROBE full edges=[48, 56, 64]` FAIL ("Expected: true", no displaced stripe edge). Probe detects the fallback.
+  - `--enable-impeller` only: same as no flags (negative PASS, full FAIL, full edges=[48, 56, 64]).
+  - `--enable-impeller --enable-flutter-gpu`: flag ACCEPTED by `flutter test`. `LG_PROBE negative edges=[48, 56, 64]` PASS; `LG_PROBE full edges=[44, 64]` PASS (44 is 4 px off the 8 px grid). All tests passed.
+  - Caveat: a debug-mode test run, not release. Q1 is decided in Task 4.
 
 ## Q5 performance
 

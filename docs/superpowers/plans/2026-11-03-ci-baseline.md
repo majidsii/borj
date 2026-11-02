@@ -55,16 +55,28 @@ Keep `import 'dart:io';` (the contract group reads a source file with `File`) an
 - [ ] **Step 3: Run the file**
 
 ```bash
-flutter test test/app/apple_visual/apple_liquid_glass_test.dart 2>&1 | tail -2
+flutter test test/app/apple_visual 2>&1 | tail -3
 flutter analyze test/app/apple_visual/apple_liquid_glass_test.dart
 ```
 
-Expected: `All tests passed!` and `No issues found!`.
+Expected: `No issues found!`. The directory run must show no failures other than the untracked WIP test `apple_glass_shader_identity_visual_test.dart` (some tests read source files; this catches one that asserted on the deleted group).
+
+- [ ] **Step 3b: Ignore golden failure output**
+
+Append to `.gitignore`:
+
+```gitignore
+
+# Golden test failure output
+test/**/failures/
+```
+
+Do not delete the existing untracked `test/app/apple_visual/failures/`; it is now ignored.
 
 - [ ] **Step 4: Commit**
 
 ```bash
-git add test/app/apple_visual/apple_liquid_glass_test.dart
+git add test/app/apple_visual/apple_liquid_glass_test.dart .gitignore
 git commit -m "test: remove superseded apple pixel-golden comparisons
 
 The 2026-11-02 Liquid Glass spec replaces pixel identity with design-tool
@@ -208,10 +220,10 @@ CHECK=/home/shabin/projects/personal/dashboard-shakhsi-ci-check
 git worktree add --detach "$CHECK" HEAD
 cp dart_test.yaml "$CHECK"/          # not committed yet
 cp tool/ci.sh "$CHECK"/tool/
-cd "$CHECK" && time tool/ci.sh 2>&1 | tail -25
+cd "$CHECK" && time TZ=UTC LANG=C.UTF-8 tool/ci.sh 2>&1 | tail -25
 ```
 
-(The copied files show as untracked in `$CHECK`; `git diff --exit-code -- '*.g.dart'` ignores them.)
+(The copied files show as untracked in `$CHECK`; `git diff --exit-code -- '*.g.dart'` ignores them. `TZ=UTC LANG=C.UTF-8` matches the GitHub runner; the owner's machine is +03:30, and this code base has many local-day and Jalali boundaries.)
 
 Expected: ends with `==> all checks passed`. Record the wall time. If `flutter test` fails, stop and debug per roadmap §3.5 before continuing. Do not tag a failing test `device` unless it truly needs a desktop session or GPU.
 

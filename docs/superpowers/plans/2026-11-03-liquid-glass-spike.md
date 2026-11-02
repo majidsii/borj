@@ -35,7 +35,7 @@
 - [ ] **Step 1: Create the SDK checkout**
 
 ```bash
-git clone --shared /home/shabin/develop/flutter /home/shabin/develop/flutter-3.47.5
+git clone /home/shabin/develop/flutter /home/shabin/develop/flutter-3.47.5
 git -C /home/shabin/develop/flutter-3.47.5 checkout 3.47.5
 /home/shabin/develop/flutter-3.47.5/bin/flutter --version
 ```
@@ -63,10 +63,11 @@ git worktree add -b spike/liquid-glass $SPIKE HEAD
 cd $SPIKE
 $F pub get
 $F analyze 2>&1 | tail -20
+$F format --output=none --set-exit-if-changed lib test 2>&1 | tail -5
 $F test --reporter=failures-only 2>&1 | tail -40
 ```
 
-Expected: record the analyzer issue count and every failing test name. These are 3.47.5 regressions; do not fix them.
+Expected: record the analyzer issue count, whether the 3.47.5 formatter wants changes (CI enforces format), and every failing test name. These are 3.47.5 regressions; do not fix them.
 
 - [ ] **Step 5: Start the evidence log**
 
@@ -80,6 +81,7 @@ Create `$SPIKE/spike-notes.md`:
 
 ## 3.47.5 baseline (existing project)
 - analyze: <N issues>
+- format: <clean | N files would change>
 - tests: <pass/fail counts>, failing: <names>
 
 ## Q3 native hooks build
@@ -148,7 +150,7 @@ git commit -m "spike: add liquid_glass_renderer 1.0.0-dev.2"
 
 ### Task 3: Full-glass pixel probe with negative control
 
-The probe puts 8 px black / 8 px white vertical stripes under a glass shape with frost 0. In the left bevel, full glass shifts stripe edges off the 8 px grid; refraction 0 (and the FakeGlass fallback) leaves them on it.
+The probe puts 8 px black / 8 px white vertical stripes under a glass shape with frost, glint, contour and bevel shadow all 0, so it measures refraction only. In the left bevel, full glass shifts stripe edges off the 8 px grid; refraction 0 (and the FakeGlass fallback) leaves them on it.
 
 **Files:**
 - Create: `$SPIKE/integration_test/liquid_glass_full_glass_probe_test.dart`
@@ -276,7 +278,13 @@ void main() {
   testWidgets('negative control keeps stripes on grid', (tester) async {
     final edges = await _render(
       tester,
-      const LiquidGlassSettings(refractionAmount: 0, frost: 0),
+      const LiquidGlassSettings(
+        refractionAmount: 0,
+        frost: 0,
+        highlight: 0,
+        contourStrength: 0,
+        bevelShadowStrength: 0,
+      ),
     );
     // ignore: avoid_print
     print('LG_PROBE negative edges=$edges');
@@ -287,7 +295,14 @@ void main() {
   testWidgets('full glass displaces stripes in the bevel', (tester) async {
     final edges = await _render(
       tester,
-      const LiquidGlassSettings(refractionAmount: 60, refractionHeight: 20, frost: 0),
+      const LiquidGlassSettings(
+        refractionAmount: 60,
+        refractionHeight: 20,
+        frost: 0,
+        highlight: 0,
+        contourStrength: 0,
+        bevelShadowStrength: 0,
+      ),
     );
     // ignore: avoid_print
     print('LG_PROBE full edges=$edges');
@@ -317,7 +332,7 @@ If the negative control fails, `toImage` does not reproduce the glass faithfully
 cd $SPIKE && $F test integration_test/liquid_glass_full_glass_probe_test.dart -d linux --enable-impeller --enable-flutter-gpu 2>&1 | grep -E "LG_PROBE|passed|failed|Expected|reason"
 ```
 
-Expected: both PASS. If the full-glass test still fails, Linux cannot render full glass even with flags. Record it as a Q1 "no" with the `LG_PROBE` output and skip to Task 6.
+Expected: both PASS. If `flutter test` rejects `--enable-flutter-gpu` (the README documents it for `flutter run` only), that is a tooling limit, not a Linux answer: record it and go to Task 4, where the runner enables the GPU API. If the flag is accepted and the full-glass test still fails, record the `LG_PROBE` output and still go to Task 4; Q1 is decided there, not here.
 
 - [ ] **Step 4: Commit**
 
@@ -480,7 +495,7 @@ final class _SpikeScreenState extends State<_SpikeScreen> {
           Positioned.fill(
             child: ListView.builder(
               controller: _scroll,
-              padding: const EdgeInsets.fromLTRB(296, 24, 24, 120),
+              padding: const EdgeInsets.fromLTRB(296, 152, 24, 120),
               itemCount: 60,
               itemBuilder: (context, i) => Container(
                 height: 120,
@@ -502,15 +517,20 @@ final class _SpikeScreenState extends State<_SpikeScreen> {
           // Probe strip: 8 px stripes under a glass pill, for eyeballing
           // refraction in a release bundle (Q1).
           Positioned(
-            left: 296, right: 24, top: 0, height: 24,
+            left: 296, right: 24, top: 0, height: 136,
             child: const CustomPaint(painter: _StripePainter()),
           ),
           Positioned(
-            left: 320, top: 0, width: 160, height: 24,
+            left: 336, top: 20, width: 240, height: 96,
             child: LiquidGlassLayer(
-              settings: const LiquidGlassSettings(frost: 0),
+              settings: const LiquidGlassSettings(
+                frost: 0,
+                highlight: 0,
+                contourStrength: 0,
+                bevelShadowStrength: 0,
+              ),
               child: const LiquidGlass(
-                shape: LiquidRoundedSuperellipse(borderRadius: 12),
+                shape: LiquidRoundedSuperellipse(borderRadius: 40),
                 child: SizedBox.expand(),
               ),
             ),
@@ -569,7 +589,7 @@ cd $SPIKE && $F build linux --release -t lib/spike/liquid_glass_spike_main.dart
 ./build/linux/x64/release/bundle/dashboard_shakhsi
 ```
 
-Expected: in the stripe strip at the top, stripes inside the pill's rounded ends bend; with fallback they stay straight. Take a window screenshot with the system screenshot tool (Print Screen → Window), save it as `$SPIKE/q1-linux-release.png`, and record the observation under Q1.
+Expected: in the stripe band at the top (same geometry as the probe: 240×96 pill, radius 40), stripes inside the pill's rounded ends bend; with fallback they stay straight. Take a window screenshot with the system screenshot tool (Print Screen → Window), save it as `$SPIKE/q1-linux-release.png`, and record the observation under Q1.
 
 - [ ] **Step 4: Measure the same screen with glass removed (baseline)**
 

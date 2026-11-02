@@ -1,0 +1,4 @@
+tags:
+  device:
+    # Needs a real desktop session or GPU. Excluded from CI; run with
+    # tool/ci.sh --device.

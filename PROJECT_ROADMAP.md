@@ -102,13 +102,11 @@ Every roadmap task follows:
 5. Implement the smallest coherent GREEN slice.
 6. Run focused verification.
 7. Run `tool/ci.sh` locally until green.
-8. Push; the CI run on the pushed commit must be green.
-9. Commit implementation.
-10. Push implementation.
-11. Create/update task checkpoint citing the green CI run URL and commit SHA.
-12. Commit checkpoint.
-13. Push checkpoint.
-14. Update this file.
+8. Commit implementation.
+9. Push; the CI run on the pushed commit must be green.
+10. Create/update task checkpoint citing the green CI run URL and commit SHA.
+11. Update this file and `docs/WORKLOG.md`.
+12. Commit and push checkpoint + docs.
 
 Never mark a task complete from partial verification.
 

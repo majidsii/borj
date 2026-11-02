@@ -8,6 +8,7 @@ import 'package:liquid_glass_renderer/liquid_glass_renderer.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  LgrLogs.initAllLogs();
   await LiquidGlass.precache();
   runApp(const _SpikeApp());
 }

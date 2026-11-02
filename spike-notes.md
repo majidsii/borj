@@ -66,6 +66,14 @@ Commit 54bc638 `spike: apply Flutter 3.47.5 pub get changes` holds these, applie
   - Diagnostic: release with pill `refractionAmount: 60, refractionHeight: 20` (the debug probe's settings) still `edges=[48, 56, 64]`. So the spike's default pill settings are not the cause. (That edit was reverted.)
   - Unexplained: the debug integration probe shows full glass ([44, 64]) with the same runner flag. Release/profile do not.
 
+### Q1 investigation (release/profile "fallback")
+- Investigation:
+  - Debug run of the spike app also prints `edges=[48, 56, 64]`, so build mode is not the cause. Full path is active in every mode: `lgr.render: Painting glass with 1 shapes` / `lgr.geometry: Rebuilding geometry` in debug and profile alike, no FakeGlass log.
+  - `flutter test integration_test/... --profile` is rejected ("Could not find an option named --profile").
+  - Probe-only app (`lib/spike/probe_offset_main.dart`), glass 60/20: boundary at screen x=0 gives `[44, 64]` (full) in debug, profile. Boundary at screen x=296 (`V=geom`) gives `[48, 56, 64]` from `boundary.toImage`, but a `toImage` of an ancestor boundary at origin 0 gives `[44, 64]` for the same pixels, in profile AND release.
+  - Root cause: probe artifact. `RenderRepaintBoundary.toImage` of a nested boundary with a non-zero screen offset drops the glass refraction. Glass is rendered; the Q1/Q5 probe in the spike app was wrong. Q5 profile numbers therefore measured full glass (the ancestor capture proves the full path), not the fallback.
+  - The `LgrLogs.initAllLogs()` call is kept in the spike main.
+
 ## Q5 performance
 Screen: `lib/spike/liquid_glass_spike_main.dart`, Linux profile (`flutter run --profile -d linux`), 20 s auto-scroll, no flags.
 IMPORTANT: in profile mode the Linux app renders the FALLBACK glass (probe edges on grid), so these numbers measure the fallback path, not full Liquid Glass.

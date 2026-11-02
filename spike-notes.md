@@ -51,6 +51,7 @@ Commit 54bc638 `spike: apply Flutter 3.47.5 pub get changes` holds these, applie
 - No hook errors. Result: Q3 = yes, native build hooks work in a Linux release build.
 
 ## Q1 Linux full glass (release, no flags)
+- Corrected release probe (ancestor boundary at origin, per task-5 investigation): `SPIKE_RELEASE_PROBE edges=[44, 64] offgrid=[4, 0]` = full glass.
 - Probe, debug run (`flutter test integration_test/liquid_glass_full_glass_probe_test.dart -d linux`, builds the real Linux debug app; file analyzes clean):
   - No flags: `LG_PROBE negative edges=[48, 56, 64]` PASS; `LG_PROBE full edges=[48, 56, 64]` FAIL ("Expected: true", no displaced stripe edge). Probe detects the fallback.
   - `--enable-impeller` only: same as no flags (negative PASS, full FAIL, full edges=[48, 56, 64]).
@@ -86,6 +87,7 @@ IMPORTANT: in profile mode the Linux app renders the FALLBACK glass (probe edges
 - extra: release bundle (refraction 60/20 diagnostic): `raster_p90_ms=2.37`.
 
 ## Q2 Android
+- APK built on GitHub run https://github.com/majidsii/dashboard-shakhsi/actions/runs/41547867854; awaiting owner's on-device reading (screen shows GLASS: FULL/FALLBACK and frame stats). Package suffix .lgspike; CI removes file_picker (Kotlin plugin class not visible to Java compile under Flutter 3.47).
 
 ## Q4 Windows
 Runner change prepared; not built or run (no Windows machine). Status: unverified.

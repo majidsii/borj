@@ -17,6 +17,12 @@ Entry template:
 
 ---
 
+## 2026-11-03 — CI baseline restored
+- **Type:** implemented
+- **What:** CI workflow plus local `tool/ci.sh` now run format, analyze, tests and generated-code checks on every push and PR. Superseded apple pixel-golden comparisons removed, tree formatted, 5 analyzer warnings fixed. Owner granted standing push permission.
+- **Evidence / links:** checkpoint `docs/superpowers/checkpoints/2026-11-03-ci-baseline-checkpoint.md`; green CI run https://github.com/majidsii/dashboard-shakhsi/actions/runs/41539038228 on 7b6ec34; commits 2317824..7b6ec34
+- **Follow-ups:** Confirm the 3.47.x formatter drift (1 file) when the Liquid Glass work moves `.flutter-version`.
+
 ## 2026-11-03 — Project guide and work log
 - **Type:** decided
 - **What:** Added `CLAUDE.md` (commands, architecture, invariants, how work is

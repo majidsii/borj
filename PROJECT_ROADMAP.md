@@ -24,7 +24,7 @@ Visual target: **Android/mobile = iOS 27; Windows/Linux desktop = macOS 27 — p
 
 The owner delegated prioritization. Each item gets its own spec → plan → implementation cycle.
 
-1. **Engineering baseline** — CI (analyze, test, Linux build) restored; v2 deleted the v1 workflow in `9f0573d`.
+1. **Engineering baseline** — CI (analyze, test, Linux build) restored; v2 deleted the v1 workflow in `9f0573d`. — **DONE** (2026-11-03, checkpoint: docs/superpowers/checkpoints/2026-11-03-ci-baseline-checkpoint.md)
 2. **Liquid Glass adoption** — spec `2026-11-02-liquid-glass-renderer-adoption-design.md`. Spike first.
 3. **v2 release readiness** — import v1 `data.json` (v1 users exist; v2 has no importer today), product name decision (before release: app ID and data paths depend on it), packaging and release automation.
 4. **Habits and Goals** — complete the all-in-one product.
@@ -101,16 +101,14 @@ Every roadmap task follows:
 4. Start with RED tests.
 5. Implement the smallest coherent GREEN slice.
 6. Run focused verification.
-7. Run `flutter analyze`.
-8. Run the full test suite.
-9. Run Linux debug build.
-10. Run `git diff --check`.
-11. Commit implementation.
-12. Push implementation.
-13. Create/update task checkpoint and semantic verifier.
-14. Commit checkpoint.
-15. Push checkpoint.
-16. Update this file.
+7. Run `tool/ci.sh` locally until green.
+8. Push; the CI run on the pushed commit must be green.
+9. Commit implementation.
+10. Push implementation.
+11. Create/update task checkpoint citing the green CI run URL and commit SHA.
+12. Commit checkpoint.
+13. Push checkpoint.
+14. Update this file.
 
 Never mark a task complete from partial verification.
 

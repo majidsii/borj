@@ -103,12 +103,6 @@ final class AppleGlassAppliedGeometryResolver {
 
     final scaledShape = rawShape.scaleRadii();
 
-    print(
-      'APPLE_GEOMETRY_DEBUG '
-      'materialRect=$materialRect '
-      'shapeBounds=${scaledShape.outerRect}',
-    );
-
     if (!scaledShape.isFinite || scaledShape.hasNaN) {
       throw StateError(
         'Apple source radius produced invalid RSuperellipse geometry.',

@@ -54,7 +54,8 @@ final class AppleCustomGlassMaterialSurface extends StatelessWidget {
         }
 
         final material = _materialResolver.resolve(recipe);
-        final shadows = _shadowRuntimePipeline.resolve(recipe: recipe);
+        // Validates the recipe shadow stack; the result is not used here.
+        _shadowRuntimePipeline.resolve(recipe: recipe);
 
         _assertNativeFillContract(material);
 
@@ -181,7 +182,6 @@ final class _AppleGlassNativeZeroBlurShadowPainter extends CustomPainter {
   final AppleGlassSourceMaterialLayers material;
 
   static const _blendModeResolver = AppleGlassBlendModeResolver();
-  static const _shadowRuntimePipeline = AppleGlassShadowRuntimePipeline();
 
   @override
   void paint(ui.Canvas canvas, ui.Size size) {
@@ -239,7 +239,6 @@ final class _AppleGlassNativeFillPainter extends CustomPainter {
   final AppleGlassSourceMaterialLayers material;
 
   static const _blendModeResolver = AppleGlassBlendModeResolver();
-  static const _shadowRuntimePipeline = AppleGlassShadowRuntimePipeline();
 
   @override
   void paint(ui.Canvas canvas, ui.Size size) {

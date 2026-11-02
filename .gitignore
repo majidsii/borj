@@ -50,3 +50,6 @@ macos/Flutter/GeneratedPluginRegistrant.swift
 # Python cache
 __pycache__/
 *.py[cod]
+
+# Golden test failure output
+test/**/failures/

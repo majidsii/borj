@@ -147,7 +147,10 @@ error. Run `flutter analyze` before claiming anything is done.
     context) until fixed, then review again;
   - the main session alone handles trivial one-step operations, git pushes,
     questions to the owner, and roadmap and worklog updates.
-- **Git.** Stage explicit paths, never `git add -A`. Don't push without the
-  owner's go-ahead. Don't use bare `git stash` (worktrees share the stash).
+- **Git.** Stage explicit paths, never `git add -A`. The owner granted standing
+  permission (2026-11-03) to push branches of this repo to GitHub without
+  asking. Still ask before force-pushing, pushing to `main`, deleting a branch
+  you didn't create, or tagging a release. Don't use bare `git stash`
+  (worktrees share the stash).
 - **Don't add new `tool/verify_*` scripts.** Tests, the analyzer and CI are the
   evidence.

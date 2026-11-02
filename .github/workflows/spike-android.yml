@@ -20,6 +20,9 @@ jobs:
         with:
           channel: stable
           flutter-version: 3.47.5
+      # file_picker's Kotlin plugin class is not visible to the app's Java
+      # compile under Flutter 3.47 built-in Kotlin; the spike entry does not use it.
+      - run: flutter pub remove file_picker
       - run: flutter build apk --release -t lib/spike/liquid_glass_spike_main.dart
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:

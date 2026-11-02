@@ -56,6 +56,10 @@ Commit 54bc638 `spike: apply Flutter 3.47.5 pub get changes` holds these, applie
   - `--enable-impeller` only: same as no flags (negative PASS, full FAIL, full edges=[48, 56, 64]).
   - `--enable-impeller --enable-flutter-gpu`: flag ACCEPTED by `flutter test`. `LG_PROBE negative edges=[48, 56, 64]` PASS; `LG_PROBE full edges=[44, 64]` PASS (44 is 4 px off the 8 px grid). All tests passed.
   - Caveat: a debug-mode test run, not release. Q1 is decided in Task 4.
+- runner flag, debug run, no CLI flags: `fl_dart_project_set_enable_flutter_gpu(project, TRUE);` added in `linux/runner/my_application.cc`. `flutter test integration_test/liquid_glass_full_glass_probe_test.dart -d linux` (no flags):
+  - `LG_PROBE negative edges=[48, 56, 64]` PASS
+  - `LG_PROBE full edges=[44, 64]` PASS
+  - `+2: All tests passed!` exit 0.
 
 ## Q5 performance
 

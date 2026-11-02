@@ -1092,6 +1092,7 @@ At task completion:
 7. record important compatibility invariants;
 8. set the next roadmap task as `CURRENT TASK`;
 9. commit this update as part of the checkpoint/documentation boundary.
+10. append an entry to `docs/WORKLOG.md`.
 
 ---
 
@@ -1099,7 +1100,7 @@ At task completion:
 
 A new assistant/session must do this before editing code:
 
-1. Read `PROJECT_ROADMAP.md`.
+1. Read `CLAUDE.md`, then `PROJECT_ROADMAP.md`, then the latest entries of `docs/WORKLOG.md`.
 2. Run:
    - `git status -sb`
    - `git log -8 --oneline --decorate`

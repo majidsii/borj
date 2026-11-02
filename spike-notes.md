@@ -88,3 +88,4 @@ IMPORTANT: in profile mode the Linux app renders the FALLBACK glass (probe edges
 ## Q2 Android
 
 ## Q4 Windows
+Runner change prepared; not built or run (no Windows machine). Status: unverified.

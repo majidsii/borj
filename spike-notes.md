@@ -60,8 +60,22 @@ Commit 54bc638 `spike: apply Flutter 3.47.5 pub get changes` holds these, applie
   - `LG_PROBE negative edges=[48, 56, 64]` PASS
   - `LG_PROBE full edges=[44, 64]` PASS
   - `+2: All tests passed!` exit 0.
+- release bundle, no flags (`flutter build linux --release -t lib/spike/liquid_glass_spike_main.dart`, run `./build/linux/x64/release/bundle/dashboard_shakhsi`, in-app pixel probe 3 s after first frame, no screenshot):
+  `SPIKE_RELEASE_PROBE edges=[48, 56, 64] offgrid=[0, 0, 0]` -> FALLBACK, not full glass (all edges on the 8 px grid, same as the debug fallback). Runner has `fl_dart_project_set_enable_flutter_gpu(project, TRUE)`.
+  - The same probe in `flutter run --profile` (with and without `--enable-impeller --enable-flutter-gpu`) also gives `edges=[48, 56, 64]`. Log shows `Using the Impeller rendering backend (OpenGLESSDF)`.
+  - Diagnostic: release with pill `refractionAmount: 60, refractionHeight: 20` (the debug probe's settings) still `edges=[48, 56, 64]`. So the spike's default pill settings are not the cause. (That edit was reverted.)
+  - Unexplained: the debug integration probe shows full glass ([44, 64]) with the same runner flag. Release/profile do not.
 
 ## Q5 performance
+Screen: `lib/spike/liquid_glass_spike_main.dart`, Linux profile (`flutter run --profile -d linux`), 20 s auto-scroll, no flags.
+IMPORTANT: in profile mode the Linux app renders the FALLBACK glass (probe edges on grid), so these numbers measure the fallback path, not full Liquid Glass.
+- glass run 1: `SPIKE_FRAMES n=1190 build_p50_ms=0.67 build_p90_ms=1.00 raster_p50_ms=2.76 raster_p90_ms=3.30`
+- glass run 2: `SPIKE_FRAMES n=1189 build_p50_ms=0.54 build_p90_ms=0.80 raster_p50_ms=2.28 raster_p90_ms=2.60`
+- glass run 3: `SPIKE_FRAMES n=1191 build_p50_ms=0.53 build_p90_ms=0.78 raster_p50_ms=2.29 raster_p90_ms=2.69`
+- median raster_p90_ms = 2.69 (<= 8.00: threshold met, but on fallback rendering)
+- no-glass baseline (3 LiquidGlassLayer -> SizedBox.shrink): `SPIKE_FRAMES n=1189 build_p50_ms=0.45 build_p90_ms=0.71 raster_p50_ms=1.80 raster_p90_ms=2.14`
+- extra: profile with `--enable-impeller --enable-flutter-gpu`: `raster_p90_ms=3.27` (still fallback).
+- extra: release bundle (refraction 60/20 diagnostic): `raster_p90_ms=2.37`.
 
 ## Q2 Android
 

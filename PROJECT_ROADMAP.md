@@ -9,16 +9,26 @@
 >
 > `Read PROJECT_ROADMAP.md first. Treat it as the source of truth for scope, architecture, completed work, current task, verification gates, and handoff rules. Continue only from CURRENT TASK and do not redesign completed work unless there is verified evidence of a defect.`
 >
-> **Visual fidelity lock:** when CURRENT TASK is Visual Foundation 2.A, also read `docs/superpowers/references/2026-08-09-apple-ui-kit-source-manifest.md`, `docs/superpowers/specs/2026-08-09-apple-liquid-glass-fidelity-contract.md`, and `docs/superpowers/specs/2026-08-09-apple-liquid-glass-visual-system-design.md` before proposing any UI change. Android/mobile is iOS 27; Windows/Linux desktop is macOS 27; approximation is not accepted.
+> **Visual direction (2026-11-02):** Liquid Glass rendering now follows `docs/superpowers/specs/2026-11-02-liquid-glass-renderer-adoption-design.md`. It replaces the Gate C custom renderer and the pixel-golden acceptance rule. Glass is accepted perceptually (side-by-side with real iOS 27 / macOS 27 captures); design tokens stay source-derived. Read that spec before proposing any UI change.
 
-Last updated: **2026-08-09**
+Last updated: **2026-11-02**
 Current branch: `feat/v2-complete-dashboard`
 Latest fully verified checkpoint commit: `458499dfdb3504034d1d7115bd1515fe20ffc876`
 Project stack: Flutter desktop + Riverpod + Drift/SQLite
 Current database schema: **8**
 Latest completed roadmap task: **Task 2.8 — Quick-Entry Templates**
-Current blocking boundary: **Visual Foundation 2.A — Apple Liquid Glass System Migration**
-Visual target: **Android/mobile = iOS 27 exact; Windows/Linux desktop = macOS 27 exact**
+Current task: **Visual Foundation 2.A — Liquid Glass renderer adoption, Step 0 spike**
+Visual target: **Android/mobile = iOS 27; Windows/Linux desktop = macOS 27 — perceptual match, owner sign-off**
+
+## 0. Program order (decided 2026-11-02)
+
+The owner delegated prioritization. Each item gets its own spec → plan → implementation cycle.
+
+1. **Engineering baseline** — CI (analyze, test, Linux build) restored; v2 deleted the v1 workflow in `9f0573d`.
+2. **Liquid Glass adoption** — spec `2026-11-02-liquid-glass-renderer-adoption-design.md`. Spike first.
+3. **v2 release readiness** — import v1 `data.json` (v1 users exist; v2 has no importer today), product name decision (before release: app ID and data paths depend on it), packaging and release automation.
+4. **Habits and Goals** — complete the all-in-one product.
+5. **Tasks 2.9–2.11** — Trash/Undo/Audit, dashboard cards, Phase 2 checkpoint. No longer blocked by visual work.
 
 ---
 
@@ -107,6 +117,8 @@ Never mark a task complete from partial verification.
 ### 3.4 Flutter/tooling guardrail
 
 Do **not** run `flutter upgrade` as part of roadmap implementation or debugging.
+
+Exception (2026-11-02): the Liquid Glass adoption moves the project to Flutter 3.47.x. That happens through a separate SDK checkout during the spike and a `.flutter-version` change on merge. The shared SDK at `~/develop/flutter` is never upgraded in place.
 
 The repository currently emits the accepted Flutter asset-source notice for:
 
@@ -874,40 +886,35 @@ Task 2.8 is complete only when all of the following are fresh:
 
 ---
 
-# 7. CURRENT TASK — Visual Foundation 2.A — Apple Liquid Glass System Migration
+# 7. CURRENT TASK — Visual Foundation 2.A — Liquid Glass Renderer Adoption
 
-### Current implementation gate
+**Status: DESIGN APPROVED (2026-11-02) — NEXT: STEP 0 SPIKE**
+
+Spec: `docs/superpowers/specs/2026-11-02-liquid-glass-renderer-adoption-design.md`
+
+Gate history:
 
 - Gate A — Reproducible Source Extraction: **COMPLETE**
-- Typography deviation: **Vazirmatn approved for non-Apple Persian/Arabic**
-- Symbol deviation: **project-owned calibrated vectors approved**
-- Gate B — Platform Family, Source Tokens, Typography and Metrics: **NEXT**
-- Task 2.9: **remains blocked until Visual Foundation 2.A is complete**
+- Gate B — Platform Family, Source Tokens, Typography and Metrics: **COMPLETE** (`docs/superpowers/checkpoints/2026-08-15-visual-foundation-2a-gate-b-complete-checkpoint.md`)
+- Gate C — custom shader renderer: **SUPERSEDED** on 2026-11-02. Its shader was still a passthrough, no screen used it, and its pixel-golden gate against the design tool's renderer could not pass (61.33 % diff).
+- Typography deviation (Vazirmatn) and symbol deviation (project vectors): **still approved**.
 
-**Status: IMPLEMENTATION ACTIVE — GATE B COMPLETE — NEXT: GATE C**
+Rules that still hold:
 
-This cross-cutting visual foundation is the only normal implementation boundary that should proceed before Task 2.9.
-
-Canonical references:
-
-- `docs/superpowers/references/2026-08-09-apple-ui-kit-source-manifest.md`
-- `docs/superpowers/specs/2026-08-09-apple-liquid-glass-fidelity-contract.md`
-- `docs/superpowers/specs/2026-08-09-apple-liquid-glass-visual-system-design.md`
-- `docs/superpowers/specs/2026-08-09-apple-liquid-glass-change-request.md`
-
-Frozen requirements:
-
-- Android/mobile must reproduce the supplied iOS 27 visual system exactly;
-- Windows/Linux desktop must reproduce the supplied macOS 27 visual system exactly;
+- Android/mobile targets iOS 27; Windows/Linux desktop targets macOS 27;
 - no Material, Fluent or native desktop visual fallback;
-- source-derived values replace arbitrary visual magic numbers;
-- Liquid Glass is a centralized material system, not local blur decoration;
-- light/dark and applicable interactive states require fidelity evidence;
-- undocumented visual deviations are incomplete by default;
-- Task 2.8 remains complete and immutable;
-- Task 2.9 remains blocked until this boundary is implemented, verified and checkpointed.
+- source-derived tokens (color, typography, metrics, radii) replace magic numbers;
+- Liquid Glass is a centralized material system behind `AppleLiquidGlass`;
+- glass is for the navigation/control layer, not content cards;
+- light/dark and interactive states need evidence on the side-by-side review page.
 
-No production implementation should start until the current app visual/theme architecture is audited against the canonical design and a detailed implementation plan is written.
+Rules superseded on 2026-11-02 (see spec §3):
+
+- `flutter upgrade` ban → Flutter 3.47.x via separate SDK checkout, `.flutter-version` changed on merge;
+- pixel-golden acceptance → perceptual side-by-side acceptance, owner sign-off;
+- no silent fallback → runtime `FakeGlass` fallback allowed, but integration tests fail if full glass is not active on a supported platform.
+
+Next action: run the Step 0 spike (spec §4) and write its report. No production code changes before a Go verdict.
 
 ---
 
@@ -915,7 +922,7 @@ No production implementation should start until the current app visual/theme arc
 
 ## Task 2.9 — Undo, 30-Day Trash, and Audit History
 
-**Status: BLOCKED BY VISUAL FOUNDATION 2.A — DESIGN NOT STARTED**
+**Status: PENDING — DESIGN NOT STARTED (no longer blocked by visual work; see §0 program order)**
 
 Planned generic infrastructure:
 
@@ -937,7 +944,7 @@ A Task in Trash must not produce:
 
 Detailed design must be created immediately before implementation.
 
-Task 2.8 is complete. Task 2.9 is now explicitly blocked by Visual Foundation 2.A. After Visual Foundation 2.A is checkpointed and the Roadmap advances, create and approve Task 2.9's detailed functional design and implementation plan, then proceed RED → GREEN.
+Create and approve Task 2.9's detailed functional design and implementation plan when it comes up in the §0 program order, then proceed RED → GREEN.
 
 ---
 
@@ -1119,12 +1126,11 @@ As of this document:
 - Task 2.8 is the latest fully verified checkpoint.
 - Repository schema is **8**.
 - Task 2.8 is implemented, checkpointed, and semantically verified.
-- The blocking CURRENT TASK is **Visual Foundation 2.A — Apple Liquid Glass System Migration**.
-- Its exact-fidelity platform mapping and documentation are frozen; implementation has **not started**.
-- Android/mobile is locked to the supplied **iOS 27** reference system.
-- Windows/Linux desktop is locked to the supplied **macOS 27** reference system.
-- Task 2.9 detailed design/implementation remains blocked until Visual Foundation 2.A is checkpointed.
-- The next action is to audit the current visual/theme architecture against the canonical Visual Foundation 2.A design, then write its detailed implementation plan before production changes.
+- Program order is in §0 (decided 2026-11-02; owner delegated prioritization).
+- CURRENT TASK is **Visual Foundation 2.A — Liquid Glass renderer adoption**; design approved, Step 0 spike next.
+- The Gate C custom renderer is superseded; `lib/app/apple_visual/rendering/**` and `shaders/apple_liquid_glass*.frag` are removed only after the spike's Go verdict.
+- Shader filters work on Linux desktop only with Impeller enabled (`flutter test integration_test/... -d linux --enable-impeller` → supported; without the flag → unsupported).
+- v1 (published on GitHub, v1.2.0) stores data in `data.json`; v2 has no importer yet. This blocks the v2 release.
 - Tasks 2.10–2.11 remain pending and must be designed individually before implementation.
 
 ---

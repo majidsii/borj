@@ -2,6 +2,13 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+> **Every reply to the owner in chat is in Persian. No exceptions**, even when
+> the previous message, a tool result or a skill is in English. Follow the
+> terminal rules in the user's global CLAUDE.md: no markdown tables, no Latin
+> words or digits inside a Persian sentence (put them on their own line or in a
+> code block), short lines. Files written to the repo (specs, plans, docs, code,
+> commit messages) stay in English.
+
 ## What this is
 
 Dashboard Shakhsi: a Persian, Jalali-calendar, offline-first personal dashboard

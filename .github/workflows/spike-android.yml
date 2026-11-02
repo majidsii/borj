@@ -1,0 +1,27 @@
+name: spike-android
+on:
+  workflow_dispatch:
+  push:
+    branches: ['spike/**']
+permissions:
+  contents: read
+jobs:
+  apk:
+    runs-on: ubuntu-24.04
+    env:
+      PUB_HOSTED_URL: https://pub.flutter-io.cn
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6.1.0
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2 # v2.23.0
+        with:
+          channel: stable
+          flutter-version: 3.47.5
+      - run: flutter build apk --release -t lib/spike/liquid_glass_spike_main.dart
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: liquid-glass-spike-apk
+          path: build/app/outputs/flutter-apk/app-release.apk

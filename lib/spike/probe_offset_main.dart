@@ -72,6 +72,7 @@ Future<void> main() async {
     final t2 = (lo2 + hi2) / 2;
     final e2 = <int>[];
     for (var i = 1; i < l2.length; i++) { if ((l2[i] >= t2) != (l2[i - 1] >= t2)) e2.add(41 + i); }
+    // ignore: avoid_print
     print('PROBE_ONLY ancestor origin=($ox,$oy) edges=$e2');
   });
 }

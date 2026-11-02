@@ -36,9 +36,7 @@ void main() {
       final harness = _Harness(
         now: now,
         registry: _registry(
-          entries: <LinuxSystemdScheduleRegistryEntry>[
-            _entry(request, digest),
-          ],
+          entries: <LinuxSystemdScheduleRegistryEntry>[_entry(request, digest)],
         ),
         discovery: _discovery(completeIds: <String>[request.scheduleId]),
         healthyIds: <String>{request.scheduleId},
@@ -62,9 +60,7 @@ void main() {
         now: now,
         registry: _registry(
           generation: 4,
-          entries: <LinuxSystemdScheduleRegistryEntry>[
-            _entry(request, digest),
-          ],
+          entries: <LinuxSystemdScheduleRegistryEntry>[_entry(request, digest)],
         ),
         discovery: _discovery(completeIds: <String>[request.scheduleId]),
       )..track(request.scheduleId);
@@ -74,10 +70,14 @@ void main() {
       expect(harness.unitStore.installOrder, <String>[request.scheduleId]);
       expect(harness.runner.reloadCount, 1);
       expect(harness.runner.enableOrder, <String>[request.scheduleId]);
-      expect(harness.unitStore.transaction(request.scheduleId).finalizeCalls, 1);
+      expect(
+        harness.unitStore.transaction(request.scheduleId).finalizeCalls,
+        1,
+      );
       expect(harness.registryStore.current.generation, 5);
       expect(
-        harness.registryStore.current.entryForScheduleId(request.scheduleId)!
+        harness.registryStore.current
+            .entryForScheduleId(request.scheduleId)!
             .requestFingerprint,
         digest,
       );
@@ -112,245 +112,287 @@ void main() {
       expect(harness.unitStore.installOrder, <String>[desired.scheduleId]);
       expect(harness.runner.directStatusCount, 0);
       expect(
-        harness.registryStore.current.entryForScheduleId(desired.scheduleId)!
+        harness.registryStore.current
+            .entryForScheduleId(desired.scheduleId)!
             .requestFingerprint,
         newDigest,
       );
       expect(
-        harness.registryStore.current.entryForScheduleId(desired.scheduleId)!
+        harness.registryStore.current
+            .entryForScheduleId(desired.scheduleId)!
             .scheduledAtUtc,
         desired.scheduledAtUtc,
       );
     });
 
-    test('missing registry and unit pair creates the desired schedule',
-        () async {
-      final request = _request(
-        'task-repair-missing',
-        now.add(const Duration(hours: 2)),
-      );
-      final harness = _Harness(
-        now: now,
-        registry: LinuxSystemdScheduleRegistry.empty(),
-        discovery: _discovery(),
-      )..track(request.scheduleId);
+    test(
+      'missing registry and unit pair creates the desired schedule',
+      () async {
+        final request = _request(
+          'task-repair-missing',
+          now.add(const Duration(hours: 2)),
+        );
+        final harness = _Harness(
+          now: now,
+          registry: LinuxSystemdScheduleRegistry.empty(),
+          discovery: _discovery(),
+        )..track(request.scheduleId);
 
-      await harness.scheduler.reconcile(<NotificationRequest>[request]);
+        await harness.scheduler.reconcile(<NotificationRequest>[request]);
 
-      expect(harness.unitStore.installOrder, <String>[request.scheduleId]);
-      expect(harness.runner.reloadCount, 1);
-      expect(harness.runner.enableOrder, <String>[request.scheduleId]);
-      expect(
-        harness.registryStore.current.entryForScheduleId(request.scheduleId),
-        isNotNull,
-      );
-    });
+        expect(harness.unitStore.installOrder, <String>[request.scheduleId]);
+        expect(harness.runner.reloadCount, 1);
+        expect(harness.runner.enableOrder, <String>[request.scheduleId]);
+        expect(
+          harness.registryStore.current.entryForScheduleId(request.scheduleId),
+          isNotNull,
+        );
+      },
+    );
   });
 
   group('coherent install batch', () {
-    test('repairs in schedule ID order with exactly one initial reload',
-        () async {
-      final alpha = _request(
-        'task-repair-alpha',
-        now.add(const Duration(hours: 2)),
-      );
-      final zeta = _request(
-        'task-repair-zeta',
-        now.add(const Duration(hours: 2)),
-      );
-      final harness = _Harness(
-        now: now,
-        registry: LinuxSystemdScheduleRegistry.empty(),
-        discovery: _discovery(),
-      )
-        ..track(alpha.scheduleId)
-        ..track(zeta.scheduleId);
+    test(
+      'repairs in schedule ID order with exactly one initial reload',
+      () async {
+        final alpha = _request(
+          'task-repair-alpha',
+          now.add(const Duration(hours: 2)),
+        );
+        final zeta = _request(
+          'task-repair-zeta',
+          now.add(const Duration(hours: 2)),
+        );
+        final harness =
+            _Harness(
+                now: now,
+                registry: LinuxSystemdScheduleRegistry.empty(),
+                discovery: _discovery(),
+              )
+              ..track(alpha.scheduleId)
+              ..track(zeta.scheduleId);
 
-      await harness.scheduler.reconcile(<NotificationRequest>[zeta, alpha]);
+        await harness.scheduler.reconcile(<NotificationRequest>[zeta, alpha]);
 
-      expect(
-        harness.unitStore.installOrder,
-        orderedEquals(<String>[alpha.scheduleId, zeta.scheduleId]),
-      );
-      expect(
-        harness.unitStore.applyOrder,
-        orderedEquals(<String>[alpha.scheduleId, zeta.scheduleId]),
-      );
-      expect(
-        harness.runner.enableOrder,
-        orderedEquals(<String>[alpha.scheduleId, zeta.scheduleId]),
-      );
-      expect(harness.runner.reloadCount, 1);
-      expect(harness.registryStore.replacements, hasLength(1));
-      expect(
-        harness.registryStore.current.entries.map((entry) => entry.scheduleId),
-        orderedEquals(<String>[alpha.scheduleId, zeta.scheduleId]),
-      );
-    });
+        expect(
+          harness.unitStore.installOrder,
+          orderedEquals(<String>[alpha.scheduleId, zeta.scheduleId]),
+        );
+        expect(
+          harness.unitStore.applyOrder,
+          orderedEquals(<String>[alpha.scheduleId, zeta.scheduleId]),
+        );
+        expect(
+          harness.runner.enableOrder,
+          orderedEquals(<String>[alpha.scheduleId, zeta.scheduleId]),
+        );
+        expect(harness.runner.reloadCount, 1);
+        expect(harness.registryStore.replacements, hasLength(1));
+        expect(
+          harness.registryStore.current.entries.map(
+            (entry) => entry.scheduleId,
+          ),
+          orderedEquals(<String>[alpha.scheduleId, zeta.scheduleId]),
+        );
+      },
+    );
   });
 
   group('partial reconciliation reporting', () {
-    test('factory failure rolls back staged installs and reports no completion',
-        () async {
-      final alpha = _request(
-        'task-repair-factory-alpha',
-        now.add(const Duration(hours: 2)),
-      );
-      final beta = _request(
-        'task-repair-factory-beta',
-        now.add(const Duration(hours: 2)),
-      );
-      final harness = _Harness(
-        now: now,
-        registry: LinuxSystemdScheduleRegistry.empty(),
-        discovery: _discovery(),
-        failFactoryId: beta.scheduleId,
-      )
-        ..track(alpha.scheduleId)
-        ..track(beta.scheduleId);
+    test(
+      'factory failure rolls back staged installs and reports no completion',
+      () async {
+        final alpha = _request(
+          'task-repair-factory-alpha',
+          now.add(const Duration(hours: 2)),
+        );
+        final beta = _request(
+          'task-repair-factory-beta',
+          now.add(const Duration(hours: 2)),
+        );
+        final harness =
+            _Harness(
+                now: now,
+                registry: LinuxSystemdScheduleRegistry.empty(),
+                discovery: _discovery(),
+                failFactoryId: beta.scheduleId,
+              )
+              ..track(alpha.scheduleId)
+              ..track(beta.scheduleId);
 
-      final error = await _expectPartial(
-        () => harness.scheduler.reconcile(<NotificationRequest>[beta, alpha]),
-      );
+        final error = await _expectPartial(
+          () => harness.scheduler.reconcile(<NotificationRequest>[beta, alpha]),
+        );
 
-      expect(error.scheduleId, beta.scheduleId);
-      expect(error.completedScheduleIds, isEmpty);
-      expect(
-        harness.unitStore.transaction(alpha.scheduleId).rollbackCalls,
-        1,
-      );
-      expect(harness.runner.enableOrder, isEmpty);
-      expect(harness.registryStore.current.entries, isEmpty);
-    });
+        expect(error.scheduleId, beta.scheduleId);
+        expect(error.completedScheduleIds, isEmpty);
+        expect(
+          harness.unitStore.transaction(alpha.scheduleId).rollbackCalls,
+          1,
+        );
+        expect(harness.runner.enableOrder, isEmpty);
+        expect(harness.registryStore.current.entries, isEmpty);
+      },
+    );
 
-    test('enable failure preserves prior confirmed success and stops batch',
-        () async {
-      final alpha = _request(
-        'task-repair-enable-alpha',
-        now.add(const Duration(hours: 2)),
-      );
-      final beta = _request(
-        'task-repair-enable-beta',
-        now.add(const Duration(hours: 2)),
-      );
-      final gamma = _request(
-        'task-repair-enable-gamma',
-        now.add(const Duration(hours: 2)),
-      );
-      final harness = _Harness(
-        now: now,
-        registry: LinuxSystemdScheduleRegistry.empty(),
-        discovery: _discovery(),
-        failEnableId: beta.scheduleId,
-      )
-        ..track(alpha.scheduleId)
-        ..track(beta.scheduleId)
-        ..track(gamma.scheduleId);
+    test(
+      'enable failure preserves prior confirmed success and stops batch',
+      () async {
+        final alpha = _request(
+          'task-repair-enable-alpha',
+          now.add(const Duration(hours: 2)),
+        );
+        final beta = _request(
+          'task-repair-enable-beta',
+          now.add(const Duration(hours: 2)),
+        );
+        final gamma = _request(
+          'task-repair-enable-gamma',
+          now.add(const Duration(hours: 2)),
+        );
+        final harness =
+            _Harness(
+                now: now,
+                registry: LinuxSystemdScheduleRegistry.empty(),
+                discovery: _discovery(),
+                failEnableId: beta.scheduleId,
+              )
+              ..track(alpha.scheduleId)
+              ..track(beta.scheduleId)
+              ..track(gamma.scheduleId);
 
-      final error = await _expectPartial(
-        () => harness.scheduler.reconcile(
-          <NotificationRequest>[gamma, beta, alpha],
-        ),
-      );
+        final error = await _expectPartial(
+          () => harness.scheduler.reconcile(<NotificationRequest>[
+            gamma,
+            beta,
+            alpha,
+          ]),
+        );
 
-      expect(error.scheduleId, beta.scheduleId);
-      expect(
-        error.completedScheduleIds,
-        orderedEquals(<String>[alpha.scheduleId]),
-      );
-      expect(
-        () => error.completedScheduleIds.add('task-repair-illegal'),
-        throwsUnsupportedError,
-      );
-      expect(
-        harness.registryStore.current.entries.map((entry) => entry.scheduleId),
-        orderedEquals(<String>[alpha.scheduleId]),
-      );
-      expect(harness.unitStore.transaction(alpha.scheduleId).finalizeCalls, 1);
-      expect(harness.unitStore.transaction(beta.scheduleId).rollbackCalls, 1);
-      expect(harness.unitStore.transaction(gamma.scheduleId).rollbackCalls, 1);
-      expect(harness.runner.enableOrder, <String>[alpha.scheduleId, beta.scheduleId]);
-      expect(harness.runner.reloadCount, 2);
-    });
+        expect(error.scheduleId, beta.scheduleId);
+        expect(
+          error.completedScheduleIds,
+          orderedEquals(<String>[alpha.scheduleId]),
+        );
+        expect(
+          () => error.completedScheduleIds.add('task-repair-illegal'),
+          throwsUnsupportedError,
+        );
+        expect(
+          harness.registryStore.current.entries.map(
+            (entry) => entry.scheduleId,
+          ),
+          orderedEquals(<String>[alpha.scheduleId]),
+        );
+        expect(
+          harness.unitStore.transaction(alpha.scheduleId).finalizeCalls,
+          1,
+        );
+        expect(harness.unitStore.transaction(beta.scheduleId).rollbackCalls, 1);
+        expect(
+          harness.unitStore.transaction(gamma.scheduleId).rollbackCalls,
+          1,
+        );
+        expect(harness.runner.enableOrder, <String>[
+          alpha.scheduleId,
+          beta.scheduleId,
+        ]);
+        expect(harness.runner.reloadCount, 2);
+      },
+    );
 
-    test('finalize failure rolls back the failing and later installs', () async {
-      final alpha = _request(
-        'task-repair-finalize-alpha',
-        now.add(const Duration(hours: 2)),
-      );
-      final beta = _request(
-        'task-repair-finalize-beta',
-        now.add(const Duration(hours: 2)),
-      );
-      final gamma = _request(
-        'task-repair-finalize-gamma',
-        now.add(const Duration(hours: 2)),
-      );
-      final harness = _Harness(
-        now: now,
-        registry: LinuxSystemdScheduleRegistry.empty(),
-        discovery: _discovery(),
-        failFinalizeId: beta.scheduleId,
-      )
-        ..track(alpha.scheduleId)
-        ..track(beta.scheduleId)
-        ..track(gamma.scheduleId);
+    test(
+      'finalize failure rolls back the failing and later installs',
+      () async {
+        final alpha = _request(
+          'task-repair-finalize-alpha',
+          now.add(const Duration(hours: 2)),
+        );
+        final beta = _request(
+          'task-repair-finalize-beta',
+          now.add(const Duration(hours: 2)),
+        );
+        final gamma = _request(
+          'task-repair-finalize-gamma',
+          now.add(const Duration(hours: 2)),
+        );
+        final harness =
+            _Harness(
+                now: now,
+                registry: LinuxSystemdScheduleRegistry.empty(),
+                discovery: _discovery(),
+                failFinalizeId: beta.scheduleId,
+              )
+              ..track(alpha.scheduleId)
+              ..track(beta.scheduleId)
+              ..track(gamma.scheduleId);
 
-      final error = await _expectPartial(
-        () => harness.scheduler.reconcile(
-          <NotificationRequest>[gamma, beta, alpha],
-        ),
-      );
+        final error = await _expectPartial(
+          () => harness.scheduler.reconcile(<NotificationRequest>[
+            gamma,
+            beta,
+            alpha,
+          ]),
+        );
 
-      expect(error.scheduleId, beta.scheduleId);
-      expect(
-        error.completedScheduleIds,
-        orderedEquals(<String>[alpha.scheduleId]),
-      );
-      expect(
-        harness.registryStore.current.entries.map((entry) => entry.scheduleId),
-        orderedEquals(<String>[alpha.scheduleId]),
-      );
-      expect(harness.unitStore.transaction(beta.scheduleId).rollbackCalls, 1);
-      expect(harness.unitStore.transaction(gamma.scheduleId).rollbackCalls, 1);
-    });
+        expect(error.scheduleId, beta.scheduleId);
+        expect(
+          error.completedScheduleIds,
+          orderedEquals(<String>[alpha.scheduleId]),
+        );
+        expect(
+          harness.registryStore.current.entries.map(
+            (entry) => entry.scheduleId,
+          ),
+          orderedEquals(<String>[alpha.scheduleId]),
+        );
+        expect(harness.unitStore.transaction(beta.scheduleId).rollbackCalls, 1);
+        expect(
+          harness.unitStore.transaction(gamma.scheduleId).rollbackCalls,
+          1,
+        );
+      },
+    );
 
-    test('registry failure reports confirmed completed IDs and repairs inventory',
-        () async {
-      final alpha = _request(
-        'task-repair-registry-alpha',
-        now.add(const Duration(hours: 2)),
-      );
-      final beta = _request(
-        'task-repair-registry-beta',
-        now.add(const Duration(hours: 2)),
-      );
-      final harness = _Harness(
-        now: now,
-        registry: LinuxSystemdScheduleRegistry.empty(),
-        discovery: _discovery(),
-        failReplaceCall: 1,
-      )
-        ..track(alpha.scheduleId)
-        ..track(beta.scheduleId);
+    test(
+      'registry failure reports confirmed completed IDs and repairs inventory',
+      () async {
+        final alpha = _request(
+          'task-repair-registry-alpha',
+          now.add(const Duration(hours: 2)),
+        );
+        final beta = _request(
+          'task-repair-registry-beta',
+          now.add(const Duration(hours: 2)),
+        );
+        final harness =
+            _Harness(
+                now: now,
+                registry: LinuxSystemdScheduleRegistry.empty(),
+                discovery: _discovery(),
+                failReplaceCall: 1,
+              )
+              ..track(alpha.scheduleId)
+              ..track(beta.scheduleId);
 
-      final error = await _expectPartial(
-        () => harness.scheduler.reconcile(
-          <NotificationRequest>[beta, alpha],
-        ),
-      );
+        final error = await _expectPartial(
+          () => harness.scheduler.reconcile(<NotificationRequest>[beta, alpha]),
+        );
 
-      expect(
-        error.completedScheduleIds,
-        orderedEquals(<String>[alpha.scheduleId, beta.scheduleId]),
-      );
-      expect(
-        harness.registryStore.current.entries.map((entry) => entry.scheduleId),
-        orderedEquals(<String>[alpha.scheduleId, beta.scheduleId]),
-      );
-      expect(harness.registryStore.replaceCalls, 2);
-      expect(error.rollbackFailures, isEmpty);
-    });
+        expect(
+          error.completedScheduleIds,
+          orderedEquals(<String>[alpha.scheduleId, beta.scheduleId]),
+        );
+        expect(
+          harness.registryStore.current.entries.map(
+            (entry) => entry.scheduleId,
+          ),
+          orderedEquals(<String>[alpha.scheduleId, beta.scheduleId]),
+        );
+        expect(harness.registryStore.replaceCalls, 2);
+        expect(error.rollbackFailures, isEmpty);
+      },
+    );
   });
 }
 
@@ -404,8 +446,7 @@ final class _Harness {
   }
 }
 
-final class _Factory
-    implements LinuxNotificationDeliveryCommandFactory {
+final class _Factory implements LinuxNotificationDeliveryCommandFactory {
   const _Factory({this.failId});
 
   final String? failId;
@@ -421,19 +462,13 @@ final class _Factory
       scheduleKey: request.scheduleId,
       scheduledAtUtc: request.scheduledAtUtc,
       executablePath: '/opt/dashboard-shakhsi',
-      arguments: <String>[
-        '--deliver-notification',
-        request.scheduleId,
-      ],
+      arguments: <String>['--deliver-notification', request.scheduleId],
     );
   }
 }
 
 final class _InstallUnitStore implements LinuxSystemdUnitStore {
-  _InstallUnitStore({
-    this.failApplyId,
-    this.failFinalizeId,
-  });
+  _InstallUnitStore({this.failApplyId, this.failFinalizeId});
 
   final String? failApplyId;
   final String? failFinalizeId;
@@ -496,8 +531,7 @@ final class _InstallUnitStore implements LinuxSystemdUnitStore {
   }
 }
 
-final class _InstallTransaction
-    implements LinuxSystemdUnitInstallTransaction {
+final class _InstallTransaction implements LinuxSystemdUnitInstallTransaction {
   _InstallTransaction({
     required this.names,
     required this.scheduleId,
@@ -547,8 +581,7 @@ final class _InstallTransaction
   }
 }
 
-final class _RemoveTransaction
-    implements LinuxSystemdUnitRemoveTransaction {
+final class _RemoveTransaction implements LinuxSystemdUnitRemoveTransaction {
   _RemoveTransaction(this.names);
 
   @override
@@ -574,8 +607,7 @@ final class _RemoveTransaction
   }
 }
 
-final class _RegistryStore
-    implements LinuxSystemdScheduleRegistryStore {
+final class _RegistryStore implements LinuxSystemdScheduleRegistryStore {
   _RegistryStore({
     required this.current,
     required this.discovery,
@@ -612,10 +644,8 @@ final class _RegistryStore
 }
 
 final class _RepairRunner implements LinuxProcessRunner {
-  _RepairRunner({
-    required Set<String> initiallyHealthyIds,
-    this.failEnableId,
-  }) : _initiallyHealthyIds = <String>{...initiallyHealthyIds};
+  _RepairRunner({required Set<String> initiallyHealthyIds, this.failEnableId})
+    : _initiallyHealthyIds = <String>{...initiallyHealthyIds};
 
   final String? failEnableId;
   final Set<String> _initiallyHealthyIds;
@@ -642,13 +672,9 @@ final class _RepairRunner implements LinuxProcessRunner {
 
     final timerName = request.arguments.firstWhere(
       (argument) => argument.endsWith('.timer'),
-      orElse: () =>
-          'dashboard-shakhsi-notification-0000000000000000.timer',
+      orElse: () => 'dashboard-shakhsi-notification-0000000000000000.timer',
     );
-    final baseName = timerName.substring(
-      0,
-      timerName.length - '.timer'.length,
-    );
+    final baseName = timerName.substring(0, timerName.length - '.timer'.length);
     final scheduleId = _idsByBaseName[baseName] ?? baseName;
 
     if (request.arguments.contains('enable')) {
@@ -672,10 +698,7 @@ final class _RepairRunner implements LinuxProcessRunner {
       final healthy =
           _enabledIds.contains(scheduleId) ||
           _initiallyHealthyIds.contains(scheduleId);
-      return _result(
-        request,
-        stdout: _status(timerName, healthy: healthy),
-      );
+      return _result(request, stdout: _status(timerName, healthy: healthy));
     }
 
     return _result(request);

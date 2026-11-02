@@ -5,9 +5,6 @@ void main() {
   test('runtime shadow painter accepts resolved shadow layers', () {
     const painter = AppleGlassShadowRuntimePainter();
 
-    expect(
-      painter,
-      isNotNull,
-    );
+    expect(painter, isNotNull);
   });
 }

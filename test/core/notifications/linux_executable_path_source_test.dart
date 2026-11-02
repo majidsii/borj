@@ -3,17 +3,19 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('ValidatedLinuxExecutablePathSource', () {
-    test('returns an absolute path when file verification is unavailable',
-        () async {
-      final source = _Source('/opt/dashboard-shakhsi/dashboard_shakhsi');
-      final validated = ValidatedLinuxExecutablePathSource(source: source);
+    test(
+      'returns an absolute path when file verification is unavailable',
+      () async {
+        final source = _Source('/opt/dashboard-shakhsi/dashboard_shakhsi');
+        final validated = ValidatedLinuxExecutablePathSource(source: source);
 
-      expect(
-        await validated.resolve(),
-        '/opt/dashboard-shakhsi/dashboard_shakhsi',
-      );
-      expect(source.resolveCount, 1);
-    });
+        expect(
+          await validated.resolve(),
+          '/opt/dashboard-shakhsi/dashboard_shakhsi',
+        );
+        expect(source.resolveCount, 1);
+      },
+    );
 
     for (final invalid in <String>[
       '',
@@ -146,19 +148,13 @@ void main() {
       }
 
       final exception = actual!;
-      expect(
-        exception.failure,
-        LinuxExecutablePathFailure.resolutionFailed,
-      );
+      expect(exception.failure, LinuxExecutablePathFailure.resolutionFailed);
       expect(exception.cause, same(cause));
       expect(
         exception.causeStackTrace.toString(),
         contains('source-stack-marker'),
       );
-      expect(
-        exception.toString(),
-        isNot(contains('PRIVATE_SOURCE_FAILURE')),
-      );
+      expect(exception.toString(), isNot(contains('PRIVATE_SOURCE_FAILURE')));
     });
 
     test('wraps verifier failure without exposing path or message', () async {
@@ -178,28 +174,20 @@ void main() {
       }
 
       final exception = actual!;
-      expect(
-        exception.failure,
-        LinuxExecutablePathFailure.verificationFailed,
-      );
+      expect(exception.failure, LinuxExecutablePathFailure.verificationFailed);
       expect(exception.cause, same(cause));
       expect(
         exception.causeStackTrace.toString(),
         contains('verifier-stack-marker'),
       );
       expect(exception.toString(), isNot(contains(path)));
-      expect(
-        exception.toString(),
-        isNot(contains('PRIVATE_VERIFIER_FAILURE')),
-      );
+      expect(exception.toString(), isNot(contains('PRIVATE_VERIFIER_FAILURE')));
     });
   });
 }
 
 final class _Source implements LinuxExecutablePathSource {
-  _Source(this.path)
-      : error = null,
-        errorStackTrace = null;
+  _Source(this.path) : error = null, errorStackTrace = null;
 
   _Source.failure(this.error, this.errorStackTrace) : path = null;
 
@@ -223,9 +211,7 @@ final class _Source implements LinuxExecutablePathSource {
 }
 
 final class _Verifier implements LinuxExecutableFileVerifier {
-  _Verifier(this.result)
-      : error = null,
-        errorStackTrace = null;
+  _Verifier(this.result) : error = null, errorStackTrace = null;
 
   _Verifier.failure(this.error, this.errorStackTrace) : result = null;
 

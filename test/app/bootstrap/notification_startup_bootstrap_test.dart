@@ -9,29 +9,32 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('notificationStartupProvider', () {
-    test('repeated reads share one startup future in one provider scope', () async {
-      final startup = _ControlledStartup();
-      final startupProvider = Provider<NotificationStartup>((ref) => startup);
-      final container = ProviderContainer();
-      addTearDown(container.dispose);
+    test(
+      'repeated reads share one startup future in one provider scope',
+      () async {
+        final startup = _ControlledStartup();
+        final startupProvider = Provider<NotificationStartup>((ref) => startup);
+        final container = ProviderContainer();
+        addTearDown(container.dispose);
 
-      final first = container.read(
-        notificationStartupProvider(startupProvider).future,
-      );
-      final second = container.read(
-        notificationStartupProvider(startupProvider).future,
-      );
+        final first = container.read(
+          notificationStartupProvider(startupProvider).future,
+        );
+        final second = container.read(
+          notificationStartupProvider(startupProvider).future,
+        );
 
-      expect(identical(first, second), isTrue);
+        expect(identical(first, second), isTrue);
 
-      await Future<void>.delayed(Duration.zero);
-      expect(startup.calls, 1);
+        await Future<void>.delayed(Duration.zero);
+        expect(startup.calls, 1);
 
-      startup.complete();
-      await Future.wait<void>(<Future<void>>[first, second]);
+        startup.complete();
+        await Future.wait<void>(<Future<void>>[first, second]);
 
-      expect(startup.calls, 1);
-    });
+        expect(startup.calls, 1);
+      },
+    );
 
     test('a new provider scope can retry a failed startup', () async {
       final startup = _RetryingStartup();
@@ -288,8 +291,7 @@ final class _Failure {
   final StackTrace stackTrace;
 }
 
-final class _RecordingReporter
-    implements NotificationStartupFailureReporter {
+final class _RecordingReporter implements NotificationStartupFailureReporter {
   final List<_Failure> failures = <_Failure>[];
 
   @override

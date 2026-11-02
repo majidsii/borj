@@ -3,9 +3,12 @@
 
 class AppleGeneratedSourceColor {
   const AppleGeneratedSourceColor({
-    required this.sourceId, required this.name,
-    required this.red, required this.green,
-    required this.blue, required this.alpha,
+    required this.sourceId,
+    required this.name,
+    required this.red,
+    required this.green,
+    required this.blue,
+    required this.alpha,
   });
   final String sourceId;
   final String name;

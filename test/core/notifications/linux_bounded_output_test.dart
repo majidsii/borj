@@ -139,16 +139,8 @@ void main() {
     });
 
     test('reports malformed UTF-8 created by a truncation boundary', () {
-      final source = <int>[
-        0x41,
-        0xE2,
-        0x82,
-        0xAC,
-        0x42,
-        0x43,
-      ];
-      final collector = LinuxBoundedOutputCollector(limitBytes: 4)
-        ..add(source);
+      final source = <int>[0x41, 0xE2, 0x82, 0xAC, 0x42, 0x43];
+      final collector = LinuxBoundedOutputCollector(limitBytes: 4)..add(source);
 
       final output = collector.finish();
 
@@ -161,8 +153,7 @@ void main() {
 
     test('consumes input immediately and does not retain caller lists', () {
       final bytes = <int>[0x41, 0x42, 0x43];
-      final collector = LinuxBoundedOutputCollector(limitBytes: 8)
-        ..add(bytes);
+      final collector = LinuxBoundedOutputCollector(limitBytes: 8)..add(bytes);
 
       bytes
         ..clear()
@@ -186,10 +177,7 @@ void main() {
       final second = collector.finish();
 
       expect(identical(second, first), isTrue);
-      expect(
-        () => collector.add(utf8.encode(' later')),
-        throwsStateError,
-      );
+      expect(() => collector.add(utf8.encode(' later')), throwsStateError);
     });
 
     test('keeps retained output bounded for a very large stream', () {
@@ -197,11 +185,7 @@ void main() {
       const chunkSize = 4096;
       const chunkCount = 1024;
       final chunk = Uint8List.fromList(
-        List<int>.generate(
-          chunkSize,
-          (index) => index % 251,
-          growable: false,
-        ),
+        List<int>.generate(chunkSize, (index) => index % 251, growable: false),
       );
       final collector = LinuxBoundedOutputCollector(limitBytes: limit);
 

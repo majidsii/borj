@@ -17,20 +17,12 @@ void main() {
 
     const pipeline = AppleGlassShadowRuntimePipeline();
 
-    final layers = pipeline.resolve(
-      recipe: recipe,
-    );
+    final layers = pipeline.resolve(recipe: recipe);
 
     expect(layers, hasLength(13));
 
-    expect(
-      layers.first.shadow.index,
-      0,
-    );
+    expect(layers.first.shadow.index, 0);
 
-    expect(
-      layers.last.shadow.index,
-      12,
-    );
+    expect(layers.last.shadow.index, 12);
   });
 }

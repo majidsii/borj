@@ -48,7 +48,11 @@ final class AppleGlassShaderParameterResolver {
     );
   }
 
-  double _first(Map<String, Object?> values, List<String> keys, {double fallback = 0}) {
+  double _first(
+    Map<String, Object?> values,
+    List<String> keys, {
+    double fallback = 0,
+  }) {
     for (final key in keys) {
       final value = values[key];
 

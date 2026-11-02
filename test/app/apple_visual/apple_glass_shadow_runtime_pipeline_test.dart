@@ -17,17 +17,13 @@ void main() {
 
     const pipeline = AppleGlassShadowRuntimePipeline();
 
-    final result = pipeline.resolve(
-      recipe: recipe,
-    );
+    final result = pipeline.resolve(recipe: recipe);
 
     expect(result, hasLength(13));
 
     expect(
       result.map((item) => item.shadow.index),
-      orderedEquals(
-        List<int>.generate(13, (index) => index),
-      ),
+      orderedEquals(List<int>.generate(13, (index) => index)),
     );
   });
 }

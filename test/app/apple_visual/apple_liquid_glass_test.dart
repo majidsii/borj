@@ -24,16 +24,11 @@ void main() {
         theme: theme,
         role: AppleGlassRole.mediumSurface,
         state: AppleControlState.idle,
-        child: const SizedBox(
-          key: ValueKey<String>('liquid-glass-child'),
-        ),
+        child: const SizedBox(key: ValueKey<String>('liquid-glass-child')),
       );
 
       await tester.pumpWidget(
-        Directionality(
-          textDirection: TextDirection.ltr,
-          child: widget,
-        ),
+        Directionality(textDirection: TextDirection.ltr, child: widget),
       );
 
       final mounted = tester.widget<AppleLiquidGlass>(
@@ -64,22 +59,25 @@ void main() {
       );
     });
 
-    test('constructor defaults state to idle and requires no visual overrides', () {
-      final theme = _resolvedTheme(
-        family: AppleVisualFamily.ios27,
-        brightness: Brightness.light,
-      );
+    test(
+      'constructor defaults state to idle and requires no visual overrides',
+      () {
+        final theme = _resolvedTheme(
+          family: AppleVisualFamily.ios27,
+          brightness: Brightness.light,
+        );
 
-      final widget = AppleLiquidGlass(
-        theme: theme,
-        role: AppleGlassRole.smallControl,
-        child: const SizedBox.shrink(),
-      );
+        final widget = AppleLiquidGlass(
+          theme: theme,
+          role: AppleGlassRole.smallControl,
+          child: const SizedBox.shrink(),
+        );
 
-      expect(widget.theme, same(theme));
-      expect(widget.role, AppleGlassRole.smallControl);
-      expect(widget.state, AppleControlState.idle);
-    });
+        expect(widget.theme, same(theme));
+        expect(widget.role, AppleGlassRole.smallControl);
+        expect(widget.state, AppleControlState.idle);
+      },
+    );
 
     test('public constructor exposes no raw visual override parameters', () {
       final source = File(

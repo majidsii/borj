@@ -26,10 +26,7 @@ final class FakeLinuxNotificationDeliveryCommandFactory
     if (configuredError != null) {
       final configuredStackTrace = errorStackTrace;
       if (configuredStackTrace != null) {
-        Error.throwWithStackTrace(
-          configuredError,
-          configuredStackTrace,
-        );
+        Error.throwWithStackTrace(configuredError, configuredStackTrace);
       }
 
       throw configuredError;

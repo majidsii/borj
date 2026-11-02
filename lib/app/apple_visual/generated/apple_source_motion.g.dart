@@ -44,18 +44,19 @@ abstract final class AppleSourceMotionReference {
         ),
       );
 
-  static const AppleGeneratedSpringMotion interactiveSpring =
-      AppleGeneratedSpringMotion(
-        id: 'interactiveSpring',
-        responseSeconds: 0.15,
-        dampingFraction: 0.86,
-        blendDurationSeconds: 0.25,
-        provenance: AppleGeneratedMotionProvenance(
-          apiReference: 'Animation.interactiveSpring(response:dampingFraction:blendDuration:)',
-          officialSwiftUIRuntimeReference: true,
-          exactInternalLiquidGlassMotion: false,
-        ),
-      );
+  static const AppleGeneratedSpringMotion
+  interactiveSpring = AppleGeneratedSpringMotion(
+    id: 'interactiveSpring',
+    responseSeconds: 0.15,
+    dampingFraction: 0.86,
+    blendDurationSeconds: 0.25,
+    provenance: AppleGeneratedMotionProvenance(
+      apiReference:
+          'Animation.interactiveSpring(response:dampingFraction:blendDuration:)',
+      officialSwiftUIRuntimeReference: true,
+      exactInternalLiquidGlassMotion: false,
+    ),
+  );
 
   static const List<String> accessibilityPolicies = [
     'standard',

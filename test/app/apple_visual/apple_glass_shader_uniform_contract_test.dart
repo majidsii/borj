@@ -71,5 +71,4 @@ void main() {
     expect(uniforms.customGlassRadius, 0);
     expect(uniforms.lighting, 0);
   });
-
 }

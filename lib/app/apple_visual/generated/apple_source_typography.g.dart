@@ -80,5 +80,4 @@ abstract final class AppleSourceTypographyReference {
         sourcePostScriptName: null,
         sourceWeight: null,
       );
-
 }

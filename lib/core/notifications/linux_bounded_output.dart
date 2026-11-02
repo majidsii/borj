@@ -8,11 +8,11 @@ final class LinuxBoundedOutput {
     required this.droppedBytes,
     required this.truncated,
     required this.malformedUtf8,
-  })  : assert(totalBytes >= 0),
-        assert(retainedBytes >= 0),
-        assert(droppedBytes >= 0),
-        assert(totalBytes == retainedBytes + droppedBytes),
-        assert(truncated == (droppedBytes > 0));
+  }) : assert(totalBytes >= 0),
+       assert(retainedBytes >= 0),
+       assert(droppedBytes >= 0),
+       assert(totalBytes == retainedBytes + droppedBytes),
+       assert(truncated == (droppedBytes > 0));
 
   final String text;
   final int totalBytes;
@@ -23,10 +23,9 @@ final class LinuxBoundedOutput {
 }
 
 final class LinuxBoundedOutputCollector {
-  LinuxBoundedOutputCollector({
-    required this.limitBytes,
-  })  : _prefixLimitBytes = limitBytes ~/ 2,
-        _suffixLimitBytes = limitBytes - (limitBytes ~/ 2) {
+  LinuxBoundedOutputCollector({required this.limitBytes})
+    : _prefixLimitBytes = limitBytes ~/ 2,
+      _suffixLimitBytes = limitBytes - (limitBytes ~/ 2) {
     if (limitBytes <= 0) {
       throw ArgumentError.value(
         limitBytes,
@@ -35,11 +34,7 @@ final class LinuxBoundedOutputCollector {
       );
     }
 
-    _suffixRing = List<int>.filled(
-      _suffixLimitBytes,
-      0,
-      growable: false,
-    );
+    _suffixRing = List<int>.filled(_suffixLimitBytes, 0, growable: false);
   }
 
   final int limitBytes;
@@ -72,8 +67,7 @@ final class LinuxBoundedOutputCollector {
       }
 
       _suffixRing[_suffixWriteIndex] = byte;
-      _suffixWriteIndex =
-          (_suffixWriteIndex + 1) % _suffixLimitBytes;
+      _suffixWriteIndex = (_suffixWriteIndex + 1) % _suffixLimitBytes;
 
       if (_suffixCount < _suffixLimitBytes) {
         _suffixCount++;
@@ -87,26 +81,17 @@ final class LinuxBoundedOutputCollector {
       return existing;
     }
 
-    final retainedBytes = <int>[
-      ..._prefixBytes,
-      ..._orderedSuffixBytes(),
-    ];
+    final retainedBytes = <int>[..._prefixBytes, ..._orderedSuffixBytes()];
     final droppedBytes = _totalBytes - retainedBytes.length;
 
     var malformedUtf8 = false;
     late final String text;
 
     try {
-      text = utf8.decode(
-        retainedBytes,
-        allowMalformed: false,
-      );
+      text = utf8.decode(retainedBytes, allowMalformed: false);
     } on FormatException {
       malformedUtf8 = true;
-      text = utf8.decode(
-        retainedBytes,
-        allowMalformed: true,
-      );
+      text = utf8.decode(retainedBytes, allowMalformed: true);
     }
 
     final output = LinuxBoundedOutput(
@@ -128,17 +113,13 @@ final class LinuxBoundedOutputCollector {
     }
 
     if (_suffixCount < _suffixLimitBytes) {
-      return List<int>.unmodifiable(
-        _suffixRing.take(_suffixCount),
-      );
+      return List<int>.unmodifiable(_suffixRing.take(_suffixCount));
     }
 
-    return List<int>.unmodifiable(
-      <int>[
-        ..._suffixRing.skip(_suffixWriteIndex),
-        ..._suffixRing.take(_suffixWriteIndex),
-      ],
-    );
+    return List<int>.unmodifiable(<int>[
+      ..._suffixRing.skip(_suffixWriteIndex),
+      ..._suffixRing.take(_suffixWriteIndex),
+    ]);
   }
 
   static void _validateBytes(List<int> bytes) {

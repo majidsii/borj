@@ -20,33 +20,31 @@ void main() {
     const materialResolver = AppleGlassMaterialLayerResolver();
     const compositor = AppleGlassShadowStackCompositor();
 
-    final layers = compositor.resolveLayers(
-      materialResolver.resolve(recipe),
-    );
+    final layers = compositor.resolveLayers(materialResolver.resolve(recipe));
 
     expect(layers, hasLength(13));
 
     expect(
-      layers.where(
-        (layer) =>
-            layer.backendKind == AppleGlassShadowBackendKind.native,
-      ).length,
+      layers
+          .where(
+            (layer) => layer.backendKind == AppleGlassShadowBackendKind.native,
+          )
+          .length,
       7,
     );
 
     expect(
-      layers.where(
-        (layer) =>
-            layer.backendKind == AppleGlassShadowBackendKind.plusDarker,
-      ).length,
+      layers
+          .where(
+            (layer) =>
+                layer.backendKind == AppleGlassShadowBackendKind.plusDarker,
+          )
+          .length,
       6,
     );
 
     const painter = AppleGlassShadowRuntimePainter();
 
-    expect(
-      () => painter.paint(layers: layers),
-      returnsNormally,
-    );
+    expect(() => painter.paint(layers: layers), returnsNormally);
   });
 }

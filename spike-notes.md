@@ -42,6 +42,14 @@ Commit 54bc638 `spike: apply Flutter 3.47.5 pub get changes` holds these, applie
 
 ## Q3 native hooks build
 
+- Pinned `liquid_glass_renderer: 1.0.0-dev.2` (no caret) in pubspec.yaml.
+- `flutter pub get`: resolved on first try via the mirror (`https://pub.flutter-io.cn`, per pubspec.lock). No fallback retry needed.
+- `flutter build linux --release` (Flutter 3.47.5, mirror env kept): SUCCESS, exit 0.
+  Output: `✓ Built build/linux/x64/release/bundle/dashboard_shakhsi`
+  Bundle: `build/linux/x64/release/bundle/` (contains dashboard_shakhsi, data, lib).
+- Wall time: 212 s (includes first-time Linux engine artifact downloads of ~73 s from the mirror).
+- No hook errors. Result: Q3 = yes, native build hooks work in a Linux release build.
+
 ## Q1 Linux full glass (release, no flags)
 
 ## Q5 performance

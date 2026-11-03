@@ -17,6 +17,68 @@ Entry template:
 
 ---
 
+## 2026-11-03 — Liquid Glass spike (paused)
+- **Type:** researched (in progress)
+- **What:** Step 0 spike of `2026-11-02-liquid-glass-renderer-adoption-design.md`,
+  plan `docs/superpowers/plans/2026-11-03-liquid-glass-spike.md`. Paused at the
+  owner's request (end of day). Answers so far:
+  - **Q1 Linux full glass, release, no CLI flags: YES.** Needs one line in
+    `linux/runner/my_application.cc`: `fl_dart_project_set_enable_flutter_gpu(project, TRUE);`
+    (Impeller is default-on in 3.47.5). Probe edges full `[44, 64]` vs fallback
+    `[48, 56, 64]` in debug, profile and release. Owner saw bent stripes on screen.
+  - **Q3 native hooks build on Linux: YES.** `liquid_glass_renderer.shaderbundle`
+    is in the release bundle. Linux release build 212 s (first run).
+  - **Q5 performance (Linux, profile, dashboard-shaped screen): PASS.** Median
+    raster p90 2.69 ms with glass vs 2.14 ms without (limit 8 ms).
+  - **Q4 Windows: UNVERIFIED.** Runner change prepared
+    (`project.set_enable_flutter_gpu(true);` in `windows/runner/main.cpp`).
+  - **Q2 Android: OPEN — APK crashes on launch** on the owner's Samsung Galaxy
+    A34 5G ("app has a problem"), i.e. a process crash. No logs yet.
+  - 3.47.5 baseline: Dart 3.13.4; existing suite 1345 pass / 1 skip / 0 fail;
+    analyze clean; formatter drift in 1 file
+    (`test/app/apple_visual/apple_custom_glass_impeller_test.dart`);
+    `pub get` bumps intl, matcher, meta, test_api, vector_math and adds an
+    `analyzer.exclude` block.
+- **Findings to carry into the adoption plan:**
+  - `RenderRepaintBoundary.toImage` on a nested boundary at a non-zero screen
+    offset misses the glass; probes must capture an origin-(0,0) ancestor.
+  - Glass brightness must follow the app theme, not `platformBrightness`
+    (owner's desktop is `prefer-dark`; dark glass on a light page looked grey).
+  - `file_picker` (Android plugin registration) fails to build on Flutter 3.47.
+    The spike APK workflow removes it; the real app needs a fix before upgrading.
+  - `flutter test` has no `--profile`/`--release`.
+  - iOS 26.1 reference captures from the owner (camera controls, Settings search
+    bar light/dark, passcode keypad clear glass, lock-screen notification) are
+    stored OUTSIDE the public repo (they contain personal data):
+    `/home/shabin/projects/personal/dashboard-shakhsi-reference-captures/`.
+    Also add Apple's "scroll edge effect" (progressive fade under bars) to the
+    adoption scope.
+- **Evidence / links:** branch `spike/liquid-glass` (pushed; notes in
+  `spike-notes.md`), worktree `/home/shabin/projects/personal/dashboard-shakhsi-spike-liquid-glass`,
+  SDK `/home/shabin/develop/flutter-3.47.5`. Android build runs on GitHub
+  (`.github/workflows/spike-android.yml` on the spike branch), e.g. run
+  https://github.com/majidsii/dashboard-shakhsi/actions/runs/41547867854.
+  APKs are on a private DRAFT release (no tag)
+  https://github.com/majidsii/dashboard-shakhsi/releases/tag/untagged-710374df82c830b3cbc7 .
+- **Resume steps:**
+  1. Check whether the A/B/C isolation APK run finished (commit `7112e05` on
+     `spike/liquid-glass`): `gh run list --branch spike/liquid-glass --limit 3`.
+     If the three APKs aren't on the draft release yet, rerun/finish that.
+     Variants: A plain app (GPU flag on), B glass without `EnableFlutterGPU`,
+     C current build. Each has its own app id and label, so all three install
+     at once.
+  2. Better evidence: owner runs `sudo apt install adb`, enables USB debugging,
+     connects the phone; then `adb logcat -b crash` / `adb logcat` while
+     launching shows the crash cause.
+  3. Fix or classify the Android crash, then write the spike report (plan Task 8)
+     and the GO/NO-GO verdict.
+  4. After the spike: delete the draft release; keep the spike branch for the
+     adoption plan.
+- **Follow-ups:** main worktree still has uncommitted Gate C WIP
+  (`apple_custom_glass_filter.dart`, `apple_custom_glass_impeller_test.dart`,
+  `apple_glass_shader_identity_visual_test.dart`, `integration_test/`). It is
+  superseded and will be deleted with `rendering/**` after a GO.
+
 ## 2026-11-03 — CI baseline restored
 - **Type:** implemented
 - **What:** CI workflow plus local `tool/ci.sh` now run format, analyze, tests and generated-code checks on every push and PR. Superseded apple pixel-golden comparisons removed, tree formatted, 5 analyzer warnings fixed. Owner granted standing push permission.

@@ -884,7 +884,9 @@ Task 2.8 is complete only when all of the following are fresh:
 
 # 7. CURRENT TASK — Visual Foundation 2.A — Liquid Glass Renderer Adoption
 
-**Status: DESIGN APPROVED (2026-11-02) — NEXT: STEP 0 SPIKE**
+**Status: STEP 0 SPIKE IN PROGRESS (paused 2026-11-03) — Linux GO-level evidence; Android crash under investigation**
+
+Spike state and resume steps: `docs/WORKLOG.md` entry "2026-11-03 — Liquid Glass spike (paused)".
 
 Spec: `docs/superpowers/specs/2026-11-02-liquid-glass-renderer-adoption-design.md`
 
@@ -910,7 +912,7 @@ Rules superseded on 2026-11-02 (see spec §3):
 - pixel-golden acceptance → perceptual side-by-side acceptance, owner sign-off;
 - no silent fallback → runtime `FakeGlass` fallback allowed, but integration tests fail if full glass is not active on a supported platform.
 
-Next action: run the Step 0 spike (spec §4) and write its report. No production code changes before a Go verdict.
+Next action: finish the spike's Android question (Q2), then write the spike report (plan Task 8). No production code changes before a Go verdict.
 
 ---
 
@@ -1124,7 +1126,8 @@ As of this document:
 - Repository schema is **8**.
 - Task 2.8 is implemented, checkpointed, and semantically verified.
 - Program order is in §0 (decided 2026-11-02; owner delegated prioritization).
-- CURRENT TASK is **Visual Foundation 2.A — Liquid Glass renderer adoption**; design approved, Step 0 spike next.
+- CURRENT TASK is **Visual Foundation 2.A — Liquid Glass renderer adoption**; Step 0 spike in progress (paused 2026-11-03). See the latest `docs/WORKLOG.md` entry for exact state and resume steps.
+- CI baseline is DONE (2026-11-03): every push runs `tool/ci.sh` on GitHub Actions.
 - The Gate C custom renderer is superseded; `lib/app/apple_visual/rendering/**` and `shaders/apple_liquid_glass*.frag` are removed only after the spike's Go verdict.
 - Shader filters work on Linux desktop only with Impeller enabled (`flutter test integration_test/... -d linux --enable-impeller` → supported; without the flag → unsupported).
 - v1 (published on GitHub, v1.2.0) stores data in `data.json`; v2 has no importer yet. This blocks the v2 release.

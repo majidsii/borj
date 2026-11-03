@@ -112,7 +112,7 @@ void validateExactMoneyDefinition(Money value) {
   if (value.currencyCode != Money.tomanCurrencyCode ||
       value.scale != Money.financeScale) {
     throw const ValidationFailure(
-      'مبلغ باید با واحد تومان و دقت هشت رقم اعشار ثبت شود.',
+      'مبلغ باید با واحد تومان و به‌صورت عدد صحیح ثبت شود.',
     );
   }
 }

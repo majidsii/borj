@@ -9,7 +9,7 @@ void main() {
     scale: Money.financeScale,
   );
 
-  test('finance totals retain all eight decimal digits exactly', () {
+  test('finance totals sum whole-toman values exactly', () {
     final now = DateTime(2026, 7, 26);
     final totals = FinancePreviewMath.totals(
       now: now,
@@ -19,7 +19,7 @@ void main() {
           type: FinanceEntryType.income,
           title: 'درآمد',
           category: 'حقوق',
-          amount: amount('1000.12345678'),
+          amount: amount('1000'),
           createdAt: now,
         ),
         FinancePreviewTransaction(
@@ -27,7 +27,7 @@ void main() {
           type: FinanceEntryType.expense,
           title: 'هزینه',
           category: 'خوراک',
-          amount: amount('0.00000001'),
+          amount: amount('1'),
           createdAt: now,
         ),
       ],
@@ -35,16 +35,16 @@ void main() {
         FinancePreviewDebt(
           id: 3,
           title: 'بدهی',
-          total: amount('20.50000001'),
-          paid: amount('0.50000001'),
+          total: amount('21'),
+          paid: amount('1'),
         ),
       ],
       installments: <FinancePreviewInstallment>[],
     );
 
-    expect(totals.balance.formatMajorUnits(), '۱٬۰۰۰٫۱۲۳۴۵۶۷۷');
-    expect(totals.monthIncome.formatMajorUnits(), '۱٬۰۰۰٫۱۲۳۴۵۶۷۸');
-    expect(totals.monthExpense.formatMajorUnits(), '۰٫۰۰۰۰۰۰۰۱');
+    expect(totals.balance.formatMajorUnits(), '۹۹۹');
+    expect(totals.monthIncome.formatMajorUnits(), '۱٬۰۰۰');
+    expect(totals.monthExpense.formatMajorUnits(), '۱');
     expect(totals.debtRemaining.formatMajorUnits(), '۲۰');
   });
 }

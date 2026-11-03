@@ -1,3 +1,5 @@
+import 'dart:developer' as developer;
+
 import 'package:dashboard_shakhsi/core/database/database_connection.dart';
 import 'package:drift/drift.dart';
 
@@ -54,7 +56,7 @@ class FinanceTransactionRows extends Table {
   TextColumn get category => text()();
   IntColumn get amountMinorUnits => integer()();
   TextColumn get currencyCode => text().withDefault(const Constant('IRT'))();
-  IntColumn get scale => integer().withDefault(const Constant(8))();
+  IntColumn get scale => integer().withDefault(const Constant(0))();
   DateTimeColumn get occurredAtUtc => dateTime()();
   DateTimeColumn get createdAtUtc => dateTime()();
   DateTimeColumn get updatedAtUtc => dateTime()();
@@ -76,7 +78,7 @@ class DebtRows extends Table {
   TextColumn get title => text()();
   IntColumn get totalMinorUnits => integer()();
   TextColumn get currencyCode => text().withDefault(const Constant('IRT'))();
-  IntColumn get scale => integer().withDefault(const Constant(8))();
+  IntColumn get scale => integer().withDefault(const Constant(0))();
   DateTimeColumn get createdAtUtc => dateTime()();
   DateTimeColumn get updatedAtUtc => dateTime()();
   DateTimeColumn get archivedAtUtc => dateTime().nullable()();
@@ -109,7 +111,7 @@ class InstallmentPlanRows extends Table {
   IntColumn get perInstallmentMinorUnits => integer()();
   IntColumn get installmentCount => integer()();
   TextColumn get currencyCode => text().withDefault(const Constant('IRT'))();
-  IntColumn get scale => integer().withDefault(const Constant(8))();
+  IntColumn get scale => integer().withDefault(const Constant(0))();
   DateTimeColumn get createdAtUtc => dateTime()();
   DateTimeColumn get updatedAtUtc => dateTime()();
   DateTimeColumn get archivedAtUtc => dateTime().nullable()();
@@ -332,6 +334,29 @@ class TaskTemplateRows extends Table {
   ];
 }
 
+class LegacyImportRows extends Table {
+  @override
+  String get tableName => 'legacy_imports';
+
+  TextColumn get sourceKind => text().named('source_kind')();
+  TextColumn get entityType => text().named('entity_type')();
+  TextColumn get v1Id => text().named('v1_id')();
+  TextColumn get v2Id => text().named('v2_id')();
+  DateTimeColumn get importedAtUtc => dateTime()();
+  TextColumn get sourceSha256 => text().named('source_sha256')();
+
+  @override
+  List<String> get customConstraints => <String>[
+    "CHECK (entity_type IN ('task', 'transaction', 'debt', 'installment'))",
+    "CHECK (source_kind IN ('data_json', 'export'))",
+    'CHECK (length(trim(v1_id)) > 0)',
+    'CHECK (length(trim(v2_id)) > 0)',
+  ];
+
+  @override
+  Set<Column<Object>> get primaryKey => <Column<Object>>{entityType, v1Id};
+}
+
 class NotificationScheduleRows extends Table {
   @override
   String get tableName => 'notification_schedules';
@@ -375,6 +400,7 @@ class NotificationScheduleRows extends Table {
     TaskTimeEntryRows,
     TaskTemplateRows,
     NotificationScheduleRows,
+    LegacyImportRows,
   ],
 )
 final class AppDatabase extends _$AppDatabase {
@@ -382,7 +408,7 @@ final class AppDatabase extends _$AppDatabase {
     : super(executor ?? openDashboardDatabase());
 
   @override
-  int get schemaVersion => 8;
+  int get schemaVersion => 9;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -489,9 +515,137 @@ final class AppDatabase extends _$AppDatabase {
       if (from < 8) {
         await migrator.createTable(taskTemplateRows);
       }
+      if (from < 9) {
+        await _migrateToWholeTomanAndLegacyImports(migrator);
+      }
     },
     beforeOpen: (OpeningDetails details) async {
       await customStatement('PRAGMA foreign_keys = ON');
     },
   );
+
+  static const String _legacyUnit = '100000000';
+  static const String _legacyHalf = '50000000';
+
+  /// Integer-only round-half-even of `column / 1e8`, clamping a positive
+  /// value that would round to 0 up to 1 (the domain rejects 0 amounts).
+  static String _roundToWholeUnits(String column) {
+    final whole = '($column / $_legacyUnit)';
+    final remainder = '($column % $_legacyUnit)';
+    final rounded =
+        '($whole + CASE WHEN $remainder > $_legacyHalf '
+        'OR ($remainder = $_legacyHalf AND $whole % 2 = 1) '
+        'THEN 1 ELSE 0 END)';
+    return 'CASE WHEN $column > 0 THEN MAX(1, $rounded) ELSE 0 END';
+  }
+
+  Future<bool> _tableExists(String name) async {
+    final rows = await customSelect(
+      "SELECT 1 AS present FROM sqlite_master "
+      "WHERE type = 'table' AND name = ?",
+      variables: <Variable<Object>>[Variable<String>(name)],
+    ).get();
+    return rows.isNotEmpty;
+  }
+
+  Future<void> _logRoundedRows(
+    String table,
+    String column,
+    String where,
+  ) async {
+    final rows = await customSelect(
+      'SELECT id FROM $table WHERE $where AND $column % $_legacyUnit != 0',
+    ).get();
+    for (final row in rows) {
+      developer.log(
+        'schema 9 rounded $table row ${row.read<String>('id')} to whole toman',
+        name: 'dashboard_shakhsi.migration',
+      );
+    }
+  }
+
+  /// Schema 8 -> 9, one step: rescale every scale-8 money row to scale 0 and
+  /// create `legacy_imports`. Tables are checked for existence because older
+  /// test fixtures seed partial schemas.
+  Future<void> _migrateToWholeTomanAndLegacyImports(Migrator migrator) async {
+    if (await _tableExists('finance_transactions')) {
+      await _logRoundedRows(
+        'finance_transactions',
+        'amount_minor_units',
+        'scale = 8',
+      );
+      await customStatement(
+        'UPDATE finance_transactions SET '
+        'amount_minor_units = ${_roundToWholeUnits('amount_minor_units')}, '
+        'scale = 0 WHERE scale = 8',
+      );
+    }
+
+    final hasDebts = await _tableExists('debts');
+    final hasDebtPayments = await _tableExists('debt_payments');
+    if (hasDebts && hasDebtPayments) {
+      // Children first: they are selected through the parent's scale.
+      await _logRoundedRows(
+        'debt_payments',
+        'amount_minor_units',
+        'debt_id IN (SELECT id FROM debts WHERE scale = 8)',
+      );
+      await customStatement(
+        'UPDATE debt_payments SET '
+        'amount_minor_units = ${_roundToWholeUnits('amount_minor_units')} '
+        'WHERE debt_id IN (SELECT id FROM debts WHERE scale = 8)',
+      );
+    }
+    if (hasDebts) {
+      await _logRoundedRows('debts', 'total_minor_units', 'scale = 8');
+      await customStatement(
+        'UPDATE debts SET '
+        'total_minor_units = ${_roundToWholeUnits('total_minor_units')}, '
+        'scale = 0 WHERE scale = 8',
+      );
+    }
+    if (hasDebts && hasDebtPayments) {
+      // Rounding payments and totals separately can leave paid > total.
+      // Raise the total to the payment sum so Debt() never throws.
+      await customStatement('''
+        UPDATE debts SET total_minor_units = (
+          SELECT COALESCE(SUM(p.amount_minor_units), 0)
+          FROM debt_payments p WHERE p.debt_id = debts.id
+        )
+        WHERE (
+          SELECT COALESCE(SUM(p.amount_minor_units), 0)
+          FROM debt_payments p WHERE p.debt_id = debts.id
+        ) > total_minor_units
+      ''');
+    }
+
+    final hasPlans = await _tableExists('installment_plans');
+    if (hasPlans && await _tableExists('installment_payments')) {
+      await _logRoundedRows(
+        'installment_payments',
+        'amount_minor_units',
+        'plan_id IN (SELECT id FROM installment_plans WHERE scale = 8)',
+      );
+      await customStatement(
+        'UPDATE installment_payments SET '
+        'amount_minor_units = ${_roundToWholeUnits('amount_minor_units')} '
+        'WHERE plan_id IN '
+        '(SELECT id FROM installment_plans WHERE scale = 8)',
+      );
+    }
+    if (hasPlans) {
+      await _logRoundedRows(
+        'installment_plans',
+        'per_installment_minor_units',
+        'scale = 8',
+      );
+      await customStatement(
+        'UPDATE installment_plans SET per_installment_minor_units = '
+        '${_roundToWholeUnits('per_installment_minor_units')}, '
+        'scale = 0 WHERE scale = 8',
+      );
+    }
+
+    await migrator.createTable(legacyImportRows);
+  }
 }

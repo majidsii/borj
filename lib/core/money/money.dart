@@ -11,7 +11,7 @@ final class Money implements Comparable<Money> {
 
   static const int minInt64 = -9223372036854775808;
   static const int maxInt64 = 9223372036854775807;
-  static const int financeScale = 8;
+  static const int financeScale = 0;
   static const String tomanCurrencyCode = 'IRT';
   static const Money zeroIRT = Money(
     minorUnits: 0,

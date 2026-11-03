@@ -9,7 +9,7 @@ import 'package:shamsi_date/shamsi_date.dart';
 void main() {
   const service = FinanceReportService();
 
-  test('summary preserves exact eight-decimal values', () {
+  test('summary sums whole-toman values exactly', () {
     final now = DateTime.utc(2026, 7, 26, 12);
 
     final summary = service.summary(
@@ -17,19 +17,19 @@ void main() {
         _transaction(
           id: 'income-a',
           type: FinanceTransactionType.income,
-          amount: '0.10000001',
+          amount: '10',
           occurredAtUtc: now,
         ),
         _transaction(
           id: 'income-b',
           type: FinanceTransactionType.income,
-          amount: '0.20000002',
+          amount: '20',
           occurredAtUtc: now,
         ),
         _transaction(
           id: 'expense-a',
           type: FinanceTransactionType.expense,
-          amount: '0.00000003',
+          amount: '3',
           occurredAtUtc: now,
         ),
       ],
@@ -37,8 +37,8 @@ void main() {
         Debt(
           id: 'debt-1',
           title: 'بدهی',
-          total: _money('20.50000001'),
-          paid: _money('0.50000001'),
+          total: _money('2050'),
+          paid: _money('50'),
           createdAtUtc: now,
           updatedAtUtc: now,
         ),
@@ -47,7 +47,7 @@ void main() {
         InstallmentPlan(
           id: 'plan-1',
           title: 'اقساط',
-          perInstallment: _money('2.5'),
+          perInstallment: _money('250'),
           installmentCount: 4,
           paidCount: 1,
           createdAtUtc: now,
@@ -57,10 +57,10 @@ void main() {
       now: now,
     );
 
-    expect(summary.balance, _money('0.3'));
-    expect(summary.monthIncome, _money('0.30000003'));
-    expect(summary.monthExpense, _money('0.00000003'));
-    expect(summary.debtRemaining, _money('27.5'));
+    expect(summary.balance, _money('27'));
+    expect(summary.monthIncome, _money('30'));
+    expect(summary.monthExpense, _money('3'));
+    expect(summary.debtRemaining, _money('2750'));
   });
 
   test('summary separates the current Jalali month', () {
@@ -107,13 +107,13 @@ void main() {
         _transaction(
           id: 'income',
           type: FinanceTransactionType.income,
-          amount: '11.00000001',
+          amount: '1100',
           occurredAtUtc: now,
         ),
         _transaction(
           id: 'expense',
           type: FinanceTransactionType.expense,
-          amount: '4.00000001',
+          amount: '400',
           occurredAtUtc: now,
         ),
       ],
@@ -123,8 +123,8 @@ void main() {
     expect(points, hasLength(6));
     expect(points.last.year, jalaliNow.year);
     expect(points.last.month, jalaliNow.month);
-    expect(points.last.income, _money('11.00000001'));
-    expect(points.last.expense, _money('4.00000001'));
+    expect(points.last.income, _money('1100'));
+    expect(points.last.expense, _money('400'));
 
     for (var index = 1; index < points.length; index++) {
       final previous = points[index - 1].year * 12 + points[index - 1].month;
@@ -142,14 +142,14 @@ void main() {
           id: 'food-a',
           type: FinanceTransactionType.expense,
           category: 'خوراک',
-          amount: '1.25',
+          amount: '1',
           occurredAtUtc: now,
         ),
         _transaction(
           id: 'food-b',
           type: FinanceTransactionType.expense,
           category: 'خوراک',
-          amount: '2.75',
+          amount: '3',
           occurredAtUtc: now,
         ),
         _transaction(
@@ -218,13 +218,13 @@ void main() {
         _transaction(
           id: 'today-expense',
           type: FinanceTransactionType.expense,
-          amount: '1.00000001',
+          amount: '101',
           occurredAtUtc: now,
         ),
         _transaction(
           id: 'two-days-ago-expense',
           type: FinanceTransactionType.expense,
-          amount: '2.00000002',
+          amount: '202',
           occurredAtUtc: now.subtract(const Duration(days: 2)),
         ),
         _transaction(
@@ -245,8 +245,8 @@ void main() {
 
     expect(points, hasLength(7));
     expect(points.last.isToday, isTrue);
-    expect(points.last.value, _money('1.00000001'));
-    expect(points[4].value, _money('2.00000002'));
+    expect(points.last.value, _money('101'));
+    expect(points[4].value, _money('202'));
     expect(points.first.value, Money.zeroIRT);
 
     for (var index = 1; index < points.length; index++) {

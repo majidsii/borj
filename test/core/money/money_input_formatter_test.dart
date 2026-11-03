@@ -49,4 +49,36 @@ void main() {
 
     expect(result, TextEditingValue.empty);
   });
+
+  test('the whole-toman formatter rejects a decimal separator', () {
+    const wholeFormatter = MoneyInputFormatter();
+    const previous = TextEditingValue(
+      text: '۱۲',
+      selection: TextSelection.collapsed(offset: 2),
+    );
+
+    for (final typed in <String>['12.', '12٫', '12.5']) {
+      final result = wholeFormatter.formatEditUpdate(
+        previous,
+        TextEditingValue(
+          text: typed,
+          selection: TextSelection.collapsed(offset: typed.length),
+        ),
+      );
+      expect(result, previous, reason: 'typed "$typed" must be refused');
+    }
+  });
+
+  test('the whole-toman formatter still groups digits', () {
+    const wholeFormatter = MoneyInputFormatter();
+    final result = wholeFormatter.formatEditUpdate(
+      TextEditingValue.empty,
+      const TextEditingValue(
+        text: '1234567',
+        selection: TextSelection.collapsed(offset: 7),
+      ),
+    );
+
+    expect(result.text, '۱٬۲۳۴٬۵۶۷');
+  });
 }

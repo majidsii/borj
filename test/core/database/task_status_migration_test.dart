@@ -20,12 +20,12 @@ void main() {
 
         final migrated = AppDatabase(NativeDatabase(file));
         try {
-          expect(migrated.schemaVersion, 8);
+          expect(migrated.schemaVersion, 9);
 
           final versionRows = await migrated
               .customSelect('PRAGMA user_version')
               .get();
-          expect(versionRows.single.read<int>('user_version'), 8);
+          expect(versionRows.single.read<int>('user_version'), 9);
 
           final rows = await migrated.select(migrated.taskRows).get();
           final byId = <String, TaskRow>{for (final row in rows) row.id: row};

@@ -142,14 +142,14 @@ void main() {
             type: FinanceTransactionType.income,
             title: 'حقوق',
             category: 'درآمد',
-            amount: _money('12.50000001'),
+            amount: _money('1250'),
             occurredAtUtc: now,
             createdAtUtc: now,
           ),
         );
 
     final items = await nextItems;
-    expect(items.single.amount, _money('12.50000001'));
+    expect(items.single.amount, _money('1250'));
   });
 
   test('debt and installment providers emit live values', () async {
@@ -183,7 +183,7 @@ void main() {
       InstallmentPlan(
         id: 'provider-plan',
         title: 'اقساط',
-        perInstallment: _money('2.5'),
+        perInstallment: _money('250'),
         installmentCount: 4,
         paidCount: 0,
         createdAtUtc: now,
@@ -192,7 +192,7 @@ void main() {
     );
 
     expect((await nextDebts).single.total, _money('20'));
-    expect((await nextPlans).single.perInstallment, _money('2.5'));
+    expect((await nextPlans).single.perInstallment, _money('250'));
   });
 
   test('financeReportServiceProvider is stable per container', () {

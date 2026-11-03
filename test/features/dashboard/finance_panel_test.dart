@@ -154,22 +154,20 @@ void main() {
     );
   });
 
-  testWidgets('formats decimal money live and preserves all eight digits', (
-    tester,
-  ) async {
+  testWidgets('formats whole-toman money live', (tester) async {
     await pumpSubject(tester);
 
     await tester.enterText(field('finance-title-field'), 'درآمد دقیق');
-    await tester.enterText(field('finance-amount-field'), '1234567.12345678');
+    await tester.enterText(field('finance-amount-field'), '1234567');
 
     final amountField = tester.widget<TextField>(field('finance-amount-field'));
-    expect(amountField.controller?.text, '۱٬۲۳۴٬۵۶۷٫۱۲۳۴۵۶۷۸');
+    expect(amountField.controller?.text, '۱٬۲۳۴٬۵۶۷');
 
     await tester.tap(find.byKey(const ValueKey<String>('finance-type-income')));
     await flushUiAction(tester);
     await submit(tester);
 
-    expect(find.text('۱٬۲۳۴٬۵۶۷٫۱۲۳۴۵۶۷۸'), findsWidgets);
-    expect(find.text('+۱٬۲۳۴٬۵۶۷٫۱۲۳۴۵۶۷۸'), findsOneWidget);
+    expect(find.text('۱٬۲۳۴٬۵۶۷'), findsWidgets);
+    expect(find.text('+۱٬۲۳۴٬۵۶۷'), findsOneWidget);
   });
 }

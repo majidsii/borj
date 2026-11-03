@@ -22,7 +22,7 @@ void main() {
 
       try {
         final created = AppDatabase(NativeDatabase(file));
-        expect(created.schemaVersion, 8);
+        expect(created.schemaVersion, 9);
         await created.select(created.taskReminderRuleRows).get();
         await created.close();
 
@@ -37,11 +37,11 @@ void main() {
 
         final upgraded = AppDatabase(NativeDatabase(file));
         try {
-          expect(upgraded.schemaVersion, 8);
+          expect(upgraded.schemaVersion, 9);
           final versionRows = await upgraded
               .customSelect('PRAGMA user_version')
               .get();
-          expect(versionRows.single.read<int>('user_version'), 8);
+          expect(versionRows.single.read<int>('user_version'), 9);
 
           final taskRepository = DriftTaskRepository(upgraded);
           final reminderRepository = DriftTaskReminderRepository(upgraded);

@@ -943,7 +943,7 @@ class $FinanceTransactionRowsTable extends FinanceTransactionRows
     false,
     type: DriftSqlType.int,
     requiredDuringInsert: false,
-    defaultValue: const Constant(8),
+    defaultValue: const Constant(0),
   );
   static const VerificationMeta _occurredAtUtcMeta = const VerificationMeta(
     'occurredAtUtc',
@@ -1550,7 +1550,7 @@ class $DebtRowsTable extends DebtRows with TableInfo<$DebtRowsTable, DebtRow> {
     false,
     type: DriftSqlType.int,
     requiredDuringInsert: false,
-    defaultValue: const Constant(8),
+    defaultValue: const Constant(0),
   );
   static const VerificationMeta _createdAtUtcMeta = const VerificationMeta(
     'createdAtUtc',
@@ -2468,7 +2468,7 @@ class $InstallmentPlanRowsTable extends InstallmentPlanRows
     false,
     type: DriftSqlType.int,
     requiredDuringInsert: false,
-    defaultValue: const Constant(8),
+    defaultValue: const Constant(0),
   );
   static const VerificationMeta _createdAtUtcMeta = const VerificationMeta(
     'createdAtUtc',
@@ -7425,6 +7425,438 @@ class NotificationScheduleRowsCompanion
   }
 }
 
+class $LegacyImportRowsTable extends LegacyImportRows
+    with TableInfo<$LegacyImportRowsTable, LegacyImportRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $LegacyImportRowsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _sourceKindMeta = const VerificationMeta(
+    'sourceKind',
+  );
+  @override
+  late final GeneratedColumn<String> sourceKind = GeneratedColumn<String>(
+    'source_kind',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _entityTypeMeta = const VerificationMeta(
+    'entityType',
+  );
+  @override
+  late final GeneratedColumn<String> entityType = GeneratedColumn<String>(
+    'entity_type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _v1IdMeta = const VerificationMeta('v1Id');
+  @override
+  late final GeneratedColumn<String> v1Id = GeneratedColumn<String>(
+    'v1_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _v2IdMeta = const VerificationMeta('v2Id');
+  @override
+  late final GeneratedColumn<String> v2Id = GeneratedColumn<String>(
+    'v2_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _importedAtUtcMeta = const VerificationMeta(
+    'importedAtUtc',
+  );
+  @override
+  late final GeneratedColumn<DateTime> importedAtUtc =
+      GeneratedColumn<DateTime>(
+        'imported_at_utc',
+        aliasedName,
+        false,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: true,
+      );
+  static const VerificationMeta _sourceSha256Meta = const VerificationMeta(
+    'sourceSha256',
+  );
+  @override
+  late final GeneratedColumn<String> sourceSha256 = GeneratedColumn<String>(
+    'source_sha256',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    sourceKind,
+    entityType,
+    v1Id,
+    v2Id,
+    importedAtUtc,
+    sourceSha256,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'legacy_imports';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<LegacyImportRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('source_kind')) {
+      context.handle(
+        _sourceKindMeta,
+        sourceKind.isAcceptableOrUnknown(data['source_kind']!, _sourceKindMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_sourceKindMeta);
+    }
+    if (data.containsKey('entity_type')) {
+      context.handle(
+        _entityTypeMeta,
+        entityType.isAcceptableOrUnknown(data['entity_type']!, _entityTypeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_entityTypeMeta);
+    }
+    if (data.containsKey('v1_id')) {
+      context.handle(
+        _v1IdMeta,
+        v1Id.isAcceptableOrUnknown(data['v1_id']!, _v1IdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_v1IdMeta);
+    }
+    if (data.containsKey('v2_id')) {
+      context.handle(
+        _v2IdMeta,
+        v2Id.isAcceptableOrUnknown(data['v2_id']!, _v2IdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_v2IdMeta);
+    }
+    if (data.containsKey('imported_at_utc')) {
+      context.handle(
+        _importedAtUtcMeta,
+        importedAtUtc.isAcceptableOrUnknown(
+          data['imported_at_utc']!,
+          _importedAtUtcMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_importedAtUtcMeta);
+    }
+    if (data.containsKey('source_sha256')) {
+      context.handle(
+        _sourceSha256Meta,
+        sourceSha256.isAcceptableOrUnknown(
+          data['source_sha256']!,
+          _sourceSha256Meta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_sourceSha256Meta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {entityType, v1Id};
+  @override
+  LegacyImportRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return LegacyImportRow(
+      sourceKind: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}source_kind'],
+      )!,
+      entityType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}entity_type'],
+      )!,
+      v1Id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}v1_id'],
+      )!,
+      v2Id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}v2_id'],
+      )!,
+      importedAtUtc: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}imported_at_utc'],
+      )!,
+      sourceSha256: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}source_sha256'],
+      )!,
+    );
+  }
+
+  @override
+  $LegacyImportRowsTable createAlias(String alias) {
+    return $LegacyImportRowsTable(attachedDatabase, alias);
+  }
+}
+
+class LegacyImportRow extends DataClass implements Insertable<LegacyImportRow> {
+  final String sourceKind;
+  final String entityType;
+  final String v1Id;
+  final String v2Id;
+  final DateTime importedAtUtc;
+  final String sourceSha256;
+  const LegacyImportRow({
+    required this.sourceKind,
+    required this.entityType,
+    required this.v1Id,
+    required this.v2Id,
+    required this.importedAtUtc,
+    required this.sourceSha256,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['source_kind'] = Variable<String>(sourceKind);
+    map['entity_type'] = Variable<String>(entityType);
+    map['v1_id'] = Variable<String>(v1Id);
+    map['v2_id'] = Variable<String>(v2Id);
+    map['imported_at_utc'] = Variable<DateTime>(importedAtUtc);
+    map['source_sha256'] = Variable<String>(sourceSha256);
+    return map;
+  }
+
+  LegacyImportRowsCompanion toCompanion(bool nullToAbsent) {
+    return LegacyImportRowsCompanion(
+      sourceKind: Value(sourceKind),
+      entityType: Value(entityType),
+      v1Id: Value(v1Id),
+      v2Id: Value(v2Id),
+      importedAtUtc: Value(importedAtUtc),
+      sourceSha256: Value(sourceSha256),
+    );
+  }
+
+  factory LegacyImportRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return LegacyImportRow(
+      sourceKind: serializer.fromJson<String>(json['sourceKind']),
+      entityType: serializer.fromJson<String>(json['entityType']),
+      v1Id: serializer.fromJson<String>(json['v1Id']),
+      v2Id: serializer.fromJson<String>(json['v2Id']),
+      importedAtUtc: serializer.fromJson<DateTime>(json['importedAtUtc']),
+      sourceSha256: serializer.fromJson<String>(json['sourceSha256']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'sourceKind': serializer.toJson<String>(sourceKind),
+      'entityType': serializer.toJson<String>(entityType),
+      'v1Id': serializer.toJson<String>(v1Id),
+      'v2Id': serializer.toJson<String>(v2Id),
+      'importedAtUtc': serializer.toJson<DateTime>(importedAtUtc),
+      'sourceSha256': serializer.toJson<String>(sourceSha256),
+    };
+  }
+
+  LegacyImportRow copyWith({
+    String? sourceKind,
+    String? entityType,
+    String? v1Id,
+    String? v2Id,
+    DateTime? importedAtUtc,
+    String? sourceSha256,
+  }) => LegacyImportRow(
+    sourceKind: sourceKind ?? this.sourceKind,
+    entityType: entityType ?? this.entityType,
+    v1Id: v1Id ?? this.v1Id,
+    v2Id: v2Id ?? this.v2Id,
+    importedAtUtc: importedAtUtc ?? this.importedAtUtc,
+    sourceSha256: sourceSha256 ?? this.sourceSha256,
+  );
+  LegacyImportRow copyWithCompanion(LegacyImportRowsCompanion data) {
+    return LegacyImportRow(
+      sourceKind: data.sourceKind.present
+          ? data.sourceKind.value
+          : this.sourceKind,
+      entityType: data.entityType.present
+          ? data.entityType.value
+          : this.entityType,
+      v1Id: data.v1Id.present ? data.v1Id.value : this.v1Id,
+      v2Id: data.v2Id.present ? data.v2Id.value : this.v2Id,
+      importedAtUtc: data.importedAtUtc.present
+          ? data.importedAtUtc.value
+          : this.importedAtUtc,
+      sourceSha256: data.sourceSha256.present
+          ? data.sourceSha256.value
+          : this.sourceSha256,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('LegacyImportRow(')
+          ..write('sourceKind: $sourceKind, ')
+          ..write('entityType: $entityType, ')
+          ..write('v1Id: $v1Id, ')
+          ..write('v2Id: $v2Id, ')
+          ..write('importedAtUtc: $importedAtUtc, ')
+          ..write('sourceSha256: $sourceSha256')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    sourceKind,
+    entityType,
+    v1Id,
+    v2Id,
+    importedAtUtc,
+    sourceSha256,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is LegacyImportRow &&
+          other.sourceKind == this.sourceKind &&
+          other.entityType == this.entityType &&
+          other.v1Id == this.v1Id &&
+          other.v2Id == this.v2Id &&
+          other.importedAtUtc == this.importedAtUtc &&
+          other.sourceSha256 == this.sourceSha256);
+}
+
+class LegacyImportRowsCompanion extends UpdateCompanion<LegacyImportRow> {
+  final Value<String> sourceKind;
+  final Value<String> entityType;
+  final Value<String> v1Id;
+  final Value<String> v2Id;
+  final Value<DateTime> importedAtUtc;
+  final Value<String> sourceSha256;
+  final Value<int> rowid;
+  const LegacyImportRowsCompanion({
+    this.sourceKind = const Value.absent(),
+    this.entityType = const Value.absent(),
+    this.v1Id = const Value.absent(),
+    this.v2Id = const Value.absent(),
+    this.importedAtUtc = const Value.absent(),
+    this.sourceSha256 = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  LegacyImportRowsCompanion.insert({
+    required String sourceKind,
+    required String entityType,
+    required String v1Id,
+    required String v2Id,
+    required DateTime importedAtUtc,
+    required String sourceSha256,
+    this.rowid = const Value.absent(),
+  }) : sourceKind = Value(sourceKind),
+       entityType = Value(entityType),
+       v1Id = Value(v1Id),
+       v2Id = Value(v2Id),
+       importedAtUtc = Value(importedAtUtc),
+       sourceSha256 = Value(sourceSha256);
+  static Insertable<LegacyImportRow> custom({
+    Expression<String>? sourceKind,
+    Expression<String>? entityType,
+    Expression<String>? v1Id,
+    Expression<String>? v2Id,
+    Expression<DateTime>? importedAtUtc,
+    Expression<String>? sourceSha256,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (sourceKind != null) 'source_kind': sourceKind,
+      if (entityType != null) 'entity_type': entityType,
+      if (v1Id != null) 'v1_id': v1Id,
+      if (v2Id != null) 'v2_id': v2Id,
+      if (importedAtUtc != null) 'imported_at_utc': importedAtUtc,
+      if (sourceSha256 != null) 'source_sha256': sourceSha256,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  LegacyImportRowsCompanion copyWith({
+    Value<String>? sourceKind,
+    Value<String>? entityType,
+    Value<String>? v1Id,
+    Value<String>? v2Id,
+    Value<DateTime>? importedAtUtc,
+    Value<String>? sourceSha256,
+    Value<int>? rowid,
+  }) {
+    return LegacyImportRowsCompanion(
+      sourceKind: sourceKind ?? this.sourceKind,
+      entityType: entityType ?? this.entityType,
+      v1Id: v1Id ?? this.v1Id,
+      v2Id: v2Id ?? this.v2Id,
+      importedAtUtc: importedAtUtc ?? this.importedAtUtc,
+      sourceSha256: sourceSha256 ?? this.sourceSha256,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (sourceKind.present) {
+      map['source_kind'] = Variable<String>(sourceKind.value);
+    }
+    if (entityType.present) {
+      map['entity_type'] = Variable<String>(entityType.value);
+    }
+    if (v1Id.present) {
+      map['v1_id'] = Variable<String>(v1Id.value);
+    }
+    if (v2Id.present) {
+      map['v2_id'] = Variable<String>(v2Id.value);
+    }
+    if (importedAtUtc.present) {
+      map['imported_at_utc'] = Variable<DateTime>(importedAtUtc.value);
+    }
+    if (sourceSha256.present) {
+      map['source_sha256'] = Variable<String>(sourceSha256.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('LegacyImportRowsCompanion(')
+          ..write('sourceKind: $sourceKind, ')
+          ..write('entityType: $entityType, ')
+          ..write('v1Id: $v1Id, ')
+          ..write('v2Id: $v2Id, ')
+          ..write('importedAtUtc: $importedAtUtc, ')
+          ..write('sourceSha256: $sourceSha256, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -7454,6 +7886,9 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   );
   late final $NotificationScheduleRowsTable notificationScheduleRows =
       $NotificationScheduleRowsTable(this);
+  late final $LegacyImportRowsTable legacyImportRows = $LegacyImportRowsTable(
+    this,
+  );
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -7472,6 +7907,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     taskTimeEntryRows,
     taskTemplateRows,
     notificationScheduleRows,
+    legacyImportRows,
   ];
   @override
   StreamQueryUpdateRules get streamUpdateRules => const StreamQueryUpdateRules([
@@ -12917,6 +13353,239 @@ typedef $$NotificationScheduleRowsTableProcessedTableManager =
       NotificationScheduleRow,
       PrefetchHooks Function()
     >;
+typedef $$LegacyImportRowsTableCreateCompanionBuilder =
+    LegacyImportRowsCompanion Function({
+      required String sourceKind,
+      required String entityType,
+      required String v1Id,
+      required String v2Id,
+      required DateTime importedAtUtc,
+      required String sourceSha256,
+      Value<int> rowid,
+    });
+typedef $$LegacyImportRowsTableUpdateCompanionBuilder =
+    LegacyImportRowsCompanion Function({
+      Value<String> sourceKind,
+      Value<String> entityType,
+      Value<String> v1Id,
+      Value<String> v2Id,
+      Value<DateTime> importedAtUtc,
+      Value<String> sourceSha256,
+      Value<int> rowid,
+    });
+
+class $$LegacyImportRowsTableFilterComposer
+    extends Composer<_$AppDatabase, $LegacyImportRowsTable> {
+  $$LegacyImportRowsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get sourceKind => $composableBuilder(
+    column: $table.sourceKind,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get entityType => $composableBuilder(
+    column: $table.entityType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get v1Id => $composableBuilder(
+    column: $table.v1Id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get v2Id => $composableBuilder(
+    column: $table.v2Id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get importedAtUtc => $composableBuilder(
+    column: $table.importedAtUtc,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get sourceSha256 => $composableBuilder(
+    column: $table.sourceSha256,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$LegacyImportRowsTableOrderingComposer
+    extends Composer<_$AppDatabase, $LegacyImportRowsTable> {
+  $$LegacyImportRowsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get sourceKind => $composableBuilder(
+    column: $table.sourceKind,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get entityType => $composableBuilder(
+    column: $table.entityType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get v1Id => $composableBuilder(
+    column: $table.v1Id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get v2Id => $composableBuilder(
+    column: $table.v2Id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get importedAtUtc => $composableBuilder(
+    column: $table.importedAtUtc,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get sourceSha256 => $composableBuilder(
+    column: $table.sourceSha256,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$LegacyImportRowsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $LegacyImportRowsTable> {
+  $$LegacyImportRowsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get sourceKind => $composableBuilder(
+    column: $table.sourceKind,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get entityType => $composableBuilder(
+    column: $table.entityType,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get v1Id =>
+      $composableBuilder(column: $table.v1Id, builder: (column) => column);
+
+  GeneratedColumn<String> get v2Id =>
+      $composableBuilder(column: $table.v2Id, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get importedAtUtc => $composableBuilder(
+    column: $table.importedAtUtc,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get sourceSha256 => $composableBuilder(
+    column: $table.sourceSha256,
+    builder: (column) => column,
+  );
+}
+
+class $$LegacyImportRowsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $LegacyImportRowsTable,
+          LegacyImportRow,
+          $$LegacyImportRowsTableFilterComposer,
+          $$LegacyImportRowsTableOrderingComposer,
+          $$LegacyImportRowsTableAnnotationComposer,
+          $$LegacyImportRowsTableCreateCompanionBuilder,
+          $$LegacyImportRowsTableUpdateCompanionBuilder,
+          (
+            LegacyImportRow,
+            BaseReferences<
+              _$AppDatabase,
+              $LegacyImportRowsTable,
+              LegacyImportRow
+            >,
+          ),
+          LegacyImportRow,
+          PrefetchHooks Function()
+        > {
+  $$LegacyImportRowsTableTableManager(
+    _$AppDatabase db,
+    $LegacyImportRowsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$LegacyImportRowsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$LegacyImportRowsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$LegacyImportRowsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> sourceKind = const Value.absent(),
+                Value<String> entityType = const Value.absent(),
+                Value<String> v1Id = const Value.absent(),
+                Value<String> v2Id = const Value.absent(),
+                Value<DateTime> importedAtUtc = const Value.absent(),
+                Value<String> sourceSha256 = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => LegacyImportRowsCompanion(
+                sourceKind: sourceKind,
+                entityType: entityType,
+                v1Id: v1Id,
+                v2Id: v2Id,
+                importedAtUtc: importedAtUtc,
+                sourceSha256: sourceSha256,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String sourceKind,
+                required String entityType,
+                required String v1Id,
+                required String v2Id,
+                required DateTime importedAtUtc,
+                required String sourceSha256,
+                Value<int> rowid = const Value.absent(),
+              }) => LegacyImportRowsCompanion.insert(
+                sourceKind: sourceKind,
+                entityType: entityType,
+                v1Id: v1Id,
+                v2Id: v2Id,
+                importedAtUtc: importedAtUtc,
+                sourceSha256: sourceSha256,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$LegacyImportRowsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $LegacyImportRowsTable,
+      LegacyImportRow,
+      $$LegacyImportRowsTableFilterComposer,
+      $$LegacyImportRowsTableOrderingComposer,
+      $$LegacyImportRowsTableAnnotationComposer,
+      $$LegacyImportRowsTableCreateCompanionBuilder,
+      $$LegacyImportRowsTableUpdateCompanionBuilder,
+      (
+        LegacyImportRow,
+        BaseReferences<_$AppDatabase, $LegacyImportRowsTable, LegacyImportRow>,
+      ),
+      LegacyImportRow,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -12967,4 +13636,6 @@ class $AppDatabaseManager {
         _db,
         _db.notificationScheduleRows,
       );
+  $$LegacyImportRowsTableTableManager get legacyImportRows =>
+      $$LegacyImportRowsTableTableManager(_db, _db.legacyImportRows);
 }

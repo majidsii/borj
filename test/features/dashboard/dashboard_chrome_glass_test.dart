@@ -3,6 +3,7 @@ import 'package:dashboard_shakhsi/app/theme/original_theme.dart';
 import 'package:dashboard_shakhsi/app/widgets/original_glass.dart';
 import 'package:dashboard_shakhsi/core/providers/persistence_providers.dart';
 import 'package:dashboard_shakhsi/features/dashboard/presentation/dashboard_screen.dart';
+import 'package:dashboard_shakhsi/features/legacy_import/data/legacy_v1_source_locator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -16,7 +17,15 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        overrides: <Override>[appDatabaseProvider.overrideWithValue(database)],
+        overrides: <Override>[
+          appDatabaseProvider.overrideWithValue(database),
+          legacyV1SourceLocatorProvider.overrideWithValue(
+            const LegacyV1SourceLocator(
+              operatingSystem: 'android',
+              environment: <String, String>{},
+            ),
+          ),
+        ],
         child: MaterialApp(
           theme: OriginalTheme.light(),
           home: const Directionality(
@@ -33,7 +42,7 @@ void main() {
     expect(topBar, findsOneWidget);
     expect(
       find.descendant(of: topBar, matching: find.byType(AppleLiquidGlass)),
-      findsNWidgets(3),
+      findsNWidgets(4),
     );
     expect(
       find.descendant(of: topBar, matching: find.byType(OriginalGlass)),

@@ -1,6 +1,7 @@
 import 'package:dashboard_shakhsi/app/apple_visual/foundation/apple_glass_shape.dart';
 import 'package:dashboard_shakhsi/app/apple_visual/foundation/apple_liquid_glass_recipe.dart';
 import 'package:dashboard_shakhsi/app/apple_visual/widgets/apple_liquid_glass.dart';
+import 'package:dashboard_shakhsi/app/router/app_router.dart';
 import 'package:dashboard_shakhsi/app/theme/original_design_tokens.dart';
 import 'package:dashboard_shakhsi/app/theme/theme_mode_controller.dart';
 import 'package:dashboard_shakhsi/app/widgets/aurora_background.dart';
@@ -8,6 +9,7 @@ import 'package:dashboard_shakhsi/app/widgets/original_controls.dart';
 import 'package:dashboard_shakhsi/app/widgets/original_icon.dart';
 import 'package:dashboard_shakhsi/features/dashboard/presentation/widgets/finance_panel.dart';
 import 'package:dashboard_shakhsi/features/dashboard/presentation/widgets/tasks_panel.dart';
+import 'package:dashboard_shakhsi/features/legacy_import/presentation/legacy_import_banner.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -51,7 +53,10 @@ final class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                         setState(() => _selectedPanel = value);
                       },
                       onThemePressed: () => _toggleTheme(context),
+                      onSettingsPressed: () =>
+                          GoRouter.maybeOf(context)?.push(AppRoutes.settings),
                     ),
+                    const LegacyImportBanner(),
                     AnimatedSwitcher(
                       duration: const Duration(milliseconds: 350),
                       reverseDuration: const Duration(milliseconds: 220),
@@ -99,11 +104,13 @@ final class _TopBar extends StatelessWidget {
     required this.selectedPanel,
     required this.onPanelSelected,
     required this.onThemePressed,
+    required this.onSettingsPressed,
   });
 
   final int selectedPanel;
   final ValueChanged<int> onPanelSelected;
   final VoidCallback onThemePressed;
+  final VoidCallback onSettingsPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -120,7 +127,7 @@ final class _TopBar extends StatelessWidget {
           final brand = kDebugMode
               ? GestureDetector(
                   onLongPress: () =>
-                      GoRouter.maybeOf(context)?.go('/debug/glass-review'),
+                      GoRouter.maybeOf(context)?.go(AppRoutes.glassReview),
                   child: brandIsland,
                 )
               : brandIsland;
@@ -129,14 +136,22 @@ final class _TopBar extends StatelessWidget {
             compact: compactTabs,
             onPanelSelected: onPanelSelected,
           );
-          final theme = _ThemeIsland(onPressed: onThemePressed);
+          final actions = Row(
+            mainAxisSize: MainAxisSize.min,
+            textDirection: TextDirection.rtl,
+            children: <Widget>[
+              _SettingsIsland(onPressed: onSettingsPressed),
+              const SizedBox(width: 8),
+              _ThemeIsland(onPressed: onThemePressed),
+            ],
+          );
 
           if (constraints.maxWidth >= 520) {
             return Row(
               textDirection: TextDirection.rtl,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[brand, tabs, theme],
+              children: <Widget>[brand, tabs, actions],
             );
           }
 
@@ -146,7 +161,7 @@ final class _TopBar extends StatelessWidget {
             crossAxisAlignment: WrapCrossAlignment.center,
             spacing: 10,
             runSpacing: 10,
-            children: <Widget>[brand, tabs, theme],
+            children: <Widget>[brand, tabs, actions],
           );
         },
       ),
@@ -386,6 +401,34 @@ final class _ThemeIsland extends StatelessWidget {
               size: 19,
               strokeWidth: 2,
             ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+final class _SettingsIsland extends StatelessWidget {
+  const _SettingsIsland({required this.onPressed});
+
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    final palette = OriginalPalette.of(context);
+    return AppleLiquidGlass(
+      role: AppleGlassRole.smallControl,
+      shape: const AppleGlassShape.circle(),
+      child: OriginalPressable(
+        key: const ValueKey<String>('dashboard-settings-button'),
+        onPressed: onPressed,
+        pressedScale: .92,
+        borderRadius: BorderRadius.circular(OriginalDesignTokens.pillRadius),
+        semanticLabel: 'تنظیمات',
+        child: SizedBox.square(
+          dimension: 42,
+          child: Center(
+            child: Icon(Icons.settings_outlined, color: palette.ink, size: 20),
           ),
         ),
       ),

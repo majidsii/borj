@@ -1,5 +1,6 @@
 import 'package:dashboard_shakhsi/app/apple_visual/review/glass_review_screen.dart';
 import 'package:dashboard_shakhsi/features/dashboard/presentation/dashboard_screen.dart';
+import 'package:dashboard_shakhsi/features/settings/presentation/settings_screen.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -51,7 +52,15 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: AppRoutes.settings,
-        builder: (context, state) => const _PlaceholderScreen(title: 'تنظیمات'),
+        builder: (context, state) => SettingsScreen(
+          onBack: () {
+            if (context.canPop()) {
+              context.pop();
+            } else {
+              context.go(AppRoutes.dashboard);
+            }
+          },
+        ),
       ),
       GoRoute(
         path: AppRoutes.backup,

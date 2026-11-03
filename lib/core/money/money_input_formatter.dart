@@ -7,10 +7,17 @@ import 'package:flutter/services.dart';
 /// digits, groups the integer part with `٬`, and preserves up to
 /// [maxFractionDigits] digits after `٫` without rounding.
 final class MoneyInputFormatter extends TextInputFormatter {
-  const MoneyInputFormatter({this.maxFractionDigits = Money.financeScale})
-    : assert(maxFractionDigits >= 0 && maxFractionDigits <= 18);
+  const MoneyInputFormatter({
+    this.maxFractionDigits = Money.financeScale,
+    this.maxIntegerDigits = 15,
+  }) : assert(maxFractionDigits >= 0 && maxFractionDigits <= 18),
+       assert(maxIntegerDigits > 0);
 
   final int maxFractionDigits;
+
+  /// v1 kept at most 15 digits (`parseAmount`); the same cap keeps typed
+  /// amounts far below the int64 limit.
+  final int maxIntegerDigits;
 
   @override
   TextEditingValue formatEditUpdate(
@@ -50,7 +57,7 @@ final class MoneyInputFormatter extends TextInputFormatter {
         if (hasDecimal) {
           if (fraction.length < maxFractionDigits) fraction.write(character);
         } else {
-          integer.write(character);
+          if (integer.length < maxIntegerDigits) integer.write(character);
         }
         continue;
       }

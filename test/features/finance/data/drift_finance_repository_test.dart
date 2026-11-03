@@ -298,6 +298,46 @@ void main() {
       isEmpty,
     );
   });
+
+  test('recordDebtPayment refuses a payment sum above int64', () async {
+    final now = DateTime.utc(2026, 11, 4);
+    await database
+        .into(database.debtRows)
+        .insert(
+          DebtRowsCompanion.insert(
+            id: 'debt-huge',
+            title: 'بزرگ',
+            totalMinorUnits: 9000000000000000000,
+            createdAtUtc: now,
+            updatedAtUtc: now,
+          ),
+        );
+    for (final entry in <(String, int)>[
+      ('pay-a', 5000000000000000000),
+      ('pay-b', 4900000000000000000),
+    ]) {
+      await database
+          .into(database.debtPaymentRows)
+          .insert(
+            DebtPaymentRowsCompanion.insert(
+              id: entry.$1,
+              debtId: 'debt-huge',
+              amountMinorUnits: entry.$2,
+              paidAtUtc: now,
+              createdAtUtc: now,
+            ),
+          );
+    }
+
+    await expectLater(
+      repository.recordDebtPayment(
+        debtId: 'debt-huge',
+        amount: _money(1),
+        paidAt: now,
+      ),
+      throwsA(isA<MoneyOverflowFailure>()),
+    );
+  });
 }
 
 Money _money(int minorUnits) {

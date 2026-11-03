@@ -20,6 +20,11 @@ final class InstallmentPlan {
     if (installmentCount < 1) {
       throw const ValidationFailure('تعداد اقساط باید حداقل یک باشد.');
     }
+    try {
+      perInstallment * installmentCount;
+    } on MoneyOverflowFailure {
+      throw const ValidationFailure('مجموع اقساط از حد مجاز بیشتر است.');
+    }
     if (paidCount < 0 || paidCount > installmentCount) {
       throw const ValidationFailure('تعداد اقساط پرداخت‌شده نامعتبر است.');
     }

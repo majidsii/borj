@@ -4,6 +4,7 @@ import 'package:dashboard_shakhsi/app/theme/original_design_tokens.dart';
 import 'package:dashboard_shakhsi/app/widgets/original_controls.dart';
 import 'package:dashboard_shakhsi/app/widgets/original_glass.dart';
 import 'package:dashboard_shakhsi/core/date_time/persian_date_label.dart';
+import 'package:dashboard_shakhsi/core/errors/app_failure.dart';
 import 'package:dashboard_shakhsi/core/ids/id_generator.dart';
 import 'package:dashboard_shakhsi/core/money/money.dart';
 import 'package:dashboard_shakhsi/core/money/money_input_formatter.dart';
@@ -84,17 +85,25 @@ final class _FinancePanelState extends ConsumerState<FinancePanel> {
         ref.watch(installmentPlansProvider).asData?.value ??
         const <InstallmentPlan>[];
     final reports = ref.watch(financeReportServiceProvider);
-    final totals = reports.summary(
-      transactions: transactions,
-      debts: debts,
-      installments: installments,
-    );
-    final trend = reports.trend(transactions: transactions);
-    final categories = reports.categories(
-      transactions: transactions,
-      currentMonthOnly: _donutScope == 0,
-    );
-    final week = reports.week(transactions: transactions);
+    final FinanceSummary totals;
+    final List<FinanceMonthPoint> trend;
+    final List<FinanceCategoryPoint> categories;
+    final List<FinanceDayPoint> week;
+    try {
+      totals = reports.summary(
+        transactions: transactions,
+        debts: debts,
+        installments: installments,
+      );
+      trend = reports.trend(transactions: transactions);
+      categories = reports.categories(
+        transactions: transactions,
+        currentMonthOnly: _donutScope == 0,
+      );
+      week = reports.week(transactions: transactions);
+    } on MoneyOverflowFailure {
+      return const _OutOfRangeNotice();
+    }
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -1583,6 +1592,30 @@ final class _TransactionRow extends StatelessWidget {
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+final class _OutOfRangeNotice extends StatelessWidget {
+  const _OutOfRangeNotice();
+
+  @override
+  Widget build(BuildContext context) {
+    final palette = OriginalPalette.of(context);
+    return Padding(
+      key: const ValueKey<String>('finance-out-of-range'),
+      padding: const EdgeInsets.all(24),
+      child: Center(
+        child: Text(
+          'مجموع مبالغ از محدوده قابل نمایش بیشتر است.',
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            color: palette.ink,
+            fontSize: 15,
+            fontWeight: FontWeight.w700,
+          ),
         ),
       ),
     );

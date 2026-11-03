@@ -81,4 +81,17 @@ void main() {
 
     expect(result.text, '۱٬۲۳۴٬۵۶۷');
   });
+
+  test('caps the integer part at fifteen digits like v1', () {
+    const wholeFormatter = MoneyInputFormatter();
+    final result = wholeFormatter.formatEditUpdate(
+      TextEditingValue.empty,
+      const TextEditingValue(
+        text: '12345678901234567890',
+        selection: TextSelection.collapsed(offset: 20),
+      ),
+    );
+
+    expect(result.text, '۱۲۳٬۴۵۶٬۷۸۹٬۰۱۲٬۳۴۵');
+  });
 }

@@ -169,9 +169,12 @@ final class DriftFinanceRepository implements FinanceRepository {
       )..where((row) => row.debtId.equals(debtId))).get();
       final paidMinorUnits = paymentRows.fold<int>(
         0,
-        (sum, row) => sum + row.amountMinorUnits,
+        (sum, row) => Money.checkedAdd(sum, row.amountMinorUnits),
       );
-      final remainingMinorUnits = debtRow.totalMinorUnits - paidMinorUnits;
+      final remainingMinorUnits = Money.checkedSubtract(
+        debtRow.totalMinorUnits,
+        paidMinorUnits,
+      );
 
       if (amount.minorUnits > remainingMinorUnits) {
         throw const ValidationFailure('مبلغ پرداخت از مانده بدهی بیشتر است.');
@@ -333,7 +336,10 @@ final class DriftFinanceRepository implements FinanceRepository {
         () => _DebtAggregate(debtRow),
       );
       if (paymentRow != null) {
-        aggregate.paidMinorUnits += paymentRow.amountMinorUnits;
+        aggregate.paidMinorUnits = Money.checkedAdd(
+          aggregate.paidMinorUnits,
+          paymentRow.amountMinorUnits,
+        );
       }
     }
 

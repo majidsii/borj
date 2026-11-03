@@ -173,4 +173,23 @@ void main() {
       throwsA(isA<ValidationFailure>()),
     );
   });
+
+  test('installment plan rejects a total above int64', () {
+    expect(
+      () => InstallmentPlan(
+        id: 'plan-huge',
+        title: 'بزرگ',
+        perInstallment: const Money(
+          minorUnits: 1000000000000000,
+          currencyCode: Money.tomanCurrencyCode,
+          scale: Money.financeScale,
+        ),
+        installmentCount: 10000,
+        paidCount: 0,
+        createdAtUtc: createdAt,
+        updatedAtUtc: updatedAt,
+      ),
+      throwsA(isA<ValidationFailure>()),
+    );
+  });
 }

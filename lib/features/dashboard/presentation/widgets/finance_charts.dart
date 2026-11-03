@@ -88,10 +88,9 @@ final class FinanceDonutChart extends StatelessWidget {
           const SizedBox(height: 2),
           ...points.indexed.map((entry) {
             final color = colors[entry.$1 % colors.length];
-            final percentage = total.isZero
-                ? 0
-                : ((entry.$2.value.minorUnits * 100 + total.minorUnits ~/ 2) ~/
-                      total.minorUnits);
+            final percentage = total.isPositive
+                ? entry.$2.value.percentOf(total)
+                : 0;
             return Padding(
               padding: const EdgeInsets.symmetric(vertical: 3),
               child: Row(

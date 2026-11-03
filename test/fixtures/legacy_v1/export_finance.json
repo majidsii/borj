@@ -1,0 +1,40 @@
+{
+  "exportedAt": "2026-11-01T08:30:00.000Z",
+  "summary": {
+    "balance": 23000000,
+    "monthIncome": 25000000,
+    "monthExpense": 2000000,
+    "debtRemaining": 30400000
+  },
+  "transactions": [
+    {
+      "type": "income",
+      "title": "حقوق آبان",
+      "category": "حقوق",
+      "amount": 25000000,
+      "at": "2024-11-02T22:40:00.000Z"
+    },
+    {
+      "type": "expense",
+      "title": "پرداخت بدهی: قرض از علی",
+      "category": "بدهی",
+      "amount": 2000000,
+      "at": "2024-11-03T14:36:40.000Z"
+    }
+  ],
+  "debts": [
+    {
+      "name": "قرض از علی",
+      "total": 10000000,
+      "paid": 2000000
+    }
+  ],
+  "installments": [
+    {
+      "name": "قسط خودرو",
+      "perInstallment": 3500000,
+      "count": 12,
+      "paidCount": 4
+    }
+  ]
+}

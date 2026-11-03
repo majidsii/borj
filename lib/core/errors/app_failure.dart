@@ -27,3 +27,7 @@ final class ImportFailure extends AppFailure {
 final class BackupFailure extends AppFailure {
   const BackupFailure(super.userMessage, {super.cause});
 }
+
+final class MoneyOverflowFailure extends AppFailure {
+  const MoneyOverflowFailure() : super('مبلغ از محدوده قابل نمایش بیشتر است.');
+}

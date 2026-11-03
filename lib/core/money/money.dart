@@ -1,3 +1,5 @@
+import 'package:dashboard_shakhsi/core/errors/app_failure.dart';
+
 final class Money implements Comparable<Money> {
   const Money({
     required this.minorUnits,
@@ -25,9 +27,8 @@ final class Money implements Comparable<Money> {
   bool get isPositive => minorUnits > 0;
   bool get isZero => minorUnits == 0;
 
-  Money get absolute => minorUnits < 0
-      ? copyWith(minorUnits: _checkedMinorUnits(-minorUnits))
-      : this;
+  Money get absolute =>
+      minorUnits < 0 ? copyWith(minorUnits: checkedNegate(minorUnits)) : this;
 
   /// A lossy projection reserved for chart coordinates and progress visuals.
   /// Monetary calculations and labels must continue to use [minorUnits].
@@ -140,22 +141,32 @@ final class Money implements Comparable<Money> {
 
   Money operator +(Money other) {
     _requireCompatible(other);
-    return copyWith(
-      minorUnits: _checkedMinorUnits(minorUnits + other.minorUnits),
-    );
+    return copyWith(minorUnits: checkedAdd(minorUnits, other.minorUnits));
   }
 
   Money operator -(Money other) {
     _requireCompatible(other);
-    return copyWith(
-      minorUnits: _checkedMinorUnits(minorUnits - other.minorUnits),
-    );
+    return copyWith(minorUnits: checkedSubtract(minorUnits, other.minorUnits));
   }
 
-  Money operator -() => copyWith(minorUnits: _checkedMinorUnits(-minorUnits));
+  Money operator -() => copyWith(minorUnits: checkedNegate(minorUnits));
 
   Money operator *(int multiplier) =>
-      copyWith(minorUnits: _checkedMinorUnits(minorUnits * multiplier));
+      copyWith(minorUnits: checkedMultiply(minorUnits, multiplier));
+
+  /// This value as a rounded-half-up integer percentage of [total].
+  ///
+  /// Uses [BigInt] so `minorUnits * 100` can never wrap.
+  int percentOf(Money total) {
+    _requireCompatible(total);
+    if (!total.isPositive) {
+      throw ArgumentError('The total must be positive.');
+    }
+    final numerator =
+        BigInt.from(minorUnits) * BigInt.from(100) +
+        BigInt.from(total.minorUnits) ~/ BigInt.two;
+    return (numerator ~/ BigInt.from(total.minorUnits)).toInt();
+  }
 
   bool operator <(Money other) => compareTo(other) < 0;
   bool operator <=(Money other) => compareTo(other) <= 0;
@@ -193,11 +204,36 @@ final class Money implements Comparable<Money> {
     }
   }
 
-  static int _checkedMinorUnits(int value) {
-    if (value < minInt64 || value > maxInt64) {
-      throw RangeError.range(value, minInt64, maxInt64, 'minorUnits');
+  static final BigInt _minInt64Big = BigInt.from(minInt64);
+  static final BigInt _maxInt64Big = BigInt.from(maxInt64);
+
+  static int checkedAdd(int left, int right) {
+    final result = left + right;
+    if ((left >= 0) == (right >= 0) && (result >= 0) != (left >= 0)) {
+      throw const MoneyOverflowFailure();
     }
-    return value;
+    return result;
+  }
+
+  static int checkedSubtract(int left, int right) {
+    final result = left - right;
+    if ((left >= 0) != (right >= 0) && (result >= 0) != (left >= 0)) {
+      throw const MoneyOverflowFailure();
+    }
+    return result;
+  }
+
+  static int checkedMultiply(int left, int right) {
+    final product = BigInt.from(left) * BigInt.from(right);
+    if (product < _minInt64Big || product > _maxInt64Big) {
+      throw const MoneyOverflowFailure();
+    }
+    return product.toInt();
+  }
+
+  static int checkedNegate(int value) {
+    if (value == minInt64) throw const MoneyOverflowFailure();
+    return -value;
   }
 
   static int _powerOfTen(int exponent) {

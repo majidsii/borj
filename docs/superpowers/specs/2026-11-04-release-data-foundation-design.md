@@ -74,3 +74,19 @@ Flow: parse → **preview** (counts per entity, rows that will be skipped and wh
 ## 5. Out of scope
 
 Packaging, signing and release automation (B); the product name (C); habits and goals; Tasks 2.9+.
+
+## 6. Amendments adopted from planning (2026-11-04)
+
+The implementation plan (`plans/2026-11-04-release-data-foundation.md`) found these gaps. They are adopted as part of this design:
+
+1. Migration rounding: positive amounts below 0.5 toman clamp to 1, and a debt total is raised to its payment sum if rounding made paid > total. The UI did accept 8 decimals, so fractions can exist.
+2. `debt_payments` / `installment_payments` have no note column. Only the parent row is recorded in `legacy_imports`; payments cascade with the parent.
+3. `MoneyInputFormatter` rejects a decimal separator when `maxFractionDigits == 0`. The input cap is 15 integer digits, matching v1.
+4. The banner's "later" choice lasts for the session only, because no settings store exists. The banner shows while `legacy_imports` is empty and a v1 file is detected.
+5. v1 export files have no ids, and their debts and installments have no dates. Ids are `v1:<entity>:<sha1 of normalized record>`. Dates fall back to `exportedAt`, then to the import time. Importing both an export and `data.json` may duplicate rows; the preview warns about it.
+6. Re-import never updates rows that were already imported.
+7. v1's "abc" sort (`localeCompare("fa")`) falls back to `String.compareTo`.
+8. Migration diagnostics use `dart:developer` `log`.
+9. `file_picker ^13.3.2` changes 11 dependencies. macOS imports manually, because the sandbox hides v1's folder. Android has no auto-detect.
+10. A settings glass island is added to the top bar, so the chrome test expects 4 islands.
+11. Unknown v1 transaction types import as expense with a warning. `InstallmentPlan` rejects per × count above int64. An overflowing aggregate shows an out-of-range notice; at scale 0 that needs more than 9.2×10^18 toman.

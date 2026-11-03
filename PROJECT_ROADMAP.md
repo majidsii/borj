@@ -884,9 +884,9 @@ Task 2.8 is complete only when all of the following are fresh:
 
 # 7. CURRENT TASK — Visual Foundation 2.A — Liquid Glass Renderer Adoption
 
-**Status: STEP 0 SPIKE IN PROGRESS (paused 2026-11-03) — Linux GO-level evidence; Android crash under investigation**
+**Status: SPIKE COMPLETE (2026-11-04) — VERDICT: GO — report: docs/superpowers/references/2026-11-04-liquid-glass-spike-report.md**
 
-Spike state and resume steps: `docs/WORKLOG.md` entry "2026-11-03 — Liquid Glass spike (paused)".
+Spike result: Linux YES, Android YES (visual), hooks YES, perf PASS, Windows unverified. NEXT: write the adoption implementation plan (requirements listed in the report, "Next step"). History: `docs/WORKLOG.md` entry "2026-11-04 — Liquid Glass spike: GO".
 
 Spec: `docs/superpowers/specs/2026-11-02-liquid-glass-renderer-adoption-design.md`
 
@@ -1126,7 +1126,7 @@ As of this document:
 - Repository schema is **8**.
 - Task 2.8 is implemented, checkpointed, and semantically verified.
 - Program order is in §0 (decided 2026-11-02; owner delegated prioritization).
-- CURRENT TASK is **Visual Foundation 2.A — Liquid Glass renderer adoption**; Step 0 spike in progress (paused 2026-11-03). See the latest `docs/WORKLOG.md` entry for exact state and resume steps.
+- CURRENT TASK is **Visual Foundation 2.A — Liquid Glass renderer adoption**; Step 0 spike finished with verdict **GO** (2026-11-04). NEXT: write the adoption implementation plan using the requirements in `docs/superpowers/references/2026-11-04-liquid-glass-spike-report.md`. See the latest `docs/WORKLOG.md` entry.
 - CI baseline is DONE (2026-11-03): every push runs `tool/ci.sh` on GitHub Actions.
 - The Gate C custom renderer is superseded; `lib/app/apple_visual/rendering/**` and `shaders/apple_liquid_glass*.frag` are removed only after the spike's Go verdict.
 - Shader filters work on Linux desktop only with Impeller enabled (`flutter test integration_test/... -d linux --enable-impeller` → supported; without the flag → unsupported).

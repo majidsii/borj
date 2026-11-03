@@ -17,6 +17,21 @@ Entry template:
 
 ---
 
+## 2026-11-04 — Liquid Glass spike: GO
+- **Type:** decided
+- **What:** Spike finished with verdict GO. Q1 Linux YES, Q2 Android YES (visual, Galaxy A34,
+  Impeller Vulkan), Q3 hooks YES, Q5 perf PASS (Linux median raster p90 2.69 ms, Android p90 5.03 ms),
+  Q4 Windows unverified. The Android launch crash was unrelated to glass: v2 `MainActivity.kt`
+  was in the wrong package (`ir.dashboard.dashboard_shakhsi` vs namespace `ir.dashboard.shakhsi`)
+  and not compiled into the dex.
+- **Evidence / links:** report `docs/superpowers/references/2026-11-04-liquid-glass-spike-report.md`;
+  crash fix commits on this branch: `5a0b240` (rename, package edit missed), `ce4227c`
+  (Kotlin plugin), `bb3e79e` (Java MainActivity, the real fix); Android run
+  https://github.com/majidsii/dashboard-shakhsi/actions/runs/41623961625. Owner screenshots stay
+  outside the repo in `dashboard-shakhsi-reference-captures/`.
+- **Follow-ups:** write the adoption plan (requirements in the report); delete the draft spike
+  release; decide whether to keep `ce4227c`; Windows verification.
+
 ## 2026-11-03 — Liquid Glass spike (paused)
 - **Type:** researched (in progress)
 - **What:** Step 0 spike of `2026-11-02-liquid-glass-renderer-adoption-design.md`,

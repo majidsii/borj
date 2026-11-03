@@ -17,6 +17,18 @@ Entry template:
 
 ---
 
+## 2026-11-04 — Liquid Glass adoption implemented
+- **Type:** implemented
+- **What:** `AppleLiquidGlass` now runs on `liquid_glass_renderer` (Flutter 3.47.5), with `AppleVisualScope`
+  and `AppleGlassShape`. Gate C renderer removed. Top bar and dialog chrome render as glass. Debug review page
+  and a Linux full-glass integration test (`tool/ci.sh --device`) added. Local CI 1310 tests green; device probe
+  `negative [48,56,64]`, `full [44,64]`.
+- **Evidence / links:** checkpoint `docs/superpowers/checkpoints/2026-11-04-liquid-glass-adoption-checkpoint.md`;
+  commits `bcd48f6`, `64d9755`, `0c1e375`, `c2d76dc`, `542df02`, `068a855`, `2dc42f3`;
+  CI https://github.com/majidsii/dashboard-shakhsi/actions/runs/41712548727
+- **Follow-ups:** owner visual sign-off; Windows run (draft release 432096821); Android check of the real app;
+  buttons/pills glass; scroll edge effect; macOS 27 tuning; `BackdropGroup`. Next program item: 3. v2 release readiness.
+
 ## 2026-11-04 — Liquid Glass spike: GO
 - **Type:** decided
 - **What:** Spike finished with verdict GO. Q1 Linux YES, Q2 Android YES (visual, Galaxy A34,

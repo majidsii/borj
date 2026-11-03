@@ -106,17 +106,21 @@ Gregorian calendars. Task-specific exceptions and completion state live in
 - reminders, recurrence, timers and templates are separate persisted entities,
   not fields on `TaskItem`.
 
-**Visual system.** Screens currently use `lib/app/widgets/original_*` and
-`lib/app/theme/`. The new Apple-style system lives in `lib/app/apple_visual/`:
+**Visual system.** Content screens use `lib/app/widgets/original_*` (`OriginalGlass`
+for cards) and `lib/app/theme/`. Apple-style system in `lib/app/apple_visual/`:
 - `foundation/`: source-derived tokens. Keep these.
 - `generated/`: tokens generated from the Apple UI kit by `tool/` scripts.
-- `rendering/`: the Gate C custom shader pipeline. Superseded; it will be deleted
-  after the spike's Go verdict.
+- The Gate C `rendering/` pipeline is gone.
 
-Liquid Glass direction: `liquid_glass_renderer` behind the `AppleLiquidGlass`
-adapter, accepted by side-by-side perceptual comparison, not pixel goldens. Glass
-is only for navigation and control chrome, never for content cards. See
-`docs/superpowers/specs/2026-11-02-liquid-glass-renderer-adoption-design.md`.
+Glass is for navigation and control chrome only, never content cards. Use
+`AppleLiquidGlass(role:, shape: AppleGlassShape..., child:)`. The theme comes from
+`AppleVisualScope.of(context)` (follows app brightness). Only `apple_liquid_glass.dart`
+and `app_bootstrap.dart` import `liquid_glass_renderer`. Acceptance is side-by-side
+perceptual, not pixel goldens: debug review page (long-press the brand island, run
+with `--dart-define=GLASS_REFERENCE_DIR=...`) and `tool/ci.sh --device` for the Linux
+full-glass test. See
+`docs/superpowers/specs/2026-11-02-liquid-glass-renderer-adoption-design.md` and
+`docs/superpowers/checkpoints/2026-11-04-liquid-glass-adoption-checkpoint.md`.
 
 ## Lints that bite
 

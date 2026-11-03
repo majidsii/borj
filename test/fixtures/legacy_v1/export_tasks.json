@@ -1,0 +1,22 @@
+{
+  "exportedAt": "2026-11-01T08:30:00.000Z",
+  "stats": {
+    "total": 2,
+    "active": 1,
+    "done": 1
+  },
+  "tasks": [
+    {
+      "text": "خرید نان",
+      "done": false,
+      "priority": "high",
+      "createdAt": "2024-11-03T13:20:00.123Z"
+    },
+    {
+      "text": "قبض برق",
+      "done": true,
+      "priority": "none",
+      "createdAt": "2024-11-01T22:26:40.000Z"
+    }
+  ]
+}

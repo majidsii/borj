@@ -45,7 +45,7 @@ void main() {
     final database = AppDatabase(NativeDatabase.memory());
 
     try {
-      expect(database.schemaVersion, 8);
+      expect(database.schemaVersion, 9);
       final rows = await database
           .customSelect(
             "SELECT name FROM sqlite_master "

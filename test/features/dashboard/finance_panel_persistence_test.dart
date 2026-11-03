@@ -98,7 +98,7 @@ void main() {
               type: FinanceTransactionType.income,
               title: 'درآمد ذخیره‌شده',
               category: 'حقوق',
-              amount: _money('1234567.12345678'),
+              amount: _money('1234567'),
               occurredAtUtc: now,
               createdAtUtc: now,
             ),
@@ -132,8 +132,8 @@ void main() {
       await flushUiAction(tester);
 
       expect(find.text('درآمد ذخیره‌شده'), findsOneWidget);
-      expect(find.text('+۱٬۲۳۴٬۵۶۷٫۱۲۳۴۵۶۷۸'), findsOneWidget);
-      expect(find.text('۱٬۲۳۴٬۵۶۷٫۱۲۳۴۵۶۷۸'), findsWidgets);
+      expect(find.text('+۱٬۲۳۴٬۵۶۷'), findsOneWidget);
+      expect(find.text('۱٬۲۳۴٬۵۶۷'), findsWidgets);
       expect(find.text('بدهی ذخیره‌شده'), findsOneWidget);
       expect(find.text('قسط ذخیره‌شده'), findsOneWidget);
       expect(find.text('۲ از ۱۲ قسط پرداخت شده'), findsOneWidget);
@@ -150,11 +150,11 @@ void main() {
       find.byKey(const ValueKey<String>('finance-type-income')),
     );
     await tester.enterText(field('finance-title-field'), 'درآمد دقیق رابط');
-    await tester.enterText(field('finance-amount-field'), '1234567.12345678');
+    await tester.enterText(field('finance-amount-field'), '1234567');
     await submit(tester);
 
     expect(repository.transactions, hasLength(1));
-    expect(repository.transactions.single.amount.minorUnits, 123456712345678);
+    expect(repository.transactions.single.amount.minorUnits, 1234567);
     expect(repository.transactions.single.type, FinanceTransactionType.income);
 
     await tapVisible(
@@ -162,32 +162,26 @@ void main() {
       find.byKey(const ValueKey<String>('finance-type-debt')),
     );
     await tester.enterText(field('finance-title-field'), 'بدهی رابط');
-    await tester.enterText(field('finance-amount-field'), '10000000.00000001');
-    await tester.enterText(
-      field('finance-debt-paid-field'),
-      '2500000.00000001',
-    );
+    await tester.enterText(field('finance-amount-field'), '10000001');
+    await tester.enterText(field('finance-debt-paid-field'), '2500001');
     await submit(tester);
 
     expect(repository.debts, hasLength(1));
-    expect(repository.debts.single.total.minorUnits, 1000000000000001);
-    expect(repository.debts.single.paid.minorUnits, 250000000000001);
+    expect(repository.debts.single.total.minorUnits, 10000001);
+    expect(repository.debts.single.paid.minorUnits, 2500001);
 
     await tapVisible(
       tester,
       find.byKey(const ValueKey<String>('finance-type-installment')),
     );
     await tester.enterText(field('finance-title-field'), 'قسط رابط');
-    await tester.enterText(field('finance-amount-field'), '3000000.12345678');
+    await tester.enterText(field('finance-amount-field'), '3000001');
     await tester.enterText(field('finance-installment-count-field'), '12');
     await tester.enterText(field('finance-installment-paid-field'), '2');
     await submit(tester);
 
     expect(repository.installments, hasLength(1));
-    expect(
-      repository.installments.single.perInstallment.minorUnits,
-      300000012345678,
-    );
+    expect(repository.installments.single.perInstallment.minorUnits, 3000001);
     expect(repository.installments.single.installmentCount, 12);
     expect(repository.installments.single.paidCount, 2);
   });
@@ -240,16 +234,13 @@ void main() {
     await tester.tap(openDebtPayment);
     await flushUiAction(tester);
 
-    await tester.enterText(
-      fieldWithHint('مبلغ پرداخت‌شده'),
-      '1000000.00000001',
-    );
+    await tester.enterText(fieldWithHint('مبلغ پرداخت‌شده'), '1000000');
     final applyDebtPayment = find.text('ثبت').last;
     await tester.ensureVisible(applyDebtPayment);
     await tester.tap(applyDebtPayment);
     await flushUiAction(tester);
 
-    expect(repository.debts.single.paid.minorUnits, 350000000000001);
+    expect(repository.debts.single.paid.minorUnits, 3500000);
 
     final payInstallment = find.bySemanticsLabel(
       'پرداخت یک قسط برای قسط قابل پرداخت',

@@ -15,8 +15,8 @@ void main() {
     await database.close();
   });
 
-  test('schema version eight creates all persistence tables', () async {
-    expect(database.schemaVersion, 8);
+  test('schema version nine creates all persistence tables', () async {
+    expect(database.schemaVersion, 9);
 
     final rows = await database
         .customSelect("SELECT name FROM sqlite_master WHERE type = 'table'")
@@ -38,6 +38,7 @@ void main() {
         'task_occurrence_completions',
         'task_time_entries',
         'notification_schedules',
+        'legacy_imports',
       }),
     );
   });

@@ -99,7 +99,8 @@ void main() {
         );
 
         expect(total.formatMajorUnits(), '۳٬۰۰۰٫۳۷۵');
-        expect(payment.clamp(Money.zeroIRT, total), total);
+        const zero = Money(minorUnits: 0, currencyCode: 'IRT', scale: 8);
+        expect(payment.clamp(zero, total), total);
         expect((-installment).absolute, installment);
       },
     );

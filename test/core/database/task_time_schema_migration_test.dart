@@ -46,11 +46,11 @@ void main() {
 
         final upgraded = AppDatabase(NativeDatabase(file));
         try {
-          expect(upgraded.schemaVersion, 8);
+          expect(upgraded.schemaVersion, 9);
           final versionRows = await upgraded
               .customSelect('PRAGMA user_version')
               .get();
-          expect(versionRows.single.read<int>('user_version'), 8);
+          expect(versionRows.single.read<int>('user_version'), 9);
           expect(
             (await DriftTaskRepository(
               upgraded,

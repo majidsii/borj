@@ -42,7 +42,7 @@ void main() {
 
       final second = AppDatabase(NativeDatabase(file));
       try {
-        expect(second.schemaVersion, 8);
+        expect(second.schemaVersion, 9);
         final restored = await DriftTaskTimeRepository(second).getActive();
         expect(restored!.id, 'timer-1');
         expect(

@@ -54,9 +54,11 @@ final class MoneyInputFormatter extends TextInputFormatter {
         }
         continue;
       }
-      if ((character == '.' || character == '٫') &&
-          !hasDecimal &&
-          maxFractionDigits > 0) {
+      if (character == '.' || character == '٫') {
+        // A whole-unit currency refuses the separator. Without this, the
+        // fraction digits that follow would be appended to the integer part
+        // ("12.5" would become 125).
+        if (maxFractionDigits == 0) return null;
         hasDecimal = true;
         continue;
       }

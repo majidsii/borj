@@ -62,12 +62,12 @@ void main() {
 
         final migrated = AppDatabase(NativeDatabase(file));
         try {
-          expect(migrated.schemaVersion, 8);
+          expect(migrated.schemaVersion, 9);
 
           final versionRows = await migrated
               .customSelect('PRAGMA user_version')
               .get();
-          expect(versionRows.single.read<int>('user_version'), 8);
+          expect(versionRows.single.read<int>('user_version'), 9);
 
           final tasks = await migrated.select(migrated.taskRows).get();
           expect(tasks, hasLength(1));

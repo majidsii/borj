@@ -103,7 +103,7 @@ void main() {
           type: FinanceTransactionType.income,
           title: 'درآمد دقیق',
           category: 'حقوق',
-          amount: _money('1234567.12345678'),
+          amount: _money('1234567'),
           occurredAtUtc: createdAt,
           createdAtUtc: createdAt,
         ),
@@ -114,14 +114,14 @@ void main() {
           id: 'debt-restart',
           title: 'بدهی ماندگار',
           total: _money('10000000'),
-          paid: _money('2500000.00000001'),
+          paid: _money('2500001'),
           createdAtUtc: createdAt,
           updatedAtUtc: changedAt,
         ),
       );
       await firstFinance.recordDebtPayment(
         debtId: 'debt-restart',
-        amount: _money('1000000.00000001'),
+        amount: _money('1000001'),
         paidAt: paymentAt,
       );
 
@@ -129,7 +129,7 @@ void main() {
         InstallmentPlan(
           id: 'plan-restart',
           title: 'اقساط ماندگار',
-          perInstallment: _money('3000000.12345678'),
+          perInstallment: _money('3000000'),
           installmentCount: 12,
           paidCount: 1,
           createdAtUtc: createdAt,
@@ -141,7 +141,7 @@ void main() {
         paidAt: paymentAt,
       );
 
-      expect(first.schemaVersion, 8);
+      expect(first.schemaVersion, 9);
       await first.close();
 
       final second = AppDatabase(NativeDatabase(file));
@@ -171,7 +171,7 @@ void main() {
         expect(reopenedTasks.last.completedAtUtc, changedAt);
 
         expect(reopenedTransactions, hasLength(1));
-        expect(reopenedTransactions.single.amount.minorUnits, 123456712345678);
+        expect(reopenedTransactions.single.amount.minorUnits, 1234567);
         expect(reopenedTransactions.single.amount.scale, Money.financeScale);
         expect(
           reopenedTransactions.single.amount.currencyCode,
@@ -179,14 +179,14 @@ void main() {
         );
 
         expect(reopenedDebts, hasLength(1));
-        expect(reopenedDebts.single.total.minorUnits, 1000000000000000);
-        expect(reopenedDebts.single.paid.minorUnits, 350000000000002);
-        expect(reopenedDebts.single.remaining.minorUnits, 649999999999998);
+        expect(reopenedDebts.single.total.minorUnits, 10000000);
+        expect(reopenedDebts.single.paid.minorUnits, 3500002);
+        expect(reopenedDebts.single.remaining.minorUnits, 6499998);
 
         expect(reopenedPlans, hasLength(1));
         expect(reopenedPlans.single.installmentCount, 12);
         expect(reopenedPlans.single.paidCount, 2);
-        expect(reopenedPlans.single.perInstallment.minorUnits, 300000012345678);
+        expect(reopenedPlans.single.perInstallment.minorUnits, 3000000);
       } finally {
         await second.close();
       }
@@ -197,7 +197,7 @@ void main() {
     }
   });
 
-  test('file-backed database keeps schema version eight', () async {
+  test('file-backed database keeps schema version nine', () async {
     final directory = await Directory.systemTemp.createTemp(
       'dashboard-shakhsi-schema-',
     );
@@ -205,16 +205,16 @@ void main() {
 
     try {
       final first = AppDatabase(NativeDatabase(file));
-      expect(first.schemaVersion, 8);
+      expect(first.schemaVersion, 9);
       await first.close();
 
       final reopened = AppDatabase(NativeDatabase(file));
       try {
-        expect(reopened.schemaVersion, 8);
+        expect(reopened.schemaVersion, 9);
         final versionRows = await reopened
             .customSelect('PRAGMA user_version')
             .get();
-        expect(versionRows.single.read<int>('user_version'), 8);
+        expect(versionRows.single.read<int>('user_version'), 9);
       } finally {
         await reopened.close();
       }

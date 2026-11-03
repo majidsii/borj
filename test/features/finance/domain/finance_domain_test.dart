@@ -152,4 +152,25 @@ void main() {
     expect(plan.settled, isFalse);
     expect(plan.progressForChart, closeTo(4 / 12, 0.000000001));
   });
+
+  test('transaction rejects a legacy scale-8 amount', () {
+    const legacy = Money(
+      minorUnits: 100000000,
+      currencyCode: Money.tomanCurrencyCode,
+      scale: 8,
+    );
+
+    expect(
+      () => FinanceTransaction.create(
+        id: 'tx-legacy',
+        type: FinanceTransactionType.expense,
+        title: 'خرید',
+        category: 'خوراک',
+        amount: legacy,
+        occurredAtUtc: createdAt,
+        createdAtUtc: createdAt,
+      ),
+      throwsA(isA<ValidationFailure>()),
+    );
+  });
 }

@@ -1,4 +1,6 @@
+import 'package:dashboard_shakhsi/app/apple_visual/review/glass_review_screen.dart';
 import 'package:dashboard_shakhsi/features/dashboard/presentation/dashboard_screen.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -13,6 +15,7 @@ abstract final class AppRoutes {
   static const settings = '/settings';
   static const backup = '/backup';
   static const migration = '/migration';
+  static const glassReview = '/debug/glass-review';
 }
 
 final appRouterProvider = Provider<GoRouter>((ref) {
@@ -60,6 +63,12 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         builder: (context, state) =>
             const _PlaceholderScreen(title: 'انتقال اطلاعات'),
       ),
+      if (kDebugMode)
+        GoRoute(
+          path: AppRoutes.glassReview,
+          builder: (context, state) =>
+              const GlassReviewScreen(referenceDir: glassReferenceDir),
+        ),
     ],
   );
 

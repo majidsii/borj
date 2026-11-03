@@ -15,7 +15,7 @@ Last updated: **2026-11-04**
 Current branch: `feat/v2-complete-dashboard`
 Latest fully verified checkpoint commit: `458499dfdb3504034d1d7115bd1515fe20ffc876`
 Project stack: Flutter desktop + Riverpod + Drift/SQLite
-Current database schema: **8**
+Current database schema: **9**
 Latest completed roadmap task: **Task 2.8 — Quick-Entry Templates**
 Current task: **3. v2 release readiness** (Liquid Glass adoption implemented, awaiting owner visual sign-off)
 Visual target: **Android/mobile = iOS 27; Windows/Linux desktop = macOS 27 — perceptual match, owner sign-off**
@@ -26,7 +26,7 @@ The owner delegated prioritization. Each item gets its own spec → plan → imp
 
 1. **Engineering baseline** — CI (analyze, test, Linux build) restored; v2 deleted the v1 workflow in `9f0573d`. — **DONE** (2026-11-03, checkpoint: docs/superpowers/checkpoints/2026-11-03-ci-baseline-checkpoint.md)
 2. **Liquid Glass adoption** — spec `2026-11-02-liquid-glass-renderer-adoption-design.md`. — **DONE** (2026-11-04, awaiting owner visual sign-off; checkpoint: docs/superpowers/checkpoints/2026-11-04-liquid-glass-adoption-checkpoint.md)
-3. **v2 release readiness** — import v1 `data.json` (v1 users exist; v2 has no importer today), product name decision (before release: app ID and data paths depend on it), packaging and release automation.
+3. **v2 release readiness** — import v1 `data.json` (v1 users exist; v2 has no importer today), product name decision (before release: app ID and data paths depend on it), packaging and release automation. Part A (data foundation: whole-toman money, checked arithmetic, v1 importer) — **DONE** (2026-11-04, checkpoint: docs/superpowers/checkpoints/2026-11-04-release-data-foundation-checkpoint.md). Remaining: part B (packaging, release automation, Android signing continuity) and part C (product name).
 4. **Habits and Goals** — complete the all-in-one product.
 5. **Tasks 2.9–2.11** — Trash/Undo/Audit, dashboard cards, Phase 2 checkpoint. No longer blocked by visual work.
 
@@ -88,8 +88,9 @@ Do not:
 - Persisted timestamps are UTC.
 - Restart behavior must be tested for persisted features.
 - Every schema change requires migration and restart tests.
-- Current schema version is **8**.
+- Current schema version is **9**.
 - Task 2.8 moved schema append-only from **7** to **8**.
+- Release data foundation moved schema append-only from **8** to **9** (IRT rescaled to whole toman, `legacy_imports` added).
 
 ### 3.3 Implementation discipline
 
@@ -1125,14 +1126,16 @@ As of this document:
 
 - Phase 2 Tasks **2.1 through 2.8 are implemented**.
 - Task 2.8 is the latest fully verified checkpoint.
-- Repository schema is **8**.
+- Repository schema is **9**.
 - Task 2.8 is implemented, checkpointed, and semantically verified.
 - Program order is in §0 (decided 2026-11-02; owner delegated prioritization).
 - CURRENT TASK is **3. v2 release readiness** (§0). Liquid Glass adoption is implemented (2026-11-04), awaiting owner visual sign-off; checkpoint `docs/superpowers/checkpoints/2026-11-04-liquid-glass-adoption-checkpoint.md`. Inputs for item 3: `docs/superpowers/references/2026-11-04-v1-data-format-and-v2-mapping.md` and `docs/superpowers/references/2026-11-04-money-scale-overflow-analysis.md`. See the latest `docs/WORKLOG.md` entry.
 - CI baseline is DONE (2026-11-03): every push runs `tool/ci.sh` on GitHub Actions.
 - The Gate C custom renderer is removed (`c2d76dc`); glass goes through `AppleLiquidGlass`.
 - Shader filters work on Linux desktop only with Impeller enabled (`flutter test integration_test/... -d linux --enable-impeller` → supported; without the flag → unsupported).
-- v1 (published on GitHub, v1.2.0) stores data in `data.json`; v2 has no importer yet. This blocks the v2 release.
+- v1 data import is implemented (2026-11-04): Settings, then "Import from v1" (preview, one transaction, idempotent via `legacy_imports`). Release still needs part B (packaging) and part C (product name).
+- IRT money is whole toman (scale 0, schema 9); `Money` arithmetic is overflow-checked.
+- Next step: part B: packaging + Android signing + Android CI build.
 - Tasks 2.10–2.11 remain pending and must be designed individually before implementation.
 
 ---

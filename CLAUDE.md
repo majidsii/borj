@@ -87,13 +87,15 @@ Dependency wiring is plain Riverpod `Provider`s in
 `lib/core/providers/persistence_providers.dart` (no codegen). Tests override them.
 
 **Persistence.** One Drift database (`lib/core/database/app_database.dart`),
-schema version 8. Migrations are append-only and must keep existing data
+schema version 9. Migrations are append-only and must keep existing data
 deterministic. Every schema change needs migration and restart tests. Persisted
 timestamps are UTC. Local-day logic goes through `AppClock` and
 `local_day_boundary.dart`. Never call `DateTime.now()` in domain code.
 
 **Money** (`lib/core/money/money.dart`) is integer minor units plus scale, with
-Toman (`IRT`) as the default. Never use `double` for money.
+Toman (`IRT`) as the default. IRT uses scale 0 (whole toman). Arithmetic is
+checked: overflow throws `MoneyOverflowFailure`, never wraps or truncates.
+Never use `double` for money.
 
 **Recurrence** (`lib/core/recurrence/`) is a generic engine with Jalali and
 Gregorian calendars. Task-specific exceptions and completion state live in

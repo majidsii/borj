@@ -17,6 +17,12 @@ Entry template:
 
 ---
 
+## 2026-11-04 — Release data foundation (money scale 0, v1 import)
+- **Type:** implemented
+- **What:** checked `Money` arithmetic; schema 9 (IRT scale 0, `legacy_imports`); v1 `data.json` and export importer with preview, one transaction and idempotency; Settings entry, banner, `file_picker` 13.3.2.
+- **Evidence / links:** checkpoint `docs/superpowers/checkpoints/2026-11-04-release-data-foundation-checkpoint.md`; spec `docs/superpowers/specs/2026-11-04-release-data-foundation-design.md`; plan `docs/superpowers/plans/2026-11-04-release-data-foundation.md`; commits `cab3907`, `37a4482`, `fdfdd5d`, `d0db623`, `1758c5d`, `42b2226`; CI run https://github.com/majidsii/dashboard-shakhsi/actions/runs/41723578666 (success, 1371 tests).
+- **Follow-ups:** part B (packaging, release automation, Android signing continuity, Android CI build); part C (product name); manual Linux import run and owner's real v1 import.
+
 ## 2026-11-04 — Liquid Glass adoption implemented
 - **Type:** implemented
 - **What:** `AppleLiquidGlass` now runs on `liquid_glass_renderer` (Flutter 3.47.5), with `AppleVisualScope`

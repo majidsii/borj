@@ -6,11 +6,18 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:liquid_glass_renderer/liquid_glass_renderer.dart';
 
+import 'error_report.dart';
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // ignore: experimental_member_use
-  LgrLogs.initAllLogs();
-  await LiquidGlass.precache();
+  installSpikeErrorHooks();
+  try {
+    // ignore: experimental_member_use
+    LgrLogs.initAllLogs();
+    await LiquidGlass.precache();
+  } on Object catch (e, st) {
+    recordSpikeError('precache', e, st);
+  }
   runApp(const _SpikeApp());
 }
 
@@ -40,6 +47,7 @@ final class _SpikeApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return const MaterialApp(
       debugShowCheckedModeBanner: false,
+      builder: spikeErrorOverlay,
       home: _SpikeScreen(),
     );
   }

@@ -25,6 +25,11 @@ android {
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+        // Spike variants: overridable via -P / ORG_GRADLE_PROJECT_* env vars.
+        manifestPlaceholders["enableFlutterGpu"] =
+            (project.findProperty("enableFlutterGpu") as String?) ?: "true"
+        manifestPlaceholders["appLabel"] =
+            (project.findProperty("appLabel") as String?) ?: "dashboard_shakhsi"
     }
 
     buildTypes {
@@ -32,7 +37,8 @@ android {
             applicationIdSuffix = ".dev"
         }
         release {
-            applicationIdSuffix = ".lgspike"
+            applicationIdSuffix =
+                (project.findProperty("lgSuffix") as String?) ?: ".lgspike"
             // TODO: Add your own signing config for the release build.
             // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig = signingConfigs.getByName("debug")

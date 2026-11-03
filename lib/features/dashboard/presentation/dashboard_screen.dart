@@ -1,8 +1,10 @@
+import 'package:dashboard_shakhsi/app/apple_visual/foundation/apple_glass_shape.dart';
+import 'package:dashboard_shakhsi/app/apple_visual/foundation/apple_liquid_glass_recipe.dart';
+import 'package:dashboard_shakhsi/app/apple_visual/widgets/apple_liquid_glass.dart';
 import 'package:dashboard_shakhsi/app/theme/original_design_tokens.dart';
 import 'package:dashboard_shakhsi/app/theme/theme_mode_controller.dart';
 import 'package:dashboard_shakhsi/app/widgets/aurora_background.dart';
 import 'package:dashboard_shakhsi/app/widgets/original_controls.dart';
-import 'package:dashboard_shakhsi/app/widgets/original_glass.dart';
 import 'package:dashboard_shakhsi/app/widgets/original_icon.dart';
 import 'package:dashboard_shakhsi/features/dashboard/presentation/widgets/finance_panel.dart';
 import 'package:dashboard_shakhsi/features/dashboard/presentation/widgets/tasks_panel.dart';
@@ -104,6 +106,7 @@ final class _TopBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
+      key: const ValueKey<String>('top-bar'),
       padding: const EdgeInsets.only(bottom: 26),
       child: LayoutBuilder(
         builder: (context, constraints) {
@@ -149,62 +152,64 @@ final class _BrandIsland extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final palette = OriginalPalette.of(context);
-    return OriginalGlass(
-      radius: OriginalDesignTokens.pillRadius,
-      padding: EdgeInsets.symmetric(
-        vertical: 8,
-        horizontal: hideText ? 10 : 15,
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        textDirection: TextDirection.rtl,
-        children: <Widget>[
-          Container(
-            width: 31,
-            height: 31,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: <Color>[palette.accent, palette.accent2],
-              ),
-              border: Border.all(color: Colors.white.withValues(alpha: .22)),
-              boxShadow: <BoxShadow>[
-                BoxShadow(
-                  color: palette.accent.withValues(alpha: .35),
-                  blurRadius: 12,
-                  offset: const Offset(0, 4),
+    return AppleLiquidGlass(
+      role: AppleGlassRole.smallControl,
+      child: Padding(
+        padding: EdgeInsets.symmetric(
+          vertical: 8,
+          horizontal: hideText ? 10 : 15,
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          textDirection: TextDirection.rtl,
+          children: <Widget>[
+            Container(
+              width: 31,
+              height: 31,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: <Color>[palette.accent, palette.accent2],
                 ),
-                const BoxShadow(
-                  color: Color(0x8CFFFFFF),
-                  offset: Offset(0, -1),
+                border: Border.all(color: Colors.white.withValues(alpha: .22)),
+                boxShadow: <BoxShadow>[
+                  BoxShadow(
+                    color: palette.accent.withValues(alpha: .35),
+                    blurRadius: 12,
+                    offset: const Offset(0, 4),
+                  ),
+                  const BoxShadow(
+                    color: Color(0x8CFFFFFF),
+                    offset: Offset(0, -1),
+                  ),
+                ],
+              ),
+              child: const Center(
+                child: OriginalIcon(
+                  OriginalIconType.check,
+                  color: Colors.white,
+                  size: 16,
+                  strokeWidth: 2.6,
                 ),
-              ],
-            ),
-            child: const Center(
-              child: OriginalIcon(
-                OriginalIconType.check,
-                color: Colors.white,
-                size: 16,
-                strokeWidth: 2.6,
               ),
             ),
-          ),
-          if (!hideText) ...<Widget>[
-            const SizedBox(width: 9),
-            Text(
-              'داشبورد شخصی',
-              key: const ValueKey<String>('brand-label'),
-              style: TextStyle(
-                color: palette.ink,
-                fontSize: 15.5,
-                letterSpacing: -.15,
-                fontWeight: FontWeight.w800,
+            if (!hideText) ...<Widget>[
+              const SizedBox(width: 9),
+              Text(
+                'داشبورد شخصی',
+                key: const ValueKey<String>('brand-label'),
+                style: TextStyle(
+                  color: palette.ink,
+                  fontSize: 15.5,
+                  letterSpacing: -.15,
+                  fontWeight: FontWeight.w800,
+                ),
               ),
-            ),
+            ],
           ],
-        ],
+        ),
       ),
     );
   }
@@ -229,68 +234,70 @@ final class _TopTabs extends StatelessWidget {
     const gap = 2.0;
     const tabHeight = 37.0;
 
-    return OriginalGlass(
-      radius: OriginalDesignTokens.pillRadius,
-      padding: const EdgeInsets.all(5),
-      child: SizedBox(
-        width: tasksTabWidth + financeTabWidth + gap,
-        height: tabHeight,
-        child: Stack(
-          textDirection: TextDirection.rtl,
-          children: <Widget>[
-            AnimatedPositionedDirectional(
-              duration: const Duration(milliseconds: 500),
-              curve: const Cubic(.32, 1.35, .4, 1),
-              top: 0,
-              bottom: 0,
-              start: selectedPanel == 0 ? 0 : tasksTabWidth + gap,
-              width: selectedPanel == 0 ? tasksTabWidth : financeTabWidth,
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  color: palette.thumb,
-                  borderRadius: BorderRadius.circular(
-                    OriginalDesignTokens.pillRadius,
+    return AppleLiquidGlass(
+      role: AppleGlassRole.mediumSurface,
+      child: Padding(
+        padding: const EdgeInsets.all(5),
+        child: SizedBox(
+          width: tasksTabWidth + financeTabWidth + gap,
+          height: tabHeight,
+          child: Stack(
+            textDirection: TextDirection.rtl,
+            children: <Widget>[
+              AnimatedPositionedDirectional(
+                duration: const Duration(milliseconds: 500),
+                curve: const Cubic(.32, 1.35, .4, 1),
+                top: 0,
+                bottom: 0,
+                start: selectedPanel == 0 ? 0 : tasksTabWidth + gap,
+                width: selectedPanel == 0 ? tasksTabWidth : financeTabWidth,
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: palette.thumb,
+                    borderRadius: BorderRadius.circular(
+                      OriginalDesignTokens.pillRadius,
+                    ),
+                    border: Border.all(color: palette.hair, width: 1),
+                    boxShadow: <BoxShadow>[
+                      BoxShadow(
+                        color: palette.shadowSecondary,
+                        blurRadius: 12,
+                        offset: const Offset(0, 3),
+                      ),
+                      BoxShadow(
+                        color: palette.hairTop,
+                        offset: const Offset(0, -1),
+                      ),
+                    ],
                   ),
-                  border: Border.all(color: palette.hair, width: 1),
-                  boxShadow: <BoxShadow>[
-                    BoxShadow(
-                      color: palette.shadowSecondary,
-                      blurRadius: 12,
-                      offset: const Offset(0, 3),
-                    ),
-                    BoxShadow(
-                      color: palette.hairTop,
-                      offset: const Offset(0, -1),
-                    ),
-                  ],
                 ),
               ),
-            ),
-            PositionedDirectional(
-              start: 0,
-              top: 0,
-              bottom: 0,
-              width: tasksTabWidth,
-              child: _TopTabButton(
-                label: 'کارها',
-                icon: OriginalIconType.tasks,
-                selected: selectedPanel == 0,
-                onTap: () => onPanelSelected(0),
+              PositionedDirectional(
+                start: 0,
+                top: 0,
+                bottom: 0,
+                width: tasksTabWidth,
+                child: _TopTabButton(
+                  label: 'کارها',
+                  icon: OriginalIconType.tasks,
+                  selected: selectedPanel == 0,
+                  onTap: () => onPanelSelected(0),
+                ),
               ),
-            ),
-            PositionedDirectional(
-              start: tasksTabWidth + gap,
-              top: 0,
-              bottom: 0,
-              width: financeTabWidth,
-              child: _TopTabButton(
-                label: 'مالی',
-                icon: OriginalIconType.wallet,
-                selected: selectedPanel == 1,
-                onTap: () => onPanelSelected(1),
+              PositionedDirectional(
+                start: tasksTabWidth + gap,
+                top: 0,
+                bottom: 0,
+                width: financeTabWidth,
+                child: _TopTabButton(
+                  label: 'مالی',
+                  icon: OriginalIconType.wallet,
+                  selected: selectedPanel == 1,
+                  onTap: () => onPanelSelected(1),
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -352,8 +359,9 @@ final class _ThemeIsland extends StatelessWidget {
   Widget build(BuildContext context) {
     final palette = OriginalPalette.of(context);
     final dark = Theme.of(context).brightness == Brightness.dark;
-    return OriginalGlass(
-      radius: OriginalDesignTokens.pillRadius,
+    return AppleLiquidGlass(
+      role: AppleGlassRole.smallControl,
+      shape: const AppleGlassShape.circle(),
       child: OriginalPressable(
         onPressed: onPressed,
         pressedScale: .92,

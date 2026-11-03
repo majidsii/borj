@@ -1,3 +1,6 @@
+import 'package:dashboard_shakhsi/app/apple_visual/foundation/apple_glass_shape.dart';
+import 'package:dashboard_shakhsi/app/apple_visual/foundation/apple_liquid_glass_recipe.dart';
+import 'package:dashboard_shakhsi/app/apple_visual/widgets/apple_liquid_glass.dart';
 import 'package:dashboard_shakhsi/app/theme/original_design_tokens.dart';
 import 'package:dashboard_shakhsi/app/widgets/original_controls.dart';
 import 'package:dashboard_shakhsi/app/widgets/original_glass.dart';
@@ -523,34 +526,37 @@ final class _PickerFrame extends StatelessWidget {
   Widget build(BuildContext context) {
     final palette = OriginalPalette.of(context);
 
-    return OriginalGlass(
-      radius: OriginalDesignTokens.cardRadius,
-      padding: const EdgeInsets.all(20),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          Row(
-            children: <Widget>[
-              Expanded(
-                child: Text(
-                  title,
-                  style: TextStyle(
-                    color: palette.ink,
-                    fontSize: 18,
-                    fontWeight: FontWeight.w800,
+    return AppleLiquidGlass(
+      role: AppleGlassRole.largeSurface,
+      shape: const AppleGlassShape.rounded(OriginalDesignTokens.cardRadius),
+      child: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Row(
+              children: <Widget>[
+                Expanded(
+                  child: Text(
+                    title,
+                    style: TextStyle(
+                      color: palette.ink,
+                      fontSize: 18,
+                      fontWeight: FontWeight.w800,
+                    ),
                   ),
                 ),
-              ),
-              _PickerIconButton(
-                semanticLabel: 'بستن',
-                icon: Icons.close_rounded,
-                onPressed: () => Navigator.of(context).pop(),
-              ),
-            ],
-          ),
-          const SizedBox(height: 15),
-          child,
-        ],
+                _PickerIconButton(
+                  semanticLabel: 'بستن',
+                  icon: Icons.close_rounded,
+                  onPressed: () => Navigator.of(context).pop(),
+                ),
+              ],
+            ),
+            const SizedBox(height: 15),
+            child,
+          ],
+        ),
       ),
     );
   }

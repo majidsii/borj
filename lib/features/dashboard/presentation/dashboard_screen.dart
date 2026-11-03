@@ -6,8 +6,10 @@ import 'package:dashboard_shakhsi/app/widgets/original_glass.dart';
 import 'package:dashboard_shakhsi/app/widgets/original_icon.dart';
 import 'package:dashboard_shakhsi/features/dashboard/presentation/widgets/finance_panel.dart';
 import 'package:dashboard_shakhsi/features/dashboard/presentation/widgets/tasks_panel.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 final class DashboardScreen extends ConsumerStatefulWidget {
   const DashboardScreen({super.key});
@@ -110,7 +112,15 @@ final class _TopBar extends StatelessWidget {
           final hideBrandText = constraints.maxWidth <= 560;
           final compactTabs = constraints.maxWidth <= 480;
 
-          final brand = _BrandIsland(hideText: hideBrandText);
+          final brandIsland = _BrandIsland(hideText: hideBrandText);
+          // Debug builds only: long-press the brand to open the glass review.
+          final brand = kDebugMode
+              ? GestureDetector(
+                  onLongPress: () =>
+                      GoRouter.maybeOf(context)?.go('/debug/glass-review'),
+                  child: brandIsland,
+                )
+              : brandIsland;
           final tabs = _TopTabs(
             selectedPanel: selectedPanel,
             compact: compactTabs,

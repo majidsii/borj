@@ -27,6 +27,7 @@ dependencies:
   intl: ^0.20.2
   collection: ^1.19.1
   posix: ^6.5.0
+  liquid_glass_renderer: 1.0.0-dev.2
 
 dev_dependencies:
   flutter_test:

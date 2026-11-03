@@ -9,9 +9,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:liquid_glass_renderer/liquid_glass_renderer.dart';
 
 Future<void> bootstrapApp() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await LiquidGlass.precache();
 
   FlutterError.onError = FlutterError.presentError;
   PlatformDispatcher.instance.onError = (error, stackTrace) {

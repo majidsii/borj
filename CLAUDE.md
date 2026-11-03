@@ -39,9 +39,9 @@ spec > roadmap > chat history.
 
 ## Commands
 
-The Flutter SDK version is pinned in `.flutter-version` (3.44.6). The shared SDK
-at `~/develop/flutter` serves other projects too. Never `flutter upgrade` it. The
-Liquid Glass spike uses a separate checkout (`~/develop/flutter-3.47.5`).
+The Flutter SDK version is pinned in `.flutter-version` (3.47.5). Use
+`/home/shabin/develop/flutter-3.47.5/bin` first on `PATH` (the shared
+`~/develop/flutter` is 3.44.6 for other projects; never upgrade it).
 Pub uses the `pub.flutter-io.cn` mirror (`PUB_HOSTED_URL`), and `pubspec.lock`
 records that host. The `storage.flutter-io.cn` notice in output is expected.
 
@@ -60,7 +60,8 @@ tool/ci.sh                                     # all CI checks (once the CI plan
 
 Tests that need a GPU or a desktop session go under `integration_test/` and run
 on a device: `flutter test integration_test/<file> -d linux`. Shader image
-filters need Impeller there (`--enable-impeller` on 3.44.6; default on 3.47+).
+filters and Flutter GPU are on by default with 3.47.5 on Linux once the runner
+enables Flutter GPU (Task 2).
 
 ## Architecture
 

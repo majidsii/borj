@@ -16,7 +16,10 @@ fi
 
 if [[ "${1:-}" == "--device" ]]; then
   step "flutter test --tags device"
-  flutter test --tags device
+  flutter test --tags device || [ $? -eq 79 ]
+
+  step "flutter test integration_test -d linux"
+  flutter test integration_test -d linux
   exit 0
 fi
 

@@ -45,10 +45,10 @@ The owner's APK crashed on launch. Root cause was two v2 bugs dating back to 9f0
    namespace and manifest resolve `ir.dashboard.shakhsi.MainActivity`.
 2. The Kotlin activity was not compiled into the dex.
 
-Fixed on `feat/v2-complete-dashboard` by replacing it with a Java activity: `bb3e79e`.
+Fixed on `feat/v2-complete-dashboard` by replacing it with a Java activity: `9872ff8` (cherry-picked to the spike branch as `bb3e79e`).
 Earlier partial attempts: `5a0b240` (rename; the package edit was not staged, a controller
-mistake) and `ce4227c` (applies the Kotlin plugin to the app module). Nothing Kotlin remains
-in the app module, so the adoption plan should decide whether to keep or revert `ce4227c`.
+mistake) and `62262ff` (applies the Kotlin plugin to the app module; spike branch `ce4227c`). Nothing Kotlin remains
+in the app module, so the adoption plan should decide whether to keep or revert `62262ff`.
 
 ## Mechanisms confirmed
 - Linux: `fl_dart_project_set_enable_flutter_gpu(project, TRUE)` in `linux/runner/my_application.cc`

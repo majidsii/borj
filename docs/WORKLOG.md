@@ -25,12 +25,12 @@ Entry template:
   was in the wrong package (`ir.dashboard.dashboard_shakhsi` vs namespace `ir.dashboard.shakhsi`)
   and not compiled into the dex.
 - **Evidence / links:** report `docs/superpowers/references/2026-11-04-liquid-glass-spike-report.md`;
-  crash fix commits on this branch: `5a0b240` (rename, package edit missed), `ce4227c`
-  (Kotlin plugin), `bb3e79e` (Java MainActivity, the real fix); Android run
+  crash fix commits on this branch: `5a0b240` (rename, package edit missed), `62262ff`
+  (Kotlin plugin), `9872ff8` (Java MainActivity, the real fix; spike branch `ce4227c`/`bb3e79e`); Android run
   https://github.com/majidsii/dashboard-shakhsi/actions/runs/41623961625. Owner screenshots stay
   outside the repo in `dashboard-shakhsi-reference-captures/`.
 - **Follow-ups:** write the adoption plan (requirements in the report); delete the draft spike
-  release; decide whether to keep `ce4227c`; Windows verification.
+  release; decide whether to keep `62262ff`; Windows verification.
 
 ## 2026-11-03 — Liquid Glass spike (paused)
 - **Type:** researched (in progress)

@@ -21,6 +21,10 @@ import 'package:dashboard_shakhsi/features/finance/domain/debt.dart';
 import 'package:dashboard_shakhsi/features/finance/domain/finance_repository.dart';
 import 'package:dashboard_shakhsi/features/finance/domain/finance_transaction.dart';
 import 'package:dashboard_shakhsi/features/finance/domain/installment_plan.dart';
+import 'package:dashboard_shakhsi/features/legacy_import/application/legacy_import_service.dart';
+import 'package:dashboard_shakhsi/features/legacy_import/data/drift_legacy_import_ledger.dart';
+import 'package:dashboard_shakhsi/features/legacy_import/data/legacy_v1_parser.dart';
+import 'package:dashboard_shakhsi/features/legacy_import/data/legacy_v1_source_locator.dart';
 import 'package:dashboard_shakhsi/features/tasks/application/task_occurrence_projector.dart';
 import 'package:dashboard_shakhsi/features/tasks/application/task_recurrence_service.dart';
 import 'package:dashboard_shakhsi/features/tasks/application/task_reminder_projection_service.dart';
@@ -336,3 +340,24 @@ final notificationPermissionHealthProvider =
     FutureProvider<NotificationPermissionHealth>((ref) {
       return ref.watch(notificationPermissionServiceProvider).health();
     });
+
+final legacyV1ParserProvider = Provider<LegacyV1Parser>((ref) {
+  return const LegacyV1Parser();
+});
+
+final legacyV1SourceLocatorProvider = Provider<LegacyV1SourceLocator>((ref) {
+  return const LegacyV1SourceLocator();
+});
+
+final legacyImportLedgerProvider = Provider<LegacyImportLedger>((ref) {
+  return DriftLegacyImportLedger(ref.watch(appDatabaseProvider));
+});
+
+final legacyImportServiceProvider = Provider<LegacyImportService>((ref) {
+  return LegacyImportService(
+    database: ref.watch(appDatabaseProvider),
+    ledger: ref.watch(legacyImportLedgerProvider),
+    clock: ref.watch(appClockProvider),
+    idGenerator: const UuidV7IdGenerator(),
+  );
+});

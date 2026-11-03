@@ -1,8 +1,10 @@
 import 'dart:async';
 
+import 'package:dashboard_shakhsi/app/apple_visual/foundation/apple_glass_shape.dart';
+import 'package:dashboard_shakhsi/app/apple_visual/foundation/apple_liquid_glass_recipe.dart';
+import 'package:dashboard_shakhsi/app/apple_visual/widgets/apple_liquid_glass.dart';
 import 'package:dashboard_shakhsi/app/theme/original_design_tokens.dart';
 import 'package:dashboard_shakhsi/app/widgets/original_controls.dart';
-import 'package:dashboard_shakhsi/app/widgets/original_glass.dart';
 import 'package:dashboard_shakhsi/core/ids/id_generator.dart';
 import 'package:dashboard_shakhsi/features/tasks/domain/task_item.dart';
 import 'package:dashboard_shakhsi/features/tasks/domain/task_recurrence_rule.dart';
@@ -175,11 +177,13 @@ final class _TaskDetailsDialogShellState
                         ? constraints.maxHeight
                         : constraints.maxHeight.clamp(520.0, 820.0).toDouble(),
                   ),
-                  child: OriginalGlass(
-                    radius: narrow
-                        ? OriginalDesignTokens.rowRadius
-                        : OriginalDesignTokens.cardRadius,
-                    padding: EdgeInsets.zero,
+                  child: AppleLiquidGlass(
+                    role: AppleGlassRole.largeSurface,
+                    shape: AppleGlassShape.rounded(
+                      narrow
+                          ? OriginalDesignTokens.rowRadius
+                          : OriginalDesignTokens.cardRadius,
+                    ),
                     child: Column(
                       children: <Widget>[
                         _DialogHeader(

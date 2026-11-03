@@ -1,6 +1,8 @@
+import 'package:dashboard_shakhsi/app/apple_visual/foundation/apple_glass_shape.dart';
+import 'package:dashboard_shakhsi/app/apple_visual/foundation/apple_liquid_glass_recipe.dart';
+import 'package:dashboard_shakhsi/app/apple_visual/widgets/apple_liquid_glass.dart';
 import 'package:dashboard_shakhsi/app/theme/original_design_tokens.dart';
 import 'package:dashboard_shakhsi/app/widgets/original_controls.dart';
-import 'package:dashboard_shakhsi/app/widgets/original_glass.dart';
 import 'package:dashboard_shakhsi/features/tasks/domain/task_time_entry.dart';
 import 'package:flutter/material.dart';
 
@@ -74,67 +76,70 @@ final class _TaskManualTimeEntryDialogState
       insetPadding: const EdgeInsets.all(20),
       child: ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 430),
-        child: OriginalGlass(
-          radius: OriginalDesignTokens.cardRadius,
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              Text(
-                'ثبت دستی زمان',
-                style: TextStyle(
-                  color: palette.ink,
-                  fontSize: 19,
-                  fontWeight: FontWeight.w800,
-                ),
-              ),
-              const SizedBox(height: 16),
-              OriginalTextField(
-                key: const ValueKey<String>('manual-time-duration'),
-                controller: _durationController,
-                hintText: 'مدت به دقیقه',
-                prefixIcon: Icons.schedule_rounded,
-                keyboardType: TextInputType.number,
-              ),
-              const SizedBox(height: 10),
-              OriginalTextField(
-                key: const ValueKey<String>('manual-time-note'),
-                controller: _noteController,
-                hintText: 'یادداشت اختیاری',
-                prefixIcon: Icons.notes_rounded,
-              ),
-              if (_error case final error?) ...<Widget>[
-                const SizedBox(height: 8),
+        child: AppleLiquidGlass(
+          role: AppleGlassRole.largeSurface,
+          shape: const AppleGlassShape.rounded(OriginalDesignTokens.cardRadius),
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
                 Text(
-                  error,
-                  key: const ValueKey<String>('manual-time-error'),
+                  'ثبت دستی زمان',
                   style: TextStyle(
-                    color: palette.expense,
-                    fontSize: 12.5,
-                    fontWeight: FontWeight.w700,
+                    color: palette.ink,
+                    fontSize: 19,
+                    fontWeight: FontWeight.w800,
                   ),
                 ),
-              ],
-              const SizedBox(height: 18),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: <Widget>[
-                  OriginalGhostButton(
-                    label: 'انصراف',
-                    icon: Icons.close_rounded,
-                    onPressed: () => Navigator.of(context).pop(),
-                  ),
-                  const SizedBox(width: 8),
-                  OriginalPrimaryButton(
-                    key: const ValueKey<String>('manual-time-save'),
-                    label: 'ذخیره',
-                    icon: Icons.check_rounded,
-                    onPressed: _save,
+                const SizedBox(height: 16),
+                OriginalTextField(
+                  key: const ValueKey<String>('manual-time-duration'),
+                  controller: _durationController,
+                  hintText: 'مدت به دقیقه',
+                  prefixIcon: Icons.schedule_rounded,
+                  keyboardType: TextInputType.number,
+                ),
+                const SizedBox(height: 10),
+                OriginalTextField(
+                  key: const ValueKey<String>('manual-time-note'),
+                  controller: _noteController,
+                  hintText: 'یادداشت اختیاری',
+                  prefixIcon: Icons.notes_rounded,
+                ),
+                if (_error case final error?) ...<Widget>[
+                  const SizedBox(height: 8),
+                  Text(
+                    error,
+                    key: const ValueKey<String>('manual-time-error'),
+                    style: TextStyle(
+                      color: palette.expense,
+                      fontSize: 12.5,
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
                 ],
-              ),
-            ],
+                const SizedBox(height: 18),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: <Widget>[
+                    OriginalGhostButton(
+                      label: 'انصراف',
+                      icon: Icons.close_rounded,
+                      onPressed: () => Navigator.of(context).pop(),
+                    ),
+                    const SizedBox(width: 8),
+                    OriginalPrimaryButton(
+                      key: const ValueKey<String>('manual-time-save'),
+                      label: 'ذخیره',
+                      icon: Icons.check_rounded,
+                      onPressed: _save,
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),

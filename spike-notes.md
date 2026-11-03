@@ -90,4 +90,5 @@ IMPORTANT: in profile mode the Linux app renders the FALLBACK glass (probe edges
 - APK built on GitHub run https://github.com/majidsii/dashboard-shakhsi/actions/runs/41547867854; awaiting owner's on-device reading (screen shows GLASS: FULL/FALLBACK and frame stats). Package suffix .lgspike; CI removes file_picker (Kotlin plugin class not visible to Java compile under Flutter 3.47).
 
 ## Q4 Windows
+Windows build: run https://github.com/majidsii/dashboard-shakhsi/actions/runs/41627436511; artifact on draft release; awaiting owner run
 Runner change prepared; not built or run (no Windows machine). Status: unverified.

@@ -31,7 +31,10 @@ Widget _onWallpaper(Widget screen) => Stack(
 );
 
 final List<_Entry> _entries = <_Entry>[
-  _Entry('امروز و پول', (framed) => AllGlassHomeApp(fake: false, framed: framed)),
+  _Entry(
+    'امروز و پول',
+    (framed) => AllGlassHomeApp(fake: false, framed: framed),
+  ),
   _Entry('خلاصه', (_) => _onWallpaper(const RingsScreen())),
   _Entry('کیف پول', (_) => _onWallpaper(const WalletStackScreen())),
   _Entry('پاکت‌ها', (_) => _onWallpaper(const EnvelopesScreen())),
@@ -120,7 +123,10 @@ class _AllGlassGalleryState extends State<AllGlassGallery> {
       children: <Widget>[
         Padding(
           padding: const EdgeInsetsDirectional.only(start: 12, bottom: 12),
-          child: Text('نمایشگاه شیشه', style: glassText(20, weight: FontWeight.w800)),
+          child: Text(
+            'نمایشگاه شیشه',
+            style: glassText(20, weight: FontWeight.w800),
+          ),
         ),
         for (var i = 0; i < _entries.length; i++)
           _ListButton(
@@ -163,7 +169,11 @@ class _AllGlassGalleryState extends State<AllGlassGallery> {
                   color: const Color(0x55000000),
                   border: Border.all(color: const Color(0x88FFFFFF)),
                 ),
-                child: const Icon(Icons.apps_rounded, color: Colors.white, size: 20),
+                child: const Icon(
+                  Icons.apps_rounded,
+                  color: Colors.white,
+                  size: 20,
+                ),
               ),
             ),
           ),
@@ -198,7 +208,10 @@ class _ListButton extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
             child: Text(
               title,
-              style: glassText(16, weight: selected ? FontWeight.w800 : FontWeight.w500),
+              style: glassText(
+                16,
+                weight: selected ? FontWeight.w800 : FontWeight.w500,
+              ),
             ),
           ),
         ),

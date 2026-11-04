@@ -29,7 +29,7 @@ class AllGlassPrototype extends StatelessWidget {
         child: LayoutBuilder(
           builder: (context, c) {
             final wide = c.maxWidth > 500;
-            final app = _AllGlassApp(fake: fakeGlass, framed: wide);
+            final app = AllGlassHomeApp(fake: fakeGlass, framed: wide);
             if (!wide) {
               return app;
             }
@@ -60,17 +60,18 @@ class AllGlassPrototype extends StatelessWidget {
   }
 }
 
-class _AllGlassApp extends StatefulWidget {
-  const _AllGlassApp({required this.fake, required this.framed});
+/// The original two-tab all-glass app (Today + Money), unframed.
+class AllGlassHomeApp extends StatefulWidget {
+  const AllGlassHomeApp({required this.fake, required this.framed, super.key});
 
   final bool fake;
   final bool framed;
 
   @override
-  State<_AllGlassApp> createState() => _AllGlassAppState();
+  State<AllGlassHomeApp> createState() => AllGlassHomeAppState();
 }
 
-class _AllGlassAppState extends State<_AllGlassApp> {
+class AllGlassHomeAppState extends State<AllGlassHomeApp> {
   int _tab = 0;
   bool _sheet = false;
 

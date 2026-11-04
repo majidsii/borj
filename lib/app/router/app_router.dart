@@ -1,4 +1,4 @@
-import 'package:dashboard_shakhsi/app/apple_visual/prototype/all_glass_prototype.dart';
+import 'package:dashboard_shakhsi/app/apple_visual/prototype/all_glass_gallery.dart';
 import 'package:dashboard_shakhsi/app/apple_visual/review/glass_review_screen.dart';
 import 'package:dashboard_shakhsi/features/dashboard/presentation/dashboard_screen.dart';
 import 'package:dashboard_shakhsi/features/settings/presentation/settings_screen.dart';
@@ -89,7 +89,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       if (kDebugMode)
         GoRoute(
           path: AppRoutes.allGlass,
-          builder: (context, state) => const AllGlassPrototype(),
+          builder: (context, state) => const AllGlassGallery(),
         ),
     ],
   );

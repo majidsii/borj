@@ -1,3 +1,4 @@
+import 'package:dashboard_shakhsi/app/apple_visual/prototype/all_glass_prototype.dart';
 import 'package:dashboard_shakhsi/app/apple_visual/review/glass_review_screen.dart';
 import 'package:dashboard_shakhsi/features/dashboard/presentation/dashboard_screen.dart';
 import 'package:dashboard_shakhsi/features/settings/presentation/settings_screen.dart';
@@ -17,11 +18,18 @@ abstract final class AppRoutes {
   static const backup = '/backup';
   static const migration = '/migration';
   static const glassReview = '/debug/glass-review';
+  static const allGlass = '/debug/all-glass';
 }
+
+/// Debug-only override of the initial route, e.g.
+/// --dart-define=START_ROUTE=/debug/all-glass. Ignored in release builds.
+const String _startRoute = String.fromEnvironment('START_ROUTE');
 
 final appRouterProvider = Provider<GoRouter>((ref) {
   final router = GoRouter(
-    initialLocation: AppRoutes.dashboard,
+    initialLocation: kDebugMode && _startRoute.isNotEmpty
+        ? _startRoute
+        : AppRoutes.dashboard,
     routes: <RouteBase>[
       GoRoute(
         path: AppRoutes.dashboard,
@@ -77,6 +85,11 @@ final appRouterProvider = Provider<GoRouter>((ref) {
           path: AppRoutes.glassReview,
           builder: (context, state) =>
               const GlassReviewScreen(referenceDir: glassReferenceDir),
+        ),
+      if (kDebugMode)
+        GoRoute(
+          path: AppRoutes.allGlass,
+          builder: (context, state) => const AllGlassPrototype(),
         ),
     ],
   );

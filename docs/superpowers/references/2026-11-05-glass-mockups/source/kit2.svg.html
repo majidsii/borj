@@ -1,0 +1,59 @@
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
+<filter id="lg-s" x="0" y="0" width="1" height="1" color-interpolation-filters="sRGB">
+<feFlood flood-color="#000"/><feGaussianBlur stdDeviation="6" result="h"/>
+<feDiffuseLighting in="h" surfaceScale="6" diffuseConstant="1" lighting-color="#fff" result="xp"><feDistantLight azimuth="0" elevation="0"/></feDiffuseLighting><feDiffuseLighting in="h" surfaceScale="6" diffuseConstant="1" lighting-color="#fff" result="xn"><feDistantLight azimuth="180" elevation="0"/></feDiffuseLighting><feDiffuseLighting in="h" surfaceScale="6" diffuseConstant="1" lighting-color="#fff" result="yp"><feDistantLight azimuth="90" elevation="0"/></feDiffuseLighting><feDiffuseLighting in="h" surfaceScale="6" diffuseConstant="1" lighting-color="#fff" result="yn"><feDistantLight azimuth="270" elevation="0"/></feDiffuseLighting>
+<feColorMatrix in="xp" values="-1 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1" result="ixp"/>
+<feComposite in="xn" in2="ixp" operator="arithmetic" k2=".5" k3=".5" result="mx"/>
+<feColorMatrix in="mx" values="1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1" result="mxr"/>
+<feColorMatrix in="yp" values="0 0 0 0 0 0 -1 0 0 1 0 0 0 0 0 0 0 0 0 1" result="iyp"/>
+<feComposite in="yn" in2="iyp" operator="arithmetic" k2=".5" k3=".5" result="my"/>
+<feColorMatrix in="my" values="0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 1" result="myg"/>
+<feComposite in="mxr" in2="myg" operator="arithmetic" k2="1" k3="1" result="map"/>
+<feDisplacementMap in="SourceGraphic" in2="map" scale="44" xChannelSelector="R" yChannelSelector="G" result="dr"/>
+<feDisplacementMap in="SourceGraphic" in2="map" scale="50.2" xChannelSelector="R" yChannelSelector="G" result="dg"/>
+<feDisplacementMap in="SourceGraphic" in2="map" scale="56.3" xChannelSelector="R" yChannelSelector="G" result="db"/>
+<feColorMatrix in="dr" values="1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1" result="r"/>
+<feColorMatrix in="dg" values="0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 1" result="g"/>
+<feColorMatrix in="db" values="0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 1" result="b"/>
+<feComposite in="r" in2="g" operator="arithmetic" k2="1" k3="1" result="rg"/>
+<feComposite in="rg" in2="b" operator="arithmetic" k2="1" k3="1"/>
+</filter>
+<filter id="lg-m" x="0" y="0" width="1" height="1" color-interpolation-filters="sRGB">
+<feFlood flood-color="#000"/><feGaussianBlur stdDeviation="9" result="h"/>
+<feDiffuseLighting in="h" surfaceScale="9" diffuseConstant="1" lighting-color="#fff" result="xp"><feDistantLight azimuth="0" elevation="0"/></feDiffuseLighting><feDiffuseLighting in="h" surfaceScale="9" diffuseConstant="1" lighting-color="#fff" result="xn"><feDistantLight azimuth="180" elevation="0"/></feDiffuseLighting><feDiffuseLighting in="h" surfaceScale="9" diffuseConstant="1" lighting-color="#fff" result="yp"><feDistantLight azimuth="90" elevation="0"/></feDiffuseLighting><feDiffuseLighting in="h" surfaceScale="9" diffuseConstant="1" lighting-color="#fff" result="yn"><feDistantLight azimuth="270" elevation="0"/></feDiffuseLighting>
+<feColorMatrix in="xp" values="-1 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1" result="ixp"/>
+<feComposite in="xn" in2="ixp" operator="arithmetic" k2=".5" k3=".5" result="mx"/>
+<feColorMatrix in="mx" values="1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1" result="mxr"/>
+<feColorMatrix in="yp" values="0 0 0 0 0 0 -1 0 0 1 0 0 0 0 0 0 0 0 0 1" result="iyp"/>
+<feComposite in="yn" in2="iyp" operator="arithmetic" k2=".5" k3=".5" result="my"/>
+<feColorMatrix in="my" values="0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 1" result="myg"/>
+<feComposite in="mxr" in2="myg" operator="arithmetic" k2="1" k3="1" result="map"/>
+<feDisplacementMap in="SourceGraphic" in2="map" scale="64" xChannelSelector="R" yChannelSelector="G" result="dr"/>
+<feDisplacementMap in="SourceGraphic" in2="map" scale="71.7" xChannelSelector="R" yChannelSelector="G" result="dg"/>
+<feDisplacementMap in="SourceGraphic" in2="map" scale="79.4" xChannelSelector="R" yChannelSelector="G" result="db"/>
+<feColorMatrix in="dr" values="1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1" result="r"/>
+<feColorMatrix in="dg" values="0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 1" result="g"/>
+<feColorMatrix in="db" values="0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 1" result="b"/>
+<feComposite in="r" in2="g" operator="arithmetic" k2="1" k3="1" result="rg"/>
+<feComposite in="rg" in2="b" operator="arithmetic" k2="1" k3="1"/>
+</filter>
+<filter id="lg-l" x="0" y="0" width="1" height="1" color-interpolation-filters="sRGB">
+<feFlood flood-color="#000"/><feGaussianBlur stdDeviation="14" result="h"/>
+<feDiffuseLighting in="h" surfaceScale="13" diffuseConstant="1" lighting-color="#fff" result="xp"><feDistantLight azimuth="0" elevation="0"/></feDiffuseLighting><feDiffuseLighting in="h" surfaceScale="13" diffuseConstant="1" lighting-color="#fff" result="xn"><feDistantLight azimuth="180" elevation="0"/></feDiffuseLighting><feDiffuseLighting in="h" surfaceScale="13" diffuseConstant="1" lighting-color="#fff" result="yp"><feDistantLight azimuth="90" elevation="0"/></feDiffuseLighting><feDiffuseLighting in="h" surfaceScale="13" diffuseConstant="1" lighting-color="#fff" result="yn"><feDistantLight azimuth="270" elevation="0"/></feDiffuseLighting>
+<feColorMatrix in="xp" values="-1 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1" result="ixp"/>
+<feComposite in="xn" in2="ixp" operator="arithmetic" k2=".5" k3=".5" result="mx"/>
+<feColorMatrix in="mx" values="1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1" result="mxr"/>
+<feColorMatrix in="yp" values="0 0 0 0 0 0 -1 0 0 1 0 0 0 0 0 0 0 0 0 1" result="iyp"/>
+<feComposite in="yn" in2="iyp" operator="arithmetic" k2=".5" k3=".5" result="my"/>
+<feColorMatrix in="my" values="0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 1" result="myg"/>
+<feComposite in="mxr" in2="myg" operator="arithmetic" k2="1" k3="1" result="map"/>
+<feDisplacementMap in="SourceGraphic" in2="map" scale="90" xChannelSelector="R" yChannelSelector="G" result="dr"/>
+<feDisplacementMap in="SourceGraphic" in2="map" scale="99.0" xChannelSelector="R" yChannelSelector="G" result="dg"/>
+<feDisplacementMap in="SourceGraphic" in2="map" scale="108.0" xChannelSelector="R" yChannelSelector="G" result="db"/>
+<feColorMatrix in="dr" values="1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1" result="r"/>
+<feColorMatrix in="dg" values="0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 1" result="g"/>
+<feColorMatrix in="db" values="0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 1" result="b"/>
+<feComposite in="r" in2="g" operator="arithmetic" k2="1" k3="1" result="rg"/>
+<feComposite in="rg" in2="b" operator="arithmetic" k2="1" k3="1"/>
+</filter>
+</defs></svg>

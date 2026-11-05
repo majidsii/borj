@@ -19,7 +19,7 @@ Android, Windows and macOS.
   It stores user data in `~/.local/share/dashboard-shakhsi/data.json`
   (Windows `%APPDATA%\dashboard-shakhsi\data.json`).
 - v2 is a full Flutter rewrite on `feat/v2-complete-dashboard`, not yet released.
-  v2 has no v1 importer yet. Releasing v2 without one loses users' data.
+  v2 imports v1 data from Settings (`lib/features/legacy_import/`).
 
 ## Where things are written down
 
@@ -46,16 +46,10 @@ Pub uses the `pub.flutter-io.cn` mirror (`PUB_HOSTED_URL`), and `pubspec.lock`
 records that host. The `storage.flutter-io.cn` notice in output is expected.
 
 ```bash
-flutter pub get
-flutter analyze
-flutter test                                   # full suite, ~5 min, ~1350 tests
-flutter test test/core/money/money_test.dart   # one file
-flutter test --plain-name "exact test name" test/path/file_test.dart  # one test
+flutter test                                   # full suite, ~5 min, ~1370 tests
 dart run build_runner build --delete-conflicting-outputs  # Drift codegen (app_database.g.dart)
-dart format lib test
-flutter build linux --release
-flutter run -d linux
-tool/ci.sh                                     # all CI checks (once the CI plan lands)
+tool/ci.sh                                     # all CI checks (format, codegen, analyze, test, build)
+tool/ci.sh --device                            # plus integration_test on Linux
 ```
 
 Tests that need a GPU or a desktop session go under `integration_test/` and run
@@ -114,7 +108,12 @@ for cards) and `lib/app/theme/`. Apple-style system in `lib/app/apple_visual/`:
 - `generated/`: tokens generated from the Apple UI kit by `tool/` scripts.
 - The Gate C `rendering/` pipeline is gone.
 
-Glass is for navigation and control chrome only, never content cards. Use
+Redesign in progress (owner-approved 2026-11-05): EVERY element is Liquid Glass,
+chrome and content alike, but never glass on glass (things drawn on glass use a flat
+inner material). Light background white, dark background charcoal with warm light.
+The approved boards are `docs/superpowers/references/2026-11-05-glass-mockups/`
+(the board wins on layout); the design is
+`docs/superpowers/specs/2026-11-05-liquid-glass-redesign-design.md`. Use
 `AppleLiquidGlass(role:, shape: AppleGlassShape..., child:)`. The theme comes from
 `AppleVisualScope.of(context)` (follows app brightness). Only `apple_liquid_glass.dart`
 and `app_bootstrap.dart` import `liquid_glass_renderer`. Acceptance is side-by-side

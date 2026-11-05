@@ -1,0 +1,316 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>Desktop calendar</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300..900&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#1F5FD0}a:hover{color:#1F4FA8}
+.desk{background:#1B1C20}
+.orb{position:absolute;border-radius:50%}
+.chk{appearance:none;-webkit-appearance:none;width:20px;height:20px;border-radius:50%;border:1.5px solid #5A6482;background:rgba(255,255,255,.4);margin:0;display:grid;place-content:center;flex:none;cursor:pointer}
+.chk:checked{background:#2F6FDB;border-color:#2F6FDB}
+.chk:checked::after{content:"";width:9px;height:5px;border:solid #fff;border-width:0 0 2px 2px;transform:rotate(-45deg) translate(1px,-1px)}
+.row:hover{background:rgba(255,255,255,.28)}
+.navi:hover{background:rgba(255,255,255,.35)}
+button{font-family:inherit;cursor:pointer}
+button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid #1F5FD0;outline-offset:2px}
+/* ===== Liquid Glass kit ===== */
+.lg{position:relative;isolation:isolate;--lg-tint:rgba(255,255,255,.26);--rim-a:.95;--rim-b:.55;--ink:#1B2236;background:var(--lg-tint);color:var(--ink);box-shadow:inset 0 0 0 .5px rgba(255,255,255,.45),inset 0 1px 1px rgba(255,255,255,.55),inset 0 -1px 2px rgba(20,30,80,.10),inset 0 0 14px rgba(255,255,255,.22),0 0 0 .5px rgba(20,30,70,.10),0 2px 8px rgba(20,30,70,.10)}
+.lg::before,.lg-in::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1.25px;pointer-events:none;z-index:2;background:linear-gradient(215deg,rgba(255,255,255,var(--rim-a)) 0%,rgba(255,255,255,.18) 24%,rgba(255,255,255,0) 46%,rgba(255,255,255,0) 58%,rgba(255,255,255,.16) 76%,rgba(255,255,255,var(--rim-b)) 100%);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0)}
+.lg::after,.lg-in::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:-1;background:radial-gradient(120% 90% at 85% 0%,rgba(255,255,255,.34),rgba(255,255,255,0) 55%),linear-gradient(0deg,rgba(255,255,255,.10),rgba(255,255,255,0) 40%)}
+/* size = which displacement filter + blur. plain blur line first = fallback */
+.lg-s{-webkit-backdrop-filter:blur(5px) saturate(1.7) brightness(1.04);backdrop-filter:blur(5px) saturate(1.7) brightness(1.04);backdrop-filter:blur(5px) saturate(1.7) brightness(1.04) url(#lg-s)}
+.lg-m{-webkit-backdrop-filter:blur(8px) saturate(1.7) brightness(1.04);backdrop-filter:blur(8px) saturate(1.7) brightness(1.04);backdrop-filter:blur(8px) saturate(1.7) brightness(1.04) url(#lg-m)}
+.lg-l{-webkit-backdrop-filter:blur(12px) saturate(1.7) brightness(1.04);backdrop-filter:blur(12px) saturate(1.7) brightness(1.04);backdrop-filter:blur(12px) saturate(1.7) brightness(1.04) url(#lg-l)}
+.lg-clear.lg-s{-webkit-backdrop-filter:blur(1px) saturate(1.3);backdrop-filter:blur(1px) saturate(1.3);backdrop-filter:blur(1px) saturate(1.3) url(#lg-s)}
+.lg-clear.lg-m{-webkit-backdrop-filter:blur(2px) saturate(1.3);backdrop-filter:blur(2px) saturate(1.3);backdrop-filter:blur(2px) saturate(1.3) url(#lg-m)}
+.lg-clear.lg-l{-webkit-backdrop-filter:blur(3px) saturate(1.3);backdrop-filter:blur(3px) saturate(1.3);backdrop-filter:blur(3px) saturate(1.3) url(#lg-l)}
+.lg-clear{--lg-tint:rgba(255,255,255,.07);--rim-a:1;--rim-b:.7;box-shadow:inset 0 0 0 .5px rgba(255,255,255,.35),inset 0 0 16px rgba(255,255,255,.14),0 2px 10px rgba(10,15,40,.18)}
+.lg-dark{--lg-tint:rgba(24,28,44,.38);--rim-a:.55;--rim-b:.28;--ink:#F4F6FC;box-shadow:inset 0 0 0 .5px rgba(255,255,255,.14),inset 0 1px 1px rgba(255,255,255,.18),inset 0 0 16px rgba(255,255,255,.05),0 0 0 .5px rgba(0,0,0,.45),0 2px 10px rgba(0,0,0,.28)}
+.lg-dark::after{background:radial-gradient(120% 90% at 85% 0%,rgba(255,255,255,.12),rgba(255,255,255,0) 55%)}
+.lg-tint{--lg-tint:rgba(47,111,219,.66);--rim-a:.95;--rim-b:.5;--ink:#fff;box-shadow:inset 0 0 0 .5px rgba(255,255,255,.35),inset 0 1px 1px rgba(255,255,255,.5),inset 0 0 14px rgba(160,200,255,.30),0 0 0 .5px rgba(20,50,140,.35),0 4px 12px rgba(47,111,219,.30)}
+/* flat glass: for use INSIDE another glass element (nested backdrop-filter cannot see the page) */
+.lg-in{--rim-a:.9;--rim-b:.5;position:relative;isolation:isolate;background:rgba(255,255,255,.34);color:var(--ink,#1B2236);box-shadow:inset 0 0 0 .5px rgba(255,255,255,.55),inset 0 1px 1px rgba(255,255,255,.7),inset 0 -1px 2px rgba(20,30,80,.08),0 0 0 .5px rgba(20,30,70,.08)}
+.lg-dark .lg-in,.lg-in.lg-dark{background:rgba(255,255,255,.08);box-shadow:inset 0 0 0 .5px rgba(255,255,255,.12),inset 0 1px 1px rgba(255,255,255,.2),0 0 0 .5px rgba(0,0,0,.35)}
+/* legibility: text-bearing glass gets a stronger tint */
+.lg-text{--lg-tint:rgba(255,255,255,.52)}
+.lg-dark.lg-text{--lg-tint:rgba(18,22,38,.58)}
+.lg-in.lg-lens{background:rgba(255,255,255,.16);box-shadow:inset 0 0 0 .5px rgba(255,255,255,.7),inset 0 0 12px rgba(255,255,255,.35),0 4px 12px rgba(20,30,80,.22)}
+.lg-dark .lg-in::before,.lg-in.lg-dark::before{--rim-a:.5;--rim-b:.25}
+.bg-root{background:#1B1C20}
+</style>
+</helmet>
+<div class="bg-root" dir="rtl" style="position: relative; min-height: 100vh; box-sizing: border-box; padding: 40px 16px; display: flex; justify-content: center; align-items: flex-start; font-family: Vazirmatn, -apple-system, Tahoma, sans-serif; color: #1B2236; overflow: hidden">
+  <!-- BG:START -->
+  <div aria-hidden="true" style="position:absolute;inset:0;background:radial-gradient(60% 55% at 100% 0%,rgba(255,170,95,.30),rgba(255,170,95,0) 70%),linear-gradient(180deg,#232427,#18191C)"></div>
+<!-- BG:END -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
+<filter id="lg-s" x="0" y="0" width="1" height="1" color-interpolation-filters="sRGB">
+<feFlood flood-color="#000"/><feGaussianBlur stdDeviation="6" result="h"/>
+<feDiffuseLighting in="h" surfaceScale="6" diffuseConstant="1" lighting-color="#fff" result="xp"><feDistantLight azimuth="0" elevation="0"/></feDiffuseLighting><feDiffuseLighting in="h" surfaceScale="6" diffuseConstant="1" lighting-color="#fff" result="xn"><feDistantLight azimuth="180" elevation="0"/></feDiffuseLighting><feDiffuseLighting in="h" surfaceScale="6" diffuseConstant="1" lighting-color="#fff" result="yp"><feDistantLight azimuth="90" elevation="0"/></feDiffuseLighting><feDiffuseLighting in="h" surfaceScale="6" diffuseConstant="1" lighting-color="#fff" result="yn"><feDistantLight azimuth="270" elevation="0"/></feDiffuseLighting>
+<feColorMatrix in="xp" values="-1 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1" result="ixp"/>
+<feComposite in="xn" in2="ixp" operator="arithmetic" k2=".5" k3=".5" result="mx"/>
+<feColorMatrix in="mx" values="1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1" result="mxr"/>
+<feColorMatrix in="yp" values="0 0 0 0 0 0 -1 0 0 1 0 0 0 0 0 0 0 0 0 1" result="iyp"/>
+<feComposite in="yn" in2="iyp" operator="arithmetic" k2=".5" k3=".5" result="my"/>
+<feColorMatrix in="my" values="0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 1" result="myg"/>
+<feComposite in="mxr" in2="myg" operator="arithmetic" k2="1" k3="1" result="map"/>
+<feDisplacementMap in="SourceGraphic" in2="map" scale="44" xChannelSelector="R" yChannelSelector="G" result="dr"/>
+<feDisplacementMap in="SourceGraphic" in2="map" scale="50.2" xChannelSelector="R" yChannelSelector="G" result="dg"/>
+<feDisplacementMap in="SourceGraphic" in2="map" scale="56.3" xChannelSelector="R" yChannelSelector="G" result="db"/>
+<feColorMatrix in="dr" values="1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1" result="r"/>
+<feColorMatrix in="dg" values="0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 1" result="g"/>
+<feColorMatrix in="db" values="0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 1" result="b"/>
+<feComposite in="r" in2="g" operator="arithmetic" k2="1" k3="1" result="rg"/>
+<feComposite in="rg" in2="b" operator="arithmetic" k2="1" k3="1"/>
+</filter>
+<filter id="lg-m" x="0" y="0" width="1" height="1" color-interpolation-filters="sRGB">
+<feFlood flood-color="#000"/><feGaussianBlur stdDeviation="9" result="h"/>
+<feDiffuseLighting in="h" surfaceScale="9" diffuseConstant="1" lighting-color="#fff" result="xp"><feDistantLight azimuth="0" elevation="0"/></feDiffuseLighting><feDiffuseLighting in="h" surfaceScale="9" diffuseConstant="1" lighting-color="#fff" result="xn"><feDistantLight azimuth="180" elevation="0"/></feDiffuseLighting><feDiffuseLighting in="h" surfaceScale="9" diffuseConstant="1" lighting-color="#fff" result="yp"><feDistantLight azimuth="90" elevation="0"/></feDiffuseLighting><feDiffuseLighting in="h" surfaceScale="9" diffuseConstant="1" lighting-color="#fff" result="yn"><feDistantLight azimuth="270" elevation="0"/></feDiffuseLighting>
+<feColorMatrix in="xp" values="-1 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1" result="ixp"/>
+<feComposite in="xn" in2="ixp" operator="arithmetic" k2=".5" k3=".5" result="mx"/>
+<feColorMatrix in="mx" values="1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1" result="mxr"/>
+<feColorMatrix in="yp" values="0 0 0 0 0 0 -1 0 0 1 0 0 0 0 0 0 0 0 0 1" result="iyp"/>
+<feComposite in="yn" in2="iyp" operator="arithmetic" k2=".5" k3=".5" result="my"/>
+<feColorMatrix in="my" values="0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 1" result="myg"/>
+<feComposite in="mxr" in2="myg" operator="arithmetic" k2="1" k3="1" result="map"/>
+<feDisplacementMap in="SourceGraphic" in2="map" scale="64" xChannelSelector="R" yChannelSelector="G" result="dr"/>
+<feDisplacementMap in="SourceGraphic" in2="map" scale="71.7" xChannelSelector="R" yChannelSelector="G" result="dg"/>
+<feDisplacementMap in="SourceGraphic" in2="map" scale="79.4" xChannelSelector="R" yChannelSelector="G" result="db"/>
+<feColorMatrix in="dr" values="1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1" result="r"/>
+<feColorMatrix in="dg" values="0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 1" result="g"/>
+<feColorMatrix in="db" values="0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 1" result="b"/>
+<feComposite in="r" in2="g" operator="arithmetic" k2="1" k3="1" result="rg"/>
+<feComposite in="rg" in2="b" operator="arithmetic" k2="1" k3="1"/>
+</filter>
+<filter id="lg-l" x="0" y="0" width="1" height="1" color-interpolation-filters="sRGB">
+<feFlood flood-color="#000"/><feGaussianBlur stdDeviation="14" result="h"/>
+<feDiffuseLighting in="h" surfaceScale="13" diffuseConstant="1" lighting-color="#fff" result="xp"><feDistantLight azimuth="0" elevation="0"/></feDiffuseLighting><feDiffuseLighting in="h" surfaceScale="13" diffuseConstant="1" lighting-color="#fff" result="xn"><feDistantLight azimuth="180" elevation="0"/></feDiffuseLighting><feDiffuseLighting in="h" surfaceScale="13" diffuseConstant="1" lighting-color="#fff" result="yp"><feDistantLight azimuth="90" elevation="0"/></feDiffuseLighting><feDiffuseLighting in="h" surfaceScale="13" diffuseConstant="1" lighting-color="#fff" result="yn"><feDistantLight azimuth="270" elevation="0"/></feDiffuseLighting>
+<feColorMatrix in="xp" values="-1 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1" result="ixp"/>
+<feComposite in="xn" in2="ixp" operator="arithmetic" k2=".5" k3=".5" result="mx"/>
+<feColorMatrix in="mx" values="1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1" result="mxr"/>
+<feColorMatrix in="yp" values="0 0 0 0 0 0 -1 0 0 1 0 0 0 0 0 0 0 0 0 1" result="iyp"/>
+<feComposite in="yn" in2="iyp" operator="arithmetic" k2=".5" k3=".5" result="my"/>
+<feColorMatrix in="my" values="0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 1" result="myg"/>
+<feComposite in="mxr" in2="myg" operator="arithmetic" k2="1" k3="1" result="map"/>
+<feDisplacementMap in="SourceGraphic" in2="map" scale="90" xChannelSelector="R" yChannelSelector="G" result="dr"/>
+<feDisplacementMap in="SourceGraphic" in2="map" scale="99.0" xChannelSelector="R" yChannelSelector="G" result="dg"/>
+<feDisplacementMap in="SourceGraphic" in2="map" scale="108.0" xChannelSelector="R" yChannelSelector="G" result="db"/>
+<feColorMatrix in="dr" values="1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1" result="r"/>
+<feColorMatrix in="dg" values="0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 1" result="g"/>
+<feColorMatrix in="db" values="0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 1" result="b"/>
+<feComposite in="r" in2="g" operator="arithmetic" k2="1" k3="1" result="rg"/>
+<feComposite in="rg" in2="b" operator="arithmetic" k2="1" k3="1"/>
+</filter>
+</defs></svg>
+  <div style="position: relative; width: 100%; max-width: 1320px; min-height: 820px; border-radius: 26px; background: #FFFFFF; box-shadow: 0 0 0 .5px rgba(255,255,255,.28), 0 34px 90px rgba(0,0,0,.6), 0 8px 24px rgba(0,0,0,.35); display: flex; flex-wrap: wrap; align-items: stretch">
+    <nav class="lg lg-l lg-text side" aria-label="بخش‌ها" style="position: relative; flex: 0 1 236px; min-width: 210px; box-sizing: border-box; margin: 8px; border-radius: 20px; padding: 14px 10px; display: flex; flex-direction: column; gap: 2px">
+      <div style="display: flex; gap: 8px; padding: 2px 6px 12px" aria-hidden="true"><span style="width: 12px; height: 12px; border-radius: 50%; background: #FF5F57"></span><span style="width: 12px; height: 12px; border-radius: 50%; background: #FEBC2E"></span><span style="width: 12px; height: 12px; border-radius: 50%; background: #28C840"></span></div>
+      <span style="padding: 6px 10px 4px; font-size: 12px; font-weight: 700; color: #38425E">برنامه</span><a href="#" class="navi" style="display: flex; align-items: center; gap: 10px; height: 36px; padding: 0 10px; border-radius: 12px; color: #1B2236; text-decoration: none; font-size: 14px; font-weight: 500"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1F5FD0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><span style="flex: 1">امروز</span><span style="font-size: 12px; color: #38425E">۵</span></a><a href="#" class="navi" style="display: flex; align-items: center; gap: 10px; height: 36px; padding: 0 10px; border-radius: 12px; color: #1B2236; text-decoration: none; font-size: 14px; font-weight: 500"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1F5FD0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/></svg><span style="flex: 1">همهٔ کارها</span><span style="font-size: 12px; color: #38425E">۲۴</span></a><a href="#" class="lg-in" style="display: flex; align-items: center; gap: 10px; height: 36px; padding: 0 10px; border-radius: 12px; color: #1B2236; text-decoration: none; font-size: 14px; font-weight: 700" aria-current="page"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1F5FD0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg><span style="flex: 1">تقویم</span></a><span style="padding: 14px 10px 4px; font-size: 12px; font-weight: 700; color: #38425E">پول</span><a href="#" class="navi" style="display: flex; align-items: center; gap: 10px; height: 36px; padding: 0 10px; border-radius: 12px; color: #1B2236; text-decoration: none; font-size: 14px; font-weight: 500"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8F5400" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="14" rx="3"/><path d="M3 10h18M16 15h2"/></svg><span style="flex: 1">تراکنش‌ها</span></a><a href="#" class="navi" style="display: flex; align-items: center; gap: 10px; height: 36px; padding: 0 10px; border-radius: 12px; color: #1B2236; text-decoration: none; font-size: 14px; font-weight: 500"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8F5400" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a9 9 0 1 0 9 9h-9z"/><path d="M15 3.5A9 9 0 0 1 20.5 9H15z"/></svg><span style="flex: 1">بودجه</span></a><a href="#" class="navi" style="display: flex; align-items: center; gap: 10px; height: 36px; padding: 0 10px; border-radius: 12px; color: #1B2236; text-decoration: none; font-size: 14px; font-weight: 500"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8F5400" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h10"/></svg><span style="flex: 1">قسط و بدهی</span></a><span style="padding: 14px 10px 4px; font-size: 12px; font-weight: 700; color: #38425E">زندگی</span><a href="#" class="navi" style="display: flex; align-items: center; gap: 10px; height: 36px; padding: 0 10px; border-radius: 12px; color: #1B2236; text-decoration: none; font-size: 14px; font-weight: 500"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0A7A70" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 0 1 14-5.3L20 9M20 4v5h-5M20 12a8 8 0 0 1-14 5.3L4 15M4 20v-5h5"/></svg><span style="flex: 1">عادت‌ها</span></a><a href="#" class="navi" style="display: flex; align-items: center; gap: 10px; height: 36px; padding: 0 10px; border-radius: 12px; color: #1B2236; text-decoration: none; font-size: 14px; font-weight: 500"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#B02440" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5"/></svg><span style="flex: 1">هدف‌ها</span></a>
+      <div style="margin-top: auto; padding: 14px 4px 0"><div style="display: flex; justify-content: space-between; align-items: center; padding: 0 6px 6px"><span style="font-size: 13px; font-weight: 800">آبان ۱۴۰۵</span><span style="display: flex; gap: 2px"><button type="button" aria-label="ماه قبل" style="width: 24px; height: 24px; border: 0; background: transparent; border-radius: 50%; color: #1B2236; display: grid; place-items: center"><svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg></button><button type="button" aria-label="ماه بعد" style="width: 24px; height: 24px; border: 0; background: transparent; border-radius: 50%; color: #1B2236; display: grid; place-items: center"><svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m15 6-6 6 6 6"/></svg></button></span></div><div style="display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); text-align: center; font-size: 11px; row-gap: 1px"><span style="color: #38425E; font-weight: 700; height: 20px; line-height: 20px">ش</span><span style="color: #38425E; font-weight: 700; height: 20px; line-height: 20px">ی</span><span style="color: #38425E; font-weight: 700; height: 20px; line-height: 20px">د</span><span style="color: #38425E; font-weight: 700; height: 20px; line-height: 20px">س</span><span style="color: #38425E; font-weight: 700; height: 20px; line-height: 20px">چ</span><span style="color: #38425E; font-weight: 700; height: 20px; line-height: 20px">پ</span><span style="color: #B02440; font-weight: 700; height: 20px; line-height: 20px">ج</span><span></span><span></span><span></span><span></span><span></span><span></span><span style="height: 26px; line-height: 26px; color: #B02440">۱</span><span style="height: 26px; line-height: 26px; color: #1B2236">۲</span><span style="height: 26px; line-height: 26px; color: #1B2236">۳</span><span style="height: 26px; line-height: 26px; color: #1B2236">۴</span><span style="height: 26px; line-height: 26px; color: #1B2236">۵</span><span style="height: 26px; line-height: 26px; color: #1B2236">۶</span><span style="height: 26px; line-height: 26px; color: #1B2236">۷</span><span style="height: 26px; line-height: 26px; color: #B02440">۸</span><div class="lg-in" style="grid-column: 1 / -1; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); border-radius: 13px" aria-label="هفتهٔ انتخاب‌شده"><span style="height: 26px; line-height: 26px; color: #1B2236">۹</span><span style="height: 26px; line-height: 26px; color: #1B2236">۱۰</span><span style="height: 26px; line-height: 26px; color: #1B2236">۱۱</span><span style="height: 26px; line-height: 26px; color: #1B2236">۱۲</span><span style="height: 26px; line-height: 26px; border-radius: 50%; background: #2F6FDB; color: #fff; font-weight: 800">۱۳</span><span style="height: 26px; line-height: 26px; color: #1B2236">۱۴</span><span style="height: 26px; line-height: 26px; color: #B02440">۱۵</span></div><span style="height: 26px; line-height: 26px; color: #1B2236">۱۶</span><span style="height: 26px; line-height: 26px; color: #1B2236">۱۷</span><span style="height: 26px; line-height: 26px; color: #1B2236">۱۸</span><span style="height: 26px; line-height: 26px; color: #1B2236">۱۹</span><span style="height: 26px; line-height: 26px; color: #1B2236">۲۰</span><span style="height: 26px; line-height: 26px; color: #1B2236">۲۱</span><span style="height: 26px; line-height: 26px; color: #B02440">۲۲</span><span style="height: 26px; line-height: 26px; color: #1B2236">۲۳</span><span style="height: 26px; line-height: 26px; color: #1B2236">۲۴</span><span style="height: 26px; line-height: 26px; color: #1B2236">۲۵</span><span style="height: 26px; line-height: 26px; color: #1B2236">۲۶</span><span style="height: 26px; line-height: 26px; color: #1B2236">۲۷</span><span style="height: 26px; line-height: 26px; color: #1B2236">۲۸</span><span style="height: 26px; line-height: 26px; color: #B02440">۲۹</span><span style="height: 26px; line-height: 26px; color: #1B2236">۳۰</span><span></span><span></span><span></span><span></span><span></span><span></span></div><div style="padding: 10px 6px 0; font-size: 11px; color: #38425E">پشتیبان امروز ۹:۰۰ ذخیره شد</div></div>
+    </nav>
+
+    <main style="position: relative; flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column">
+      <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px; padding: 14px 16px 0 20px">
+        <div style="display: flex; gap: 8px; align-items: center">
+          <div class="lg lg-s lg-text" style="display: flex; padding: 3px; border-radius: 99px"><button type="button" aria-label="هفتهٔ قبل" style="width: 34px; height: 34px; border: 0; border-radius: 50%; background: transparent; color: #1B2236; display: grid; place-items: center"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg></button><button type="button" aria-label="هفتهٔ بعد" style="width: 34px; height: 34px; border: 0; border-radius: 50%; background: transparent; color: #1B2236; display: grid; place-items: center"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m15 6-6 6 6 6"/></svg></button></div>
+          <button type="button" class="lg lg-s lg-text" style="height: 40px; padding: 0 18px; border: 0; border-radius: 99px; color: #1B2236; font-size: 14px; font-weight: 800">امروز</button>
+        </div>
+        <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap">
+          <div class="lg lg-s lg-text" role="group" aria-label="نما" style="display: flex; padding: 3px; border-radius: 99px">
+            <button type="button" aria-pressed="false" style="width: 56px; height: 34px; border: 0; border-radius: 99px; background: transparent; color: #1B2236; font-size: 13px; font-weight: 700">روز</button>
+            <button type="button" class="lg-in" aria-pressed="true" style="width: 56px; height: 34px; border: 0; border-radius: 99px; color: #1F5FD0; font-size: 13px; font-weight: 900">هفته</button>
+            <button type="button" aria-pressed="false" style="width: 56px; height: 34px; border: 0; border-radius: 99px; background: transparent; color: #1B2236; font-size: 13px; font-weight: 700">ماه</button>
+          </div>
+          <label class="lg lg-s lg-text" style="display: flex; align-items: center; gap: 8px; height: 40px; width: 200px; padding: 0 14px; border-radius: 99px; box-sizing: border-box; color: #2C3550"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><input type="search" placeholder="جست‌وجو" aria-label="جست‌وجو" style="flex: 1; min-width: 0; border: 0; background: transparent; font: inherit; font-size: 14px; color: #1B2236; outline: none"></label>
+          <button type="button" class="lg lg-s lg-tint" aria-label="افزودن" style="width: 40px; height: 40px; border: 0; border-radius: 50%; display: grid; place-items: center"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg></button>
+        </div>
+      </div>
+      <div style="padding: 18px 28px 0; display: flex; flex-wrap: wrap; align-items: center; gap: 16px">
+        <div class="lg lg-m lg-dark" style="display: inline-block; padding: 8px 24px 10px; border-radius: 26px; --lg-tint: rgba(18,24,70,.9)">
+          <span style="font-size: 14px; font-weight: 600; color: #fff">۳۱ اکتبر تا ۶ نوامبر ۲۰۲۶</span>
+          <h1 style="margin: 0; font-size: 32px; line-height: 1.2; font-weight: 900; color: #fff">۹ تا ۱۵ آبان ۱۴۰۵</h1>
+        </div>
+        <div aria-hidden="true" class="lg lg-s lg-text" style="display: flex; gap: 14px; align-items: center; height: 36px; padding: 0 16px; border-radius: 99px; font-size: 12px; font-weight: 600"><span><b style="display: inline-block; width: 10px; height: 10px; border-radius: 3px; background: #2F4FB8; margin-inline-end: 5px"></b>کار</span><span><b style="display: inline-block; width: 10px; height: 10px; border-radius: 3px; background: #F6B26B; margin-inline-end: 5px"></b>رویداد</span><span><b style="display: inline-block; width: 10px; height: 10px; border-radius: 3px; background: #1FB5A8; margin-inline-end: 5px"></b>زمان ثبت‌شده</span><span><b style="display: inline-block; width: 10px; height: 10px; border-radius: 3px; background: #C8324B; margin-inline-end: 5px"></b>پرداخت / عقب‌افتاده</span></div>
+      </div>
+    <section class="lg lg-l lg-text" aria-label="هفتهٔ ۹ تا ۱۵ آبان" style="margin: 18px 28px 28px; border-radius: 24px; padding: 12px 12px 14px">
+      <div style="display: grid; grid-template-columns: 46px repeat(7, minmax(0, 1fr)); align-items: end">
+        <span></span>
+        <div style="text-align: center; padding-bottom: 4px"><div style="font-size: 12px; font-weight: 700; color: #38425E">شنبه</div><span style="display: inline-grid; place-items: center; min-width: 34px; height: 34px; border-radius: 50%; font-size: 18px; font-weight: 900; ">۹</span><div style="font-size: 10px; color: #38425E">۳۱ اکتبر</div></div>
+        <div style="text-align: center; padding-bottom: 4px"><div style="font-size: 12px; font-weight: 700; color: #38425E">یکشنبه</div><span style="display: inline-grid; place-items: center; min-width: 34px; height: 34px; border-radius: 50%; font-size: 18px; font-weight: 900; ">۱۰</span><div style="font-size: 10px; color: #38425E">۱ نوامبر</div></div>
+        <div style="text-align: center; padding-bottom: 4px"><div style="font-size: 12px; font-weight: 700; color: #38425E">دوشنبه</div><span style="display: inline-grid; place-items: center; min-width: 34px; height: 34px; border-radius: 50%; font-size: 18px; font-weight: 900; ">۱۱</span><div style="font-size: 10px; color: #38425E">۲ نوامبر</div></div>
+        <div style="text-align: center; padding-bottom: 4px"><div style="font-size: 12px; font-weight: 700; color: #38425E">سه‌شنبه</div><span style="display: inline-grid; place-items: center; min-width: 34px; height: 34px; border-radius: 50%; font-size: 18px; font-weight: 900; ">۱۲</span><div style="font-size: 10px; color: #38425E">۳ نوامبر</div></div>
+        <div style="text-align: center; padding-bottom: 4px"><div style="font-size: 12px; font-weight: 700; color: #38425E">چهارشنبه</div><span style="display: inline-grid; place-items: center; min-width: 34px; height: 34px; border-radius: 50%; font-size: 18px; font-weight: 900; background: #2F6FDB; color: #fff">۱۳</span><div style="font-size: 10px; color: #38425E">۴ نوامبر</div></div>
+        <div style="text-align: center; padding-bottom: 4px"><div style="font-size: 12px; font-weight: 700; color: #38425E">پنجشنبه</div><span style="display: inline-grid; place-items: center; min-width: 34px; height: 34px; border-radius: 50%; font-size: 18px; font-weight: 900; ">۱۴</span><div style="font-size: 10px; color: #38425E">۵ نوامبر</div></div>
+        <div style="text-align: center; padding-bottom: 4px"><div style="font-size: 12px; font-weight: 700; color: #B02440">جمعه</div><span style="display: inline-grid; place-items: center; min-width: 34px; height: 34px; border-radius: 50%; font-size: 18px; font-weight: 900; color: #B02440">۱۵</span><div style="font-size: 10px; color: #38425E">۶ نوامبر</div></div>
+      </div>
+      <div style="display: grid; grid-template-columns: 46px repeat(7, minmax(0, 1fr)); align-items: center; padding: 4px 0 8px; border-bottom: .5px solid rgba(27,34,54,.18)">
+        <span style="font-size: 10px; color: #38425E; text-align: center">بی‌زمان</span>
+        <div style="padding: 0 2px"></div>
+        <div style="padding: 0 2px"></div>
+        <div style="padding: 0 2px"></div>
+        <div style="padding: 0 2px"></div>
+        <div style="padding: 0 2px"><span class="lg-in" style="display: block; padding: 3px 6px; border-radius: 8px; font-size: 11px; font-weight: 700; overflow: hidden; white-space: nowrap; text-overflow: ellipsis">خرید هدیهٔ تولد مریم</span></div>
+        <div style="padding: 0 2px"></div>
+        <div style="padding: 0 2px"><span class="lg-in" style="display: block; padding: 3px 6px; border-radius: 8px; font-size: 11px; font-weight: 700; overflow: hidden; white-space: nowrap; text-overflow: ellipsis">تولد مریم</span></div>
+      </div>
+      <div style="position: relative; display: grid; grid-template-columns: 46px repeat(7, minmax(0, 1fr)); height: 560px">
+        <div style="position: relative" aria-hidden="true"><span style="position: absolute; inset-inline: 0; top: 0px; margin-top: -8px; text-align: center; font-size: 11px; color: #38425E">۰۸</span><span style="position: absolute; inset-inline: 0; top: 40px; margin-top: -8px; text-align: center; font-size: 11px; color: #38425E">۰۹</span><span style="position: absolute; inset-inline: 0; top: 80px; margin-top: -8px; text-align: center; font-size: 11px; color: #38425E">۱۰</span><span style="position: absolute; inset-inline: 0; top: 120px; margin-top: -8px; text-align: center; font-size: 11px; color: #38425E">۱۱</span><span style="position: absolute; inset-inline: 0; top: 160px; margin-top: -8px; text-align: center; font-size: 11px; color: #38425E">۱۲</span><span style="position: absolute; inset-inline: 0; top: 200px; margin-top: -8px; text-align: center; font-size: 11px; color: #38425E">۱۳</span><span style="position: absolute; inset-inline: 0; top: 240px; margin-top: -8px; text-align: center; font-size: 11px; color: #38425E">۱۴</span><span style="position: absolute; inset-inline: 0; top: 280px; margin-top: -8px; text-align: center; font-size: 11px; color: #38425E">۱۵</span><span style="position: absolute; inset-inline: 0; top: 320px; margin-top: -8px; text-align: center; font-size: 11px; color: #38425E">۱۶</span><span style="position: absolute; inset-inline: 0; top: 360px; margin-top: -8px; text-align: center; font-size: 11px; color: #38425E">۱۷</span><span style="position: absolute; inset-inline: 0; top: 400px; margin-top: -8px; text-align: center; font-size: 11px; color: #38425E">۱۸</span><span style="position: absolute; inset-inline: 0; top: 440px; margin-top: -8px; text-align: center; font-size: 11px; color: #38425E">۱۹</span><span style="position: absolute; inset-inline: 0; top: 480px; margin-top: -8px; text-align: center; font-size: 11px; color: #38425E">۲۰</span><span style="position: absolute; inset-inline: 0; top: 520px; margin-top: -8px; text-align: center; font-size: 11px; color: #38425E">۲۱</span><span style="position: absolute; inset-inline: 0; top: 560px; margin-top: -8px; text-align: center; font-size: 11px; color: #38425E">۲۲</span></div>
+        <div style="position: relative; background: transparent; border-inline-start: .5px solid rgba(27,34,54,.12)">
+          <span aria-hidden="true" style="position: absolute; inset-inline: 0; top: 40px; border-top: .5px solid rgba(27,34,54,.12)"></span>
+          <span aria-hidden="true" style="position: absolute; inset-inline: 0; top: 80px; border-top: .5px solid rgba(27,34,54,.12)"></span>
+          <span aria-hidden="true" style="position: absolute; inset-inline: 0; top: 120px; border-top: .5px solid rgba(27,34,54,.12)"></span>
+          <span aria-hidden="true" style="position: absolute; inset-inline: 0; top: 160px; border-top: .5px solid rgba(27,34,54,.12)"></span>
+          <span aria-hidden="true" style="position: absolute; inset-inline: 0; top: 200px; border-top: .5px solid rgba(27,34,54,.12)"></span>
+          <span aria-hidden="true" style="position: absolute; inset-inline: 0; top: 240px; border-top: .5px solid rgba(27,34,54,.12)"></span>
+          <span aria-hidden="true" style="position: absolute; inset-inline: 0; top: 280px; border-top: .5px solid rgba(27,34,54,.12)"></span>
+          <span aria-hidden="true" style="position: absolute; inset-inline: 0; top: 320px; border-top: .5px solid rgba(27,34,54,.12)"></span>
+          <span aria-hidden="true" style="position: absolute; inset-inline: 0; top: 360px; border-top: .5px solid rgba(27,34,54,.12)"></span>
+          <span aria-hidden="true" style="position: absolute; inset-inline: 0; top: 400px; border-top: .5px solid rgba(27,34,54,.12)"></span>
+          <span aria-hidden="true" style="position: absolute; inset-inline: 0; top: 440px; border-top: .5px solid rgba(27,34,54,.12)"></span>
+          <span aria-hidden="true" style="position: absolute; inset-inline: 0; top: 480px; border-top: .5px solid rgba(27,34,54,.12)"></span>
+          <span aria-hidden="true" style="position: absolute; inset-inline: 0; top: 520px; border-top: .5px solid rgba(27,34,54,.12)"></span>
+          <button type="button" style="position: absolute; top: 41.0px; height: 38.0px; inset-inline: 3px; box-sizing: border-box; padding: 4px 7px; border: 0; border-radius: 9px; text-align: start; font-family: inherit; background: #F6B26B; color: #3D2400; font-size: 11px; font-weight: 800; line-height: 1.3; overflow: hidden; display: flex; flex-direction: column; justify-content: flex-start; "><span>تمرین دویدن</span></button>
+        </div>
+        <div style="position: relative; background: transparent; border-inline-start: .5px solid rgba(27,34,54,.12)">
+          <span aria-hidden="true" style="position: absolute; inset-inline: 0; top: 40px; border-top: .5px solid rgba(27,34,54,.12)"></span>
+          <span aria-hidden="true" style="position: absolute; inset-inline: 0; top: 80px; border-top: .5px solid rgba(27,34,54,.12)"></span>
+          <span aria-hidden="true" style="position: absolute; inset-inline: 0; top: 120px; border-top: .5px solid rgba(27,34,54,.12)"></span>
+          <span aria-hidden="true" style="position: absolute; inset-inline: 0; top: 160px; border-top: .5px solid rgba(27,34,54,.12)"></span>
+          <span aria-hidden="true" style="position: absolute; inset-inline: 0; top: 200px; border-top: .5px solid rgba(27,34,54,.12)"></span>
+          <span aria-hidden="true" style="position: absolute; inset-inline: 0; top: 240px; border-top: .5px solid rgba(27,34,54,.12)"></span>
+          <span aria-hidden="true" style="position: absolute; inset-inline: 0; top: 280px; border-top: .5px solid rgba(27,34,54,.12)"></span>
+          <span aria-hidden="true" style="position: absolute; inset-inline: 0; top: 320px; border-top: .5px solid rgba(27,34,54,.12)"></span>
+          <span aria-hidden="true" style="position: absolute; inset-inline: 0; top: 360px; border-top: .5px solid rgba(27,34,54,.12)"></span>
+          <span aria-hidden="true" style="position: absolute; inset-inline: 0; top: 400px; border-top: .5px solid rgba(27,34,54,.12)"></span>
+          <span aria-hidden="true" style="position: absolute; inset-inline: 0; top: 440px; border-top: .5px solid rgba(27,34,54,.12)"></span>
+          <span aria-hidden="true" style="position: absolute; inset-inline: 0; top: 480px; border-top: .5px solid rgba(27,34,54,.12)"></span>
+          <span aria-hidden="true" style="position: absolute; inset-inline: 0; top: 520px; border-top: .5px solid rgba(27,34,54,.12)"></span>
+          <button type="button" style="position: absolute; top: 81.0px; height: 38.0px; inset-inline: 3px; box-sizing: border-box; padding: 4px 7px; border: 0; border-radius: 9px; text-align: start; font-family: inherit; background: #C8324B; color: #fff; font-size: 11px; font-weight: 800; line-height: 1.3; overflow: hidden; display: flex; flex-direction: column; justify-content: flex-start; "><span>تعویض روغن ماشین</span></button>
+          <button type="button" style="position: absolute; top: 241.0px; height: 38.0px; inset-inline: 3px; box-sizing: border-box; padding: 4px 7px; border: 0; border-radius: 9px; text-align: start; font-family: inherit; background: #2F4FB8; color: #fff; font-size: 11px; font-weight: 800; line-height: 1.3; overflow: hidden; display: flex; flex-direction: column; justify-content: flex-start; "><span>جلسهٔ هفتگی</span></button>
+        </div>
+        <div style="position: relative; background: transparent; border-inline-start: .5px solid rgba(27,34,54,.12)">
+          <span aria-hidden="true" style="position: absolute; inset-inline: 0; top: 40px; border-top: .5px solid rgba(27,34,54,.12)"></span>
+          <span aria-hidden="true" style="position: absolute; inset-inline: 0; top: 80px; border-top: .5px solid rgba(27,34,54,.12)"></span>
+          <span aria-hidden="true" style="position: absolute; inset-inline: 0; top: 120px; border-top: .5px solid rgba(27,34,54,.12)"></span>
+          <span aria-hidden="true" style="position: absolute; inset-inline: 0; top: 160px; border-top: .5px solid rgba(27,34,54,.12)"></span>
+          <span aria-hidden="true" style="position: absolute; inset-inline: 0; top: 200px; border-top: .5px solid rgba(27,34,54,.12)"></span>
+          <span aria-hidden="true" style="position: absolute; inset-inline: 0; top: 240px; border-top: .5px solid rgba(27,34,54,.12)"></span>
+          <span aria-hidden="true" style="position: absolute; inset-inline: 0; top: 280px; border-top: .5px solid rgba(27,34,54,.12)"></span>
+          <span aria-hidden="true" style="position: absolute; inset-inline: 0; top: 320px; border-top: .5px solid rgba(27,34,54,.12)"></span>
+          <span aria-hidden="true" style="position: absolute; inset-inline: 0; top: 360px; border-top: .5px solid rgba(27,34,54,.12)"></span>
+          <span aria-hidden="true" style="position: absolute; inset-inline: 0; top: 400px; border-top: .5px solid rgba(27,34,54,.12)"></span>
+          <span aria-hidden="true" style="position: absolute; inset-inline: 0; top: 440px; border-top: .5px solid rgba(27,34,54,.12)"></span>
+          <span aria-hidden="true" style="position: absolute; inset-inline: 0; top: 480px; border-top: .5px solid rgba(27,34,54,.12)"></span>
+          <span aria-hidden="true" style="position: absolute; inset-inline: 0; top: 520px; border-top: .5px solid rgba(27,34,54,.12)"></span>
+          <button type="button" style="position: absolute; top: 41.0px; height: 118.0px; inset-inline: 3px; box-sizing: border-box; padding: 4px 7px; border: 0; border-radius: 9px; text-align: start; font-family: inherit; background: #1FB5A8; color: #04302C; font-size: 11px; font-weight: 800; line-height: 1.3; overflow: hidden; display: flex; flex-direction: column; justify-content: flex-start; "><span>کار عمیق</span><span style="font-size: 10px; font-weight: 600">ثبت‌شده</span></button>
+        </div>
+        <div style="position: relative; background: transparent; border-inline-start: .5px solid rgba(27,34,54,.12)">
+          <span aria-hidden="true" style="position: absolute; inset-inline: 0; top: 40px; border-top: .5px solid rgba(27,34,54,.12)"></span>
+          <span aria-hidden="true" style="position: absolute; inset-inline: 0; top: 80px; border-top: .5px solid rgba(27,34,54,.12)"></span>
+          <span aria-hidden="true" style="position: absolute; inset-inline: 0; top: 120px; border-top: .5px solid rgba(27,34,54,.12)"></span>
+          <span aria-hidden="true" style="position: absolute; inset-inline: 0; top: 160px; border-top: .5px solid rgba(27,34,54,.12)"></span>
+          <span aria-hidden="true" style="position: absolute; inset-inline: 0; top: 200px; border-top: .5px solid rgba(27,34,54,.12)"></span>
+          <span aria-hidden="true" style="position: absolute; inset-inline: 0; top: 240px; border-top: .5px solid rgba(27,34,54,.12)"></span>
+          <span aria-hidden="true" style="position: absolute; inset-inline: 0; top: 280px; border-top: .5px solid rgba(27,34,54,.12)"></span>
+          <span aria-hidden="true" style="position: absolute; inset-inline: 0; top: 320px; border-top: .5px solid rgba(27,34,54,.12)"></span>
+          <span aria-hidden="true" style="position: absolute; inset-inline: 0; top: 360px; border-top: .5px solid rgba(27,34,54,.12)"></span>
+          <span aria-hidden="true" style="position: absolute; inset-inline: 0; top: 400px; border-top: .5px solid rgba(27,34,54,.12)"></span>
+          <span aria-hidden="true" style="position: absolute; inset-inline: 0; top: 440px; border-top: .5px solid rgba(27,34,54,.12)"></span>
+          <span aria-hidden="true" style="position: absolute; inset-inline: 0; top: 480px; border-top: .5px solid rgba(27,34,54,.12)"></span>
+          <span aria-hidden="true" style="position: absolute; inset-inline: 0; top: 520px; border-top: .5px solid rgba(27,34,54,.12)"></span>
+          <button type="button" style="position: absolute; top: 121.0px; height: 18.0px; inset-inline: 3px; box-sizing: border-box; padding: 0 7px; border: 0; border-radius: 9px; text-align: start; font-family: inherit; background: #2F4FB8; color: #fff; font-size: 11px; font-weight: 800; line-height: 1.3; overflow: hidden; display: flex; flex-direction: column; justify-content: center; "><span>تماس کاری</span></button>
+          <button type="button" style="position: absolute; top: 321.0px; height: 38.0px; inset-inline: 3px; box-sizing: border-box; padding: 4px 7px; border: 0; border-radius: 9px; text-align: start; font-family: inherit; background: #2F4FB8; color: #fff; font-size: 11px; font-weight: 800; line-height: 1.3; overflow: hidden; display: flex; flex-direction: column; justify-content: flex-start; "><span>مرور بودجه</span></button>
+        </div>
+        <div style="position: relative; background: rgba(47,111,219,.08); border-inline-start: .5px solid rgba(27,34,54,.12)">
+          <span aria-hidden="true" style="position: absolute; inset-inline: 0; top: 40px; border-top: .5px solid rgba(27,34,54,.12)"></span>
+          <span aria-hidden="true" style="position: absolute; inset-inline: 0; top: 80px; border-top: .5px solid rgba(27,34,54,.12)"></span>
+          <span aria-hidden="true" style="position: absolute; inset-inline: 0; top: 120px; border-top: .5px solid rgba(27,34,54,.12)"></span>
+          <span aria-hidden="true" style="position: absolute; inset-inline: 0; top: 160px; border-top: .5px solid rgba(27,34,54,.12)"></span>
+          <span aria-hidden="true" style="position: absolute; inset-inline: 0; top: 200px; border-top: .5px solid rgba(27,34,54,.12)"></span>
+          <span aria-hidden="true" style="position: absolute; inset-inline: 0; top: 240px; border-top: .5px solid rgba(27,34,54,.12)"></span>
+          <span aria-hidden="true" style="position: absolute; inset-inline: 0; top: 280px; border-top: .5px solid rgba(27,34,54,.12)"></span>
+          <span aria-hidden="true" style="position: absolute; inset-inline: 0; top: 320px; border-top: .5px solid rgba(27,34,54,.12)"></span>
+          <span aria-hidden="true" style="position: absolute; inset-inline: 0; top: 360px; border-top: .5px solid rgba(27,34,54,.12)"></span>
+          <span aria-hidden="true" style="position: absolute; inset-inline: 0; top: 400px; border-top: .5px solid rgba(27,34,54,.12)"></span>
+          <span aria-hidden="true" style="position: absolute; inset-inline: 0; top: 440px; border-top: .5px solid rgba(27,34,54,.12)"></span>
+          <span aria-hidden="true" style="position: absolute; inset-inline: 0; top: 480px; border-top: .5px solid rgba(27,34,54,.12)"></span>
+          <span aria-hidden="true" style="position: absolute; inset-inline: 0; top: 520px; border-top: .5px solid rgba(27,34,54,.12)"></span>
+          <button type="button" style="position: absolute; top: 61.0px; height: 18.0px; inset-inline: 3px; box-sizing: border-box; padding: 0 7px; border: 0; border-radius: 9px; text-align: start; font-family: inherit; background: #AEB9E6; color: #1B2236; font-size: 11px; font-weight: 800; line-height: 1.3; overflow: hidden; display: flex; flex-direction: column; justify-content: center; text-decoration: line-through; "><span>قسط وام</span></button>
+          <button type="button" style="position: absolute; top: 81.0px; height: 88.0px; inset-inline: 3px; box-sizing: border-box; padding: 4px 7px; border: 0; border-radius: 9px; text-align: start; font-family: inherit; background: #1FB5A8; color: #04302C; font-size: 11px; font-weight: 800; line-height: 1.3; overflow: hidden; display: flex; flex-direction: column; justify-content: flex-start; "><span>کار عمیق</span><span style="font-size: 10px; font-weight: 600">ثبت‌شده</span></button>
+          <button type="button" style="position: absolute; top: 181.0px; height: 38.0px; inset-inline: 3px; box-sizing: border-box; padding: 4px 7px; border: 0; border-radius: 9px; text-align: start; font-family: inherit; background: #F6B26B; color: #3D2400; font-size: 11px; font-weight: 800; line-height: 1.3; overflow: hidden; display: flex; flex-direction: column; justify-content: flex-start; "><span>ناهار با علی</span></button>
+          <button type="button" style="position: absolute; top: 233.0px; height: 26.0px; inset-inline: 3px; box-sizing: border-box; padding: 0 7px; border: 0; border-radius: 9px; text-align: start; font-family: inherit; background: #1FB5A8; color: #04302C; font-size: 11px; font-weight: 800; line-height: 1.3; overflow: hidden; display: flex; flex-direction: column; justify-content: center; "><span>طراحی صفحهٔ اصلی</span></button>
+          <button type="button" style="position: absolute; top: 281.0px; height: 38.0px; inset-inline: 3px; box-sizing: border-box; padding: 4px 7px; border: 0; border-radius: 9px; text-align: start; font-family: inherit; background: #2F4FB8; color: #fff; font-size: 11px; font-weight: 800; line-height: 1.3; overflow: hidden; display: flex; flex-direction: column; justify-content: flex-start; outline: 2px solid #fff; box-shadow: 0 0 0 4px rgba(47,111,219,.55), 0 6px 16px rgba(20,30,80,.3); z-index: 3; " aria-pressed="true"><span>جلسه با تیم طراحی</span></button>
+          <button type="button" style="position: absolute; top: 401.0px; height: 18.0px; inset-inline: 3px; box-sizing: border-box; padding: 0 7px; border: 0; border-radius: 9px; text-align: start; font-family: inherit; background: #C8324B; color: #fff; font-size: 11px; font-weight: 800; line-height: 1.3; overflow: hidden; display: flex; flex-direction: column; justify-content: center; "><span>بیمهٔ ماشین</span></button>
+        </div>
+        <div style="position: relative; background: transparent; border-inline-start: .5px solid rgba(27,34,54,.12)">
+          <span aria-hidden="true" style="position: absolute; inset-inline: 0; top: 40px; border-top: .5px solid rgba(27,34,54,.12)"></span>
+          <span aria-hidden="true" style="position: absolute; inset-inline: 0; top: 80px; border-top: .5px solid rgba(27,34,54,.12)"></span>
+          <span aria-hidden="true" style="position: absolute; inset-inline: 0; top: 120px; border-top: .5px solid rgba(27,34,54,.12)"></span>
+          <span aria-hidden="true" style="position: absolute; inset-inline: 0; top: 160px; border-top: .5px solid rgba(27,34,54,.12)"></span>
+          <span aria-hidden="true" style="position: absolute; inset-inline: 0; top: 200px; border-top: .5px solid rgba(27,34,54,.12)"></span>
+          <span aria-hidden="true" style="position: absolute; inset-inline: 0; top: 240px; border-top: .5px solid rgba(27,34,54,.12)"></span>
+          <span aria-hidden="true" style="position: absolute; inset-inline: 0; top: 280px; border-top: .5px solid rgba(27,34,54,.12)"></span>
+          <span aria-hidden="true" style="position: absolute; inset-inline: 0; top: 320px; border-top: .5px solid rgba(27,34,54,.12)"></span>
+          <span aria-hidden="true" style="position: absolute; inset-inline: 0; top: 360px; border-top: .5px solid rgba(27,34,54,.12)"></span>
+          <span aria-hidden="true" style="position: absolute; inset-inline: 0; top: 400px; border-top: .5px solid rgba(27,34,54,.12)"></span>
+          <span aria-hidden="true" style="position: absolute; inset-inline: 0; top: 440px; border-top: .5px solid rgba(27,34,54,.12)"></span>
+          <span aria-hidden="true" style="position: absolute; inset-inline: 0; top: 480px; border-top: .5px solid rgba(27,34,54,.12)"></span>
+          <span aria-hidden="true" style="position: absolute; inset-inline: 0; top: 520px; border-top: .5px solid rgba(27,34,54,.12)"></span>
+          <button type="button" style="position: absolute; top: 361.0px; height: 38.0px; inset-inline: 3px; box-sizing: border-box; padding: 4px 7px; border: 0; border-radius: 9px; text-align: start; font-family: inherit; background: #2F4FB8; color: #fff; font-size: 11px; font-weight: 800; line-height: 1.3; overflow: hidden; display: flex; flex-direction: column; justify-content: flex-start; "><span>خرید خانه</span></button>
+        </div>
+        <div style="position: relative; background: rgba(200,50,75,.07); border-inline-start: .5px solid rgba(27,34,54,.12)">
+          <span aria-hidden="true" style="position: absolute; inset-inline: 0; top: 40px; border-top: .5px solid rgba(27,34,54,.12)"></span>
+          <span aria-hidden="true" style="position: absolute; inset-inline: 0; top: 80px; border-top: .5px solid rgba(27,34,54,.12)"></span>
+          <span aria-hidden="true" style="position: absolute; inset-inline: 0; top: 120px; border-top: .5px solid rgba(27,34,54,.12)"></span>
+          <span aria-hidden="true" style="position: absolute; inset-inline: 0; top: 160px; border-top: .5px solid rgba(27,34,54,.12)"></span>
+          <span aria-hidden="true" style="position: absolute; inset-inline: 0; top: 200px; border-top: .5px solid rgba(27,34,54,.12)"></span>
+          <span aria-hidden="true" style="position: absolute; inset-inline: 0; top: 240px; border-top: .5px solid rgba(27,34,54,.12)"></span>
+          <span aria-hidden="true" style="position: absolute; inset-inline: 0; top: 280px; border-top: .5px solid rgba(27,34,54,.12)"></span>
+          <span aria-hidden="true" style="position: absolute; inset-inline: 0; top: 320px; border-top: .5px solid rgba(27,34,54,.12)"></span>
+          <span aria-hidden="true" style="position: absolute; inset-inline: 0; top: 360px; border-top: .5px solid rgba(27,34,54,.12)"></span>
+          <span aria-hidden="true" style="position: absolute; inset-inline: 0; top: 400px; border-top: .5px solid rgba(27,34,54,.12)"></span>
+          <span aria-hidden="true" style="position: absolute; inset-inline: 0; top: 440px; border-top: .5px solid rgba(27,34,54,.12)"></span>
+          <span aria-hidden="true" style="position: absolute; inset-inline: 0; top: 480px; border-top: .5px solid rgba(27,34,54,.12)"></span>
+          <span aria-hidden="true" style="position: absolute; inset-inline: 0; top: 520px; border-top: .5px solid rgba(27,34,54,.12)"></span>
+          <button type="button" style="position: absolute; top: 441.0px; height: 78.0px; inset-inline: 3px; box-sizing: border-box; padding: 4px 7px; border: 0; border-radius: 9px; text-align: start; font-family: inherit; background: #F6B26B; color: #3D2400; font-size: 11px; font-weight: 800; line-height: 1.3; overflow: hidden; display: flex; flex-direction: column; justify-content: flex-start; "><span>تولد مریم</span></button>
+        </div>
+        <div role="img" aria-label="اکنون ۱۴:۳۰" style="position: absolute; top: 260.0px; inset-inline: 46px 0; border-top: 2px solid #C8324B; z-index: 4; pointer-events: none"><span style="position: absolute; inset-inline-start: -46px; top: -11px; padding: 0 7px; height: 20px; border-radius: 99px; background: #C8324B; color: #fff; font-size: 10px; font-weight: 900; display: flex; align-items: center">۱۴:۳۰</span></div>
+      </div>
+    </section>
+    </main>
+
+    <aside class="lg lg-l lg-text" aria-label="جزئیات بلوک انتخاب‌شده" style="position: relative; flex: 0 1 292px; min-width: 260px; box-sizing: border-box; margin: 8px; border-radius: 20px; padding: 18px 16px; display: flex; flex-direction: column; gap: 4px">
+      <div style="display: flex; justify-content: space-between; align-items: center"><span style="font-size: 12px; font-weight: 700; color: #38425E">بلوک انتخاب‌شده</span><button type="button" aria-label="بستن" style="width: 28px; height: 28px; border: 0; border-radius: 50%; background: transparent; color: #1B2236; display: grid; place-items: center"><svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
+      <div style="display: flex; gap: 10px; align-items: center"><span aria-hidden="true" style="width: 6px; align-self: stretch; border-radius: 3px; background: #2F4FB8"></span><h2 style="margin: 0; font-size: 20px; line-height: 1.35; font-weight: 900">جلسه با تیم طراحی</h2></div>
+      <div style="display: flex; gap: 8px; padding: 8px 0 4px; flex-wrap: wrap"><span class="lg-in" style="height: 26px; padding: 0 12px; border-radius: 99px; display: inline-flex; align-items: center; font-size: 12px; font-weight: 800; color: #1F5FD0">در حال انجام</span><span class="lg-in" style="height: 26px; padding: 0 12px; border-radius: 99px; display: inline-flex; align-items: center; font-size: 12px; font-weight: 700">کار</span></div>
+      <div style="display: flex; gap: 10px; align-items: flex-start; padding: 10px 0; border-bottom: .5px solid rgba(27,34,54,.14);"><span style="color: #1F5FD0; margin-top: 1px"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><div style="flex: 1; display: flex; flex-direction: column"><span style="font-size: 11px; color: #38425E">زمان</span><span style="font-size: 14px; font-weight: 700">چهارشنبه ۱۳ آبان، ۱۵:۰۰ تا ۱۶:۰۰</span></div></div><div style="display: flex; gap: 10px; align-items: flex-start; padding: 10px 0; border-bottom: .5px solid rgba(27,34,54,.14);"><span style="color: #1F5FD0; margin-top: 1px"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4zM10 21h4"/></svg></span><div style="flex: 1; display: flex; flex-direction: column"><span style="font-size: 11px; color: #38425E">یادآور</span><span style="font-size: 14px; font-weight: 700">۱۵ دقیقه قبل (۱۴:۴۵)</span></div></div><div style="display: flex; gap: 10px; align-items: flex-start; padding: 10px 0; border-bottom: .5px solid rgba(27,34,54,.14);"><span style="color: #1F5FD0; margin-top: 1px"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6h11M9 12h11M9 18h11M4 6h.01M4 12h.01M4 18h.01"/></svg></span><div style="flex: 1; display: flex; flex-direction: column"><span style="font-size: 11px; color: #38425E">فهرست</span><span style="font-size: 14px; font-weight: 700">کار · ۱۴ کار باز</span></div></div><div style="display: flex; gap: 10px; align-items: flex-start; padding: 10px 0;"><span style="color: #1F5FD0; margin-top: 1px"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></span><div style="flex: 1; display: flex; flex-direction: column"><span style="font-size: 11px; color: #38425E">تکرار</span><span style="font-size: 14px; font-weight: 700">بدون تکرار</span></div></div>
+      <div class="lg-in" style="border-radius: 16px; padding: 10px 12px; margin-top: 8px; display: flex; flex-direction: column; gap: 6px">
+        <span style="font-size: 12px; font-weight: 800; color: #38425E">زمان ثبت‌شده برای این کار</span>
+        <div style="display: flex; justify-content: space-between; font-size: 13px"><span>امروز</span><span style="font-weight: 800">۰:۰۰</span></div>
+        <button type="button" style="height: 34px; border: 0; border-radius: 99px; background: rgba(47,111,219,.14); color: #1F5FD0; font-size: 13px; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 6px"><svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M8 5.5v13l11-6.5z" fill="currentColor"/></svg>شروع زمان‌سنج</button>
+      </div>
+      <div style="margin-top: auto; padding-top: 16px; display: flex; flex-direction: column; gap: 8px">
+        <button type="button" class="lg lg-s lg-tint" style="height: 42px; border: 0; border-radius: 99px; font-size: 14px; font-weight: 800">انجام شد</button>
+        <div style="display: flex; gap: 8px"><button type="button" class="lg lg-s lg-text" style="flex: 1; height: 40px; border: 0; border-radius: 99px; color: #1B2236; font-size: 13px; font-weight: 700">ویرایش</button><button type="button" class="lg lg-s lg-text" style="flex: 1; height: 40px; border: 0; border-radius: 99px; color: #B02440; font-size: 13px; font-weight: 700">حذف</button></div>
+      </div>
+    </aside>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

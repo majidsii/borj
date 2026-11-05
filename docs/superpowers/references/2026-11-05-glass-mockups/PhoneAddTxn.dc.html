@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>Phone add transaction</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300..900&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+.bg-root{background:#FFFFFF}
+a{color:#2F6FDB}a:hover{color:#1F4FA8}
+.band{background:radial-gradient(70% 120% at 90% 0%,#F6B26B 0%,rgba(246,178,107,0) 60%),radial-gradient(60% 120% at 20% 10%,#2FB8A8 0%,rgba(47,184,168,0) 65%),radial-gradient(80% 140% at 50% 0%,#5A63C8 0%,rgba(90,99,200,0) 75%),#4B58C4}
+.orb{position:absolute;border-radius:50%}
+.chk{appearance:none;-webkit-appearance:none;width:24px;height:24px;border-radius:50%;border:1.5px solid #6F7896;background:rgba(255,255,255,.4);margin:0;display:grid;place-content:center;flex:none}
+.chk:checked{background:#2F6FDB;border-color:#2F6FDB}
+.chk:checked::after{content:"";width:10px;height:5px;border:solid #fff;border-width:0 0 2px 2px;transform:rotate(-45deg) translate(1px,-1px)}
+button{font-family:inherit;cursor:pointer}
+button:focus-visible,a:focus-visible{outline:2px solid #2F6FDB;outline-offset:2px}
+/* ===== Liquid Glass kit ===== */
+.lg{position:relative;isolation:isolate;--lg-tint:rgba(255,255,255,.26);--rim-a:.95;--rim-b:.55;--ink:#1B2236;background:var(--lg-tint);color:var(--ink);box-shadow:inset 0 0 0 .5px rgba(255,255,255,.45),inset 0 1px 1px rgba(255,255,255,.55),inset 0 -1px 2px rgba(20,30,80,.10),inset 0 0 14px rgba(255,255,255,.22),0 0 0 .5px rgba(20,30,70,.10),0 2px 8px rgba(20,30,70,.10)}
+.lg::before,.lg-in::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1.25px;pointer-events:none;z-index:2;background:linear-gradient(215deg,rgba(255,255,255,var(--rim-a)) 0%,rgba(255,255,255,.18) 24%,rgba(255,255,255,0) 46%,rgba(255,255,255,0) 58%,rgba(255,255,255,.16) 76%,rgba(255,255,255,var(--rim-b)) 100%);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0)}
+.lg::after,.lg-in::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:-1;background:radial-gradient(120% 90% at 85% 0%,rgba(255,255,255,.34),rgba(255,255,255,0) 55%),linear-gradient(0deg,rgba(255,255,255,.10),rgba(255,255,255,0) 40%)}
+/* size = which displacement filter + blur. plain blur line first = fallback */
+.lg-s{-webkit-backdrop-filter:blur(5px) saturate(1.7) brightness(1.04);backdrop-filter:blur(5px) saturate(1.7) brightness(1.04);backdrop-filter:blur(5px) saturate(1.7) brightness(1.04) url(#lg-s)}
+.lg-m{-webkit-backdrop-filter:blur(8px) saturate(1.7) brightness(1.04);backdrop-filter:blur(8px) saturate(1.7) brightness(1.04);backdrop-filter:blur(8px) saturate(1.7) brightness(1.04) url(#lg-m)}
+.lg-l{-webkit-backdrop-filter:blur(12px) saturate(1.7) brightness(1.04);backdrop-filter:blur(12px) saturate(1.7) brightness(1.04);backdrop-filter:blur(12px) saturate(1.7) brightness(1.04) url(#lg-l)}
+.lg-clear.lg-s{-webkit-backdrop-filter:blur(1px) saturate(1.3);backdrop-filter:blur(1px) saturate(1.3);backdrop-filter:blur(1px) saturate(1.3) url(#lg-s)}
+.lg-clear.lg-m{-webkit-backdrop-filter:blur(2px) saturate(1.3);backdrop-filter:blur(2px) saturate(1.3);backdrop-filter:blur(2px) saturate(1.3) url(#lg-m)}
+.lg-clear.lg-l{-webkit-backdrop-filter:blur(3px) saturate(1.3);backdrop-filter:blur(3px) saturate(1.3);backdrop-filter:blur(3px) saturate(1.3) url(#lg-l)}
+.lg-clear{--lg-tint:rgba(255,255,255,.07);--rim-a:1;--rim-b:.7;box-shadow:inset 0 0 0 .5px rgba(255,255,255,.35),inset 0 0 16px rgba(255,255,255,.14),0 2px 10px rgba(10,15,40,.18)}
+.lg-dark{--lg-tint:rgba(24,28,44,.38);--rim-a:.55;--rim-b:.28;--ink:#F4F6FC;box-shadow:inset 0 0 0 .5px rgba(255,255,255,.14),inset 0 1px 1px rgba(255,255,255,.18),inset 0 0 16px rgba(255,255,255,.05),0 0 0 .5px rgba(0,0,0,.45),0 2px 10px rgba(0,0,0,.28)}
+.lg-dark::after{background:radial-gradient(120% 90% at 85% 0%,rgba(255,255,255,.12),rgba(255,255,255,0) 55%)}
+.lg-tint{--lg-tint:rgba(47,111,219,.66);--rim-a:.95;--rim-b:.5;--ink:#fff;box-shadow:inset 0 0 0 .5px rgba(255,255,255,.35),inset 0 1px 1px rgba(255,255,255,.5),inset 0 0 14px rgba(160,200,255,.30),0 0 0 .5px rgba(20,50,140,.35),0 4px 12px rgba(47,111,219,.30)}
+/* flat glass: for use INSIDE another glass element (nested backdrop-filter cannot see the page) */
+.lg-in{--rim-a:.9;--rim-b:.5;position:relative;isolation:isolate;background:rgba(255,255,255,.34);color:var(--ink,#1B2236);box-shadow:inset 0 0 0 .5px rgba(255,255,255,.55),inset 0 1px 1px rgba(255,255,255,.7),inset 0 -1px 2px rgba(20,30,80,.08),0 0 0 .5px rgba(20,30,70,.08)}
+.lg-dark .lg-in,.lg-in.lg-dark{background:rgba(255,255,255,.08);box-shadow:inset 0 0 0 .5px rgba(255,255,255,.12),inset 0 1px 1px rgba(255,255,255,.2),0 0 0 .5px rgba(0,0,0,.35)}
+/* legibility: text-bearing glass gets a stronger tint */
+.lg-text{--lg-tint:rgba(255,255,255,.52)}
+.lg-dark.lg-text{--lg-tint:rgba(18,22,38,.58)}
+.lg-in.lg-lens{background:rgba(255,255,255,.16);box-shadow:inset 0 0 0 .5px rgba(255,255,255,.7),inset 0 0 12px rgba(255,255,255,.35),0 4px 12px rgba(20,30,80,.22)}
+.lg-dark .lg-in::before,.lg-in.lg-dark::before{--rim-a:.5;--rim-b:.25}
+</style>
+</helmet>
+<div dir="rtl" class="bg-root" style="position: relative; width: 390px; height: 844px; overflow: hidden; font-family: Vazirmatn, -apple-system, Tahoma, sans-serif; color: #1B2236">
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
+<filter id="lg-s" x="0" y="0" width="1" height="1" color-interpolation-filters="sRGB">
+<feFlood flood-color="#000"/><feGaussianBlur stdDeviation="6" result="h"/>
+<feDiffuseLighting in="h" surfaceScale="6" diffuseConstant="1" lighting-color="#fff" result="xp"><feDistantLight azimuth="0" elevation="0"/></feDiffuseLighting><feDiffuseLighting in="h" surfaceScale="6" diffuseConstant="1" lighting-color="#fff" result="xn"><feDistantLight azimuth="180" elevation="0"/></feDiffuseLighting><feDiffuseLighting in="h" surfaceScale="6" diffuseConstant="1" lighting-color="#fff" result="yp"><feDistantLight azimuth="90" elevation="0"/></feDiffuseLighting><feDiffuseLighting in="h" surfaceScale="6" diffuseConstant="1" lighting-color="#fff" result="yn"><feDistantLight azimuth="270" elevation="0"/></feDiffuseLighting>
+<feColorMatrix in="xp" values="-1 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1" result="ixp"/>
+<feComposite in="xn" in2="ixp" operator="arithmetic" k2=".5" k3=".5" result="mx"/>
+<feColorMatrix in="mx" values="1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1" result="mxr"/>
+<feColorMatrix in="yp" values="0 0 0 0 0 0 -1 0 0 1 0 0 0 0 0 0 0 0 0 1" result="iyp"/>
+<feComposite in="yn" in2="iyp" operator="arithmetic" k2=".5" k3=".5" result="my"/>
+<feColorMatrix in="my" values="0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 1" result="myg"/>
+<feComposite in="mxr" in2="myg" operator="arithmetic" k2="1" k3="1" result="map"/>
+<feDisplacementMap in="SourceGraphic" in2="map" scale="44" xChannelSelector="R" yChannelSelector="G" result="dr"/>
+<feDisplacementMap in="SourceGraphic" in2="map" scale="50.2" xChannelSelector="R" yChannelSelector="G" result="dg"/>
+<feDisplacementMap in="SourceGraphic" in2="map" scale="56.3" xChannelSelector="R" yChannelSelector="G" result="db"/>
+<feColorMatrix in="dr" values="1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1" result="r"/>
+<feColorMatrix in="dg" values="0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 1" result="g"/>
+<feColorMatrix in="db" values="0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 1" result="b"/>
+<feComposite in="r" in2="g" operator="arithmetic" k2="1" k3="1" result="rg"/>
+<feComposite in="rg" in2="b" operator="arithmetic" k2="1" k3="1"/>
+</filter>
+<filter id="lg-m" x="0" y="0" width="1" height="1" color-interpolation-filters="sRGB">
+<feFlood flood-color="#000"/><feGaussianBlur stdDeviation="9" result="h"/>
+<feDiffuseLighting in="h" surfaceScale="9" diffuseConstant="1" lighting-color="#fff" result="xp"><feDistantLight azimuth="0" elevation="0"/></feDiffuseLighting><feDiffuseLighting in="h" surfaceScale="9" diffuseConstant="1" lighting-color="#fff" result="xn"><feDistantLight azimuth="180" elevation="0"/></feDiffuseLighting><feDiffuseLighting in="h" surfaceScale="9" diffuseConstant="1" lighting-color="#fff" result="yp"><feDistantLight azimuth="90" elevation="0"/></feDiffuseLighting><feDiffuseLighting in="h" surfaceScale="9" diffuseConstant="1" lighting-color="#fff" result="yn"><feDistantLight azimuth="270" elevation="0"/></feDiffuseLighting>
+<feColorMatrix in="xp" values="-1 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1" result="ixp"/>
+<feComposite in="xn" in2="ixp" operator="arithmetic" k2=".5" k3=".5" result="mx"/>
+<feColorMatrix in="mx" values="1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1" result="mxr"/>
+<feColorMatrix in="yp" values="0 0 0 0 0 0 -1 0 0 1 0 0 0 0 0 0 0 0 0 1" result="iyp"/>
+<feComposite in="yn" in2="iyp" operator="arithmetic" k2=".5" k3=".5" result="my"/>
+<feColorMatrix in="my" values="0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 1" result="myg"/>
+<feComposite in="mxr" in2="myg" operator="arithmetic" k2="1" k3="1" result="map"/>
+<feDisplacementMap in="SourceGraphic" in2="map" scale="64" xChannelSelector="R" yChannelSelector="G" result="dr"/>
+<feDisplacementMap in="SourceGraphic" in2="map" scale="71.7" xChannelSelector="R" yChannelSelector="G" result="dg"/>
+<feDisplacementMap in="SourceGraphic" in2="map" scale="79.4" xChannelSelector="R" yChannelSelector="G" result="db"/>
+<feColorMatrix in="dr" values="1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1" result="r"/>
+<feColorMatrix in="dg" values="0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 1" result="g"/>
+<feColorMatrix in="db" values="0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 1" result="b"/>
+<feComposite in="r" in2="g" operator="arithmetic" k2="1" k3="1" result="rg"/>
+<feComposite in="rg" in2="b" operator="arithmetic" k2="1" k3="1"/>
+</filter>
+<filter id="lg-l" x="0" y="0" width="1" height="1" color-interpolation-filters="sRGB">
+<feFlood flood-color="#000"/><feGaussianBlur stdDeviation="14" result="h"/>
+<feDiffuseLighting in="h" surfaceScale="13" diffuseConstant="1" lighting-color="#fff" result="xp"><feDistantLight azimuth="0" elevation="0"/></feDiffuseLighting><feDiffuseLighting in="h" surfaceScale="13" diffuseConstant="1" lighting-color="#fff" result="xn"><feDistantLight azimuth="180" elevation="0"/></feDiffuseLighting><feDiffuseLighting in="h" surfaceScale="13" diffuseConstant="1" lighting-color="#fff" result="yp"><feDistantLight azimuth="90" elevation="0"/></feDiffuseLighting><feDiffuseLighting in="h" surfaceScale="13" diffuseConstant="1" lighting-color="#fff" result="yn"><feDistantLight azimuth="270" elevation="0"/></feDiffuseLighting>
+<feColorMatrix in="xp" values="-1 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1" result="ixp"/>
+<feComposite in="xn" in2="ixp" operator="arithmetic" k2=".5" k3=".5" result="mx"/>
+<feColorMatrix in="mx" values="1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1" result="mxr"/>
+<feColorMatrix in="yp" values="0 0 0 0 0 0 -1 0 0 1 0 0 0 0 0 0 0 0 0 1" result="iyp"/>
+<feComposite in="yn" in2="iyp" operator="arithmetic" k2=".5" k3=".5" result="my"/>
+<feColorMatrix in="my" values="0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 1" result="myg"/>
+<feComposite in="mxr" in2="myg" operator="arithmetic" k2="1" k3="1" result="map"/>
+<feDisplacementMap in="SourceGraphic" in2="map" scale="90" xChannelSelector="R" yChannelSelector="G" result="dr"/>
+<feDisplacementMap in="SourceGraphic" in2="map" scale="99.0" xChannelSelector="R" yChannelSelector="G" result="dg"/>
+<feDisplacementMap in="SourceGraphic" in2="map" scale="108.0" xChannelSelector="R" yChannelSelector="G" result="db"/>
+<feColorMatrix in="dr" values="1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1" result="r"/>
+<feColorMatrix in="dg" values="0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 1" result="g"/>
+<feColorMatrix in="db" values="0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 1" result="b"/>
+<feComposite in="r" in2="g" operator="arithmetic" k2="1" k3="1" result="rg"/>
+<feComposite in="rg" in2="b" operator="arithmetic" k2="1" k3="1"/>
+</filter>
+</defs></svg>
+  <!-- BG:START -->
+<!-- BG:END -->
+  <div style="position:absolute;top:58px;inset-inline:0;text-align:center;color:#1B2236;font-weight:800;font-size:15px;text-shadow:0 1px 8px rgba(20,20,80,.4)" aria-hidden="true">مالی</div>
+  <div role="dialog" aria-label="تراکنش جدید" class="lg lg-l lg-text" style="position:absolute;inset-inline:8px;bottom:8px;top:86px;border-radius:38px;padding:8px 16px 16px;box-sizing:border-box;display:flex;flex-direction:column;gap:11px">
+    <div aria-hidden="true" style="width:38px;height:5px;border-radius:3px;background:rgba(20,30,60,.22);margin:0 auto"></div>
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <button type="button" class="lg-in" aria-label="بستن" style="width:40px;height:40px;border:0;border-radius:50%;color:#1B2236;display:grid;place-items:center"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+      <h2 style="margin:0;font-size:17px;font-weight:800">تراکنش جدید</h2>
+      <button type="button" class="lg-in" aria-label="ثبت تراکنش" style="width:40px;height:40px;border:0;border-radius:50%;background:#2F6FDB;color:#fff;display:grid;place-items:center;box-shadow:inset 0 1px 1px rgba(255,255,255,.5),0 3px 10px rgba(47,111,219,.35)"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l4.5 4.5L19 7"/></svg></button>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:center;padding:2px 0 0">
+      <div aria-live="polite" style="display:flex;align-items:baseline;gap:8px"><span style="font-size:52px;line-height:1.1;font-weight:900;letter-spacing:-1px">۴۵۰٬۰۰۰</span><span aria-hidden="true" style="width:2px;height:40px;background:#2F6FDB;align-self:center"></span></div>
+      <span style="font-size:13px;color:#38425E">تومان</span>
+      <span class="lg-in" style="margin-top:6px;padding:3px 12px;border-radius:99px;font-size:12px;font-weight:700;color:#07665D">بودجهٔ خوراک: ۱٬۷۷۰٬۰۰۰ مانده</span>
+    </div>
+    <div class="lg-in" role="group" aria-label="نوع تراکنش" style="display:flex;padding:3px;border-radius:99px">
+      <button type="button" aria-pressed="true" class="lg-in" style="flex:1;height:34px;border:0;border-radius:99px;background:#fff;color:#A8212F;font-weight:800;font-size:14px;box-shadow:0 1px 4px rgba(20,30,70,.18)">خرج</button>
+      <button type="button" aria-pressed="false" style="flex:1;height:34px;border:0;border-radius:99px;background:transparent;color:#1B2236;font-weight:600;font-size:14px">درآمد</button>
+      <button type="button" aria-pressed="false" style="flex:1;height:34px;border:0;border-radius:99px;background:transparent;color:#1B2236;font-weight:600;font-size:14px">انتقال</button>
+    </div>
+    <div role="group" aria-label="دسته" style="display:flex;gap:8px;overflow:hidden"><button type="button" aria-pressed="true" class="lg-in" style="flex:none;height:34px;padding:0 14px;border:0;border-radius:99px;background:#2F6FDB;color:#fff;font-weight:800;font-size:13px">خوراک</button><button type="button" aria-pressed="false" class="lg-in" style="flex:none;height:34px;padding:0 14px;border:0;border-radius:99px;color:#1B2236;font-weight:600;font-size:13px">رفت‌وآمد</button><button type="button" aria-pressed="false" class="lg-in" style="flex:none;height:34px;padding:0 14px;border:0;border-radius:99px;color:#1B2236;font-weight:600;font-size:13px">مسکن</button><button type="button" aria-pressed="false" class="lg-in" style="flex:none;height:34px;padding:0 14px;border:0;border-radius:99px;color:#1B2236;font-weight:600;font-size:13px">خرید</button><button type="button" aria-pressed="false" class="lg-in" style="flex:none;height:34px;padding:0 14px;border:0;border-radius:99px;color:#1B2236;font-weight:600;font-size:13px">سایر</button></div>
+    <div style="display:flex;gap:8px"><div class="lg-in" style="flex:1;min-width:0;border-radius:18px;padding:8px 12px;display:flex;align-items:center;gap:10px;min-height:48px;box-sizing:border-box"><span aria-hidden="true" style="color:#1F5FD0;display:grid"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="14" rx="3"/><path d="M3 10h18M16 15h2"/></svg></span><div style="display:flex;flex-direction:column;min-width:0"><span style="font-size:11px;color:#38425E">حساب</span><span style="font-size:14px;font-weight:700;white-space:nowrap">کارت ملت</span></div></div><div class="lg-in" style="flex:1;min-width:0;border-radius:18px;padding:8px 12px;display:flex;align-items:center;gap:10px;min-height:48px;box-sizing:border-box"><span aria-hidden="true" style="color:#1F5FD0;display:grid"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></span><div style="display:flex;flex-direction:column;min-width:0"><span style="font-size:11px;color:#38425E">تاریخ</span><span style="font-size:14px;font-weight:700;white-space:nowrap">چهارشنبه ۱۳ آبان</span></div></div></div>
+    <div style="display:flex;gap:8px"><div class="lg-in" style="width:96px;border-radius:18px;padding:8px 12px;display:flex;flex-direction:column;justify-content:center;min-height:48px;box-sizing:border-box"><span style="font-size:11px;color:#38425E">ساعت</span><span style="font-size:14px;font-weight:700">۱۳:۱۰</span></div>
+      <label class="lg-in" style="flex:1;min-width:0;border-radius:18px;padding:8px 12px;display:flex;align-items:center;gap:10px;min-height:48px;box-sizing:border-box"><span aria-hidden="true" style="color:#1F5FD0;display:grid"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h16M4 18h9"/></svg></span><input type="text" value="ناهار با علی" aria-label="یادداشت" style="flex:1;min-width:0;border:0;background:transparent;font:inherit;font-size:14px;font-weight:700;color:#1B2236;outline:none"></label>
+    </div>
+    <div dir="ltr" style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:auto"><button type="button" class="lg-in" style="height:56px;border:0;border-radius:20px;font-size:23px;font-weight:700;color:#1B2236;display:grid;place-items:center">۷</button><button type="button" class="lg-in" style="height:56px;border:0;border-radius:20px;font-size:23px;font-weight:700;color:#1B2236;display:grid;place-items:center">۸</button><button type="button" class="lg-in" style="height:56px;border:0;border-radius:20px;font-size:23px;font-weight:700;color:#1B2236;display:grid;place-items:center">۹</button><button type="button" class="lg-in" style="height:56px;border:0;border-radius:20px;font-size:23px;font-weight:700;color:#1B2236;display:grid;place-items:center">۴</button><button type="button" class="lg-in" style="height:56px;border:0;border-radius:20px;font-size:23px;font-weight:700;color:#1B2236;display:grid;place-items:center">۵</button><button type="button" class="lg-in" style="height:56px;border:0;border-radius:20px;font-size:23px;font-weight:700;color:#1B2236;display:grid;place-items:center">۶</button><button type="button" class="lg-in" style="height:56px;border:0;border-radius:20px;font-size:23px;font-weight:700;color:#1B2236;display:grid;place-items:center">۱</button><button type="button" class="lg-in" style="height:56px;border:0;border-radius:20px;font-size:23px;font-weight:700;color:#1B2236;display:grid;place-items:center">۲</button><button type="button" class="lg-in" style="height:56px;border:0;border-radius:20px;font-size:23px;font-weight:700;color:#1B2236;display:grid;place-items:center">۳</button><button type="button" class="lg-in" style="height:56px;border:0;border-radius:20px;font-size:23px;font-weight:700;color:#1B2236;display:grid;place-items:center">۰۰۰</button><button type="button" class="lg-in" style="height:56px;border:0;border-radius:20px;font-size:23px;font-weight:700;color:#1B2236;display:grid;place-items:center">۰</button><button type="button" aria-label="حذف رقم" class="lg-in" style="height:56px;border:0;border-radius:20px;font-size:23px;font-weight:700;color:#1B2236;display:grid;place-items:center"><svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 5H9l-6 7 6 7h12z"/><path d="m13 9 6 6M19 9l-6 6"/></svg></button></div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

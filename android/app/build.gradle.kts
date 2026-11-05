@@ -33,6 +33,8 @@ android {
             applicationIdSuffix = ".dev"
         }
         release {
+            // Spike builds pass -PlgSuffix=.glass so they install beside v1.
+            (project.findProperty("lgSuffix") as String?)?.let { applicationIdSuffix = it }
             // TODO: Add your own signing config for the release build.
             // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig = signingConfigs.getByName("debug")

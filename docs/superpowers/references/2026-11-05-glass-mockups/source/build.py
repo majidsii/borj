@@ -13,8 +13,8 @@ WARM_DESK='<div aria-hidden="true" style="position:absolute;inset:0;background:r
 BARS=[('#2FB8A8','#17897C',.55),('#5A63C8','#3A43A3',.85),('#F6B26B','#E08E2B',.4),('#E8606E','#C8324B',.7),('#2F6FDB','#1F4FA8',.95),('#2FB8A8','#17897C',.6),('#8E6BD9','#6B4BC0',.8),('#F6B26B','#E08E2B',.5),('#5A63C8','#3A43A3',.65),('#E8606E','#C8324B',.9),('#2FB8A8','#17897C',.45),('#2F6FDB','#1F4FA8',.75)]
 def under(kind,dark):
     """Real coloured content (chart bars + colour blobs) that sits UNDER the glass bars/sheets."""
-    h=150 if kind=='phone' else 260
-    n=7 if kind=='phone' else 12
+    h=96 if kind=='phone' else 0
+    n=7 if kind=='phone' else 0
     bars=''.join('<span style="flex:1;height:%dpx;border-radius:10px 10px 0 0;background:linear-gradient(180deg,%s,%s)"></span>'%(int(h*f*(1 if i%2 else .92)),a,b) for i,(a,b,f) in enumerate(BARS[:n]))
     blob=''
     if kind=='mac':

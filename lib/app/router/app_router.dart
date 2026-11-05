@@ -25,9 +25,13 @@ abstract final class AppRoutes {
 /// --dart-define=START_ROUTE=/debug/all-glass. Ignored in release builds.
 const String _startRoute = String.fromEnvironment('START_ROUTE');
 
+/// Spike-only: lets a release/profile build open the all-glass gallery for
+/// on-device review (--dart-define=GLASS_GALLERY=true).
+const bool _glassGallery = bool.fromEnvironment('GLASS_GALLERY');
+
 final appRouterProvider = Provider<GoRouter>((ref) {
   final router = GoRouter(
-    initialLocation: kDebugMode && _startRoute.isNotEmpty
+    initialLocation: (kDebugMode || _glassGallery) && _startRoute.isNotEmpty
         ? _startRoute
         : AppRoutes.dashboard,
     routes: <RouteBase>[
@@ -86,7 +90,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
           builder: (context, state) =>
               const GlassReviewScreen(referenceDir: glassReferenceDir),
         ),
-      if (kDebugMode)
+      if (kDebugMode || _glassGallery)
         GoRoute(
           path: AppRoutes.allGlass,
           builder: (context, state) => const AllGlassGallery(),

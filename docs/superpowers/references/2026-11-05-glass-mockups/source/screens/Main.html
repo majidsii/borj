@@ -1,0 +1,66 @@
+<!--@title Phone today-->
+<!--@kind phone-->
+<style>
+a{color:var(--accent)}a:hover{color:var(--link-h)}
+.chk{appearance:none;-webkit-appearance:none;width:24px;height:24px;border-radius:50%;border:1.5px solid var(--chk-b);background:var(--chk-bg);margin:0;display:grid;place-content:center;flex:none}
+.chk:checked{background:var(--accent);border-color:var(--accent)}
+.chk:checked::after{content:"";width:10px;height:5px;border:solid #fff;border-width:0 0 2px 2px;transform:rotate(-45deg) translate(1px,-1px)}
+button{font-family:inherit;cursor:pointer}
+button:focus-visible,a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+</style>
+<div dir="rtl" style="position: relative; width: 390px; height: 844px; overflow: hidden; background: var(--bg); font-family: Vazirmatn, -apple-system, Tahoma, sans-serif; color: var(--text)">
+  <!--@SVG-->
+<!--@BGFX-->
+  <div style="position: relative; padding: 58px 16px 0; display: flex; justify-content: space-between">
+    <button type="button" class="lg lg-s lg-clear" aria-label="تقویم" style="width: 44px; height: 44px; border: 0; border-radius: 50%; color: var(--text); display: grid; place-items: center"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><rect x="3" y="5" width="18" height="16" rx="3"></rect><path d="M3 10h18M8 3v4M16 3v4"></path></svg></button>
+    <button type="button" class="lg lg-s lg-tint" aria-label="ورود سریع" style="width: 44px; height: 44px; border: 0; border-radius: 50%; display: grid; place-items: center"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg></button>
+  </div>
+
+  <div style="position: relative; padding: 14px 20px 0; color: var(--text)">
+    <span style="font-size: 15px; font-weight: 600">چهارشنبه ۱۳ آبان</span>
+    <h1 style="margin: 0; font-size: 34px; line-height: 1.25; font-weight: 900">امروز</h1>
+  </div>
+
+  <div style="position: relative; padding: 18px 16px 0; display: flex; flex-direction: column; gap: 14px">
+    <section class="lg lg-l lg-text" style="border-radius: 26px; padding: 14px 14px 10px">
+      <div style="position: relative; height: 58px">
+        <div style="position: absolute; top: 4px; height: 50px; right: 4%; width: 28%; box-sizing: border-box; padding: 6px 10px; border-radius: 14px; background: #1FB5A8; color: #04302C; font-weight: 800; font-size: 13px">کار عمیق</div>
+        <div style="position: absolute; top: 4px; height: 50px; right: 50%; width: 20%; box-sizing: border-box; padding: 6px 10px; border-radius: 14px; background: #2F4FB8; color: #fff; font-weight: 800; font-size: 13px">جلسه</div>
+        <div style="position: absolute; top: 4px; height: 50px; right: 76%; width: 18%; box-sizing: border-box; padding: 6px 10px; border-radius: 14px; background: #C8324B; color: #fff; font-weight: 800; font-size: 13px">بیمه</div>
+        <div role="img" aria-label="اکنون ۱۴:۳۰" class="lg-in lg-lens" style="position: absolute; top: -6px; bottom: -6px; right: calc(44% - 32px); width: 64px; border-radius: 24px; display: flex; justify-content: center; padding-top: 3px; box-sizing: border-box; font-size: 12px; font-weight: 900">۱۴:۳۰</div>
+      </div>
+      <div aria-hidden="true" style="display: flex; justify-content: space-between; margin-top: 8px; font-size: 11px; color:var(--text2)"><span>۸</span><span>۱۲</span><span>۱۶</span><span>۲۰</span></div>
+    </section>
+
+    <section class="lg lg-l lg-text" style="border-radius: 26px; padding: 4px 16px">
+      <label style="display: flex; align-items: center; gap: 12px; min-height: 54px; border-bottom: .5px solid var(--ink-14);"><input class="chk" type="checkbox"><div style="flex: 1; display: flex; flex-direction: column"><span style="font-weight: 700">جلسه با تیم طراحی</span><span style="font-size: 12px; color:var(--text2)">یادآور ۱۵ دقیقه قبل</span></div><span style="font-size: 13px; font-weight: 800; color: var(--link)">۱۵:۰۰</span></label>
+      <label style="display: flex; align-items: center; gap: 12px; min-height: 54px; border-bottom: .5px solid var(--ink-14);"><input class="chk" type="checkbox"><span style="flex: 1">تمدید بیمهٔ ماشین</span><span style="font-size: 13px; color:var(--text2)">۱۸:۰۰</span></label>
+      <label style="display: flex; align-items: center; gap: 12px; min-height: 54px;"><input class="chk" type="checkbox"><span style="flex: 1">خرید هدیهٔ تولد</span></label>
+    </section>
+
+    <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px">
+      <section class="lg lg-m lg-text" style="border-radius: 26px; padding: 16px; display: flex; flex-direction: column; gap: 6px">
+        <span style="font-size: 13px; color:var(--text2)">مانده از بودجه</span>
+        <span style="font-size: 20px; font-weight: 900">۷٫۵ میلیون</span>
+        <div role="img" aria-label="۶۲ درصد خرج شده" style="height: 6px; border-radius: 99px; background: var(--ink-14); display: flex; overflow: hidden; margin-top: 4px"><div style="width: 62%; background: var(--accent); border-radius: 99px"></div></div>
+      </section>
+      <section class="lg lg-m lg-text" style="border-radius: 26px; padding: 16px; display: flex; flex-direction: column; gap: 6px">
+        <span style="font-size: 13px; color:var(--text2)">پیاده‌روی</span>
+        <span style="font-size: 20px; font-weight: 900">۱۲ روز پیاپی</span>
+        <div role="img" aria-label="۷ روز اخیر همه انجام شده" style="display: flex; gap: 4px; margin-top: 4px"><span style="flex: 1; height: 6px; border-radius: 3px; background: var(--teal)"></span><span style="flex: 1; height: 6px; border-radius: 3px; background: var(--teal)"></span><span style="flex: 1; height: 6px; border-radius: 3px; background: var(--teal)"></span><span style="flex: 1; height: 6px; border-radius: 3px; background: var(--teal)"></span><span style="flex: 1; height: 6px; border-radius: 3px; background: var(--teal)"></span><span style="flex: 1; height: 6px; border-radius: 3px; background: var(--teal)"></span><span style="flex: 1; height: 6px; border-radius: 3px; background: var(--teal)"></span></div>
+      </section>
+    </div>
+
+    <section class="lg lg-m lg-text" style="border-radius: 26px; padding: 16px; display: flex; justify-content: space-between; align-items: center">
+      <div style="display: flex; flex-direction: column"><span style="font-weight: 700">قسط وام مسکن</span><span style="font-size: 12px; color:var(--text2)">قسط ۲۵ از ۶۰، ۱۰ آذر</span></div>
+      <span style="font-weight: 900">۴٬۲۰۰٬۰۰۰</span>
+    </section>
+  </div>
+
+  <div style="position: absolute; bottom: 24px; inset-inline: 16px; display: flex; gap: 10px; align-items: center">
+    <nav class="lg lg-m lg-text" aria-label="بخش‌ها" style="flex: 1; display: flex; padding: 4px; border-radius: 99px">
+      <a href="#" class="lg-in " style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; height: 56px; border-radius: 99px; color: var(--link); text-decoration: none; font-size: 10px; font-weight: 800"><svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path></svg>امروز</a><a href="iOSSheet.dc.html" class="" style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; height: 56px; border-radius: 99px; color: var(--text); text-decoration: none; font-size: 10px; font-weight: 600"><svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="m8 12 3 3 5-6"></path></svg>کارها</a><a href="#" class="" style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; height: 56px; border-radius: 99px; color: var(--text); text-decoration: none; font-size: 10px; font-weight: 600"><svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="14" rx="3"></rect><path d="M3 10h18M16 15h2"></path></svg>مالی</a><a href="iOSHabits.dc.html" class="" style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; height: 56px; border-radius: 99px; color: var(--text); text-decoration: none; font-size: 10px; font-weight: 600"><svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 0 1 14-5.3L20 9M20 4v5h-5M20 12a8 8 0 0 1-14 5.3L4 15M4 20v-5h5"></path></svg>عادت‌ها</a>
+    </nav>
+    <button type="button" class="lg lg-s lg-text" aria-label="جست‌وجو" style="width: 64px; height: 64px; border: 0; border-radius: 50%; color: var(--text); display: grid; place-items: center"><svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg></button>
+  </div>
+</div>

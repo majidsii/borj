@@ -118,8 +118,10 @@ chrome and content alike, but never glass on glass (things drawn on glass use a 
 inner material). Light background white, dark background charcoal with warm light.
 The approved boards are `docs/superpowers/references/2026-11-05-glass-mockups/`
 (the board wins on layout); the design is
-`docs/superpowers/specs/2026-11-05-liquid-glass-redesign-design.md`. Use
-`AppleLiquidGlass(role:, shape: AppleGlassShape..., child:)`. The theme comes from
+`docs/superpowers/specs/2026-11-05-liquid-glass-redesign-design.md`. New code uses `AppGlass(role: GlassRole..., shape: AppleGlassShape..., child:)` inside a
+`GlassScope(kind: GlassLayerKind...)` (one layer, ≤ 16 shapes), with the scopes of one surface under one
+`GlassBackdropGroup`. Things drawn on glass use `GlassInner`. The legacy `AppleLiquidGlass` remains only for
+screens not yet migrated. The theme comes from
 `AppleVisualScope.of(context)` (follows app brightness). Only `apple_liquid_glass.dart`
 and `app_bootstrap.dart` import `liquid_glass_renderer`. Acceptance is side-by-side
 perceptual, not pixel goldens: debug review page (long-press the brand island, run

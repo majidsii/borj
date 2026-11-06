@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:borj/app/apple_visual/foundation/glass_preferences_scope.dart';
 import 'package:borj/app/bootstrap/notification_startup_bootstrap.dart';
 import 'package:borj/app/router/app_router.dart';
 import 'package:borj/app/theme/motion_scope.dart';
@@ -76,7 +77,11 @@ final class BorjApp extends ConsumerWidget {
       themeAnimationCurve: Curves.easeOut,
       builder: (context, child) => MotionScope(
         reduceMotionSetting: preferences.reduceMotion,
-        child: child ?? const SizedBox.shrink(),
+        child: GlassPreferencesScope(
+          intensity: preferences.glassIntensity,
+          reduceTransparency: preferences.reduceTransparency,
+          child: child ?? const SizedBox.shrink(),
+        ),
       ),
       routerConfig: ref.watch(appRouterProvider),
     );

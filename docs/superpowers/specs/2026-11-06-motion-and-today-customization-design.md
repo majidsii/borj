@@ -1,7 +1,7 @@
 # Motion System and Today Customization — Design
 
 **Date:** 2026-11-06
-**Status:** DRAFT for owner review. Direction approved in chat (2026-11-06): customize Today in place
+**Status:** APPROVED by the owner (2026-11-07). The owner reviewed the prototype's Today screen («همه چیز عالیه») and Tasks screens, then said «عالیه باید پیاده بشه تا بعد اگر مشکل داشت فیکس کنیم» (implement it; fix problems later). The remaining screens were not walked through one by one; issues found during implementation are fixed then. Direction approved in chat (2026-11-06): customize Today in place
 (move, resize by dragging to fixed sizes with a faint preview, hide, add back), and motion on every screen
 with professional data reveals.
 **Extends:** `2026-11-05-liquid-glass-redesign-design.md` (§3.3 motion note, §4 motion tokens, §7 phases).
@@ -62,6 +62,9 @@ ratio (stiffness = (2π / response)², mass 1). Curves are for non-physical tran
 
 `ease-in` curves are not used anywhere. Existing `apple_visual/foundation/apple_visual_motion.dart`
 (`defaultSpring`, `interactiveSpring`) is mapped onto `standard` and `snappy`; no second motion vocabulary.
+The mapping is by name only: the token values are the ones in the table above (they match the approved
+prototype). The Apple source values in `apple_source_motion.g.dart` (`defaultSpring` response 0.55 / damping 1.0,
+`interactiveSpring` 0.15 / 0.86) stay unchanged as provenance and are not used to drive app motion.
 
 **Reduce Motion source:** `MediaQuery.disableAnimationsOf(context)` OR the in-app setting
 «کاهش حرکت» (Settings → Appearance, default off). Linux has no reliable system flag, so the app setting is

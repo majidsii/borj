@@ -17,6 +17,12 @@ Entry template:
 
 ---
 
+## 2026-11-06 — Motion system and Today customization designed (draft)
+- **Type:** researched + decided (direction)
+- **What:** installed and applied motion skills (Emil Kowalski set, LottieFiles motion-design, dylantarre data-viz and accessible-motion); built a live Today prototype (move, drag-to-resize with faint preview, hide/undo, add, reset/undo, motion samples, Reduce Motion) and audited it against the skills; wrote the motion + customization spec with per-screen choreography.
+- **Evidence / links:** spec `docs/superpowers/specs/2026-11-06-motion-and-today-customization-design.md`; prototype https://claude.ai/artifact/9EMLdeoU2PEjJfur64Nv1W
+- **Follow-ups:** owner review of the spec; then the redesign Phase 1 plan including motion tokens; icon wiring deferred to Phase 2.
+
 ## 2026-11-06 — Logo approved: Banna'i برج
 - **Type:** decided
 - **What:** with the `logo-design` skill, three concepts (calligraphy-dot tower, khofte-raste brick pinwheel, Banna'i word mark); the owner picked Banna'i: the word برج in square Kufic brick script, brick body + turquoise-glaze dots. Kit built: master and small-size cut, lockups with "Borj" in Vazirmatn ExtraBold outlines, light/dark app icons, Android adaptive layers, PNGs and `.ico`, usage rules.

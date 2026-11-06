@@ -26,7 +26,7 @@ The owner delegated prioritization. Each item gets its own spec → plan → imp
 
 1. **Engineering baseline** — CI (analyze, test, Linux build) restored; v2 deleted the v1 workflow in `9f0573d`. — **DONE** (2026-11-03, checkpoint: docs/superpowers/checkpoints/2026-11-03-ci-baseline-checkpoint.md)
 2. **Liquid Glass adoption** — spec `2026-11-02-liquid-glass-renderer-adoption-design.md`. — **DONE** (2026-11-04, awaiting owner visual sign-off; checkpoint: docs/superpowers/checkpoints/2026-11-04-liquid-glass-adoption-checkpoint.md)
-3. **v2 release readiness** — import v1 `data.json` (v1 users exist; v2 has no importer today), product name decision (before release: app ID and data paths depend on it), packaging and release automation. Part A (data foundation: whole-toman money, checked arithmetic, v1 importer) — **DONE** (2026-11-04, checkpoint: docs/superpowers/checkpoints/2026-11-04-release-data-foundation-checkpoint.md). Remaining: part B (packaging, release automation, Android signing continuity) and part C (product name). Part C name decided 2026-11-06: **برج / Borj** (docs/superpowers/references/2026-11-06-product-name-borj.md); applied the same day (package `borj`, app ID `app.borj`, binary `borj`, `borj.sqlite`; spec docs/superpowers/specs/2026-11-06-rename-to-borj-design.md). Logo approved the same day (Banna'i برج, kit in `assets/brand/`); wiring the icons into the platform runners is still open.
+3. **v2 release readiness** — import v1 `data.json` (v1 users exist; v2 has no importer today), product name decision (before release: app ID and data paths depend on it), packaging and release automation. Part A (data foundation: whole-toman money, checked arithmetic, v1 importer) — **DONE** (2026-11-04, checkpoint: docs/superpowers/checkpoints/2026-11-04-release-data-foundation-checkpoint.md). Remaining: part B (packaging, release automation, Android signing continuity) and part C (product name). Part C name decided 2026-11-06: **برج / Borj** (docs/superpowers/references/2026-11-06-product-name-borj.md); applied the same day (package `borj`, app ID `app.borj`, binary `borj`, `borj.sqlite`; spec docs/superpowers/specs/2026-11-06-rename-to-borj-design.md). Logo approved the same day (Banna'i برج, kit in `assets/brand/`); wiring the icons into the platform runners is deferred to redesign Phase 2 (owner, 2026-11-06).
 4. **Habits and Goals** — complete the all-in-one product.
 5. **Tasks 2.9–2.11** — Trash/Undo/Audit, dashboard cards, Phase 2 checkpoint. No longer blocked by visual work.
 
@@ -954,6 +954,8 @@ Create and approve Task 2.9's detailed functional design and implementation plan
 ## Task 2.10 — Dashboard Card Visibility and Ordering
 
 **Status: PENDING**
+
+**Superseded in scope (2026-11-06):** Today customization (move, resize to fixed sizes, hide, add, reset; per-device layout; schema 10) is designed in `docs/superpowers/specs/2026-11-06-motion-and-today-customization-design.md` §5 and ships in redesign Phase 2.
 
 Planned persistence:
 

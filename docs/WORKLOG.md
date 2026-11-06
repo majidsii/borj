@@ -17,6 +17,12 @@ Entry template:
 
 ---
 
+## 2026-11-06 — Logo approved: Banna'i برج
+- **Type:** decided
+- **What:** with the `logo-design` skill, three concepts (calligraphy-dot tower, khofte-raste brick pinwheel, Banna'i word mark); the owner picked Banna'i: the word برج in square Kufic brick script, brick body + turquoise-glaze dots. Kit built: master and small-size cut, lockups with "Borj" in Vazirmatn ExtraBold outlines, light/dark app icons, Android adaptive layers, PNGs and `.ico`, usage rules.
+- **Evidence / links:** `assets/brand/` (README with colours, contrast, rules; `source/build.py` regenerates every SVG); review page https://claude.ai/artifact/V3Y7rGAxDMK1crrWScAXKh
+- **Follow-ups:** wire the icons into the Linux, Android, Windows and macOS runners and the in-app brand island; the `.ico` uses the master at 16/32 px instead of the small cut; no trademark search done.
+
 ## 2026-11-06 — GitHub repo and local folders renamed to Borj
 - **Type:** implemented
 - **What:** `majidsii/dashboard-shakhsi` renamed to `majidsii/borj` (GitHub redirects old URLs; v1 releases unchanged); `origin` updated in the main repo and the v1 clone. Folders moved under `~/projects/personal/borj/`: `v1`, `main`, `v2-integration`, the glass/spike worktrees, `reference-captures`, `gate-c-wip-backup-2026-11-04`; `git worktree repair` run; native `build/` dirs dropped. Claude project memory copied to the new main path key.

@@ -83,9 +83,9 @@ def _state_name(name):
     return None
 
 _CANONICAL_SOURCE_FILE_NAMES={
-    '5941547509b49a3756667905f18492dfdf4e59a977de1deacccfcf7ff94ac295':
+    '839ecf260025264db9000a4ce23ef2804c33c8d62642a6373ed310858ca64171':
         'Apple iOS 27 UI Kit.sketch',
-    '8f83805217d979dc560d008fce66c1c77014f631cccff8978f31baf1d7ef3b28':
+    'f5aa2f4f319eae66b5eab0bbc0faacb10ce16656457cff528f9810d57ff1354d':
         'Apple macOS 27 UI Kit.sketch',
     '4bbbb036ce008f2213803ad05d7591ed4c0ac009f677a2e1d3d3b315ceb1ce31':
         'apple-macos-27-ui-kit_assets_2026-06-23_v12.zip',
@@ -178,9 +178,12 @@ def _component_map(family,data):
     return lines
 
 def main():
-    ap=argparse.ArgumentParser(); ap.add_argument('--ios-sketch',type=Path); ap.add_argument('--macos-sketch',type=Path); ap.add_argument('--macos-assets',type=Path); ap.add_argument('--output',type=Path,required=True); ap.add_argument('--component-map',type=Path,required=True); a=ap.parse_args()
-    ios=SourceFile(a.ios_sketch,'5941547509b49a3756667905f18492dfdf4e59a977de1deacccfcf7ff94ac295'); mac=SourceFile(a.macos_sketch,'8f83805217d979dc560d008fce66c1c77014f631cccff8978f31baf1d7ef3b28'); assets=SourceFile(a.macos_assets,'4bbbb036ce008f2213803ad05d7591ed4c0ac009f677a2e1d3d3b315ceb1ce31')
-    data={'schemaVersion':1,'ios':extract_sketch_reference(ios),'macos':extract_sketch_reference(mac),'macosAssets':extract_asset_bundle(assets)}
+    ap=argparse.ArgumentParser(); ap.add_argument('--ios-sketch',type=Path); ap.add_argument('--macos-sketch',type=Path); ap.add_argument('--macos-assets',type=Path); ap.add_argument('--reuse-assets-from',type=Path); ap.add_argument('--output',type=Path,required=True); ap.add_argument('--component-map',type=Path,required=True); a=ap.parse_args()
+    if (a.macos_assets is None)==(a.reuse_assets_from is None): ap.error('pass exactly one of --macos-assets or --reuse-assets-from')
+    ios=SourceFile(a.ios_sketch,'839ecf260025264db9000a4ce23ef2804c33c8d62642a6373ed310858ca64171'); mac=SourceFile(a.macos_sketch,'f5aa2f4f319eae66b5eab0bbc0faacb10ce16656457cff528f9810d57ff1354d')
+    if a.reuse_assets_from is not None: macos_assets=json.loads(a.reuse_assets_from.read_text())['macosAssets']
+    else: macos_assets=extract_asset_bundle(SourceFile(a.macos_assets,'4bbbb036ce008f2213803ad05d7591ed4c0ac009f677a2e1d3d3b315ceb1ce31'))
+    data={'schemaVersion':1,'ios':extract_sketch_reference(ios),'macos':extract_sketch_reference(mac),'macosAssets':macos_assets}
     write_deterministic_json(data,a.output)
     lines=['# Generated Apple UI Kit Component Map','', '> Generated deterministically from the source-locked Sketch files. Do not edit by hand.','']+_component_map('iOS 27',data['ios'])+['']+_component_map('macOS 27',data['macos'])+['']
     a.component_map.parent.mkdir(parents=True,exist_ok=True); a.component_map.write_text('\n'.join(lines))

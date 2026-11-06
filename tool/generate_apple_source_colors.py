@@ -2,8 +2,8 @@
 import argparse, json, sys
 from pathlib import Path
 
-IOS_SHA = "5941547509b49a3756667905f18492dfdf4e59a977de1deacccfcf7ff94ac295"
-MAC_SHA = "8f83805217d979dc560d008fce66c1c77014f631cccff8978f31baf1d7ef3b28"
+IOS_SHA = "839ecf260025264db9000a4ce23ef2804c33c8d62642a6373ed310858ca64171"
+MAC_SHA = "f5aa2f4f319eae66b5eab0bbc0faacb10ce16656457cff528f9810d57ff1354d"
 
 def die(msg):
     raise SystemExit(f"ERROR: {msg}")

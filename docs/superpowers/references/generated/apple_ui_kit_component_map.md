@@ -4,25 +4,25 @@
 
 ## iOS 27
 
-- Pages: **34**
+- Pages: **36**
 - Shared swatches: **107**
 - Shared text styles: **105**
 - Shared layer styles: **42**
 - Font references: **70**
-- Flattened component layers: **1623**
+- Flattened component layers: **1976**
 
 ### Pages
 
-- `Kit` — 10 top-level layers
+- `Kit` — 11 top-level layers
 - `Library Preview` — 1 top-level layers
 - `— — — — — — — — — — —` — 0 top-level layers
 - `— — — — — — — — — — —` — 0 top-level layers
 - `— — — — — — — — — — —` — 0 top-level layers
 - `— — — — — — — — — — —` — 0 top-level layers
-- `􀅐 Text Styles and Dynamic Type` — 4 top-level layers
+- `􀅐 Text Styles and Dynamic Type` — 5 top-level layers
 - `􀅫 Text Fields` — 12 top-level layers
 - `􀆏 Menus` — 109 top-level layers
-- `􀇳 Keyboards` — 160 top-level layers
+- `􀇳 Keyboards` — 386 top-level layers
 - `􀇾 Alerts` — 19 top-level layers
 - `􀈂 Activity Views` — 39 top-level layers
 - `􀉉 Date and Time Pickers` — 51 top-level layers
@@ -31,20 +31,22 @@
 - `􀌸 Popovers` — 27 top-level layers
 - `􀍠 Page Controls` — 45 top-level layers
 - `􀍡 Action Sheets` — 5 top-level layers
-- `􀎘 Color Wells and Pickers` — 10 top-level layers
+- `􀎘 Color Pickers` — 10 top-level layers
 - `􀎽 FaceID` — 3 top-level layers
 - `􀏚 Sidebars` — 55 top-level layers
 - `􀐫 Change Log` — 1 top-level layers
-- `􀓔 Empty States` — 4 top-level layers
+- `􀓔 Empty States` — 7 top-level layers
 - `􀜊 Toggles` — 15 top-level layers
-- `􀝥 Colors` — 1 top-level layers
-- `􀟞 System` — 338 top-level layers
-- `􀤋 Toolbars` — 190 top-level layers
+- `􀝥 Colors` — 2 top-level layers
+- `􀟞 System` — 315 top-level layers
+- `􀤋 Toolbars` — 219 top-level layers
+- `􀧐 Layout Guides` — 16 top-level layers
 - `􀴽 Progress Indicators` — 11 top-level layers
-- `􀽺 Sheets` — 11 top-level layers
+- `􀽺 Sheets` — 51 top-level layers
 - `􀿴 Segmented Controls` — 17 top-level layers
-- `􁄻 Materials` — 3 top-level layers
-- `􁝮 Tab Bars` — 53 top-level layers
+- `􁄻 Materials` — 4 top-level layers
+- `􁝮 Tab Bars` — 85 top-level layers
+- `􁣳 Product Bezels` — 26 top-level layers
 - `􁸞 Buttons` — 265 top-level layers
 - `􂻥 Steppers` — 15 top-level layers
 
@@ -72,17 +74,17 @@
 
 ## macOS 27
 
-- Pages: **37**
+- Pages: **38**
 - Shared swatches: **110**
 - Shared text styles: **67**
 - Shared layer styles: **285**
 - Font references: **70**
-- Flattened component layers: **5049**
+- Flattened component layers: **5048**
 
 ### Pages
 
 - `Kit` — 8 top-level layers
-- `Library Preview` — 2 top-level layers
+- `Library Preview` — 1 top-level layers
 - `— — — — — — — — — — —` — 0 top-level layers
 - `— — — — — — — — — — —` — 0 top-level layers
 - `— — — — — — — — — — —` — 0 top-level layers
@@ -105,16 +107,17 @@
 - `􀜊 Toggles - Radio Buttons` — 306 top-level layers
 - `􀜊 Toggles - Switches` — 220 top-level layers
 - `􀝥 Colors` — 120 top-level layers
-- `􀢌 Windows` — 65 top-level layers
-- `􀤋 Titlebars and Toolbars` — 401 top-level layers
+- `􀢌 Windows` — 64 top-level layers
+- `􀤋 Titlebars and Toolbars` — 400 top-level layers
 - `􀤏 Scrollbars` — 8 top-level layers
 - `􀧊 Forms` — 17 top-level layers
 - `􀫌 Pointers` — 23 top-level layers
-- `􀱢 Menus` — 132 top-level layers
+- `􀱢 Menus` — 130 top-level layers
 - `􀴽 Progress Indicators` — 198 top-level layers
 - `􀿴 Segmented Controls` — 341 top-level layers
 - `􁄻 Materials` — 14 top-level layers
 - `􁈸 Menu Bar and Dock` — 118 top-level layers
+- `􁣳 Product Bezels` — 4 top-level layers
 - `􁷘 Tooltips` — 6 top-level layers
 - `􁸞 Buttons` — 924 top-level layers
 - `􂻥 Steppers` — 206 top-level layers

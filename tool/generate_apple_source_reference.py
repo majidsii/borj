@@ -7,19 +7,19 @@ import sys
 from pathlib import Path
 from typing import Any
 
-IOS_SHA256 = "5941547509b49a3756667905f18492dfdf4e59a977de1deacccfcf7ff94ac295"
-MACOS_SHA256 = "8f83805217d979dc560d008fce66c1c77014f631cccff8978f31baf1d7ef3b28"
+IOS_SHA256 = "839ecf260025264db9000a4ce23ef2804c33c8d62642a6373ed310858ca64171"
+MACOS_SHA256 = "f5aa2f4f319eae66b5eab0bbc0faacb10ce16656457cff528f9810d57ff1354d"
 MACOS_ASSETS_SHA256 = "4bbbb036ce008f2213803ad05d7591ed4c0ac009f677a2e1d3d3b315ceb1ce31"
 
 EXPECTED_COUNTS = {
     "ios": {
-        "pageCount": 34,
+        "pageCount": 36,
         "swatches": 107,
         "textStyles": 105,
         "layerStyles": 42,
     },
     "macos": {
-        "pageCount": 37,
+        "pageCount": 38,
         "swatches": 110,
         "textStyles": 67,
         "layerStyles": 285,

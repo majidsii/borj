@@ -4,9 +4,9 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   const iosSha =
-      '5941547509b49a3756667905f18492dfdf4e59a977de1deacccfcf7ff94ac295';
+      '839ecf260025264db9000a4ce23ef2804c33c8d62642a6373ed310858ca64171';
   const macosSha =
-      '8f83805217d979dc560d008fce66c1c77014f631cccff8978f31baf1d7ef3b28';
+      'f5aa2f4f319eae66b5eab0bbc0faacb10ce16656457cff528f9810d57ff1354d';
   const macosAssetsSha =
       '4bbbb036ce008f2213803ad05d7591ed4c0ac009f677a2e1d3d3b315ceb1ce31';
 
@@ -50,7 +50,7 @@ void main() {
     final ios = data['ios'] as Map<String, dynamic>;
     final macos = data['macos'] as Map<String, dynamic>;
 
-    expect(ios['pageCount'], 34);
-    expect(macos['pageCount'], 37);
+    expect(ios['pageCount'], 36);
+    expect(macos['pageCount'], 38);
   });
 }

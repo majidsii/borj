@@ -847,18 +847,18 @@ abstract final class AppleSourceColorReference {
     AppleGeneratedSourceColor(
       sourceId: '8A99EC46-3950-411A-9734-91C48BBDECE0',
       name: 'x. Kit/Nested Symbol BG Dark',
-      red: 0.21,
-      green: 0.405,
-      blue: 0.6,
-      alpha: 1.0,
+      red: 0.0,
+      green: 0.349019607843137,
+      blue: 0.701960784313726,
+      alpha: 0.6,
     ),
     AppleGeneratedSourceColor(
       sourceId: 'ED7987FA-568A-42E9-85E6-0092654FDD6C',
       name: 'x. Kit/Nested Symbol BG Light',
-      red: 0.8,
-      green: 0.901960784313726,
+      red: 0.301960784313726,
+      green: 0.650980392156863,
       blue: 1.0,
-      alpha: 1.0,
+      alpha: 0.6,
     ),
     AppleGeneratedSourceColor(
       sourceId: '1F6FF237-AF3F-4A01-9CBD-A85429855583',
@@ -866,7 +866,7 @@ abstract final class AppleSourceColorReference {
       red: 0.2,
       green: 0.2,
       blue: 0.2,
-      alpha: 1.0,
+      alpha: 0.6,
     ),
     AppleGeneratedSourceColor(
       sourceId: '402903CF-7E9B-4340-B06F-88BF3AA2C51B',
@@ -874,7 +874,7 @@ abstract final class AppleSourceColorReference {
       red: 0.8,
       green: 0.8,
       blue: 0.8,
-      alpha: 1.0,
+      alpha: 0.6,
     ),
   ];
 

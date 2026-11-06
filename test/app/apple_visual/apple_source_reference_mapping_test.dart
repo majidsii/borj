@@ -6,17 +6,17 @@ void main() {
     test('is pinned to the frozen Apple source hashes', () {
       expect(
         AppleSourceReference.iosSha256,
-        '5941547509b49a3756667905f18492dfdf4e59a977de1deacccfcf7ff94ac295',
+        '839ecf260025264db9000a4ce23ef2804c33c8d62642a6373ed310858ca64171',
       );
       expect(
         AppleSourceReference.macosSha256,
-        '8f83805217d979dc560d008fce66c1c77014f631cccff8978f31baf1d7ef3b28',
+        'f5aa2f4f319eae66b5eab0bbc0faacb10ce16656457cff528f9810d57ff1354d',
       );
     });
 
     test('preserves the frozen source page counts', () {
-      expect(AppleSourceReference.iosPageCount, 34);
-      expect(AppleSourceReference.macosPageCount, 37);
+      expect(AppleSourceReference.iosPageCount, 36);
+      expect(AppleSourceReference.macosPageCount, 38);
     });
 
     test('exposes source-owned token records instead of guessed values', () {

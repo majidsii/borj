@@ -197,6 +197,30 @@ abstract final class AppleSourceMetricReference {
           appearance: 'Light',
           stateLabels: ['Disabled'],
         ),
+        AppleGeneratedMetricProvenance(
+          sourceId: '355139EA-D659-4417-B767-CB0E0CB1DD6C',
+          sourceName: 'Toolbars/Dark/Buttons/34pt/Active/Close Button',
+          appearance: 'Dark',
+          stateLabels: ['Active'],
+        ),
+        AppleGeneratedMetricProvenance(
+          sourceId: '7BBB5DC8-5FE2-4E73-8FBE-EDAE188C0BAA',
+          sourceName: 'Toolbars/Dark/Buttons/34pt/Inactive/Close Button',
+          appearance: 'Dark',
+          stateLabels: ['Inactive'],
+        ),
+        AppleGeneratedMetricProvenance(
+          sourceId: '8C4BBFAB-81B3-47C8-A0A5-3BD88B0BCB64',
+          sourceName: 'Toolbars/Light/Buttons/34pt/Active/Close Button',
+          appearance: 'Light',
+          stateLabels: ['Active'],
+        ),
+        AppleGeneratedMetricProvenance(
+          sourceId: '23C0393F-AB41-4797-B2E9-52C012D812CC',
+          sourceName: 'Toolbars/Light/Buttons/34pt/Inactive/Close Button',
+          appearance: 'Light',
+          stateLabels: ['Inactive'],
+        ),
       ],
     ),
     AppleGeneratedMetricVariant(
@@ -798,53 +822,51 @@ abstract final class AppleSourceMetricReference {
       provenance: [
         AppleGeneratedMetricProvenance(
           sourceId: '55864B0A-0125-48EF-B020-A9FE2044AF8F',
-          sourceName: 'Toolbars/Top (44pt)/Dark/Active/Buttons/Symbol 1',
+          sourceName: 'Toolbars/Dark/Buttons/44pt/Active/Symbol 1',
           appearance: 'Dark',
           stateLabels: ['Active'],
         ),
         AppleGeneratedMetricProvenance(
           sourceId: 'C906574A-621F-45A5-939E-4FF2FA0244E2',
-          sourceName:
-              'Toolbars/Top (44pt)/Dark/Active/Buttons/Symbol 1 - Prominent',
+          sourceName: 'Toolbars/Dark/Buttons/44pt/Active/Symbol 1 - Prominent',
           appearance: 'Dark',
           stateLabels: ['Active'],
         ),
         AppleGeneratedMetricProvenance(
           sourceId: '0671F53A-BFB3-4B61-8577-AEE5634FCE9B',
-          sourceName: 'Toolbars/Top (44pt)/Dark/Inactive/Buttons/Symbol 1',
+          sourceName: 'Toolbars/Dark/Buttons/44pt/Inactive/Symbol 1',
           appearance: 'Dark',
           stateLabels: ['Inactive'],
         ),
         AppleGeneratedMetricProvenance(
           sourceId: '1A753621-36B6-4F0A-9119-F3CBBC64096B',
           sourceName:
-              'Toolbars/Top (44pt)/Dark/Inactive/Buttons/Symbol 1 - Prominent',
+              'Toolbars/Dark/Buttons/44pt/Inactive/Symbol 1 - Prominent',
           appearance: 'Dark',
           stateLabels: ['Inactive'],
         ),
         AppleGeneratedMetricProvenance(
           sourceId: 'CBDA010D-B1B3-47F2-AFC9-DC1DA1EDCA4E',
-          sourceName: 'Toolbars/Top (44pt)/Light/Active/Buttons/Symbol 1',
+          sourceName: 'Toolbars/Light/Buttons/44pt/Active/Symbol 1',
           appearance: 'Light',
           stateLabels: ['Active'],
         ),
         AppleGeneratedMetricProvenance(
           sourceId: '608B6550-EF22-42D8-BE6C-FA0EB84F3D3C',
-          sourceName:
-              'Toolbars/Top (44pt)/Light/Active/Buttons/Symbol 1 - Prominent',
+          sourceName: 'Toolbars/Light/Buttons/44pt/Active/Symbol 1 - Prominent',
           appearance: 'Light',
           stateLabels: ['Active'],
         ),
         AppleGeneratedMetricProvenance(
           sourceId: 'AB3F5EEE-D17D-4A9F-B366-82C7C3A3B577',
-          sourceName: 'Toolbars/Top (44pt)/Light/Inactive/Buttons/Symbol 1',
+          sourceName: 'Toolbars/Light/Buttons/44pt/Inactive/Symbol 1',
           appearance: 'Light',
           stateLabels: ['Inactive'],
         ),
         AppleGeneratedMetricProvenance(
           sourceId: 'E2F20F43-EAF0-425A-957A-D6F464A0CDC3',
           sourceName:
-              'Toolbars/Top (44pt)/Light/Inactive/Buttons/Symbol 1 - Prominent',
+              'Toolbars/Light/Buttons/44pt/Inactive/Symbol 1 - Prominent',
           appearance: 'Light',
           stateLabels: ['Inactive'],
         ),
@@ -857,25 +879,25 @@ abstract final class AppleSourceMetricReference {
       provenance: [
         AppleGeneratedMetricProvenance(
           sourceId: '77285760-AFCA-46F4-9CB8-FFADA5B80C79',
-          sourceName: 'Toolbars/Top (44pt)/Dark/Active/Buttons/Text',
+          sourceName: 'Toolbars/Dark/Buttons/44pt/Active/Text',
           appearance: 'Dark',
           stateLabels: ['Active'],
         ),
         AppleGeneratedMetricProvenance(
           sourceId: 'FB4C0897-1026-47C8-AB63-5B23C97AA04E',
-          sourceName: 'Toolbars/Top (44pt)/Dark/Inactive/Buttons/Text',
+          sourceName: 'Toolbars/Dark/Buttons/44pt/Inactive/Text',
           appearance: 'Dark',
           stateLabels: ['Inactive'],
         ),
         AppleGeneratedMetricProvenance(
           sourceId: 'B6ADCF4E-1753-434E-9E0A-E76DFA3B8860',
-          sourceName: 'Toolbars/Top (44pt)/Light/Active/Buttons/Text',
+          sourceName: 'Toolbars/Light/Buttons/44pt/Active/Text',
           appearance: 'Light',
           stateLabels: ['Active'],
         ),
         AppleGeneratedMetricProvenance(
           sourceId: 'E1AE1797-DE1A-481A-B560-BC17321BC7C6',
-          sourceName: 'Toolbars/Top (44pt)/Light/Inactive/Buttons/Text',
+          sourceName: 'Toolbars/Light/Buttons/44pt/Inactive/Text',
           appearance: 'Light',
           stateLabels: ['Inactive'],
         ),
@@ -888,28 +910,25 @@ abstract final class AppleSourceMetricReference {
       provenance: [
         AppleGeneratedMetricProvenance(
           sourceId: 'DC222975-26FC-4E66-AA9F-94164123497D',
-          sourceName: 'Toolbars/Top (44pt)/Dark/Active/Buttons/Back with Title',
+          sourceName: 'Toolbars/Dark/Buttons/44pt/Active/Back with Title',
           appearance: 'Dark',
           stateLabels: ['Active'],
         ),
         AppleGeneratedMetricProvenance(
           sourceId: 'B0535578-416F-47DB-8E2C-A34B59397262',
-          sourceName:
-              'Toolbars/Top (44pt)/Dark/Inactive/Buttons/Back with Title',
+          sourceName: 'Toolbars/Dark/Buttons/44pt/Inactive/Back with Title',
           appearance: 'Dark',
           stateLabels: ['Inactive'],
         ),
         AppleGeneratedMetricProvenance(
           sourceId: 'CBF38F0F-0D3D-4C79-AB41-CBDF79238E77',
-          sourceName:
-              'Toolbars/Top (44pt)/Light/Active/Buttons/Back with Title',
+          sourceName: 'Toolbars/Light/Buttons/44pt/Active/Back with Title',
           appearance: 'Light',
           stateLabels: ['Active'],
         ),
         AppleGeneratedMetricProvenance(
           sourceId: '48DBBE9C-0313-4D2F-AA21-54423CFB10C8',
-          sourceName:
-              'Toolbars/Top (44pt)/Light/Inactive/Buttons/Back with Title',
+          sourceName: 'Toolbars/Light/Buttons/44pt/Inactive/Back with Title',
           appearance: 'Light',
           stateLabels: ['Inactive'],
         ),
@@ -922,25 +941,29 @@ abstract final class AppleSourceMetricReference {
       provenance: [
         AppleGeneratedMetricProvenance(
           sourceId: '85D762BA-DBEE-4A43-B0DC-3DF9CC5F9320',
-          sourceName: 'Toolbars/Top (44pt)/Dark/Active/Buttons/Symbol 2',
+          sourceName:
+              'Toolbars/Dark/Buttons/44pt/Active/Horizontal Group - Symbol 2',
           appearance: 'Dark',
           stateLabels: ['Active'],
         ),
         AppleGeneratedMetricProvenance(
           sourceId: '5512FBEE-D5F8-4908-ADF8-26DCE3134A9C',
-          sourceName: 'Toolbars/Top (44pt)/Dark/Inactive/Buttons/Symbol 2',
+          sourceName:
+              'Toolbars/Dark/Buttons/44pt/Inactive/Horizontal Group - Symbol 2',
           appearance: 'Dark',
           stateLabels: ['Inactive'],
         ),
         AppleGeneratedMetricProvenance(
           sourceId: '5034FB21-5A87-467F-B932-9FC3584FD919',
-          sourceName: 'Toolbars/Top (44pt)/Light/Active/Buttons/Symbol 2',
+          sourceName:
+              'Toolbars/Light/Buttons/44pt/Active/Horizontal Group - Symbol 2',
           appearance: 'Light',
           stateLabels: ['Active'],
         ),
         AppleGeneratedMetricProvenance(
           sourceId: '8F9A6358-5AE2-4BC2-A023-8A2BE47ED5E7',
-          sourceName: 'Toolbars/Top (44pt)/Light/Inactive/Buttons/Symbol 2',
+          sourceName:
+              'Toolbars/Light/Buttons/44pt/Inactive/Horizontal Group - Symbol 2',
           appearance: 'Light',
           stateLabels: ['Inactive'],
         ),
@@ -953,25 +976,29 @@ abstract final class AppleSourceMetricReference {
       provenance: [
         AppleGeneratedMetricProvenance(
           sourceId: '026CC144-0114-463F-AFBF-D5D2F94ED962',
-          sourceName: 'Toolbars/Top (44pt)/Dark/Active/Buttons/Symbol 3',
+          sourceName:
+              'Toolbars/Dark/Buttons/44pt/Active/Horizontal Group - Symbol 3',
           appearance: 'Dark',
           stateLabels: ['Active'],
         ),
         AppleGeneratedMetricProvenance(
           sourceId: '913F62C0-E255-4B86-9431-FAC683BE9704',
-          sourceName: 'Toolbars/Top (44pt)/Dark/Inactive/Buttons/Symbol 3',
+          sourceName:
+              'Toolbars/Dark/Buttons/44pt/Inactive/Horizontal Group - Symbol 3',
           appearance: 'Dark',
           stateLabels: ['Inactive'],
         ),
         AppleGeneratedMetricProvenance(
           sourceId: 'A2677B30-DD10-40E4-AC01-C9A48D25D6F7',
-          sourceName: 'Toolbars/Top (44pt)/Light/Active/Buttons/Symbol 3',
+          sourceName:
+              'Toolbars/Light/Buttons/44pt/Active/Horizontal Group - Symbol 3',
           appearance: 'Light',
           stateLabels: ['Active'],
         ),
         AppleGeneratedMetricProvenance(
           sourceId: 'EE2A25EA-AE8A-4564-830D-20600083E034',
-          sourceName: 'Toolbars/Top (44pt)/Light/Inactive/Buttons/Symbol 3',
+          sourceName:
+              'Toolbars/Light/Buttons/44pt/Inactive/Horizontal Group - Symbol 3',
           appearance: 'Light',
           stateLabels: ['Inactive'],
         ),
@@ -984,25 +1011,25 @@ abstract final class AppleSourceMetricReference {
       provenance: [
         AppleGeneratedMetricProvenance(
           sourceId: '7447F51C-D913-4A47-862A-ED2DD1328F9D',
-          sourceName: 'Toolbars/Bottom (48pt)/Dark/Active/Buttons/Symbol 1',
+          sourceName: 'Toolbars/Dark/Buttons/48pt/Active/Symbol 1',
           appearance: 'Dark',
           stateLabels: ['Active'],
         ),
         AppleGeneratedMetricProvenance(
           sourceId: '5AE2438B-D26A-42C5-A1F2-85C5678B22AF',
-          sourceName: 'Toolbars/Bottom (48pt)/Dark/Inactive/Buttons/Symbol 1',
+          sourceName: 'Toolbars/Dark/Buttons/48pt/Inactive/Symbol 1',
           appearance: 'Dark',
           stateLabels: ['Inactive'],
         ),
         AppleGeneratedMetricProvenance(
           sourceId: 'C09B5EF9-0E95-4F55-8747-7CE37FD2C642',
-          sourceName: 'Toolbars/Bottom (48pt)/Light/Active/Buttons/Symbol 1',
+          sourceName: 'Toolbars/Light/Buttons/48pt/Active/Symbol 1',
           appearance: 'Light',
           stateLabels: ['Active'],
         ),
         AppleGeneratedMetricProvenance(
           sourceId: 'B55087B4-E9E7-4341-8E35-45E8F37A74DE',
-          sourceName: 'Toolbars/Bottom (48pt)/Light/Inactive/Buttons/Symbol 1',
+          sourceName: 'Toolbars/Light/Buttons/48pt/Inactive/Symbol 1',
           appearance: 'Light',
           stateLabels: ['Inactive'],
         ),
@@ -1015,25 +1042,25 @@ abstract final class AppleSourceMetricReference {
       provenance: [
         AppleGeneratedMetricProvenance(
           sourceId: 'C29B5F83-EE08-459F-8CA6-61068464277E',
-          sourceName: 'Toolbars/Bottom (48pt)/Dark/Active/Buttons/Text',
+          sourceName: 'Toolbars/Dark/Buttons/48pt/Active/Text',
           appearance: 'Dark',
           stateLabels: ['Active'],
         ),
         AppleGeneratedMetricProvenance(
           sourceId: '8514E9A4-E246-47AB-A6C8-44CD8E506F24',
-          sourceName: 'Toolbars/Bottom (48pt)/Dark/Inactive/Buttons/Text',
+          sourceName: 'Toolbars/Dark/Buttons/48pt/Inactive/Text',
           appearance: 'Dark',
           stateLabels: ['Inactive'],
         ),
         AppleGeneratedMetricProvenance(
           sourceId: 'BE087CF3-FA68-4D39-B326-C67F8A0D5939',
-          sourceName: 'Toolbars/Bottom (48pt)/Light/Active/Buttons/Text',
+          sourceName: 'Toolbars/Light/Buttons/48pt/Active/Text',
           appearance: 'Light',
           stateLabels: ['Active'],
         ),
         AppleGeneratedMetricProvenance(
           sourceId: '15A6BF03-4A69-41A0-A46F-55DC330389E3',
-          sourceName: 'Toolbars/Bottom (48pt)/Light/Inactive/Buttons/Text',
+          sourceName: 'Toolbars/Light/Buttons/48pt/Inactive/Text',
           appearance: 'Light',
           stateLabels: ['Inactive'],
         ),
@@ -1046,25 +1073,29 @@ abstract final class AppleSourceMetricReference {
       provenance: [
         AppleGeneratedMetricProvenance(
           sourceId: '64417BA2-306D-4EEA-9B3A-F265D4C35843',
-          sourceName: 'Toolbars/Bottom (48pt)/Dark/Active/Buttons/Symbol 2',
+          sourceName:
+              'Toolbars/Dark/Buttons/48pt/Active/Horizontal Group - Symbol 2',
           appearance: 'Dark',
           stateLabels: ['Active'],
         ),
         AppleGeneratedMetricProvenance(
           sourceId: 'BFABCDDB-4617-41D3-9E61-8E1742474ACD',
-          sourceName: 'Toolbars/Bottom (48pt)/Dark/Inactive/Buttons/Symbol 2',
+          sourceName:
+              'Toolbars/Dark/Buttons/48pt/Inactive/Horizontal Group - Symbol 2',
           appearance: 'Dark',
           stateLabels: ['Inactive'],
         ),
         AppleGeneratedMetricProvenance(
           sourceId: '6A95A1F3-9BF9-44B5-BC47-84A230E13A34',
-          sourceName: 'Toolbars/Bottom (48pt)/Light/Active/Buttons/Symbol 2',
+          sourceName:
+              'Toolbars/Light/Buttons/48pt/Active/Horizontal Group - Symbol 2',
           appearance: 'Light',
           stateLabels: ['Active'],
         ),
         AppleGeneratedMetricProvenance(
           sourceId: '51E5E27E-B892-4D74-B1BC-ADF1CB82D3E0',
-          sourceName: 'Toolbars/Bottom (48pt)/Light/Inactive/Buttons/Symbol 2',
+          sourceName:
+              'Toolbars/Light/Buttons/48pt/Inactive/Horizontal Group - Symbol 2',
           appearance: 'Light',
           stateLabels: ['Inactive'],
         ),
@@ -1077,25 +1108,29 @@ abstract final class AppleSourceMetricReference {
       provenance: [
         AppleGeneratedMetricProvenance(
           sourceId: '0B63CFDA-7A78-40F4-8BE3-17DDAB129719',
-          sourceName: 'Toolbars/Bottom (48pt)/Dark/Active/Buttons/Symbol 3',
+          sourceName:
+              'Toolbars/Dark/Buttons/48pt/Active/Horizontal Group - Symbol 3',
           appearance: 'Dark',
           stateLabels: ['Active'],
         ),
         AppleGeneratedMetricProvenance(
           sourceId: 'FC271870-A34D-47B5-832E-F7DBCD4E5527',
-          sourceName: 'Toolbars/Bottom (48pt)/Dark/Inactive/Buttons/Symbol 3',
+          sourceName:
+              'Toolbars/Dark/Buttons/48pt/Inactive/Horizontal Group - Symbol 3',
           appearance: 'Dark',
           stateLabels: ['Inactive'],
         ),
         AppleGeneratedMetricProvenance(
           sourceId: '40DAD4F1-57D9-4EC5-BF39-D79FC9DBA132',
-          sourceName: 'Toolbars/Bottom (48pt)/Light/Active/Buttons/Symbol 3',
+          sourceName:
+              'Toolbars/Light/Buttons/48pt/Active/Horizontal Group - Symbol 3',
           appearance: 'Light',
           stateLabels: ['Active'],
         ),
         AppleGeneratedMetricProvenance(
           sourceId: '868F3FB9-F139-4C30-B0D8-2F401852BA1D',
-          sourceName: 'Toolbars/Bottom (48pt)/Light/Inactive/Buttons/Symbol 3',
+          sourceName:
+              'Toolbars/Light/Buttons/48pt/Inactive/Horizontal Group - Symbol 3',
           appearance: 'Light',
           stateLabels: ['Inactive'],
         ),
@@ -1147,13 +1182,42 @@ abstract final class AppleSourceMetricReference {
     AppleGeneratedMetricVariant(
       component: 'button',
       sizeLabel: null,
-      geometry: {'frame.height': 71.0, 'frame.width': 218.0},
+      geometry: {'frame.height': 110.0, 'frame.width': 48.0},
       provenance: [
         AppleGeneratedMetricProvenance(
-          sourceId: '23FB0E5D-679B-40DC-835B-442ED0ABE838',
-          sourceName: 'Buttons',
-          appearance: null,
-          stateLabels: [],
+          sourceId: 'BD67AC7F-457C-4386-A50F-88A22F7D24A9',
+          sourceName:
+              'Toolbars/Dark/Buttons/48pt/Active/Vertical Group - Symbol 2',
+          appearance: 'Dark',
+          stateLabels: ['Active'],
+        ),
+        AppleGeneratedMetricProvenance(
+          sourceId: '6E7D8B11-82F2-4374-BCE5-248DA525E6A4',
+          sourceName:
+              'Toolbars/Light/Buttons/48pt/Active/Vertical Group - Symbol 2',
+          appearance: 'Light',
+          stateLabels: ['Active'],
+        ),
+      ],
+    ),
+    AppleGeneratedMetricVariant(
+      component: 'button',
+      sizeLabel: null,
+      geometry: {'frame.height': 164.0, 'frame.width': 48.0},
+      provenance: [
+        AppleGeneratedMetricProvenance(
+          sourceId: '988BDDAD-9305-487C-9E0B-89E6D090436B',
+          sourceName:
+              'Toolbars/Dark/Buttons/48pt/Active/Vertical Group - Symbol 3',
+          appearance: 'Dark',
+          stateLabels: ['Active'],
+        ),
+        AppleGeneratedMetricProvenance(
+          sourceId: 'F46CCC04-3227-43A6-9C6E-8A760AC81682',
+          sourceName:
+              'Toolbars/Light/Buttons/48pt/Active/Vertical Group - Symbol 3',
+          appearance: 'Light',
+          stateLabels: ['Active'],
         ),
       ],
     ),
@@ -2527,19 +2591,6 @@ abstract final class AppleSourceMetricReference {
     AppleGeneratedMetricVariant(
       component: 'textField',
       sizeLabel: null,
-      geometry: {'frame.height': 71.0, 'frame.width': 299.0},
-      provenance: [
-        AppleGeneratedMetricProvenance(
-          sourceId: 'B38E62CE-F1D0-4DA8-9329-7A0FD7022B8C',
-          sourceName: 'Text Fields',
-          appearance: null,
-          stateLabels: [],
-        ),
-      ],
-    ),
-    AppleGeneratedMetricVariant(
-      component: 'textField',
-      sizeLabel: null,
       geometry: {'frame.height': 255.0, 'frame.width': 300.0},
       provenance: [
         AppleGeneratedMetricProvenance(
@@ -2691,19 +2742,6 @@ abstract final class AppleSourceMetricReference {
     ),
     AppleGeneratedMetricVariant(
       component: 'segmentedControl',
-      sizeLabel: null,
-      geometry: {'frame.height': 71.0, 'frame.width': 568.0},
-      provenance: [
-        AppleGeneratedMetricProvenance(
-          sourceId: 'B15DBE74-BDEA-4958-B66F-A812FF06E7A9',
-          sourceName: 'Segmented Controls',
-          appearance: null,
-          stateLabels: [],
-        ),
-      ],
-    ),
-    AppleGeneratedMetricVariant(
-      component: 'segmentedControl',
       sizeLabel: 'Large',
       geometry: {'frame.height': 48.0, 'frame.width': 370.0},
       provenance: [
@@ -2798,19 +2836,6 @@ abstract final class AppleSourceMetricReference {
           sourceId: 'BF19C5EC-61C6-46B2-8D52-C0DAEDCF20DF',
           sourceName: 'Lists/􀻃/Light/Rows/Accessories - Trailing/Toggle',
           appearance: 'Light',
-          stateLabels: [],
-        ),
-      ],
-    ),
-    AppleGeneratedMetricVariant(
-      component: 'toggle',
-      sizeLabel: null,
-      geometry: {'frame.height': 71.0, 'frame.width': 192.0},
-      provenance: [
-        AppleGeneratedMetricProvenance(
-          sourceId: '3454A511-91AD-4F2D-B4C3-8514AAC78488',
-          sourceName: 'Toggle',
-          appearance: null,
           stateLabels: [],
         ),
       ],
@@ -9748,7 +9773,7 @@ abstract final class AppleSourceMetricReference {
     AppleGeneratedMetricVariant(
       component: 'segmentedControl',
       sizeLabel: null,
-      geometry: {'frame.height': 24.0, 'frame.width': 55.0},
+      geometry: {'frame.height': 24.0, 'frame.width': 54.0},
       provenance: [
         AppleGeneratedMetricProvenance(
           sourceId: '164650FC-A779-41AD-BD29-39AB685AA248',
@@ -9898,7 +9923,7 @@ abstract final class AppleSourceMetricReference {
     AppleGeneratedMetricVariant(
       component: 'segmentedControl',
       sizeLabel: null,
-      geometry: {'frame.height': 24.0, 'frame.width': 82.0},
+      geometry: {'frame.height': 24.0, 'frame.width': 80.0},
       provenance: [
         AppleGeneratedMetricProvenance(
           sourceId: 'E1C054D5-8ABF-49EA-97FA-9D69FA90984C',
@@ -10077,7 +10102,7 @@ abstract final class AppleSourceMetricReference {
     AppleGeneratedMetricVariant(
       component: 'segmentedControl',
       sizeLabel: null,
-      geometry: {'frame.height': 24.0, 'frame.width': 109.0},
+      geometry: {'frame.height': 24.0, 'frame.width': 106.0},
       provenance: [
         AppleGeneratedMetricProvenance(
           sourceId: 'DCD1C337-DDD1-4E28-B0A7-2688612FE36D',
@@ -10196,7 +10221,7 @@ abstract final class AppleSourceMetricReference {
     AppleGeneratedMetricVariant(
       component: 'segmentedControl',
       sizeLabel: null,
-      geometry: {'frame.height': 24.0, 'frame.width': 136.0},
+      geometry: {'frame.height': 24.0, 'frame.width': 132.0},
       provenance: [
         AppleGeneratedMetricProvenance(
           sourceId: 'A5815B61-CD86-42DA-B080-83068D964A62',
@@ -10343,7 +10368,7 @@ abstract final class AppleSourceMetricReference {
     AppleGeneratedMetricVariant(
       component: 'segmentedControl',
       sizeLabel: null,
-      geometry: {'frame.height': 24.0, 'frame.width': 163.0},
+      geometry: {'frame.height': 24.0, 'frame.width': 158.0},
       provenance: [
         AppleGeneratedMetricProvenance(
           sourceId: '3A095EA7-869C-4961-B842-0F2444DC2859',
@@ -11267,7 +11292,7 @@ abstract final class AppleSourceMetricReference {
     AppleGeneratedMetricVariant(
       component: 'segmentedControl',
       sizeLabel: null,
-      geometry: {'frame.height': 36.0, 'frame.width': 75.0},
+      geometry: {'frame.height': 36.0, 'frame.width': 74.0},
       provenance: [
         AppleGeneratedMetricProvenance(
           sourceId: '22581940-1D07-4259-B1C3-EE03BE11A8E6',
@@ -11417,7 +11442,7 @@ abstract final class AppleSourceMetricReference {
     AppleGeneratedMetricVariant(
       component: 'segmentedControl',
       sizeLabel: null,
-      geometry: {'frame.height': 36.0, 'frame.width': 110.0},
+      geometry: {'frame.height': 36.0, 'frame.width': 108.0},
       provenance: [
         AppleGeneratedMetricProvenance(
           sourceId: '4698188F-C62C-47E0-8CF0-A19BFA51FDA7',
@@ -11596,7 +11621,7 @@ abstract final class AppleSourceMetricReference {
     AppleGeneratedMetricVariant(
       component: 'segmentedControl',
       sizeLabel: null,
-      geometry: {'frame.height': 36.0, 'frame.width': 145.0},
+      geometry: {'frame.height': 36.0, 'frame.width': 142.0},
       provenance: [
         AppleGeneratedMetricProvenance(
           sourceId: '157F6058-590D-4556-B067-37C9E6A9A3BE',
@@ -11715,7 +11740,7 @@ abstract final class AppleSourceMetricReference {
     AppleGeneratedMetricVariant(
       component: 'segmentedControl',
       sizeLabel: null,
-      geometry: {'frame.height': 36.0, 'frame.width': 180.0},
+      geometry: {'frame.height': 36.0, 'frame.width': 176.0},
       provenance: [
         AppleGeneratedMetricProvenance(
           sourceId: '5BC4D6EE-65EE-4302-83F7-373BABC3FC03',
@@ -11862,7 +11887,7 @@ abstract final class AppleSourceMetricReference {
     AppleGeneratedMetricVariant(
       component: 'segmentedControl',
       sizeLabel: null,
-      geometry: {'frame.height': 36.0, 'frame.width': 215.0},
+      geometry: {'frame.height': 36.0, 'frame.width': 210.0},
       provenance: [
         AppleGeneratedMetricProvenance(
           sourceId: '178DB90A-3895-40AE-A3BD-659992A56348',

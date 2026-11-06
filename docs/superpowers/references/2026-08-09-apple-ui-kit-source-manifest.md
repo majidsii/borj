@@ -1,6 +1,6 @@
 # Apple UI Kit Source Manifest — Visual Foundation 2.A
 
-Date: 2026-08-09
+Date: 2026-08-09 (revised 2026-11-06: current revision below)
 Status: **SOURCE-LOCKED**
 Purpose: identify the exact external Apple UI reference files that define the visual target for `dashboard-shakhsi-v2-integration`.
 
@@ -19,7 +19,73 @@ If any of the following conflict:
 
 the supplied Apple reference wins unless the user explicitly changes the frozen fidelity contract.
 
-## Exact supplied files
+## Current revision (2026-11-06)
+
+Owner approval: 2026-11-06 («آره هر دو رو انجام بده»), recorded in
+`docs/superpowers/plans/2026-11-06-adopt-apple-kit-revision.md`. Research:
+`docs/superpowers/references/2026-11-06-apple-glass-from-sketch-kits.md`.
+Files are kept outside the repository in `~/projects/personal/borj/apple-kits/`.
+Generated data keeps the canonical names `Apple iOS 27 UI Kit.sketch` /
+`Apple macOS 27 UI Kit.sketch`.
+
+### iOS (current)
+
+- File on disk: `Apple_iOS_27_UI_Kit.sketch` (canonical `Apple iOS 27 UI Kit.sketch`)
+- SHA-256: `839ecf260025264db9000a4ce23ef2804c33c8d62642a6373ed310858ca64171`
+- Size: 207,834,444 bytes; Sketch 2026.3.1
+- Sketch share: https://www.sketch.com/s/04c24d8b-38fb-4afb-8836-36617e022f02
+- Structure: 36 pages; 42 shared layer styles; 105 shared text styles; 107 shared swatches.
+
+### macOS (current)
+
+- File on disk: `Apple_macOS_27_UI_Kit.sketch` (canonical `Apple macOS 27 UI Kit.sketch`)
+- SHA-256: `f5aa2f4f319eae66b5eab0bbc0faacb10ce16656457cff528f9810d57ff1354d`
+- Size: 115,181,873 bytes; Sketch 2026.3.1
+- Sketch share: https://sketch.com/s/57153a31-3379-4737-8ac6-dbfd6525f052
+- Structure: 38 pages; 285 shared layer styles; 67 shared text styles; 110 shared swatches.
+
+### macOS companion asset bundle (unchanged)
+
+The asset bundle `4bbbb036…` (below) is unchanged. Its zip is no longer on disk, so the
+extractor is run with `--reuse-assets-from <previous apple_ui_kit_reference.json>`, which
+copies the `macosAssets` section unchanged.
+
+### Impact of the revision (measured 2026-11-06/07)
+
+Re-extraction is deterministic: re-running the extractor on the files above reproduces
+`generated/apple_ui_kit_reference.json` and `apple_ui_kit_component_map.md` byte for byte,
+and the generated Dart matches its generators. The extractor and generator logic did not
+change; only the hash constants did. Every difference below is therefore a change in the kits.
+
+- **Unchanged:** the 20 Liquid Glass recipes, shared layer styles, text styles, materials and
+  typography outputs.
+- **Pages:** iOS 34 → 36 (`Color Wells and Pickers` becomes `Color Pickers`; new `Layout Guides`,
+  `Product Bezels`); macOS 37 → 38 (new `Product Bezels`).
+- **Colors:** 4 kit-scaffolding swatches change (`x. Kit/Symbol BG Light|Dark`,
+  `x. Kit/Nested Symbol BG Light|Dark`, now 60 % alpha); no system color changes.
+- **Metrics, existing values that change:**
+  - 160 macOS `Titlebars and Toolbars/…/Segmented Control` symbols (Medium 24 pt and XL 36 pt,
+    2–6 items) get narrower by exactly 1 pt per separator (for example 6 items 163 → 158,
+    3 items 82 → 80); heights are unchanged. In the new kit the separators are 2 pt wide
+    (for example Medium 6 items = 2 + 6×24 + 5×2 + 2 = 158).
+  - 4 iOS rows at 71 pt height disappear (`Buttons` 218, `Toggle` 192, `Segmented Controls` 568,
+    `Text Fields` 299). These were page-title **text** layers at y = −200 that the generator
+    classified by name. The new kit replaces them with a `_Header` symbol instance, so their
+    removal fixes an earlier misclassification. No app widget reads metric variants directly,
+    so no app size changes.
+- **Metrics, new variants:** iOS toolbar `Vertical Group - Symbol 2|3` buttons (48×110, 48×164);
+  the iOS `Close Button` (34×34) symbols join the 34×34 button variant after Apple renamed them
+  under `Toolbars/…/Buttons/34pt/…` (same IDs and size). No new macOS metric source IDs.
+  Outside the metric classes, the component layers grow from 1,623 to 1,976 on iOS (new pages)
+  and go from 5,049 to 5,048 on macOS.
+- **Metrics, provenance:** toolbar symbols renamed under the same source IDs
+  (`Toolbars/Top (44pt)/Dark/Active/Buttons/…` → `Toolbars/Dark/Buttons/44pt/Active/…`,
+  `Bottom (48pt)` → `48pt`).
+
+## Previous revision (2026-08-09)
+
+The files below were the source lock from 2026-08-09 until 2026-11-06. They are kept for
+history; the current revision above replaces them.
 
 ### macOS
 

@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "ir.dashboard.shakhsi"
+    namespace = "app.borj"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -19,7 +19,7 @@ android {
     defaultConfig {
         multiDexEnabled = true
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "ir.dashboard.shakhsi"
+        applicationId = "app.borj"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = flutter.minSdkVersion

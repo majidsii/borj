@@ -89,13 +89,13 @@ BEGIN
     BEGIN
         BLOCK "040904e4"
         BEGIN
-            VALUE "CompanyName", "ir.dashboard" "\0"
-            VALUE "FileDescription", "dashboard_shakhsi" "\0"
+            VALUE "CompanyName", "Majidsii" "\0"
+            VALUE "FileDescription", "Borj" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "dashboard_shakhsi" "\0"
-            VALUE "LegalCopyright", "Copyright (C) 2026 ir.dashboard. All rights reserved." "\0"
-            VALUE "OriginalFilename", "dashboard_shakhsi.exe" "\0"
-            VALUE "ProductName", "dashboard_shakhsi" "\0"
+            VALUE "InternalName", "borj" "\0"
+            VALUE "LegalCopyright", "Copyright (C) 2026 Majidsii. All rights reserved." "\0"
+            VALUE "OriginalFilename", "borj.exe" "\0"
+            VALUE "ProductName", "Borj" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

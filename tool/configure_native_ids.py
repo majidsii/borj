@@ -5,7 +5,7 @@ import re
 import sys
 from pathlib import Path
 
-RELEASE_ID = "ir.dashboard.shakhsi"
+RELEASE_ID = "app.borj"
 DEBUG_ID = f"{RELEASE_ID}.dev"
 
 

@@ -1,4 +1,4 @@
-package ir.dashboard.shakhsi;
+package app.borj;
 
 import io.flutter.embedding.android.FlutterActivity;
 

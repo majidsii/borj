@@ -15,13 +15,13 @@ trap 'rm -rf "$tmp_dir"' EXIT
 
 flutter create \
   --platforms=android,ios,linux,macos,windows \
-  --org ir.dashboard \
-  --project-name dashboard_shakhsi \
-  "$tmp_dir/dashboard_shakhsi"
+  --org app \
+  --project-name borj \
+  "$tmp_dir/borj"
 
 for platform in android ios linux macos windows; do
   rm -rf "$APP_DIR/$platform"
-  cp -a "$tmp_dir/dashboard_shakhsi/$platform" "$APP_DIR/$platform"
+  cp -a "$tmp_dir/borj/$platform" "$APP_DIR/$platform"
 done
 
 python3 "$APP_DIR/tool/configure_native_ids.py" "$APP_DIR"

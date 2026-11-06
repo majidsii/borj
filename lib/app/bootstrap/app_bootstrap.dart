@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:borj/app/bootstrap/notification_startup_bootstrap.dart';
 import 'package:borj/app/router/app_router.dart';
+import 'package:borj/app/theme/motion_scope.dart';
 import 'package:borj/app/theme/original_theme.dart';
 import 'package:borj/core/providers/persistence_providers.dart';
 import 'package:borj/features/settings/application/appearance_preferences_controller.dart';
@@ -61,6 +62,7 @@ final class BorjApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     ref.watch(taskTemplateStartupProvider);
+    final preferences = ref.watch(appearancePreferencesProvider);
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
       locale: const Locale('fa', 'IR'),
@@ -69,11 +71,13 @@ final class BorjApp extends ConsumerWidget {
       onGenerateTitle: (context) => 'برج',
       theme: OriginalTheme.light(),
       darkTheme: OriginalTheme.dark(),
-      themeMode: ref.watch(
-        appearancePreferencesProvider.select((p) => p.mode.themeMode),
-      ),
+      themeMode: preferences.mode.themeMode,
       themeAnimationDuration: const Duration(milliseconds: 300),
       themeAnimationCurve: Curves.easeOut,
+      builder: (context, child) => MotionScope(
+        reduceMotionSetting: preferences.reduceMotion,
+        child: child ?? const SizedBox.shrink(),
+      ),
       routerConfig: ref.watch(appRouterProvider),
     );
   }

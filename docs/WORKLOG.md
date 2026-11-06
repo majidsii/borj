@@ -8,6 +8,12 @@ this file is the history behind it.
 Entry template:
 
 ```markdown
+## 2026-11-06 — Liquid Glass redesign approved (spec)
+
+- **What:** the owner approved 78 boards (39 screens, light and dark) after several design rounds; every element is Liquid Glass, never glass on glass; light = white, dark = charcoal with warm corner light.
+- **Docs:** spec `docs/superpowers/specs/2026-11-05-liquid-glass-redesign-design.md`; boards and generator `docs/superpowers/references/2026-11-05-glass-mockups/`; research `references/2026-11-05-{apple-first-party-app-patterns,design-skills-synthesis,ia-and-design-system-architecture}.md`.
+- **Next:** Phase 1 Foundation plan, then subagent-driven execution; product name and glass logo (owner decision).
+
 ## YYYY-MM-DD — <title>
 - **Type:** implemented | reviewed | researched | decided | found
 - **What:** one or two lines

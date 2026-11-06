@@ -18,8 +18,18 @@ if [[ "${1:-}" == "--device" ]]; then
   step "flutter test --tags device"
   flutter test --tags device || [ $? -eq 79 ]
 
-  step "flutter test integration_test -d linux"
-  flutter test integration_test -d linux
+  # One app launch per file: a second launch in the same flutter test call
+  # fails to start on Linux ("log reader stopped unexpectedly").
+  failed=()
+  for f in $(printf '%s\n' integration_test/*_test.dart | LC_ALL=C sort); do
+    step "flutter test $f -d linux"
+    flutter test "$f" -d linux || failed+=("$f")
+  done
+  if [ "${#failed[@]}" -gt 0 ]; then
+    printf '\nFAILED:\n'
+    printf '  %s\n' "${failed[@]}"
+    exit 1
+  fi
   exit 0
 fi
 

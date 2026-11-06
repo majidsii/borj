@@ -21,7 +21,7 @@ Entry template:
 - **Type:** implemented (design artefact) + decided
 - **What:** owner approved both (adopt the new kit revision; align sizes). Boards: phone tab bar is Regular-Small glass 62 pt tall (54 pt items + 4 pt padding), search circle 62×62, phone sheet corners 34, macOS toolbar controls 36 pt; boards and the prototype regenerated (prototype regression runs: 0 errors). Kit adoption written as `docs/superpowers/plans/2026-11-06-adopt-apple-kit-revision.md` and dispatched to a sonnet subagent (regenerate the Apple source chain, manifest, tests).
 - **Evidence / links:** prototype https://claude.ai/artifact/B7XLCjeTuWKzPRwb63PL1g; plan above.
-- **Follow-ups:** review the subagent's commit `chore: adopt the 2026-11 Apple UI kit revision as the locked visual source` (diff vs plan, `flutter analyze`, focused tests). If that commit does not exist, run the plan's Task 1 again.
+- **Follow-ups:** the subagent stopped by design before committing: regenerated `apple_source_metrics.g.dart` changes EXISTING values (macOS toolbar item widths shrink 1–5 pt at 24/36 pt, e.g. 55→54, 82→80, 75→74, 110→108; three 71 pt-tall variants (textField 71×299, segmentedControl 71×568, toggle 71×192) disappear; a 71×218 `button` variant becomes 110×48; Toolbars Top/Bottom state labels regroup). Its work is parked unreviewed on branch `wip/apple-kit-revision-adoption` (commit `a5c8688`, pushed). Next: decide whether these are real kit changes (inspect the kit layers behind each variant) or extractor/metrics-generator artefacts; then finish plan steps 4–7 (tests, analyzer, manifest, commit) and merge into `feat/v2-complete-dashboard`.
 
 ## 2026-11-06 — Apple glass from the official Sketch kits; glass lab
 - **Type:** researched

@@ -1,23 +1,21 @@
 import 'dart:convert';
 
-import 'package:dashboard_shakhsi/core/notifications/linux_systemd_environment.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_systemd_file_system.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_systemd_schedule_registry.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_systemd_schedule_registry_codec.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_systemd_schedule_registry_exception.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_systemd_schedule_registry_file_store.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_systemd_schedule_registry_store.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_systemd_user_unit_path_resolver.dart';
+import 'package:borj/core/notifications/linux_systemd_environment.dart';
+import 'package:borj/core/notifications/linux_systemd_file_system.dart';
+import 'package:borj/core/notifications/linux_systemd_schedule_registry.dart';
+import 'package:borj/core/notifications/linux_systemd_schedule_registry_codec.dart';
+import 'package:borj/core/notifications/linux_systemd_schedule_registry_exception.dart';
+import 'package:borj/core/notifications/linux_systemd_schedule_registry_file_store.dart';
+import 'package:borj/core/notifications/linux_systemd_schedule_registry_store.dart';
+import 'package:borj/core/notifications/linux_systemd_user_unit_path_resolver.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../support/fake_linux_systemd_file_system.dart';
 
 void main() {
   const directory = '/config/systemd/user';
-  const registryPath =
-      '$directory/dashboard-shakhsi-notification-registry.json';
-  const quarantinePath =
-      '$directory/.dashboard-shakhsi-notification-registry.txn-1.corrupt';
+  const registryPath = '$directory/borj-notification-registry.json';
+  const quarantinePath = '$directory/.borj-notification-registry.txn-1.corrupt';
 
   group('LinuxSystemdScheduleRegistryFileStore quarantine', () {
     late FakeLinuxSystemdFileSystem fileSystem;
@@ -266,49 +264,41 @@ void main() {
     test('discovers exact complete and partial app-owned pairs only', () async {
       _seedFile(
         fileSystem,
-        '$directory/dashboard-shakhsi-notification-aaaaaaaaaaaaaaaa.service',
+        '$directory/borj-notification-aaaaaaaaaaaaaaaa.service',
       );
       _seedFile(
         fileSystem,
-        '$directory/dashboard-shakhsi-notification-aaaaaaaaaaaaaaaa.timer',
+        '$directory/borj-notification-aaaaaaaaaaaaaaaa.timer',
       );
       _seedFile(
         fileSystem,
-        '$directory/dashboard-shakhsi-notification-bbbbbbbbbbbbbbbb.service',
+        '$directory/borj-notification-bbbbbbbbbbbbbbbb.service',
       );
       _seedFile(fileSystem, '$directory/unrelated.service');
       _seedFile(
         fileSystem,
-        '$directory/dashboard-shakhsi-notification-CCCCCCCCCCCCCCCC.timer',
+        '$directory/borj-notification-CCCCCCCCCCCCCCCC.timer',
       );
-      _seedFile(
-        fileSystem,
-        '$directory/dashboard-shakhsi-notification-cccc.timer',
-      );
-      _seedFile(
-        fileSystem,
-        '$directory/.dashboard-shakhsi-notification-registry.txn.tmp',
-      );
+      _seedFile(fileSystem, '$directory/borj-notification-cccc.timer');
+      _seedFile(fileSystem, '$directory/.borj-notification-registry.txn.tmp');
       fileSystem.seedDirectory('$directory/nested');
       _seedFile(
         fileSystem,
         '$directory/nested/'
-        'dashboard-shakhsi-notification-dddddddddddddddd.timer',
+        'borj-notification-dddddddddddddddd.timer',
       );
 
       final discovery = await store.discoverAppUnitPairs();
 
       expect(
         discovery.completePairs.map((pair) => pair.baseName),
-        orderedEquals(<String>[
-          'dashboard-shakhsi-notification-aaaaaaaaaaaaaaaa',
-        ]),
+        orderedEquals(<String>['borj-notification-aaaaaaaaaaaaaaaa']),
       );
       expect(
         discovery.partialPairs,
         orderedEquals(<LinuxSystemdPartialUnitPair>[
           LinuxSystemdPartialUnitPair(
-            baseName: 'dashboard-shakhsi-notification-bbbbbbbbbbbbbbbb',
+            baseName: 'borj-notification-bbbbbbbbbbbbbbbb',
             hasService: true,
             hasTimer: false,
           ),
@@ -317,11 +307,11 @@ void main() {
       expect(fileSystem.operations, <String>[
         'listNames:$directory',
         'typeOf:$directory/'
-            'dashboard-shakhsi-notification-aaaaaaaaaaaaaaaa.service',
+            'borj-notification-aaaaaaaaaaaaaaaa.service',
         'typeOf:$directory/'
-            'dashboard-shakhsi-notification-aaaaaaaaaaaaaaaa.timer',
+            'borj-notification-aaaaaaaaaaaaaaaa.timer',
         'typeOf:$directory/'
-            'dashboard-shakhsi-notification-bbbbbbbbbbbbbbbb.service',
+            'borj-notification-bbbbbbbbbbbbbbbb.service',
       ]);
     });
 
@@ -336,19 +326,19 @@ void main() {
 
     test('sorts complete and partial pairs by base name', () async {
       for (final baseName in <String>[
-        'dashboard-shakhsi-notification-cccccccccccccccc',
-        'dashboard-shakhsi-notification-aaaaaaaaaaaaaaaa',
+        'borj-notification-cccccccccccccccc',
+        'borj-notification-aaaaaaaaaaaaaaaa',
       ]) {
         _seedFile(fileSystem, '$directory/$baseName.service');
         _seedFile(fileSystem, '$directory/$baseName.timer');
       }
       _seedFile(
         fileSystem,
-        '$directory/dashboard-shakhsi-notification-dddddddddddddddd.timer',
+        '$directory/borj-notification-dddddddddddddddd.timer',
       );
       _seedFile(
         fileSystem,
-        '$directory/dashboard-shakhsi-notification-bbbbbbbbbbbbbbbb.service',
+        '$directory/borj-notification-bbbbbbbbbbbbbbbb.service',
       );
 
       final discovery = await store.discoverAppUnitPairs();
@@ -356,15 +346,15 @@ void main() {
       expect(
         discovery.completePairs.map((pair) => pair.baseName),
         orderedEquals(<String>[
-          'dashboard-shakhsi-notification-aaaaaaaaaaaaaaaa',
-          'dashboard-shakhsi-notification-cccccccccccccccc',
+          'borj-notification-aaaaaaaaaaaaaaaa',
+          'borj-notification-cccccccccccccccc',
         ]),
       );
       expect(
         discovery.partialPairs.map((pair) => pair.baseName),
         orderedEquals(<String>[
-          'dashboard-shakhsi-notification-bbbbbbbbbbbbbbbb',
-          'dashboard-shakhsi-notification-dddddddddddddddd',
+          'borj-notification-bbbbbbbbbbbbbbbb',
+          'borj-notification-dddddddddddddddd',
         ]),
       );
     });
@@ -372,15 +362,15 @@ void main() {
     test('inspects each exact matched name exactly once', () async {
       _seedFile(
         fileSystem,
-        '$directory/dashboard-shakhsi-notification-aaaaaaaaaaaaaaaa.service',
+        '$directory/borj-notification-aaaaaaaaaaaaaaaa.service',
       );
       _seedFile(
         fileSystem,
-        '$directory/dashboard-shakhsi-notification-aaaaaaaaaaaaaaaa.timer',
+        '$directory/borj-notification-aaaaaaaaaaaaaaaa.timer',
       );
       _seedFile(
         fileSystem,
-        '$directory/dashboard-shakhsi-notification-bbbbbbbbbbbbbbbb.timer',
+        '$directory/borj-notification-bbbbbbbbbbbbbbbb.timer',
       );
 
       await store.discoverAppUnitPairs();
@@ -392,9 +382,9 @@ void main() {
         hasLength(1),
       );
       for (final name in <String>[
-        'dashboard-shakhsi-notification-aaaaaaaaaaaaaaaa.service',
-        'dashboard-shakhsi-notification-aaaaaaaaaaaaaaaa.timer',
-        'dashboard-shakhsi-notification-bbbbbbbbbbbbbbbb.timer',
+        'borj-notification-aaaaaaaaaaaaaaaa.service',
+        'borj-notification-aaaaaaaaaaaaaaaa.timer',
+        'borj-notification-bbbbbbbbbbbbbbbb.timer',
       ]) {
         expect(
           fileSystem.operations.where(
@@ -415,7 +405,7 @@ void main() {
       (label: 'special entry', type: LinuxSystemdEntryType.other),
     ]) {
       test('rejects exact matched ${unsafe.label}', () async {
-        const name = 'dashboard-shakhsi-notification-aaaaaaaaaaaaaaaa.timer';
+        const name = 'borj-notification-aaaaaaaaaaaaaaaa.timer';
         final path = '$directory/$name';
 
         if (unsafe.type == LinuxSystemdEntryType.missing) {
@@ -453,7 +443,7 @@ void main() {
       fileSystem.seedSymlink(unrelatedPath, '/outside/secret');
       _seedFile(
         fileSystem,
-        '$directory/dashboard-shakhsi-notification-aaaaaaaaaaaaaaaa.timer',
+        '$directory/borj-notification-aaaaaaaaaaaaaaaa.timer',
       );
 
       final discovery = await store.discoverAppUnitPairs();
@@ -481,7 +471,7 @@ void main() {
     test(
       'maps exact child inspection failure and preserves child path',
       () async {
-        const name = 'dashboard-shakhsi-notification-aaaaaaaaaaaaaaaa.service';
+        const name = 'borj-notification-aaaaaaaaaaaaaaaa.service';
         const path = '$directory/$name';
         _seedFile(fileSystem, path);
         final cause = StateError('TOP_SECRET_CHILD_FAILURE');

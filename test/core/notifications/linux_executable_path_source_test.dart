@@ -1,4 +1,4 @@
-import 'package:dashboard_shakhsi/core/notifications/linux_executable_path_source.dart';
+import 'package:borj/core/notifications/linux_executable_path_source.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -6,25 +6,22 @@ void main() {
     test(
       'returns an absolute path when file verification is unavailable',
       () async {
-        final source = _Source('/opt/dashboard-shakhsi/dashboard_shakhsi');
+        final source = _Source('/opt/borj/borj');
         final validated = ValidatedLinuxExecutablePathSource(source: source);
 
-        expect(
-          await validated.resolve(),
-          '/opt/dashboard-shakhsi/dashboard_shakhsi',
-        );
+        expect(await validated.resolve(), '/opt/borj/borj');
         expect(source.resolveCount, 1);
       },
     );
 
     for (final invalid in <String>[
       '',
-      'relative/dashboard_shakhsi',
-      ' /opt/dashboard_shakhsi',
-      '/opt/dashboard_shakhsi ',
-      '/opt/dashboard\u0000shakhsi',
-      '/opt/dashboard\nshakhsi',
-      '/opt/dashboard\rshakhsi',
+      'relative/borj',
+      ' /opt/borj',
+      '/opt/borj ',
+      '/opt/bor\u0000j',
+      '/opt/bor\nj',
+      '/opt/bor\rj',
     ]) {
       test('rejects unsafe path code units: ${invalid.codeUnits}', () async {
         final validated = ValidatedLinuxExecutablePathSource(
@@ -46,7 +43,7 @@ void main() {
 
     test('rejects a missing path reported by the verifier', () async {
       final validated = ValidatedLinuxExecutablePathSource(
-        source: _Source('/opt/dashboard-shakhsi'),
+        source: _Source('/opt/borj'),
         verifier: _Verifier(
           const LinuxExecutableFileStatus(
             exists: false,
@@ -70,7 +67,7 @@ void main() {
 
     test('rejects a directory reported by the verifier', () async {
       final validated = ValidatedLinuxExecutablePathSource(
-        source: _Source('/opt/dashboard-shakhsi'),
+        source: _Source('/opt/borj'),
         verifier: _Verifier(
           const LinuxExecutableFileStatus(
             exists: true,
@@ -94,7 +91,7 @@ void main() {
 
     test('rejects a regular non-executable file', () async {
       final validated = ValidatedLinuxExecutablePathSource(
-        source: _Source('/opt/dashboard-shakhsi'),
+        source: _Source('/opt/borj'),
         verifier: _Verifier(
           const LinuxExecutableFileStatus(
             exists: true,
@@ -125,12 +122,12 @@ void main() {
         ),
       );
       final validated = ValidatedLinuxExecutablePathSource(
-        source: _Source('/opt/dashboard-shakhsi'),
+        source: _Source('/opt/borj'),
         verifier: verifier,
       );
 
-      expect(await validated.resolve(), '/opt/dashboard-shakhsi');
-      expect(verifier.paths, <String>['/opt/dashboard-shakhsi']);
+      expect(await validated.resolve(), '/opt/borj');
+      expect(verifier.paths, <String>['/opt/borj']);
     });
 
     test('wraps source failure with its original cause and stack', () async {
@@ -158,7 +155,7 @@ void main() {
     });
 
     test('wraps verifier failure without exposing path or message', () async {
-      const path = '/private/user/location/dashboard_shakhsi';
+      const path = '/private/user/location/borj';
       final cause = StateError('PRIVATE_VERIFIER_FAILURE');
       final stackTrace = StackTrace.fromString('verifier-stack-marker');
       final validated = ValidatedLinuxExecutablePathSource(

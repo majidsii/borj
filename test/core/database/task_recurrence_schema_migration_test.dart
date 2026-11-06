@@ -1,13 +1,13 @@
 import 'dart:io';
 
-import 'package:dashboard_shakhsi/core/database/app_database.dart';
-import 'package:dashboard_shakhsi/core/recurrence/recurrence_local_date_time.dart';
-import 'package:dashboard_shakhsi/core/recurrence/recurrence_rule.dart';
-import 'package:dashboard_shakhsi/features/tasks/data/drift_task_recurrence_repository.dart';
-import 'package:dashboard_shakhsi/features/tasks/data/drift_task_repository.dart';
-import 'package:dashboard_shakhsi/features/tasks/domain/task_item.dart';
-import 'package:dashboard_shakhsi/features/tasks/domain/task_recurrence_rule.dart';
-import 'package:dashboard_shakhsi/features/tasks/domain/task_status.dart';
+import 'package:borj/core/database/app_database.dart';
+import 'package:borj/core/recurrence/recurrence_local_date_time.dart';
+import 'package:borj/core/recurrence/recurrence_rule.dart';
+import 'package:borj/features/tasks/data/drift_task_recurrence_repository.dart';
+import 'package:borj/features/tasks/data/drift_task_repository.dart';
+import 'package:borj/features/tasks/domain/task_item.dart';
+import 'package:borj/features/tasks/domain/task_recurrence_rule.dart';
+import 'package:borj/features/tasks/domain/task_status.dart';
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sqlite3/sqlite3.dart' as sqlite;

@@ -1,8 +1,8 @@
 import 'dart:async';
 
-import 'package:dashboard_shakhsi/app/bootstrap/notification_startup_bootstrap.dart';
-import 'package:dashboard_shakhsi/core/notifications/notification_platform_providers.dart';
-import 'package:dashboard_shakhsi/core/notifications/notification_startup_service.dart';
+import 'package:borj/app/bootstrap/notification_startup_bootstrap.dart';
+import 'package:borj/core/notifications/notification_platform_providers.dart';
+import 'package:borj/core/notifications/notification_startup_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';

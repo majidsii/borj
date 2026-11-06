@@ -1,6 +1,6 @@
-import 'package:dashboard_shakhsi/core/notifications/notification_permission.dart';
-import 'package:dashboard_shakhsi/core/notifications/notification_permission_service.dart';
-import 'package:dashboard_shakhsi/core/notifications/stable_notification_id.dart';
+import 'package:borj/core/notifications/notification_permission.dart';
+import 'package:borj/core/notifications/notification_permission_service.dart';
+import 'package:borj/core/notifications/stable_notification_id.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../support/fake_native_notification_gateway.dart';
@@ -76,7 +76,7 @@ void main() {
       ),
     );
     expect(call.title, 'اعلان آزمایشی');
-    expect(call.body, 'اعلان‌های داشبورد شخصی فعال هستند.');
+    expect(call.body, 'اعلان‌های برج فعال هستند.');
     expect(
       call.payload,
       contains(NotificationPermissionService.testScheduleId),

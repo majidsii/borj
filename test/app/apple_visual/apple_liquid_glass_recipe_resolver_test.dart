@@ -1,7 +1,7 @@
-import 'package:dashboard_shakhsi/app/apple_visual/foundation/apple_liquid_glass_recipe.dart';
-import 'package:dashboard_shakhsi/app/apple_visual/foundation/apple_liquid_glass_recipe_resolver.dart';
-import 'package:dashboard_shakhsi/app/apple_visual/foundation/apple_visual_family.dart';
-import 'package:dashboard_shakhsi/app/apple_visual/foundation/apple_visual_state.dart';
+import 'package:borj/app/apple_visual/foundation/apple_liquid_glass_recipe.dart';
+import 'package:borj/app/apple_visual/foundation/apple_liquid_glass_recipe_resolver.dart';
+import 'package:borj/app/apple_visual/foundation/apple_visual_family.dart';
+import 'package:borj/app/apple_visual/foundation/apple_visual_state.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 

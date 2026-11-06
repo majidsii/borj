@@ -1,6 +1,6 @@
 // Task 2.2 Heavy UI RED
-import 'package:dashboard_shakhsi/app/theme/original_theme.dart';
-import 'package:dashboard_shakhsi/features/tasks/presentation/task_details/task_jalali_date_time_field.dart';
+import 'package:borj/app/theme/original_theme.dart';
+import 'package:borj/features/tasks/presentation/task_details/task_jalali_date_time_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shamsi_date/shamsi_date.dart';

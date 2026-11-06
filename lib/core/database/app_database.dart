@@ -1,6 +1,6 @@
 import 'dart:developer' as developer;
 
-import 'package:dashboard_shakhsi/core/database/database_connection.dart';
+import 'package:borj/core/database/database_connection.dart';
 import 'package:drift/drift.dart';
 
 part 'app_database.g.dart';
@@ -559,7 +559,7 @@ final class AppDatabase extends _$AppDatabase {
     for (final row in rows) {
       developer.log(
         'schema 9 rounded $table row ${row.read<String>('id')} to whole toman',
-        name: 'dashboard_shakhsi.migration',
+        name: 'borj.migration',
       );
     }
   }

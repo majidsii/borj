@@ -1,5 +1,5 @@
-import 'package:dashboard_shakhsi/core/notifications/notification_host_platform.dart';
-import 'package:dashboard_shakhsi/core/notifications/notification_platform_capabilities.dart';
+import 'package:borj/core/notifications/notification_host_platform.dart';
+import 'package:borj/core/notifications/notification_platform_capabilities.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 

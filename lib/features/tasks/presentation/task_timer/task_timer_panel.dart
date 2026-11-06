@@ -1,13 +1,13 @@
 import 'dart:async';
 
-import 'package:dashboard_shakhsi/app/theme/original_design_tokens.dart';
-import 'package:dashboard_shakhsi/app/widgets/original_controls.dart';
-import 'package:dashboard_shakhsi/app/widgets/original_glass.dart';
-import 'package:dashboard_shakhsi/core/errors/app_failure.dart';
-import 'package:dashboard_shakhsi/core/providers/persistence_providers.dart';
-import 'package:dashboard_shakhsi/features/tasks/domain/task_item.dart';
-import 'package:dashboard_shakhsi/features/tasks/domain/task_time_entry.dart';
-import 'package:dashboard_shakhsi/features/tasks/presentation/task_timer/task_manual_time_entry_dialog.dart';
+import 'package:borj/app/theme/original_design_tokens.dart';
+import 'package:borj/app/widgets/original_controls.dart';
+import 'package:borj/app/widgets/original_glass.dart';
+import 'package:borj/core/errors/app_failure.dart';
+import 'package:borj/core/providers/persistence_providers.dart';
+import 'package:borj/features/tasks/domain/task_item.dart';
+import 'package:borj/features/tasks/domain/task_time_entry.dart';
+import 'package:borj/features/tasks/presentation/task_timer/task_manual_time_entry_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

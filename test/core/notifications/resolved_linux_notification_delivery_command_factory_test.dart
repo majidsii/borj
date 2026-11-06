@@ -1,16 +1,16 @@
 import 'dart:async';
 
-import 'package:dashboard_shakhsi/core/notifications/linux_executable_path_source.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_notification_delivery_invocation.dart';
-import 'package:dashboard_shakhsi/core/notifications/notification_owner.dart';
-import 'package:dashboard_shakhsi/core/notifications/notification_request.dart';
-import 'package:dashboard_shakhsi/core/notifications/resolved_linux_notification_delivery_command_factory.dart';
+import 'package:borj/core/notifications/linux_executable_path_source.dart';
+import 'package:borj/core/notifications/linux_notification_delivery_invocation.dart';
+import 'package:borj/core/notifications/notification_owner.dart';
+import 'package:borj/core/notifications/notification_request.dart';
+import 'package:borj/core/notifications/resolved_linux_notification_delivery_command_factory.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('ResolvedLinuxNotificationDeliveryCommandFactory', () {
     test('creates the exact shell-free hidden delivery command', () async {
-      final source = _Source('/opt/dashboard-shakhsi/dashboard_shakhsi');
+      final source = _Source('/opt/borj/borj');
       final factory = ResolvedLinuxNotificationDeliveryCommandFactory(
         executablePathSource: source,
       );
@@ -20,7 +20,7 @@ void main() {
 
       expect(unit.scheduleKey, request.scheduleId);
       expect(unit.scheduledAtUtc, request.scheduledAtUtc);
-      expect(unit.executablePath, '/opt/dashboard-shakhsi/dashboard_shakhsi');
+      expect(unit.executablePath, '/opt/borj/borj');
       expect(
         unit.arguments,
         orderedEquals(<String>[
@@ -31,7 +31,7 @@ void main() {
     });
 
     test('resolves and validates the executable only once', () async {
-      final source = _Source('/opt/dashboard-shakhsi/dashboard_shakhsi');
+      final source = _Source('/opt/borj/borj');
       final factory = ResolvedLinuxNotificationDeliveryCommandFactory(
         executablePathSource: source,
       );
@@ -56,7 +56,7 @@ void main() {
 
       expect(source.resolveCount, 1);
 
-      source.complete('/opt/dashboard-shakhsi/dashboard_shakhsi');
+      source.complete('/opt/borj/borj');
 
       final units = await Future.wait(<Future<Object>>[
         firstFuture,
@@ -72,7 +72,7 @@ void main() {
       const secretPayload = 'PRIVATE_PAYLOAD';
       const secretOwner = 'PRIVATE_OWNER';
       final factory = ResolvedLinuxNotificationDeliveryCommandFactory(
-        executablePathSource: _Source('/opt/dashboard-shakhsi/app'),
+        executablePathSource: _Source('/opt/borj/app'),
       );
       final request = NotificationRequest(
         scheduleId: 'task-private',

@@ -1,9 +1,9 @@
-import 'package:dashboard_shakhsi/app/apple_visual/widgets/apple_liquid_glass.dart';
-import 'package:dashboard_shakhsi/app/theme/original_theme.dart';
-import 'package:dashboard_shakhsi/app/widgets/original_glass.dart';
-import 'package:dashboard_shakhsi/core/providers/persistence_providers.dart';
-import 'package:dashboard_shakhsi/features/dashboard/presentation/dashboard_screen.dart';
-import 'package:dashboard_shakhsi/features/legacy_import/data/legacy_v1_source_locator.dart';
+import 'package:borj/app/apple_visual/widgets/apple_liquid_glass.dart';
+import 'package:borj/app/theme/original_theme.dart';
+import 'package:borj/app/widgets/original_glass.dart';
+import 'package:borj/core/providers/persistence_providers.dart';
+import 'package:borj/features/dashboard/presentation/dashboard_screen.dart';
+import 'package:borj/features/legacy_import/data/legacy_v1_source_locator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';

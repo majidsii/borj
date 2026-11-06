@@ -1,5 +1,5 @@
-import 'package:dashboard_shakhsi/core/notifications/linux_systemd_environment.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_systemd_user_unit_path_resolver.dart';
+import 'package:borj/core/notifications/linux_systemd_environment.dart';
+import 'package:borj/core/notifications/linux_systemd_user_unit_path_resolver.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

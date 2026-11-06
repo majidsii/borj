@@ -1,8 +1,8 @@
-import 'package:dashboard_shakhsi/core/notifications/notification_owner.dart';
-import 'package:dashboard_shakhsi/core/notifications/notification_request.dart';
-import 'package:dashboard_shakhsi/features/tasks/domain/task_calendar_occurrence.dart';
-import 'package:dashboard_shakhsi/features/tasks/domain/task_item.dart';
-import 'package:dashboard_shakhsi/features/tasks/domain/task_reminder_rule.dart';
+import 'package:borj/core/notifications/notification_owner.dart';
+import 'package:borj/core/notifications/notification_request.dart';
+import 'package:borj/features/tasks/domain/task_calendar_occurrence.dart';
+import 'package:borj/features/tasks/domain/task_item.dart';
+import 'package:borj/features/tasks/domain/task_reminder_rule.dart';
 
 final class TaskReminderProjector {
   const TaskReminderProjector();

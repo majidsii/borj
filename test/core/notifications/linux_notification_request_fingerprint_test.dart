@@ -1,6 +1,6 @@
-import 'package:dashboard_shakhsi/core/notifications/linux_notification_request_fingerprint.dart';
-import 'package:dashboard_shakhsi/core/notifications/notification_owner.dart';
-import 'package:dashboard_shakhsi/core/notifications/notification_request.dart';
+import 'package:borj/core/notifications/linux_notification_request_fingerprint.dart';
+import 'package:borj/core/notifications/notification_owner.dart';
+import 'package:borj/core/notifications/notification_request.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

@@ -1,6 +1,6 @@
-import 'package:dashboard_shakhsi/core/recurrence/recurrence_calendar.dart';
-import 'package:dashboard_shakhsi/core/recurrence/recurrence_calendar_adapter.dart';
-import 'package:dashboard_shakhsi/core/recurrence/recurrence_local_date_time.dart';
+import 'package:borj/core/recurrence/recurrence_calendar.dart';
+import 'package:borj/core/recurrence/recurrence_calendar_adapter.dart';
+import 'package:borj/core/recurrence/recurrence_local_date_time.dart';
 import 'package:shamsi_date/shamsi_date.dart';
 
 final class JalaliRecurrenceCalendar implements RecurrenceCalendarAdapter {

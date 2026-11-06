@@ -1,4 +1,4 @@
-import 'package:dashboard_shakhsi/features/tasks/domain/task_template.dart';
+import 'package:borj/features/tasks/domain/task_template.dart';
 
 abstract interface class TaskTemplateRepository {
   Stream<List<TaskTemplate>> watchAll();

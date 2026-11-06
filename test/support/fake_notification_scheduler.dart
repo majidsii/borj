@@ -1,6 +1,6 @@
-import 'package:dashboard_shakhsi/core/notifications/notification_owner.dart';
-import 'package:dashboard_shakhsi/core/notifications/notification_request.dart';
-import 'package:dashboard_shakhsi/core/notifications/notification_scheduler.dart';
+import 'package:borj/core/notifications/notification_owner.dart';
+import 'package:borj/core/notifications/notification_request.dart';
+import 'package:borj/core/notifications/notification_scheduler.dart';
 
 final class FakeNotificationScheduler implements NotificationScheduler {
   final Map<String, NotificationRequest> _requests =

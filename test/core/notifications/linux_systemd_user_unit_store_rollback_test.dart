@@ -1,11 +1,11 @@
 import 'dart:convert';
 
-import 'package:dashboard_shakhsi/core/notifications/linux_systemd_environment.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_systemd_notification_unit.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_systemd_unit_renderer.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_systemd_user_unit_path_resolver.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_systemd_user_unit_store.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_systemd_user_unit_store_exception.dart';
+import 'package:borj/core/notifications/linux_systemd_environment.dart';
+import 'package:borj/core/notifications/linux_systemd_notification_unit.dart';
+import 'package:borj/core/notifications/linux_systemd_unit_renderer.dart';
+import 'package:borj/core/notifications/linux_systemd_user_unit_path_resolver.dart';
+import 'package:borj/core/notifications/linux_systemd_user_unit_store.dart';
+import 'package:borj/core/notifications/linux_systemd_user_unit_store_exception.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../support/fake_linux_systemd_file_system.dart';

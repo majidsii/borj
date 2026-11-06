@@ -1,10 +1,10 @@
 import 'dart:ui';
 
-import 'package:dashboard_shakhsi/app/bootstrap/notification_startup_bootstrap.dart';
-import 'package:dashboard_shakhsi/app/router/app_router.dart';
-import 'package:dashboard_shakhsi/app/theme/original_theme.dart';
-import 'package:dashboard_shakhsi/app/theme/theme_mode_controller.dart';
-import 'package:dashboard_shakhsi/core/providers/persistence_providers.dart';
+import 'package:borj/app/bootstrap/notification_startup_bootstrap.dart';
+import 'package:borj/app/router/app_router.dart';
+import 'package:borj/app/theme/original_theme.dart';
+import 'package:borj/app/theme/theme_mode_controller.dart';
+import 'package:borj/core/providers/persistence_providers.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -30,7 +30,7 @@ Future<void> bootstrapApp() async {
       container: container,
       child: NotificationStartupBootstrap(
         startupProvider: notificationStartupProvider,
-        child: const DashboardShakhsiApp(),
+        child: const BorjApp(),
       ),
     ),
   );
@@ -41,8 +41,8 @@ Future<void> initializeNotificationsForApp(ProviderContainer container) {
   return container.read(notificationStartupProvider).initialize();
 }
 
-final class DashboardShakhsiApp extends ConsumerWidget {
-  const DashboardShakhsiApp({super.key});
+final class BorjApp extends ConsumerWidget {
+  const BorjApp({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -52,7 +52,7 @@ final class DashboardShakhsiApp extends ConsumerWidget {
       locale: const Locale('fa', 'IR'),
       supportedLocales: const <Locale>[Locale('fa', 'IR'), Locale('en', 'US')],
       localizationsDelegates: GlobalMaterialLocalizations.delegates,
-      onGenerateTitle: (context) => 'داشبورد شخصی',
+      onGenerateTitle: (context) => 'برج',
       theme: OriginalTheme.light(),
       darkTheme: OriginalTheme.dark(),
       themeMode: ref.watch(dashboardThemeModeProvider),

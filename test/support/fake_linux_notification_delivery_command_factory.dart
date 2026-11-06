@@ -1,6 +1,6 @@
-import 'package:dashboard_shakhsi/core/notifications/linux_notification_delivery_command_factory.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_systemd_notification_unit.dart';
-import 'package:dashboard_shakhsi/core/notifications/notification_request.dart';
+import 'package:borj/core/notifications/linux_notification_delivery_command_factory.dart';
+import 'package:borj/core/notifications/linux_systemd_notification_unit.dart';
+import 'package:borj/core/notifications/notification_request.dart';
 
 final class FakeLinuxNotificationDeliveryCommandFactory
     implements LinuxNotificationDeliveryCommandFactory {

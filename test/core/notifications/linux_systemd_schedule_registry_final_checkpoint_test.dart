@@ -1,19 +1,19 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:dashboard_shakhsi/core/notifications/dart_io_linux_systemd_file_system.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_notification_request_fingerprint.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_systemd_environment.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_systemd_file_system.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_systemd_notification_unit.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_systemd_schedule_registry.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_systemd_schedule_registry_codec.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_systemd_schedule_registry_exception.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_systemd_schedule_registry_file_store.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_systemd_timer_name.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_systemd_user_unit_path_resolver.dart';
-import 'package:dashboard_shakhsi/core/notifications/notification_owner.dart';
-import 'package:dashboard_shakhsi/core/notifications/notification_request.dart';
+import 'package:borj/core/notifications/dart_io_linux_systemd_file_system.dart';
+import 'package:borj/core/notifications/linux_notification_request_fingerprint.dart';
+import 'package:borj/core/notifications/linux_systemd_environment.dart';
+import 'package:borj/core/notifications/linux_systemd_file_system.dart';
+import 'package:borj/core/notifications/linux_systemd_notification_unit.dart';
+import 'package:borj/core/notifications/linux_systemd_schedule_registry.dart';
+import 'package:borj/core/notifications/linux_systemd_schedule_registry_codec.dart';
+import 'package:borj/core/notifications/linux_systemd_schedule_registry_exception.dart';
+import 'package:borj/core/notifications/linux_systemd_schedule_registry_file_store.dart';
+import 'package:borj/core/notifications/linux_systemd_timer_name.dart';
+import 'package:borj/core/notifications/linux_systemd_user_unit_path_resolver.dart';
+import 'package:borj/core/notifications/notification_owner.dart';
+import 'package:borj/core/notifications/notification_request.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../support/fake_linux_systemd_file_system.dart';
@@ -22,10 +22,9 @@ void main() {
   group('Task 10.4 final registry checkpoint', () {
     test('runs the complete fake-filesystem registry lifecycle', () async {
       const directory = '/config/systemd/user';
-      const registryPath =
-          '$directory/dashboard-shakhsi-notification-registry.json';
+      const registryPath = '$directory/borj-notification-registry.json';
       const quarantinePath =
-          '$directory/.dashboard-shakhsi-notification-registry.'
+          '$directory/.borj-notification-registry.'
           'txn-lifecycle.corrupt';
       const title = 'TOP_SECRET_TITLE';
       const firstBody = 'TOP_SECRET_BODY_ONE';
@@ -80,9 +79,8 @@ void main() {
         const <String>[title, secondBody, payloadKey, secondPayloadValue],
       );
 
-      const completeBaseName =
-          'dashboard-shakhsi-notification-aaaaaaaaaaaaaaaa';
-      const partialBaseName = 'dashboard-shakhsi-notification-bbbbbbbbbbbbbbbb';
+      const completeBaseName = 'borj-notification-aaaaaaaaaaaaaaaa';
+      const partialBaseName = 'borj-notification-bbbbbbbbbbbbbbbb';
 
       fileSystem.seedFile(
         '$directory/$completeBaseName.service',
@@ -148,7 +146,7 @@ void main() {
           final directory = '${root.path}/systemd/user';
           final registryPath =
               '$directory/'
-              'dashboard-shakhsi-notification-registry.json';
+              'borj-notification-registry.json';
 
           await store.replace(registry);
 
@@ -158,8 +156,7 @@ void main() {
           );
           expect(await store.load(), registry);
 
-          const completeBaseName =
-              'dashboard-shakhsi-notification-cccccccccccccccc';
+          const completeBaseName = 'borj-notification-cccccccccccccccc';
           final servicePath = '$directory/$completeBaseName.service';
           final timerPath = '$directory/$completeBaseName.timer';
 
@@ -182,8 +179,7 @@ void main() {
           );
           expect(discovery.partialPairs, isEmpty);
 
-          const symlinkBaseName =
-              'dashboard-shakhsi-notification-dddddddddddddddd';
+          const symlinkBaseName = 'borj-notification-dddddddddddddddd';
           final target = '${root.path}/outside.timer';
           final symlinkPath = '$directory/$symlinkBaseName.timer';
           await File(target).writeAsString('[Timer]\n');

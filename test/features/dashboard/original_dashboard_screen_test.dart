@@ -1,7 +1,7 @@
-import 'package:dashboard_shakhsi/app/theme/original_theme.dart';
-import 'package:dashboard_shakhsi/core/providers/persistence_providers.dart';
-import 'package:dashboard_shakhsi/features/dashboard/presentation/dashboard_screen.dart';
-import 'package:dashboard_shakhsi/features/legacy_import/data/legacy_v1_source_locator.dart';
+import 'package:borj/app/theme/original_theme.dart';
+import 'package:borj/core/providers/persistence_providers.dart';
+import 'package:borj/features/dashboard/presentation/dashboard_screen.dart';
+import 'package:borj/features/legacy_import/data/legacy_v1_source_locator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -38,7 +38,7 @@ void main() {
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 400));
 
-    expect(find.text('داشبورد شخصی'), findsOneWidget);
+    expect(find.text('برج'), findsOneWidget);
     expect(find.text('کارهای من'), findsOneWidget);
     expect(find.text('مالی من'), findsNothing);
 

@@ -1,6 +1,6 @@
-import 'package:dashboard_shakhsi/core/notifications/notification_delivery_policy.dart';
-import 'package:dashboard_shakhsi/core/notifications/notification_owner.dart';
-import 'package:dashboard_shakhsi/core/notifications/notification_request.dart';
+import 'package:borj/core/notifications/notification_delivery_policy.dart';
+import 'package:borj/core/notifications/notification_owner.dart';
+import 'package:borj/core/notifications/notification_request.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -18,7 +18,7 @@ void main() {
       _request(privacyMode: NotificationPrivacyMode.private),
     );
 
-    expect(content.title, 'داشبورد شخصی');
+    expect(content.title, 'برج');
     expect(content.body, 'یک یادآور جدید دارید.');
     expect(content.title, isNot(contains('گزارش')));
     expect(content.body, isNot(contains('تسک')));

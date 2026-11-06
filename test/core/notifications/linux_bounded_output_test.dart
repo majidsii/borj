@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
-import 'package:dashboard_shakhsi/core/notifications/linux_bounded_output.dart';
+import 'package:borj/core/notifications/linux_bounded_output.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

@@ -1,14 +1,14 @@
-import 'package:dashboard_shakhsi/core/errors/app_failure.dart';
-import 'package:dashboard_shakhsi/core/recurrence/recurrence_annual_date.dart';
-import 'package:dashboard_shakhsi/core/recurrence/recurrence_end.dart';
-import 'package:dashboard_shakhsi/core/recurrence/recurrence_exception.dart';
-import 'package:dashboard_shakhsi/core/recurrence/recurrence_invalid_date_policy.dart';
-import 'package:dashboard_shakhsi/core/recurrence/recurrence_local_date_time.dart';
-import 'package:dashboard_shakhsi/core/recurrence/recurrence_month_selector.dart';
-import 'package:dashboard_shakhsi/core/recurrence/recurrence_rule.dart';
-import 'package:dashboard_shakhsi/core/recurrence/recurrence_time_of_day.dart';
-import 'package:dashboard_shakhsi/core/recurrence/recurrence_time_zone.dart';
-import 'package:dashboard_shakhsi/core/recurrence/recurrence_weekday.dart';
+import 'package:borj/core/errors/app_failure.dart';
+import 'package:borj/core/recurrence/recurrence_annual_date.dart';
+import 'package:borj/core/recurrence/recurrence_end.dart';
+import 'package:borj/core/recurrence/recurrence_exception.dart';
+import 'package:borj/core/recurrence/recurrence_invalid_date_policy.dart';
+import 'package:borj/core/recurrence/recurrence_local_date_time.dart';
+import 'package:borj/core/recurrence/recurrence_month_selector.dart';
+import 'package:borj/core/recurrence/recurrence_rule.dart';
+import 'package:borj/core/recurrence/recurrence_time_of_day.dart';
+import 'package:borj/core/recurrence/recurrence_time_zone.dart';
+import 'package:borj/core/recurrence/recurrence_weekday.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

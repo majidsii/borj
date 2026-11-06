@@ -1,10 +1,10 @@
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:borj/core/errors/app_failure.dart';
+import 'package:borj/features/legacy_import/data/legacy_v1_parser.dart';
+import 'package:borj/features/legacy_import/domain/legacy_snapshot.dart';
 import 'package:cryptography/cryptography.dart';
-import 'package:dashboard_shakhsi/core/errors/app_failure.dart';
-import 'package:dashboard_shakhsi/features/legacy_import/data/legacy_v1_parser.dart';
-import 'package:dashboard_shakhsi/features/legacy_import/domain/legacy_snapshot.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 Future<Uint8List> fixture(String name) =>

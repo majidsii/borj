@@ -1,5 +1,5 @@
-import 'package:dashboard_shakhsi/features/tasks/data/system_task_template_catalog.dart';
-import 'package:dashboard_shakhsi/features/tasks/domain/task_template_repository.dart';
+import 'package:borj/features/tasks/data/system_task_template_catalog.dart';
+import 'package:borj/features/tasks/domain/task_template_repository.dart';
 
 final class TaskTemplateSynchronizer {
   const TaskTemplateSynchronizer({

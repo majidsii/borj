@@ -1,10 +1,10 @@
 // ignore_for_file: prefer_initializing_formals
 
-import 'package:dashboard_shakhsi/app/bootstrap/linux_notification_delivery_bootstrap.dart';
-import 'package:dashboard_shakhsi/core/notifications/native_notification_gateway.dart';
-import 'package:dashboard_shakhsi/core/notifications/notification_owner.dart';
-import 'package:dashboard_shakhsi/core/notifications/notification_request.dart';
-import 'package:dashboard_shakhsi/core/notifications/notification_schedule_repository.dart';
+import 'package:borj/app/bootstrap/linux_notification_delivery_bootstrap.dart';
+import 'package:borj/core/notifications/native_notification_gateway.dart';
+import 'package:borj/core/notifications/notification_owner.dart';
+import 'package:borj/core/notifications/notification_request.dart';
+import 'package:borj/core/notifications/notification_schedule_repository.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

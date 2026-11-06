@@ -1,4 +1,4 @@
-import 'package:dashboard_shakhsi/features/tasks/domain/task_template.dart';
+import 'package:borj/features/tasks/domain/task_template.dart';
 import 'package:flutter/material.dart';
 
 final class TaskTemplateManagerDialog extends StatelessWidget {

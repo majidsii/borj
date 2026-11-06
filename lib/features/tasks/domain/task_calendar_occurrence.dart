@@ -1,6 +1,6 @@
-import 'package:dashboard_shakhsi/core/recurrence/recurrence_calendar.dart';
-import 'package:dashboard_shakhsi/core/recurrence/recurrence_local_date_time.dart';
-import 'package:dashboard_shakhsi/features/tasks/domain/task_item.dart';
+import 'package:borj/core/recurrence/recurrence_calendar.dart';
+import 'package:borj/core/recurrence/recurrence_local_date_time.dart';
+import 'package:borj/features/tasks/domain/task_item.dart';
 
 enum TaskCalendarOccurrenceStatus {
   scheduled,

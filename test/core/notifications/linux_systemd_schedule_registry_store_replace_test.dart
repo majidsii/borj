@@ -1,26 +1,24 @@
 import 'dart:convert';
 
-import 'package:dashboard_shakhsi/core/notifications/linux_systemd_environment.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_systemd_file_system.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_systemd_notification_unit.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_systemd_schedule_registry.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_systemd_schedule_registry_codec.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_systemd_schedule_registry_exception.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_systemd_schedule_registry_file_store.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_systemd_schedule_registry_store.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_systemd_timer_name.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_systemd_user_unit_path_resolver.dart';
-import 'package:dashboard_shakhsi/core/notifications/notification_owner.dart';
+import 'package:borj/core/notifications/linux_systemd_environment.dart';
+import 'package:borj/core/notifications/linux_systemd_file_system.dart';
+import 'package:borj/core/notifications/linux_systemd_notification_unit.dart';
+import 'package:borj/core/notifications/linux_systemd_schedule_registry.dart';
+import 'package:borj/core/notifications/linux_systemd_schedule_registry_codec.dart';
+import 'package:borj/core/notifications/linux_systemd_schedule_registry_exception.dart';
+import 'package:borj/core/notifications/linux_systemd_schedule_registry_file_store.dart';
+import 'package:borj/core/notifications/linux_systemd_schedule_registry_store.dart';
+import 'package:borj/core/notifications/linux_systemd_timer_name.dart';
+import 'package:borj/core/notifications/linux_systemd_user_unit_path_resolver.dart';
+import 'package:borj/core/notifications/notification_owner.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../support/fake_linux_systemd_file_system.dart';
 
 const directory = '/config/systemd/user';
-const registryPath = '$directory/dashboard-shakhsi-notification-registry.json';
-const tempPath =
-    '$directory/.dashboard-shakhsi-notification-registry.txn-1.tmp';
-const backupPath =
-    '$directory/.dashboard-shakhsi-notification-registry.txn-1.bak';
+const registryPath = '$directory/borj-notification-registry.json';
+const tempPath = '$directory/.borj-notification-registry.txn-1.tmp';
+const backupPath = '$directory/.borj-notification-registry.txn-1.bak';
 const codec = LinuxSystemdScheduleRegistryCodec();
 
 void main() {

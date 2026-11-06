@@ -1,8 +1,8 @@
-import 'package:dashboard_shakhsi/core/money/money.dart';
-import 'package:dashboard_shakhsi/features/finance/application/finance_summary.dart';
+import 'package:borj/core/money/money.dart';
+import 'package:borj/features/finance/application/finance_summary.dart';
 import 'package:shamsi_date/shamsi_date.dart';
 
-export 'package:dashboard_shakhsi/features/finance/application/finance_summary.dart';
+export 'package:borj/features/finance/application/finance_summary.dart';
 
 enum FinanceEntryType { expense, income, debt, installment }
 

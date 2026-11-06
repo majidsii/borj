@@ -1,5 +1,5 @@
-import 'package:dashboard_shakhsi/app/bootstrap/app_bootstrap.dart';
-import 'package:dashboard_shakhsi/app/bootstrap/application_entrypoint.dart';
+import 'package:borj/app/bootstrap/app_bootstrap.dart';
+import 'package:borj/app/bootstrap/application_entrypoint.dart';
 
 Future<void> main(List<String> arguments) async {
   final entrypoint = buildProductionApplicationEntrypoint(

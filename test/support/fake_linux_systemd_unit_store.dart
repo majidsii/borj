@@ -1,6 +1,6 @@
-import 'package:dashboard_shakhsi/core/notifications/linux_systemd_notification_unit.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_systemd_unit_renderer.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_systemd_unit_transaction.dart';
+import 'package:borj/core/notifications/linux_systemd_notification_unit.dart';
+import 'package:borj/core/notifications/linux_systemd_unit_renderer.dart';
+import 'package:borj/core/notifications/linux_systemd_unit_transaction.dart';
 
 final class FakeLinuxSystemdUnitStore implements LinuxSystemdUnitStore {
   FakeLinuxSystemdUnitStore({List<String>? operations})

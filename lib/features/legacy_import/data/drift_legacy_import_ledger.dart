@@ -1,5 +1,5 @@
-import 'package:dashboard_shakhsi/core/database/app_database.dart';
-import 'package:dashboard_shakhsi/features/legacy_import/domain/legacy_snapshot.dart';
+import 'package:borj/core/database/app_database.dart';
+import 'package:borj/features/legacy_import/domain/legacy_snapshot.dart';
 
 abstract interface class LegacyImportLedger {
   Future<Set<String>> importedIds(LegacyEntityType type);

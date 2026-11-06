@@ -182,8 +182,8 @@ providers = providers_path.read_text(encoding='utf-8')
 providers = sort_imports(
     providers,
     {
-        "import 'package:dashboard_shakhsi/core/notifications/notification_permission.dart';",
-        "import 'package:dashboard_shakhsi/core/notifications/notification_permission_service.dart';",
+        "import 'package:borj/core/notifications/notification_permission.dart';",
+        "import 'package:borj/core/notifications/notification_permission_service.dart';",
     },
 )
 

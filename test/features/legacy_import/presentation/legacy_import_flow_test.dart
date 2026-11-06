@@ -1,14 +1,14 @@
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:dashboard_shakhsi/app/theme/original_theme.dart';
-import 'package:dashboard_shakhsi/core/database/app_database.dart';
-import 'package:dashboard_shakhsi/core/date_time/app_clock.dart';
-import 'package:dashboard_shakhsi/core/providers/persistence_providers.dart';
-import 'package:dashboard_shakhsi/features/legacy_import/application/legacy_file_picker.dart';
-import 'package:dashboard_shakhsi/features/legacy_import/data/legacy_v1_source_locator.dart';
-import 'package:dashboard_shakhsi/features/legacy_import/presentation/legacy_import_providers.dart';
-import 'package:dashboard_shakhsi/features/settings/presentation/settings_screen.dart';
+import 'package:borj/app/theme/original_theme.dart';
+import 'package:borj/core/database/app_database.dart';
+import 'package:borj/core/date_time/app_clock.dart';
+import 'package:borj/core/providers/persistence_providers.dart';
+import 'package:borj/features/legacy_import/application/legacy_file_picker.dart';
+import 'package:borj/features/legacy_import/data/legacy_v1_source_locator.dart';
+import 'package:borj/features/legacy_import/presentation/legacy_import_providers.dart';
+import 'package:borj/features/settings/presentation/settings_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';

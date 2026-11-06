@@ -1,14 +1,14 @@
-import 'package:dashboard_shakhsi/core/errors/app_failure.dart';
-import 'package:dashboard_shakhsi/core/recurrence/recurrence_annual_date.dart';
-import 'package:dashboard_shakhsi/core/recurrence/recurrence_end.dart';
-import 'package:dashboard_shakhsi/core/recurrence/recurrence_month_selector.dart';
-import 'package:dashboard_shakhsi/core/recurrence/recurrence_time_zone.dart';
-import 'package:dashboard_shakhsi/features/tasks/domain/task_reminder_trigger.dart';
-import 'package:dashboard_shakhsi/features/tasks/domain/task_template.dart';
-import 'package:dashboard_shakhsi/features/tasks/domain/task_template_recurrence.dart';
-import 'package:dashboard_shakhsi/features/tasks/presentation/task_details/task_details_draft.dart';
-import 'package:dashboard_shakhsi/features/tasks/presentation/task_details/task_recurrence_draft.dart';
-import 'package:dashboard_shakhsi/features/tasks/presentation/task_details/task_reminder_draft.dart';
+import 'package:borj/core/errors/app_failure.dart';
+import 'package:borj/core/recurrence/recurrence_annual_date.dart';
+import 'package:borj/core/recurrence/recurrence_end.dart';
+import 'package:borj/core/recurrence/recurrence_month_selector.dart';
+import 'package:borj/core/recurrence/recurrence_time_zone.dart';
+import 'package:borj/features/tasks/domain/task_reminder_trigger.dart';
+import 'package:borj/features/tasks/domain/task_template.dart';
+import 'package:borj/features/tasks/domain/task_template_recurrence.dart';
+import 'package:borj/features/tasks/presentation/task_details/task_details_draft.dart';
+import 'package:borj/features/tasks/presentation/task_details/task_recurrence_draft.dart';
+import 'package:borj/features/tasks/presentation/task_details/task_reminder_draft.dart';
 
 final class TaskTemplateMapper {
   const TaskTemplateMapper();

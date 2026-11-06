@@ -1,11 +1,11 @@
-import 'package:dashboard_shakhsi/core/database/app_database.dart';
-import 'package:dashboard_shakhsi/core/errors/app_failure.dart';
-import 'package:dashboard_shakhsi/core/ids/id_generator.dart';
-import 'package:dashboard_shakhsi/core/money/money.dart';
-import 'package:dashboard_shakhsi/features/finance/data/drift_finance_repository.dart';
-import 'package:dashboard_shakhsi/features/finance/domain/debt.dart';
-import 'package:dashboard_shakhsi/features/finance/domain/finance_transaction.dart';
-import 'package:dashboard_shakhsi/features/finance/domain/installment_plan.dart';
+import 'package:borj/core/database/app_database.dart';
+import 'package:borj/core/errors/app_failure.dart';
+import 'package:borj/core/ids/id_generator.dart';
+import 'package:borj/core/money/money.dart';
+import 'package:borj/features/finance/data/drift_finance_repository.dart';
+import 'package:borj/features/finance/domain/debt.dart';
+import 'package:borj/features/finance/domain/finance_transaction.dart';
+import 'package:borj/features/finance/domain/installment_plan.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../../support/test_database.dart';

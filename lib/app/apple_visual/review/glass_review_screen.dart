@@ -1,7 +1,7 @@
 import 'dart:io';
 
-import 'package:dashboard_shakhsi/app/apple_visual/foundation/apple_visual_scope.dart';
-import 'package:dashboard_shakhsi/app/apple_visual/review/glass_review_samples.dart';
+import 'package:borj/app/apple_visual/foundation/apple_visual_scope.dart';
+import 'package:borj/app/apple_visual/review/glass_review_samples.dart';
 import 'package:flutter/material.dart';
 
 /// Directory with reference captures, supplied at run time. Never committed.

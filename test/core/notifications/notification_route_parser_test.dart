@@ -1,7 +1,7 @@
 import 'dart:convert';
 
-import 'package:dashboard_shakhsi/core/notifications/notification_route_intent.dart';
-import 'package:dashboard_shakhsi/core/notifications/notification_route_parser.dart';
+import 'package:borj/core/notifications/notification_route_intent.dart';
+import 'package:borj/core/notifications/notification_route_parser.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 const Object _absent = Object();

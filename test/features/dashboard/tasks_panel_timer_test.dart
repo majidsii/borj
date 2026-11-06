@@ -1,10 +1,10 @@
-import 'package:dashboard_shakhsi/app/theme/original_theme.dart';
-import 'package:dashboard_shakhsi/core/database/app_database.dart';
-import 'package:dashboard_shakhsi/core/date_time/app_clock.dart';
-import 'package:dashboard_shakhsi/core/providers/persistence_providers.dart';
-import 'package:dashboard_shakhsi/features/dashboard/presentation/widgets/tasks_panel.dart';
-import 'package:dashboard_shakhsi/features/tasks/domain/task_item.dart';
-import 'package:dashboard_shakhsi/features/tasks/domain/task_status.dart';
+import 'package:borj/app/theme/original_theme.dart';
+import 'package:borj/core/database/app_database.dart';
+import 'package:borj/core/date_time/app_clock.dart';
+import 'package:borj/core/providers/persistence_providers.dart';
+import 'package:borj/features/dashboard/presentation/widgets/tasks_panel.dart';
+import 'package:borj/features/tasks/domain/task_item.dart';
+import 'package:borj/features/tasks/domain/task_status.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';

@@ -1,10 +1,10 @@
-import 'package:dashboard_shakhsi/core/recurrence/recurrence_calendar.dart';
-import 'package:dashboard_shakhsi/core/recurrence/recurrence_end.dart';
-import 'package:dashboard_shakhsi/core/recurrence/recurrence_frequency.dart';
-import 'package:dashboard_shakhsi/core/recurrence/recurrence_invalid_date_policy.dart';
-import 'package:dashboard_shakhsi/core/recurrence/recurrence_time_zone.dart';
-import 'package:dashboard_shakhsi/core/recurrence/recurrence_weekday.dart';
-import 'package:dashboard_shakhsi/features/tasks/presentation/task_details/task_recurrence_draft.dart';
+import 'package:borj/core/recurrence/recurrence_calendar.dart';
+import 'package:borj/core/recurrence/recurrence_end.dart';
+import 'package:borj/core/recurrence/recurrence_frequency.dart';
+import 'package:borj/core/recurrence/recurrence_invalid_date_policy.dart';
+import 'package:borj/core/recurrence/recurrence_time_zone.dart';
+import 'package:borj/core/recurrence/recurrence_weekday.dart';
+import 'package:borj/features/tasks/presentation/task_details/task_recurrence_draft.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

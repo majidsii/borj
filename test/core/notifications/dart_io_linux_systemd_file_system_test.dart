@@ -1,7 +1,7 @@
 import 'dart:io';
 
-import 'package:dashboard_shakhsi/core/notifications/dart_io_linux_systemd_file_system.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_systemd_file_system.dart';
+import 'package:borj/core/notifications/dart_io_linux_systemd_file_system.dart';
+import 'package:borj/core/notifications/linux_systemd_file_system.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

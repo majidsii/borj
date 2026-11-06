@@ -1,5 +1,5 @@
-import 'package:dashboard_shakhsi/core/notifications/linux_systemd_notification_unit.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_systemd_unit_renderer.dart';
+import 'package:borj/core/notifications/linux_systemd_notification_unit.dart';
+import 'package:borj/core/notifications/linux_systemd_unit_renderer.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -8,7 +8,7 @@ void main() {
       final unit = LinuxSystemdNotificationUnit(
         scheduleKey: 'task:alpha/notification-1',
         scheduledAtUtc: DateTime.utc(2026, 7, 28, 18, 45, 6),
-        executablePath: '/opt/Dashboard Shakhsi/dashboard_shakhsi',
+        executablePath: '/opt/Borj/borj',
         arguments: const <String>[
           '--deliver-notification',
           'task:alpha/notification-1',
@@ -25,7 +25,7 @@ void main() {
       final unit = LinuxSystemdNotificationUnit(
         scheduleKey: 'schedule-1',
         scheduledAtUtc: DateTime.utc(2026, 7, 28),
-        executablePath: '/opt/dashboard_shakhsi',
+        executablePath: '/opt/borj',
         arguments: arguments,
       );
 
@@ -43,7 +43,7 @@ void main() {
         () => LinuxSystemdNotificationUnit(
           scheduleKey: '',
           scheduledAtUtc: DateTime.utc(2026, 7, 28),
-          executablePath: '/opt/dashboard_shakhsi',
+          executablePath: '/opt/borj',
         ),
         throwsArgumentError,
       );
@@ -54,7 +54,7 @@ void main() {
         () => LinuxSystemdNotificationUnit(
           scheduleKey: List<String>.filled(513, 'a').join(),
           scheduledAtUtc: DateTime.utc(2026, 7, 28),
-          executablePath: '/opt/dashboard_shakhsi',
+          executablePath: '/opt/borj',
         ),
         throwsArgumentError,
       );
@@ -70,7 +70,7 @@ void main() {
           () => LinuxSystemdNotificationUnit(
             scheduleKey: key,
             scheduledAtUtc: DateTime.utc(2026, 7, 28),
-            executablePath: '/opt/dashboard_shakhsi',
+            executablePath: '/opt/borj',
           ),
           throwsArgumentError,
           reason: 'unsafe key must be rejected: $key',
@@ -83,7 +83,7 @@ void main() {
         () => LinuxSystemdNotificationUnit(
           scheduleKey: 'schedule-1',
           scheduledAtUtc: DateTime(2026, 7, 28),
-          executablePath: '/opt/dashboard_shakhsi',
+          executablePath: '/opt/borj',
         ),
         throwsArgumentError,
       );
@@ -94,7 +94,7 @@ void main() {
         () => LinuxSystemdNotificationUnit(
           scheduleKey: 'schedule-1',
           scheduledAtUtc: DateTime.utc(2026, 7, 28),
-          executablePath: 'dashboard_shakhsi',
+          executablePath: 'borj',
         ),
         throwsArgumentError,
       );
@@ -105,7 +105,7 @@ void main() {
         () => LinuxSystemdNotificationUnit(
           scheduleKey: 'schedule-1',
           scheduledAtUtc: DateTime.utc(2026, 7, 28),
-          executablePath: '/opt/dashboard\nshakhsi',
+          executablePath: '/opt/bor\nj',
         ),
         throwsArgumentError,
       );
@@ -114,7 +114,7 @@ void main() {
         () => LinuxSystemdNotificationUnit(
           scheduleKey: 'schedule-1',
           scheduledAtUtc: DateTime.utc(2026, 7, 28),
-          executablePath: '/opt/dashboard_shakhsi',
+          executablePath: '/opt/borj',
           arguments: const <String>['safe', 'bad\u0000argument'],
         ),
         throwsArgumentError,
@@ -157,7 +157,7 @@ void main() {
 
       expect(
         names.baseName,
-        matches(RegExp(r'^dashboard-shakhsi-notification-[0-9a-f]{16}$')),
+        matches(RegExp(r'^borj-notification-[0-9a-f]{16}$')),
       );
       expect(names.serviceFileName, '${names.baseName}.service');
       expect(names.timerFileName, '${names.baseName}.timer');
@@ -170,7 +170,7 @@ void main() {
     const renderer = LinuxSystemdUnitRenderer();
 
     LinuxSystemdNotificationUnit buildUnit({
-      String executablePath = '/opt/Dashboard Shakhsi/dashboard_shakhsi',
+      String executablePath = '/opt/Borj/borj',
       List<String> arguments = const <String>[
         '--deliver-notification',
         'schedule-1',
@@ -205,8 +205,7 @@ void main() {
     test('quotes executable paths and command arguments safely', () {
       final rendered = renderer.render(
         buildUnit(
-          executablePath:
-              r'/opt/Dashboard "Shakhsi"\bin/$release%/dashboard_shakhsi',
+          executablePath: r'/opt/Borj "App"\bin/$release%/borj',
           arguments: const <String>[
             '--title=Review "Today"',
             r'path\with\slashes',
@@ -219,8 +218,8 @@ void main() {
       expect(
         rendered.serviceContents,
         contains(
-          r'ExecStart="/opt/Dashboard \"Shakhsi\"\\bin/$$release%%/'
-          r'dashboard_shakhsi" "--title=Review \"Today\"" '
+          r'ExecStart="/opt/Borj \"App\"\\bin/$$release%%/'
+          r'borj" "--title=Review \"Today\"" '
           r'"path\\with\\slashes" "$$HOME" "100%%"',
         ),
       );
@@ -269,7 +268,7 @@ void main() {
       final unit = LinuxSystemdNotificationUnit(
         scheduleKey: 'private-task-owner-id',
         scheduledAtUtc: DateTime.utc(2026, 7, 28),
-        executablePath: '/opt/dashboard_shakhsi',
+        executablePath: '/opt/borj',
       );
       final rendered = renderer.render(unit);
 

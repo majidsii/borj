@@ -1,12 +1,12 @@
-import 'package:dashboard_shakhsi/app/theme/original_design_tokens.dart';
-import 'package:dashboard_shakhsi/app/widgets/original_controls.dart';
-import 'package:dashboard_shakhsi/app/widgets/original_glass.dart';
-import 'package:dashboard_shakhsi/features/tasks/presentation/task_details/task_details_draft.dart';
-import 'package:dashboard_shakhsi/features/tasks/presentation/task_details/task_duration_field.dart';
-import 'package:dashboard_shakhsi/features/tasks/presentation/task_details/task_jalali_date_time_field.dart';
-import 'package:dashboard_shakhsi/features/tasks/presentation/task_details/task_recurrence_field.dart';
-import 'package:dashboard_shakhsi/features/tasks/presentation/task_details/task_reminder_rules_field.dart';
-import 'package:dashboard_shakhsi/features/tasks/presentation/task_timer/task_timer_panel.dart';
+import 'package:borj/app/theme/original_design_tokens.dart';
+import 'package:borj/app/widgets/original_controls.dart';
+import 'package:borj/app/widgets/original_glass.dart';
+import 'package:borj/features/tasks/presentation/task_details/task_details_draft.dart';
+import 'package:borj/features/tasks/presentation/task_details/task_duration_field.dart';
+import 'package:borj/features/tasks/presentation/task_details/task_jalali_date_time_field.dart';
+import 'package:borj/features/tasks/presentation/task_details/task_recurrence_field.dart';
+import 'package:borj/features/tasks/presentation/task_details/task_reminder_rules_field.dart';
+import 'package:borj/features/tasks/presentation/task_timer/task_timer_panel.dart';
 import 'package:flutter/material.dart';
 
 final class TaskDetailsForm extends StatefulWidget {

@@ -1,10 +1,10 @@
 import 'dart:async';
 
-import 'package:dashboard_shakhsi/app/bootstrap/notification_routing_bootstrap.dart';
-import 'package:dashboard_shakhsi/core/notifications/notification_navigation_queue.dart';
-import 'package:dashboard_shakhsi/core/notifications/notification_response_source.dart';
-import 'package:dashboard_shakhsi/core/notifications/notification_route_intent.dart';
-import 'package:dashboard_shakhsi/core/notifications/notification_routing_providers.dart';
+import 'package:borj/app/bootstrap/notification_routing_bootstrap.dart';
+import 'package:borj/core/notifications/notification_navigation_queue.dart';
+import 'package:borj/core/notifications/notification_response_source.dart';
+import 'package:borj/core/notifications/notification_route_intent.dart';
+import 'package:borj/core/notifications/notification_routing_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';

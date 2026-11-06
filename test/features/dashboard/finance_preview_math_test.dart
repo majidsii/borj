@@ -1,5 +1,5 @@
-import 'package:dashboard_shakhsi/core/money/money.dart';
-import 'package:dashboard_shakhsi/features/dashboard/presentation/widgets/finance_preview_models.dart';
+import 'package:borj/core/money/money.dart';
+import 'package:borj/features/dashboard/presentation/widgets/finance_preview_models.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

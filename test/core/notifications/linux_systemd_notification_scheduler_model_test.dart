@@ -1,9 +1,9 @@
-import 'package:dashboard_shakhsi/core/notifications/linux_systemd_notification_scheduler_exception.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_systemd_notification_unit.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_systemd_timer_name.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_systemd_timer_status.dart';
-import 'package:dashboard_shakhsi/core/notifications/notification_owner.dart';
-import 'package:dashboard_shakhsi/core/notifications/notification_request.dart';
+import 'package:borj/core/notifications/linux_systemd_notification_scheduler_exception.dart';
+import 'package:borj/core/notifications/linux_systemd_notification_unit.dart';
+import 'package:borj/core/notifications/linux_systemd_timer_name.dart';
+import 'package:borj/core/notifications/linux_systemd_timer_status.dart';
+import 'package:borj/core/notifications/notification_owner.dart';
+import 'package:borj/core/notifications/notification_request.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../support/fake_linux_notification_delivery_command_factory.dart';
@@ -273,7 +273,7 @@ LinuxSystemdNotificationUnit _unit(NotificationRequest request) {
   return LinuxSystemdNotificationUnit(
     scheduleKey: request.scheduleId,
     scheduledAtUtc: request.scheduledAtUtc,
-    executablePath: '/opt/dashboard-shakhsi/dashboard-shakhsi',
+    executablePath: '/opt/borj/borj',
     arguments: <String>['--deliver-notification', request.scheduleId],
   );
 }

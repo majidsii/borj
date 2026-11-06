@@ -33,10 +33,10 @@ final class LinuxSystemdUserUnitStore implements LinuxSystemdUnitStore {
   );
 
   static final RegExp _serviceNamePattern = RegExp(
-    r'^(dashboard-shakhsi-notification-[0-9a-f]{16})\.service$',
+    r'^(borj-notification-[0-9a-f]{16})\.service$',
   );
   static final RegExp _timerNamePattern = RegExp(
-    r'^(dashboard-shakhsi-notification-[0-9a-f]{16})\.timer$',
+    r'^(borj-notification-[0-9a-f]{16})\.timer$',
   );
   static final RegExp _transactionIdPattern = RegExp(r'^[A-Za-z0-9_-]{1,64}$');
 

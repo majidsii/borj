@@ -1,7 +1,7 @@
 import 'dart:io';
 
-import 'package:dashboard_shakhsi/core/database/app_database.dart';
-import 'package:dashboard_shakhsi/features/tasks/domain/task_status.dart';
+import 'package:borj/core/database/app_database.dart';
+import 'package:borj/features/tasks/domain/task_status.dart';
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sqlite3/sqlite3.dart' as sqlite;
@@ -11,7 +11,7 @@ void main() {
     'version one migrates notifications, tasks, and reminders through schema eight',
     () async {
       final directory = await Directory.systemTemp.createTemp(
-        'dashboard-shakhsi-notification-migration-',
+        'borj-notification-migration-',
       );
       final file = File('${directory.path}/migration.sqlite');
 

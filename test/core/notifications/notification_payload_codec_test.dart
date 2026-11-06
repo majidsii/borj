@@ -1,6 +1,6 @@
-import 'package:dashboard_shakhsi/core/notifications/notification_owner.dart';
-import 'package:dashboard_shakhsi/core/notifications/notification_payload_codec.dart';
-import 'package:dashboard_shakhsi/core/notifications/notification_request.dart';
+import 'package:borj/core/notifications/notification_owner.dart';
+import 'package:borj/core/notifications/notification_payload_codec.dart';
+import 'package:borj/core/notifications/notification_request.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

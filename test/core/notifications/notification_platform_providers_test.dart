@@ -1,8 +1,8 @@
-import 'package:dashboard_shakhsi/core/notifications/linux_systemd_notification_scheduler.dart';
-import 'package:dashboard_shakhsi/core/notifications/noop_notification_scheduler.dart';
-import 'package:dashboard_shakhsi/core/notifications/notification_platform_capabilities.dart';
-import 'package:dashboard_shakhsi/core/notifications/notification_platform_providers.dart';
-import 'package:dashboard_shakhsi/core/notifications/platform_notification_scheduler.dart';
+import 'package:borj/core/notifications/linux_systemd_notification_scheduler.dart';
+import 'package:borj/core/notifications/noop_notification_scheduler.dart';
+import 'package:borj/core/notifications/notification_platform_capabilities.dart';
+import 'package:borj/core/notifications/notification_platform_providers.dart';
+import 'package:borj/core/notifications/platform_notification_scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 

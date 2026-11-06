@@ -1,5 +1,5 @@
-import 'package:dashboard_shakhsi/app/theme/original_design_tokens.dart';
-import 'package:dashboard_shakhsi/app/widgets/original_glass.dart';
+import 'package:borj/app/theme/original_design_tokens.dart';
+import 'package:borj/app/widgets/original_glass.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 

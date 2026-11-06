@@ -1,12 +1,12 @@
 import 'dart:io';
 
-import 'package:dashboard_shakhsi/app/theme/original_theme.dart';
-import 'package:dashboard_shakhsi/core/database/app_database.dart';
-import 'package:dashboard_shakhsi/core/providers/persistence_providers.dart';
-import 'package:dashboard_shakhsi/features/legacy_import/data/legacy_v1_source_locator.dart';
-import 'package:dashboard_shakhsi/features/legacy_import/domain/legacy_snapshot.dart';
-import 'package:dashboard_shakhsi/features/legacy_import/presentation/legacy_import_banner.dart';
-import 'package:dashboard_shakhsi/features/legacy_import/presentation/legacy_import_providers.dart';
+import 'package:borj/app/theme/original_theme.dart';
+import 'package:borj/core/database/app_database.dart';
+import 'package:borj/core/providers/persistence_providers.dart';
+import 'package:borj/features/legacy_import/data/legacy_v1_source_locator.dart';
+import 'package:borj/features/legacy_import/domain/legacy_snapshot.dart';
+import 'package:borj/features/legacy_import/presentation/legacy_import_banner.dart';
+import 'package:borj/features/legacy_import/presentation/legacy_import_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';

@@ -1,7 +1,7 @@
-import 'package:dashboard_shakhsi/app/theme/original_theme.dart';
-import 'package:dashboard_shakhsi/core/money/money.dart';
-import 'package:dashboard_shakhsi/features/dashboard/presentation/widgets/finance_charts.dart';
-import 'package:dashboard_shakhsi/features/finance/application/finance_summary.dart';
+import 'package:borj/app/theme/original_theme.dart';
+import 'package:borj/core/money/money.dart';
+import 'package:borj/features/dashboard/presentation/widgets/finance_charts.dart';
+import 'package:borj/features/finance/application/finance_summary.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 

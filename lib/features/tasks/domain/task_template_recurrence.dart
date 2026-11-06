@@ -1,13 +1,13 @@
 import 'dart:collection';
 
-import 'package:dashboard_shakhsi/core/errors/app_failure.dart';
-import 'package:dashboard_shakhsi/core/recurrence/recurrence_annual_date.dart';
-import 'package:dashboard_shakhsi/core/recurrence/recurrence_calendar.dart';
-import 'package:dashboard_shakhsi/core/recurrence/recurrence_frequency.dart';
-import 'package:dashboard_shakhsi/core/recurrence/recurrence_invalid_date_policy.dart';
-import 'package:dashboard_shakhsi/core/recurrence/recurrence_month_selector.dart';
-import 'package:dashboard_shakhsi/core/recurrence/recurrence_time_zone.dart';
-import 'package:dashboard_shakhsi/core/recurrence/recurrence_weekday.dart';
+import 'package:borj/core/errors/app_failure.dart';
+import 'package:borj/core/recurrence/recurrence_annual_date.dart';
+import 'package:borj/core/recurrence/recurrence_calendar.dart';
+import 'package:borj/core/recurrence/recurrence_frequency.dart';
+import 'package:borj/core/recurrence/recurrence_invalid_date_policy.dart';
+import 'package:borj/core/recurrence/recurrence_month_selector.dart';
+import 'package:borj/core/recurrence/recurrence_time_zone.dart';
+import 'package:borj/core/recurrence/recurrence_weekday.dart';
 
 enum TaskTemplateRecurrenceEndKind { never, afterCount, daysAfterAnchor }
 

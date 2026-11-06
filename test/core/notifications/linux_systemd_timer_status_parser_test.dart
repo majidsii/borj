@@ -1,36 +1,30 @@
-import 'package:dashboard_shakhsi/core/notifications/linux_systemd_timer_name.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_systemd_timer_status.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_systemd_timer_status_parser.dart';
+import 'package:borj/core/notifications/linux_systemd_timer_name.dart';
+import 'package:borj/core/notifications/linux_systemd_timer_status.dart';
+import 'package:borj/core/notifications/linux_systemd_timer_status_parser.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('LinuxSystemdTimerName', () {
     test('parses the exact app-generated timer pattern', () {
       final name = LinuxSystemdTimerName.parse(
-        'dashboard-shakhsi-notification-0123456789abcdef.timer',
+        'borj-notification-0123456789abcdef.timer',
       );
 
-      expect(
-        name.value,
-        'dashboard-shakhsi-notification-0123456789abcdef.timer',
-      );
+      expect(name.value, 'borj-notification-0123456789abcdef.timer');
       expect(name.identityHex, '0123456789abcdef');
-      expect(
-        name.serviceName,
-        'dashboard-shakhsi-notification-0123456789abcdef.service',
-      );
+      expect(name.serviceName, 'borj-notification-0123456789abcdef.service');
       expect(name.toString(), name.value);
     });
 
     test('supports value equality and stable hashing', () {
       final first = LinuxSystemdTimerName.parse(
-        'dashboard-shakhsi-notification-aaaaaaaaaaaaaaaa.timer',
+        'borj-notification-aaaaaaaaaaaaaaaa.timer',
       );
       final second = LinuxSystemdTimerName.parse(
-        'dashboard-shakhsi-notification-aaaaaaaaaaaaaaaa.timer',
+        'borj-notification-aaaaaaaaaaaaaaaa.timer',
       );
       final different = LinuxSystemdTimerName.parse(
-        'dashboard-shakhsi-notification-bbbbbbbbbbbbbbbb.timer',
+        'borj-notification-bbbbbbbbbbbbbbbb.timer',
       );
 
       expect(first, second);
@@ -40,17 +34,17 @@ void main() {
 
     for (final invalid in <String>[
       '',
-      ' dashboard-shakhsi-notification-0123456789abcdef.timer',
-      'dashboard-shakhsi-notification-0123456789abcdef.timer ',
-      'dashboard-shakhsi-notification-0123456789ABCDEf.timer',
-      'dashboard-shakhsi-notification-0123456789abcde.timer',
-      'dashboard-shakhsi-notification-0123456789abcdef0.timer',
-      'dashboard-shakhsi-notification-0123456789abcdef.service',
+      ' borj-notification-0123456789abcdef.timer',
+      'borj-notification-0123456789abcdef.timer ',
+      'borj-notification-0123456789ABCDEf.timer',
+      'borj-notification-0123456789abcde.timer',
+      'borj-notification-0123456789abcdef0.timer',
+      'borj-notification-0123456789abcdef.service',
       'other-notification-0123456789abcdef.timer',
-      '../dashboard-shakhsi-notification-0123456789abcdef.timer',
-      'dashboard-shakhsi-notification-0123456789abcdef.timer/extra',
-      'dashboard-shakhsi-notification-0123456789abcdef.timer\n',
-      'dashboard-shakhsi-notification-0123456789abcdef.timer\u0000',
+      '../borj-notification-0123456789abcdef.timer',
+      'borj-notification-0123456789abcdef.timer/extra',
+      'borj-notification-0123456789abcdef.timer\n',
+      'borj-notification-0123456789abcdef.timer\u0000',
     ]) {
       test('rejects invalid timer name ${invalid.runtimeType}: $invalid', () {
         expect(
@@ -65,7 +59,7 @@ void main() {
   group('LinuxSystemdTimerStatusParser', () {
     const parser = LinuxSystemdTimerStatusParser();
     final expectedName = LinuxSystemdTimerName.parse(
-      'dashboard-shakhsi-notification-0123456789abcdef.timer',
+      'borj-notification-0123456789abcdef.timer',
     );
 
     test('parses a healthy timer into typed state values', () {
@@ -183,7 +177,7 @@ void main() {
           expectedName: expectedName,
           output: _healthyOutput().replaceFirst(
             expectedName.value,
-            'dashboard-shakhsi-notification-fedcba9876543210.timer',
+            'borj-notification-fedcba9876543210.timer',
           ),
         ),
         LinuxSystemdTimerStatusParseFailure.unexpectedTimerName,
@@ -334,7 +328,7 @@ String _statusOutput({
   String result = 'success',
 }) {
   return <String>[
-    'Id=dashboard-shakhsi-notification-0123456789abcdef.timer',
+    'Id=borj-notification-0123456789abcdef.timer',
     'LoadState=$loadState',
     'ActiveState=$activeState',
     'SubState=$subState',

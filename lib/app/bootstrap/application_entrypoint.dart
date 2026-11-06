@@ -2,9 +2,9 @@
 
 import 'dart:io';
 
-import 'package:dashboard_shakhsi/core/notifications/linux_notification_delivery_invocation.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_notification_delivery_result.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_notification_delivery_service.dart';
+import 'package:borj/core/notifications/linux_notification_delivery_invocation.dart';
+import 'package:borj/core/notifications/linux_notification_delivery_result.dart';
+import 'package:borj/core/notifications/linux_notification_delivery_service.dart';
 
 import 'linux_notification_delivery_bootstrap.dart';
 

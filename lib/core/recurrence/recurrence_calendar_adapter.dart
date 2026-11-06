@@ -1,5 +1,5 @@
-import 'package:dashboard_shakhsi/core/recurrence/recurrence_calendar.dart';
-import 'package:dashboard_shakhsi/core/recurrence/recurrence_local_date_time.dart';
+import 'package:borj/core/recurrence/recurrence_calendar.dart';
+import 'package:borj/core/recurrence/recurrence_local_date_time.dart';
 
 final class RecurrenceYearMonth {
   const RecurrenceYearMonth({required this.year, required this.month});

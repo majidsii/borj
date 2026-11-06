@@ -1,7 +1,7 @@
-import 'package:dashboard_shakhsi/core/date_time/app_clock.dart';
-import 'package:dashboard_shakhsi/core/notifications/drift_notification_schedule_repository.dart';
-import 'package:dashboard_shakhsi/core/notifications/notification_owner.dart';
-import 'package:dashboard_shakhsi/core/notifications/notification_request.dart';
+import 'package:borj/core/date_time/app_clock.dart';
+import 'package:borj/core/notifications/drift_notification_schedule_repository.dart';
+import 'package:borj/core/notifications/notification_owner.dart';
+import 'package:borj/core/notifications/notification_request.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../support/test_database.dart';

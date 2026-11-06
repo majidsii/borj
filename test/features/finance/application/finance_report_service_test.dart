@@ -1,8 +1,8 @@
-import 'package:dashboard_shakhsi/core/money/money.dart';
-import 'package:dashboard_shakhsi/features/finance/application/finance_report_service.dart';
-import 'package:dashboard_shakhsi/features/finance/domain/debt.dart';
-import 'package:dashboard_shakhsi/features/finance/domain/finance_transaction.dart';
-import 'package:dashboard_shakhsi/features/finance/domain/installment_plan.dart';
+import 'package:borj/core/money/money.dart';
+import 'package:borj/features/finance/application/finance_report_service.dart';
+import 'package:borj/features/finance/domain/debt.dart';
+import 'package:borj/features/finance/domain/finance_transaction.dart';
+import 'package:borj/features/finance/domain/installment_plan.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shamsi_date/shamsi_date.dart';
 

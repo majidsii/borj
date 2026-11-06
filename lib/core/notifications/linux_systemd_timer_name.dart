@@ -2,7 +2,7 @@ final class LinuxSystemdTimerName {
   LinuxSystemdTimerName._({required this.value, required this.identityHex});
 
   static final RegExp _pattern = RegExp(
-    r'^dashboard-shakhsi-notification-([0-9a-f]{16})\.timer$',
+    r'^borj-notification-([0-9a-f]{16})\.timer$',
   );
 
   final String value;
@@ -15,10 +15,7 @@ final class LinuxSystemdTimerName {
     final match = _pattern.firstMatch(value);
 
     if (match == null || match.start != 0 || match.end != value.length) {
-      throw FormatException(
-        'Invalid dashboard-shakhsi systemd timer name.',
-        value,
-      );
+      throw FormatException('Invalid borj systemd timer name.', value);
     }
 
     return LinuxSystemdTimerName._(value: value, identityHex: match.group(1)!);

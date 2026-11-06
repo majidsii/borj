@@ -16,8 +16,8 @@ final class LocalNotificationPluginConfig {
   }
 
   const LocalNotificationPluginConfig.defaults()
-    : appName = 'داشبورد شخصی',
-      appUserModelId = 'Majidsii.DashboardShakhsi',
+    : appName = 'برج',
+      appUserModelId = 'Majidsii.Borj',
       windowsGuid = 'b9e6ab22-2f88-4fe8-bd44-2b19dc7d0371',
       androidDefaultIcon = 'ic_launcher',
       defaultActionName = 'باز کردن';

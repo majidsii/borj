@@ -1,6 +1,6 @@
-import 'package:dashboard_shakhsi/app/apple_visual/foundation/apple_source_token_mapper.dart';
-import 'package:dashboard_shakhsi/app/apple_visual/foundation/apple_visual_family.dart';
-import 'package:dashboard_shakhsi/app/apple_visual/foundation/apple_visual_metrics.dart';
+import 'package:borj/app/apple_visual/foundation/apple_source_token_mapper.dart';
+import 'package:borj/app/apple_visual/foundation/apple_visual_family.dart';
+import 'package:borj/app/apple_visual/foundation/apple_visual_metrics.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

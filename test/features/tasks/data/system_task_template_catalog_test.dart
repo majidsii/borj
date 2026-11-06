@@ -1,7 +1,7 @@
-import 'package:dashboard_shakhsi/features/tasks/data/system_task_template_catalog.dart';
-import 'package:dashboard_shakhsi/features/tasks/domain/task_reminder_trigger.dart';
-import 'package:dashboard_shakhsi/features/tasks/domain/task_template.dart';
-import 'package:dashboard_shakhsi/features/tasks/domain/task_template_recurrence.dart';
+import 'package:borj/features/tasks/data/system_task_template_catalog.dart';
+import 'package:borj/features/tasks/domain/task_reminder_trigger.dart';
+import 'package:borj/features/tasks/domain/task_template.dart';
+import 'package:borj/features/tasks/domain/task_template_recurrence.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

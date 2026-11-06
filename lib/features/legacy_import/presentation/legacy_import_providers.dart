@@ -1,8 +1,8 @@
 import 'dart:io';
 
-import 'package:dashboard_shakhsi/core/providers/persistence_providers.dart';
-import 'package:dashboard_shakhsi/features/legacy_import/application/legacy_file_picker.dart';
-import 'package:dashboard_shakhsi/features/legacy_import/data/file_picker_legacy_file_picker.dart';
+import 'package:borj/core/providers/persistence_providers.dart';
+import 'package:borj/features/legacy_import/application/legacy_file_picker.dart';
+import 'package:borj/features/legacy_import/data/file_picker_legacy_file_picker.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final legacyFilePickerProvider = Provider<LegacyFilePicker>((ref) {

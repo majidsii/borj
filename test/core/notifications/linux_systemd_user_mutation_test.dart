@@ -1,11 +1,11 @@
 import 'dart:async';
 
-import 'package:dashboard_shakhsi/core/notifications/linux_bounded_output.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_process_exception.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_process_result.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_systemd_mutation.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_systemd_timer_name.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_systemd_user_driver.dart';
+import 'package:borj/core/notifications/linux_bounded_output.dart';
+import 'package:borj/core/notifications/linux_process_exception.dart';
+import 'package:borj/core/notifications/linux_process_result.dart';
+import 'package:borj/core/notifications/linux_systemd_mutation.dart';
+import 'package:borj/core/notifications/linux_systemd_timer_name.dart';
+import 'package:borj/core/notifications/linux_systemd_user_driver.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../support/fake_linux_process_runner.dart';
@@ -458,9 +458,7 @@ void main() {
 }
 
 LinuxSystemdTimerName _timer(String identityHex) {
-  return LinuxSystemdTimerName.parse(
-    'dashboard-shakhsi-notification-$identityHex.timer',
-  );
+  return LinuxSystemdTimerName.parse('borj-notification-$identityHex.timer');
 }
 
 List<String> _enableArguments(LinuxSystemdTimerName timer) {

@@ -2,7 +2,7 @@
 
 import 'dart:async';
 
-import 'package:dashboard_shakhsi/core/date_time/app_clock.dart';
+import 'package:borj/core/date_time/app_clock.dart';
 
 import 'async_fifo_keyed_mutex.dart';
 import 'async_writer_preferring_rw_lock.dart';

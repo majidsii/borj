@@ -1,11 +1,11 @@
-import 'package:dashboard_shakhsi/app/apple_visual/foundation/apple_source_token_mapper.dart';
-import 'package:dashboard_shakhsi/app/apple_visual/foundation/apple_visual_family.dart';
-import 'package:dashboard_shakhsi/app/apple_visual/foundation/apple_visual_materials.dart';
-import 'package:dashboard_shakhsi/app/apple_visual/foundation/apple_visual_metrics.dart';
-import 'package:dashboard_shakhsi/app/apple_visual/foundation/apple_visual_motion.dart';
-import 'package:dashboard_shakhsi/app/apple_visual/foundation/apple_visual_theme.dart';
-import 'package:dashboard_shakhsi/app/apple_visual/foundation/apple_visual_tokens.dart';
-import 'package:dashboard_shakhsi/app/apple_visual/foundation/apple_visual_typography.dart';
+import 'package:borj/app/apple_visual/foundation/apple_source_token_mapper.dart';
+import 'package:borj/app/apple_visual/foundation/apple_visual_family.dart';
+import 'package:borj/app/apple_visual/foundation/apple_visual_materials.dart';
+import 'package:borj/app/apple_visual/foundation/apple_visual_metrics.dart';
+import 'package:borj/app/apple_visual/foundation/apple_visual_motion.dart';
+import 'package:borj/app/apple_visual/foundation/apple_visual_theme.dart';
+import 'package:borj/app/apple_visual/foundation/apple_visual_tokens.dart';
+import 'package:borj/app/apple_visual/foundation/apple_visual_typography.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 

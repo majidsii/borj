@@ -1,9 +1,9 @@
-import 'package:dashboard_shakhsi/core/notifications/notification_request.dart';
-import 'package:dashboard_shakhsi/features/tasks/domain/task_item.dart';
-import 'package:dashboard_shakhsi/features/tasks/domain/task_reminder_rule.dart';
-import 'package:dashboard_shakhsi/features/tasks/domain/task_reminder_trigger.dart';
-import 'package:dashboard_shakhsi/features/tasks/domain/task_status.dart';
-import 'package:dashboard_shakhsi/features/tasks/presentation/task_details/task_details_draft.dart';
+import 'package:borj/core/notifications/notification_request.dart';
+import 'package:borj/features/tasks/domain/task_item.dart';
+import 'package:borj/features/tasks/domain/task_reminder_rule.dart';
+import 'package:borj/features/tasks/domain/task_reminder_trigger.dart';
+import 'package:borj/features/tasks/domain/task_status.dart';
+import 'package:borj/features/tasks/presentation/task_details/task_details_draft.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

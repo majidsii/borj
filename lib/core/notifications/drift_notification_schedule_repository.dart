@@ -1,10 +1,10 @@
 import 'dart:convert';
 
-import 'package:dashboard_shakhsi/core/database/app_database.dart';
-import 'package:dashboard_shakhsi/core/date_time/app_clock.dart';
-import 'package:dashboard_shakhsi/core/notifications/notification_owner.dart';
-import 'package:dashboard_shakhsi/core/notifications/notification_request.dart';
-import 'package:dashboard_shakhsi/core/notifications/notification_schedule_repository.dart';
+import 'package:borj/core/database/app_database.dart';
+import 'package:borj/core/date_time/app_clock.dart';
+import 'package:borj/core/notifications/notification_owner.dart';
+import 'package:borj/core/notifications/notification_request.dart';
+import 'package:borj/core/notifications/notification_schedule_repository.dart';
 import 'package:drift/drift.dart';
 
 final class DriftNotificationScheduleRepository

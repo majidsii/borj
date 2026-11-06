@@ -1,16 +1,16 @@
-import 'package:dashboard_shakhsi/core/date_time/app_clock.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_notification_delivery_command_factory.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_notification_request_fingerprint.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_systemd_notification_scheduler.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_systemd_notification_unit.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_systemd_schedule_registry.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_systemd_timer_name.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_systemd_unit_renderer.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_systemd_user_driver.dart';
-import 'package:dashboard_shakhsi/core/notifications/notification_owner.dart';
-import 'package:dashboard_shakhsi/core/notifications/notification_payload_codec.dart';
-import 'package:dashboard_shakhsi/core/notifications/notification_request.dart';
-import 'package:dashboard_shakhsi/core/notifications/stable_notification_id.dart';
+import 'package:borj/core/date_time/app_clock.dart';
+import 'package:borj/core/notifications/linux_notification_delivery_command_factory.dart';
+import 'package:borj/core/notifications/linux_notification_request_fingerprint.dart';
+import 'package:borj/core/notifications/linux_systemd_notification_scheduler.dart';
+import 'package:borj/core/notifications/linux_systemd_notification_unit.dart';
+import 'package:borj/core/notifications/linux_systemd_schedule_registry.dart';
+import 'package:borj/core/notifications/linux_systemd_timer_name.dart';
+import 'package:borj/core/notifications/linux_systemd_unit_renderer.dart';
+import 'package:borj/core/notifications/linux_systemd_user_driver.dart';
+import 'package:borj/core/notifications/notification_owner.dart';
+import 'package:borj/core/notifications/notification_payload_codec.dart';
+import 'package:borj/core/notifications/notification_request.dart';
+import 'package:borj/core/notifications/stable_notification_id.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../support/controlled_linux_process_runner.dart';
@@ -303,7 +303,7 @@ void main() {
       final call = harness.gateway.calls.single;
       expect(call.kind, 'showNow');
       expect(call.id, StableNotificationId.fromScheduleId(request.scheduleId));
-      expect(call.title, 'داشبورد شخصی');
+      expect(call.title, 'برج');
       expect(call.body, 'یک یادآور جدید دارید.');
       expect(call.payload, NotificationPayloadCodec.encode(request));
       expect(
@@ -400,7 +400,7 @@ final class _RecordingDeliveryFactory
     final unit = LinuxSystemdNotificationUnit(
       scheduleKey: request.scheduleId,
       scheduledAtUtc: request.scheduledAtUtc,
-      executablePath: '/opt/dashboard-shakhsi/dashboard-shakhsi',
+      executablePath: '/opt/borj/borj',
       arguments: <String>['--deliver-notification', request.scheduleId],
     );
     units.add(unit);

@@ -1,4 +1,4 @@
-import 'package:dashboard_shakhsi/core/money/money_input_formatter.dart';
+import 'package:borj/core/money/money_input_formatter.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 

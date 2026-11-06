@@ -1,7 +1,7 @@
-import 'package:dashboard_shakhsi/core/notifications/device_time_zone_source.dart';
-import 'package:dashboard_shakhsi/core/notifications/local_notifications_driver.dart';
-import 'package:dashboard_shakhsi/core/notifications/local_notifications_initializer.dart';
-import 'package:dashboard_shakhsi/core/notifications/notification_time_zone_initializer.dart';
+import 'package:borj/core/notifications/device_time_zone_source.dart';
+import 'package:borj/core/notifications/local_notifications_driver.dart';
+import 'package:borj/core/notifications/local_notifications_initializer.dart';
+import 'package:borj/core/notifications/notification_time_zone_initializer.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

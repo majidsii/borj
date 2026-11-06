@@ -1,20 +1,20 @@
 import 'dart:async';
 
-import 'package:dashboard_shakhsi/core/database/app_database.dart';
-import 'package:dashboard_shakhsi/core/money/money.dart';
-import 'package:dashboard_shakhsi/core/providers/persistence_providers.dart';
-import 'package:dashboard_shakhsi/features/finance/data/drift_finance_repository.dart';
-import 'package:dashboard_shakhsi/features/finance/domain/debt.dart';
-import 'package:dashboard_shakhsi/features/finance/domain/finance_transaction.dart';
-import 'package:dashboard_shakhsi/features/finance/domain/installment_plan.dart';
-import 'package:dashboard_shakhsi/features/tasks/data/drift_task_recurrence_repository.dart';
-import 'package:dashboard_shakhsi/features/tasks/data/drift_task_reminder_repository.dart';
-import 'package:dashboard_shakhsi/features/tasks/data/drift_task_repository.dart';
-import 'package:dashboard_shakhsi/features/tasks/data/drift_task_time_repository.dart';
-import 'package:dashboard_shakhsi/features/tasks/data/reminder_aware_task_repository.dart';
-import 'package:dashboard_shakhsi/features/tasks/domain/task_item.dart';
-import 'package:dashboard_shakhsi/features/tasks/domain/task_status.dart';
-import 'package:dashboard_shakhsi/features/tasks/domain/task_time_entry.dart';
+import 'package:borj/core/database/app_database.dart';
+import 'package:borj/core/money/money.dart';
+import 'package:borj/core/providers/persistence_providers.dart';
+import 'package:borj/features/finance/data/drift_finance_repository.dart';
+import 'package:borj/features/finance/domain/debt.dart';
+import 'package:borj/features/finance/domain/finance_transaction.dart';
+import 'package:borj/features/finance/domain/installment_plan.dart';
+import 'package:borj/features/tasks/data/drift_task_recurrence_repository.dart';
+import 'package:borj/features/tasks/data/drift_task_reminder_repository.dart';
+import 'package:borj/features/tasks/data/drift_task_repository.dart';
+import 'package:borj/features/tasks/data/drift_task_time_repository.dart';
+import 'package:borj/features/tasks/data/reminder_aware_task_repository.dart';
+import 'package:borj/features/tasks/domain/task_item.dart';
+import 'package:borj/features/tasks/domain/task_status.dart';
+import 'package:borj/features/tasks/domain/task_time_entry.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 

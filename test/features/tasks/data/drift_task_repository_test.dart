@@ -1,9 +1,9 @@
 import 'dart:io';
 
-import 'package:dashboard_shakhsi/core/database/app_database.dart';
-import 'package:dashboard_shakhsi/features/tasks/data/drift_task_repository.dart';
-import 'package:dashboard_shakhsi/features/tasks/domain/task_item.dart';
-import 'package:dashboard_shakhsi/features/tasks/domain/task_status.dart';
+import 'package:borj/core/database/app_database.dart';
+import 'package:borj/features/tasks/data/drift_task_repository.dart';
+import 'package:borj/features/tasks/domain/task_item.dart';
+import 'package:borj/features/tasks/domain/task_status.dart';
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -368,7 +368,7 @@ void main() {
     sharedDatabaseOpen = false;
 
     final directory = await Directory.systemTemp.createTemp(
-      'dashboard-shakhsi-task-repository-',
+      'borj-task-repository-',
     );
     final file = File('${directory.path}/tasks.sqlite');
 

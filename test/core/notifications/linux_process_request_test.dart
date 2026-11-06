@@ -1,11 +1,11 @@
 import 'dart:async';
 
-import 'package:dashboard_shakhsi/core/notifications/linux_bounded_output.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_cancellation_token.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_process_exception.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_process_request.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_process_result.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_process_runner.dart';
+import 'package:borj/core/notifications/linux_bounded_output.dart';
+import 'package:borj/core/notifications/linux_cancellation_token.dart';
+import 'package:borj/core/notifications/linux_process_exception.dart';
+import 'package:borj/core/notifications/linux_process_request.dart';
+import 'package:borj/core/notifications/linux_process_result.dart';
+import 'package:borj/core/notifications/linux_process_runner.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

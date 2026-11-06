@@ -1,4 +1,4 @@
-import 'package:dashboard_shakhsi/core/errors/app_failure.dart';
+import 'package:borj/core/errors/app_failure.dart';
 
 final class RecurrenceAnnualDate {
   factory RecurrenceAnnualDate({required int month, required int day}) {

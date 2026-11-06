@@ -1,23 +1,21 @@
 import 'dart:io';
 
-import 'package:dashboard_shakhsi/core/database/app_database.dart';
-import 'package:dashboard_shakhsi/core/ids/id_generator.dart';
-import 'package:dashboard_shakhsi/core/money/money.dart';
-import 'package:dashboard_shakhsi/features/finance/data/drift_finance_repository.dart';
-import 'package:dashboard_shakhsi/features/finance/domain/debt.dart';
-import 'package:dashboard_shakhsi/features/finance/domain/finance_transaction.dart';
-import 'package:dashboard_shakhsi/features/finance/domain/installment_plan.dart';
-import 'package:dashboard_shakhsi/features/tasks/data/drift_task_repository.dart';
-import 'package:dashboard_shakhsi/features/tasks/domain/task_item.dart';
-import 'package:dashboard_shakhsi/features/tasks/domain/task_status.dart';
+import 'package:borj/core/database/app_database.dart';
+import 'package:borj/core/ids/id_generator.dart';
+import 'package:borj/core/money/money.dart';
+import 'package:borj/features/finance/data/drift_finance_repository.dart';
+import 'package:borj/features/finance/domain/debt.dart';
+import 'package:borj/features/finance/domain/finance_transaction.dart';
+import 'package:borj/features/finance/domain/installment_plan.dart';
+import 'package:borj/features/tasks/data/drift_task_repository.dart';
+import 'package:borj/features/tasks/domain/task_item.dart';
+import 'package:borj/features/tasks/domain/task_status.dart';
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   test('tasks and exact finance data survive closing and reopening', () async {
-    final directory = await Directory.systemTemp.createTemp(
-      'dashboard-shakhsi-restart-',
-    );
+    final directory = await Directory.systemTemp.createTemp('borj-restart-');
     final file = File('${directory.path}/restart.sqlite');
 
     try {
@@ -198,9 +196,7 @@ void main() {
   });
 
   test('file-backed database keeps schema version nine', () async {
-    final directory = await Directory.systemTemp.createTemp(
-      'dashboard-shakhsi-schema-',
-    );
+    final directory = await Directory.systemTemp.createTemp('borj-schema-');
     final file = File('${directory.path}/schema.sqlite');
 
     try {

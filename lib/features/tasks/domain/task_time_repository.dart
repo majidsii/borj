@@ -1,4 +1,4 @@
-import 'package:dashboard_shakhsi/features/tasks/domain/task_time_entry.dart';
+import 'package:borj/features/tasks/domain/task_time_entry.dart';
 
 abstract interface class TaskTimeRepository {
   Stream<List<TaskTimeEntry>> watchAll();

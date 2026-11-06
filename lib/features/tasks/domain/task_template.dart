@@ -1,9 +1,9 @@
 import 'dart:collection';
 
-import 'package:dashboard_shakhsi/core/errors/app_failure.dart';
-import 'package:dashboard_shakhsi/core/notifications/notification_request.dart';
-import 'package:dashboard_shakhsi/features/tasks/domain/task_reminder_trigger.dart';
-import 'package:dashboard_shakhsi/features/tasks/domain/task_template_recurrence.dart';
+import 'package:borj/core/errors/app_failure.dart';
+import 'package:borj/core/notifications/notification_request.dart';
+import 'package:borj/features/tasks/domain/task_reminder_trigger.dart';
+import 'package:borj/features/tasks/domain/task_template_recurrence.dart';
 
 enum TaskTemplateKind { system, custom }
 

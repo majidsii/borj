@@ -1,11 +1,11 @@
-import 'package:dashboard_shakhsi/core/date_time/app_clock.dart';
-import 'package:dashboard_shakhsi/core/notifications/native_notification_gateway.dart';
-import 'package:dashboard_shakhsi/core/notifications/notification_owner.dart';
-import 'package:dashboard_shakhsi/core/notifications/notification_payload_codec.dart';
-import 'package:dashboard_shakhsi/core/notifications/notification_platform_capabilities.dart';
-import 'package:dashboard_shakhsi/core/notifications/notification_request.dart';
-import 'package:dashboard_shakhsi/core/notifications/platform_notification_scheduler.dart';
-import 'package:dashboard_shakhsi/core/notifications/stable_notification_id.dart';
+import 'package:borj/core/date_time/app_clock.dart';
+import 'package:borj/core/notifications/native_notification_gateway.dart';
+import 'package:borj/core/notifications/notification_owner.dart';
+import 'package:borj/core/notifications/notification_payload_codec.dart';
+import 'package:borj/core/notifications/notification_platform_capabilities.dart';
+import 'package:borj/core/notifications/notification_request.dart';
+import 'package:borj/core/notifications/platform_notification_scheduler.dart';
+import 'package:borj/core/notifications/stable_notification_id.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../support/fake_native_notification_gateway.dart';
@@ -32,7 +32,7 @@ void main() {
     final call = gateway.calls.single;
     expect(call.kind, 'schedule');
     expect(call.id, StableNotificationId.fromScheduleId(request.scheduleId));
-    expect(call.title, 'داشبورد شخصی');
+    expect(call.title, 'برج');
     expect(call.body, 'یک یادآور جدید دارید.');
     expect(call.scheduledAtUtc, DateTime.utc(2026, 7, 27, 10));
 

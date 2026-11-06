@@ -1,15 +1,15 @@
-import 'package:dashboard_shakhsi/app/apple_visual/foundation/apple_glass_shape.dart';
-import 'package:dashboard_shakhsi/app/apple_visual/foundation/apple_liquid_glass_recipe.dart';
-import 'package:dashboard_shakhsi/app/apple_visual/widgets/apple_liquid_glass.dart';
-import 'package:dashboard_shakhsi/app/router/app_router.dart';
-import 'package:dashboard_shakhsi/app/theme/original_design_tokens.dart';
-import 'package:dashboard_shakhsi/app/theme/theme_mode_controller.dart';
-import 'package:dashboard_shakhsi/app/widgets/aurora_background.dart';
-import 'package:dashboard_shakhsi/app/widgets/original_controls.dart';
-import 'package:dashboard_shakhsi/app/widgets/original_icon.dart';
-import 'package:dashboard_shakhsi/features/dashboard/presentation/widgets/finance_panel.dart';
-import 'package:dashboard_shakhsi/features/dashboard/presentation/widgets/tasks_panel.dart';
-import 'package:dashboard_shakhsi/features/legacy_import/presentation/legacy_import_banner.dart';
+import 'package:borj/app/apple_visual/foundation/apple_glass_shape.dart';
+import 'package:borj/app/apple_visual/foundation/apple_liquid_glass_recipe.dart';
+import 'package:borj/app/apple_visual/widgets/apple_liquid_glass.dart';
+import 'package:borj/app/router/app_router.dart';
+import 'package:borj/app/theme/original_design_tokens.dart';
+import 'package:borj/app/theme/theme_mode_controller.dart';
+import 'package:borj/app/widgets/aurora_background.dart';
+import 'package:borj/app/widgets/original_controls.dart';
+import 'package:borj/app/widgets/original_icon.dart';
+import 'package:borj/features/dashboard/presentation/widgets/finance_panel.dart';
+import 'package:borj/features/dashboard/presentation/widgets/tasks_panel.dart';
+import 'package:borj/features/legacy_import/presentation/legacy_import_banner.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -223,7 +223,7 @@ final class _BrandIsland extends StatelessWidget {
             if (!hideText) ...<Widget>[
               const SizedBox(width: 9),
               Text(
-                'داشبورد شخصی',
+                'برج',
                 key: const ValueKey<String>('brand-label'),
                 style: TextStyle(
                   color: palette.ink,

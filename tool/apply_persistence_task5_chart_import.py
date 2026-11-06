@@ -8,14 +8,14 @@ path = Path(
 source = path.read_text(encoding="utf-8")
 
 old = (
-    "import 'package:dashboard_shakhsi/features/dashboard/"
+    "import 'package:borj/features/dashboard/"
     "presentation/widgets/finance_preview_models.dart';\n"
 )
 new = (
-    "import 'package:dashboard_shakhsi/features/dashboard/"
+    "import 'package:borj/features/dashboard/"
     "presentation/widgets/finance_preview_models.dart' "
     "show FinancePreviewMath;\n"
-    "import 'package:dashboard_shakhsi/features/finance/"
+    "import 'package:borj/features/finance/"
     "application/finance_summary.dart';\n"
 )
 

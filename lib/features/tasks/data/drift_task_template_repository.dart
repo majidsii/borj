@@ -1,8 +1,8 @@
-import 'package:dashboard_shakhsi/core/database/app_database.dart';
-import 'package:dashboard_shakhsi/core/errors/app_failure.dart';
-import 'package:dashboard_shakhsi/features/tasks/data/task_template_codec.dart';
-import 'package:dashboard_shakhsi/features/tasks/domain/task_template.dart';
-import 'package:dashboard_shakhsi/features/tasks/domain/task_template_repository.dart';
+import 'package:borj/core/database/app_database.dart';
+import 'package:borj/core/errors/app_failure.dart';
+import 'package:borj/features/tasks/data/task_template_codec.dart';
+import 'package:borj/features/tasks/domain/task_template.dart';
+import 'package:borj/features/tasks/domain/task_template_repository.dart';
 import 'package:drift/drift.dart';
 
 final class DriftTaskTemplateRepository implements TaskTemplateRepository {

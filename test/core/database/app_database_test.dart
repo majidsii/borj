@@ -1,4 +1,4 @@
-import 'package:dashboard_shakhsi/core/database/app_database.dart';
+import 'package:borj/core/database/app_database.dart';
 import 'package:drift/drift.dart' show Value;
 import 'package:flutter_test/flutter_test.dart';
 

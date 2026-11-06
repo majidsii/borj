@@ -1,5 +1,5 @@
-import 'package:dashboard_shakhsi/core/errors/app_failure.dart';
-import 'package:dashboard_shakhsi/core/money/money.dart';
+import 'package:borj/core/errors/app_failure.dart';
+import 'package:borj/core/money/money.dart';
 
 enum FinanceTransactionType { income, expense }
 

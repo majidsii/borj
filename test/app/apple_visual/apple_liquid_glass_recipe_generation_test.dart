@@ -1,4 +1,4 @@
-import 'package:dashboard_shakhsi/app/apple_visual/generated/apple_source_liquid_glass_recipes.g.dart';
+import 'package:borj/app/apple_visual/generated/apple_source_liquid_glass_recipes.g.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

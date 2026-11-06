@@ -1,8 +1,8 @@
 import 'dart:collection';
 
-import 'package:dashboard_shakhsi/features/tasks/domain/task_occurrence_completion.dart';
-import 'package:dashboard_shakhsi/features/tasks/domain/task_recurrence_exception.dart';
-import 'package:dashboard_shakhsi/features/tasks/domain/task_recurrence_rule.dart';
+import 'package:borj/features/tasks/domain/task_occurrence_completion.dart';
+import 'package:borj/features/tasks/domain/task_recurrence_exception.dart';
+import 'package:borj/features/tasks/domain/task_recurrence_rule.dart';
 
 final class TaskRecurrenceBundle {
   TaskRecurrenceBundle({

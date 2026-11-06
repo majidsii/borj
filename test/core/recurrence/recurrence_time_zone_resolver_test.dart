@@ -1,6 +1,6 @@
-import 'package:dashboard_shakhsi/core/errors/app_failure.dart';
-import 'package:dashboard_shakhsi/core/recurrence/recurrence_local_date_time.dart';
-import 'package:dashboard_shakhsi/core/recurrence/recurrence_time_zone_resolver.dart';
+import 'package:borj/core/errors/app_failure.dart';
+import 'package:borj/core/recurrence/recurrence_local_date_time.dart';
+import 'package:borj/core/recurrence/recurrence_time_zone_resolver.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:timezone/data/latest_all.dart' as timezone_data;
 

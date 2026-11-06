@@ -18,16 +18,15 @@ final class LinuxSystemdScheduleRegistryFileStore
     required this.transactionIdFactory,
   });
 
-  static const String registryFileName =
-      'dashboard-shakhsi-notification-registry.json';
+  static const String registryFileName = 'borj-notification-registry.json';
   static const int registryFileMode = 0x180;
 
   static final RegExp _transactionIdPattern = RegExp(r'^[A-Za-z0-9_-]{1,64}$');
   static final RegExp _servicePattern = RegExp(
-    r'^(dashboard-shakhsi-notification-[0-9a-f]{16})\.service$',
+    r'^(borj-notification-[0-9a-f]{16})\.service$',
   );
   static final RegExp _timerPattern = RegExp(
-    r'^(dashboard-shakhsi-notification-[0-9a-f]{16})\.timer$',
+    r'^(borj-notification-[0-9a-f]{16})\.timer$',
   );
 
   final LinuxSystemdUserUnitPathResolver pathResolver;
@@ -72,10 +71,10 @@ final class LinuxSystemdScheduleRegistryFileStore
       registryPath: registryPath,
     );
     final tempPath =
-        '$directory/.dashboard-shakhsi-notification-registry.'
+        '$directory/.borj-notification-registry.'
         '$transactionId.tmp';
     final backupPath =
-        '$directory/.dashboard-shakhsi-notification-registry.'
+        '$directory/.borj-notification-registry.'
         '$transactionId.bak';
     final state = _RegistryReplaceState();
     final rollbackFailures = <LinuxSystemdRegistryRollbackFailure>[];
@@ -172,7 +171,7 @@ final class LinuxSystemdScheduleRegistryFileStore
       registryPath: registryPath,
     );
     final quarantinePath =
-        '$directory/.dashboard-shakhsi-notification-registry.'
+        '$directory/.borj-notification-registry.'
         '$transactionId.corrupt';
     final quarantineType = await _filesystemStep(
       operation,

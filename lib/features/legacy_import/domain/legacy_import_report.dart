@@ -1,4 +1,4 @@
-import 'package:dashboard_shakhsi/features/legacy_import/domain/legacy_snapshot.dart';
+import 'package:borj/features/legacy_import/domain/legacy_snapshot.dart';
 
 final class LegacyImportPreview {
   const LegacyImportPreview({

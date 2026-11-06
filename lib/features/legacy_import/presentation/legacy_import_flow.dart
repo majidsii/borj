@@ -1,9 +1,9 @@
 import 'dart:typed_data';
 
-import 'package:dashboard_shakhsi/core/errors/app_failure.dart';
-import 'package:dashboard_shakhsi/core/providers/persistence_providers.dart';
-import 'package:dashboard_shakhsi/features/legacy_import/presentation/legacy_import_dialogs.dart';
-import 'package:dashboard_shakhsi/features/legacy_import/presentation/legacy_import_providers.dart';
+import 'package:borj/core/errors/app_failure.dart';
+import 'package:borj/core/providers/persistence_providers.dart';
+import 'package:borj/features/legacy_import/presentation/legacy_import_dialogs.dart';
+import 'package:borj/features/legacy_import/presentation/legacy_import_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

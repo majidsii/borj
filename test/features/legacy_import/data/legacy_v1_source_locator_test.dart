@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:dashboard_shakhsi/features/legacy_import/data/legacy_v1_source_locator.dart';
+import 'package:borj/features/legacy_import/data/legacy_v1_source_locator.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

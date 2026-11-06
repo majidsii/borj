@@ -1,17 +1,17 @@
 import 'dart:io';
 
-import 'package:dashboard_shakhsi/core/database/app_database.dart';
-import 'package:dashboard_shakhsi/core/date_time/app_clock.dart';
-import 'package:dashboard_shakhsi/core/errors/app_failure.dart';
-import 'package:dashboard_shakhsi/core/ids/id_generator.dart';
-import 'package:dashboard_shakhsi/features/finance/data/drift_finance_repository.dart';
-import 'package:dashboard_shakhsi/features/legacy_import/application/legacy_import_service.dart';
-import 'package:dashboard_shakhsi/features/legacy_import/data/drift_legacy_import_ledger.dart';
-import 'package:dashboard_shakhsi/features/legacy_import/data/legacy_v1_parser.dart';
-import 'package:dashboard_shakhsi/features/legacy_import/domain/legacy_snapshot.dart';
-import 'package:dashboard_shakhsi/features/tasks/data/drift_task_repository.dart';
-import 'package:dashboard_shakhsi/features/tasks/domain/task_item.dart';
-import 'package:dashboard_shakhsi/features/tasks/domain/task_status.dart';
+import 'package:borj/core/database/app_database.dart';
+import 'package:borj/core/date_time/app_clock.dart';
+import 'package:borj/core/errors/app_failure.dart';
+import 'package:borj/core/ids/id_generator.dart';
+import 'package:borj/features/finance/data/drift_finance_repository.dart';
+import 'package:borj/features/legacy_import/application/legacy_import_service.dart';
+import 'package:borj/features/legacy_import/data/drift_legacy_import_ledger.dart';
+import 'package:borj/features/legacy_import/data/legacy_v1_parser.dart';
+import 'package:borj/features/legacy_import/domain/legacy_snapshot.dart';
+import 'package:borj/features/tasks/data/drift_task_repository.dart';
+import 'package:borj/features/tasks/domain/task_item.dart';
+import 'package:borj/features/tasks/domain/task_status.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../../support/test_database.dart';

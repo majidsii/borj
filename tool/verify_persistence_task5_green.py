@@ -47,7 +47,7 @@ service_markers = [
 ]
 preview_markers = [
     "extends FinanceSummary",
-    "export 'package:dashboard_shakhsi/features/finance/"
+    "export 'package:borj/features/finance/"
     "application/finance_summary.dart';",
 ]
 chart_markers = [

@@ -11,9 +11,9 @@ source = path.read_text(encoding="utf-8")
 lines = source.splitlines()
 
 required_imports = [
-    "import 'package:dashboard_shakhsi/core/notifications/noop_notification_scheduler.dart';",
-    "import 'package:dashboard_shakhsi/core/notifications/notification_coordinator.dart';",
-    "import 'package:dashboard_shakhsi/core/notifications/notification_scheduler.dart';",
+    "import 'package:borj/core/notifications/noop_notification_scheduler.dart';",
+    "import 'package:borj/core/notifications/notification_coordinator.dart';",
+    "import 'package:borj/core/notifications/notification_scheduler.dart';",
 ]
 
 existing_imports = {

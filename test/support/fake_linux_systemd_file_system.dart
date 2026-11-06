@@ -2,7 +2,7 @@ import 'dart:collection';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:dashboard_shakhsi/core/notifications/linux_systemd_file_system.dart';
+import 'package:borj/core/notifications/linux_systemd_file_system.dart';
 
 final class FakeLinuxSystemdEntry {
   FakeLinuxSystemdEntry._({

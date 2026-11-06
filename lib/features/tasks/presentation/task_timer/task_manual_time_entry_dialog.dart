@@ -1,9 +1,9 @@
-import 'package:dashboard_shakhsi/app/apple_visual/foundation/apple_glass_shape.dart';
-import 'package:dashboard_shakhsi/app/apple_visual/foundation/apple_liquid_glass_recipe.dart';
-import 'package:dashboard_shakhsi/app/apple_visual/widgets/apple_liquid_glass.dart';
-import 'package:dashboard_shakhsi/app/theme/original_design_tokens.dart';
-import 'package:dashboard_shakhsi/app/widgets/original_controls.dart';
-import 'package:dashboard_shakhsi/features/tasks/domain/task_time_entry.dart';
+import 'package:borj/app/apple_visual/foundation/apple_glass_shape.dart';
+import 'package:borj/app/apple_visual/foundation/apple_liquid_glass_recipe.dart';
+import 'package:borj/app/apple_visual/widgets/apple_liquid_glass.dart';
+import 'package:borj/app/theme/original_design_tokens.dart';
+import 'package:borj/app/widgets/original_controls.dart';
+import 'package:borj/features/tasks/domain/task_time_entry.dart';
 import 'package:flutter/material.dart';
 
 final class TaskManualTimeEntryDraft {

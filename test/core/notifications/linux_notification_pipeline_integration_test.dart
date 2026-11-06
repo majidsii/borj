@@ -1,45 +1,45 @@
 import 'dart:convert';
 
-import 'package:dashboard_shakhsi/app/bootstrap/application_entrypoint.dart';
-import 'package:dashboard_shakhsi/core/database/app_database.dart';
-import 'package:dashboard_shakhsi/core/date_time/app_clock.dart';
-import 'package:dashboard_shakhsi/core/notifications/device_time_zone_source.dart';
-import 'package:dashboard_shakhsi/core/notifications/drift_notification_schedule_repository.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_bounded_output.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_cancellation_token.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_executable_path_source.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_notification_delivery_invocation.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_notification_delivery_service.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_notification_request_fingerprint.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_process_request.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_process_result.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_process_runner.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_systemd_environment.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_systemd_notification_scheduler.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_systemd_notification_unit.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_systemd_schedule_registry_codec.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_systemd_schedule_registry_file_store.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_systemd_unit_renderer.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_systemd_user_driver.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_systemd_user_unit_path_resolver.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_systemd_user_unit_store.dart';
-import 'package:dashboard_shakhsi/core/notifications/local_notifications_driver.dart';
-import 'package:dashboard_shakhsi/core/notifications/local_notifications_initializer.dart';
-import 'package:dashboard_shakhsi/core/notifications/native_notification_gateway.dart';
-import 'package:dashboard_shakhsi/core/notifications/noop_notification_scheduler.dart';
-import 'package:dashboard_shakhsi/core/notifications/notification_coordinator.dart';
-import 'package:dashboard_shakhsi/core/notifications/notification_owner.dart';
-import 'package:dashboard_shakhsi/core/notifications/notification_payload_codec.dart';
-import 'package:dashboard_shakhsi/core/notifications/notification_platform_capabilities.dart';
-import 'package:dashboard_shakhsi/core/notifications/notification_platform_providers.dart'
+import 'package:borj/app/bootstrap/application_entrypoint.dart';
+import 'package:borj/core/database/app_database.dart';
+import 'package:borj/core/date_time/app_clock.dart';
+import 'package:borj/core/notifications/device_time_zone_source.dart';
+import 'package:borj/core/notifications/drift_notification_schedule_repository.dart';
+import 'package:borj/core/notifications/linux_bounded_output.dart';
+import 'package:borj/core/notifications/linux_cancellation_token.dart';
+import 'package:borj/core/notifications/linux_executable_path_source.dart';
+import 'package:borj/core/notifications/linux_notification_delivery_invocation.dart';
+import 'package:borj/core/notifications/linux_notification_delivery_service.dart';
+import 'package:borj/core/notifications/linux_notification_request_fingerprint.dart';
+import 'package:borj/core/notifications/linux_process_request.dart';
+import 'package:borj/core/notifications/linux_process_result.dart';
+import 'package:borj/core/notifications/linux_process_runner.dart';
+import 'package:borj/core/notifications/linux_systemd_environment.dart';
+import 'package:borj/core/notifications/linux_systemd_notification_scheduler.dart';
+import 'package:borj/core/notifications/linux_systemd_notification_unit.dart';
+import 'package:borj/core/notifications/linux_systemd_schedule_registry_codec.dart';
+import 'package:borj/core/notifications/linux_systemd_schedule_registry_file_store.dart';
+import 'package:borj/core/notifications/linux_systemd_unit_renderer.dart';
+import 'package:borj/core/notifications/linux_systemd_user_driver.dart';
+import 'package:borj/core/notifications/linux_systemd_user_unit_path_resolver.dart';
+import 'package:borj/core/notifications/linux_systemd_user_unit_store.dart';
+import 'package:borj/core/notifications/local_notifications_driver.dart';
+import 'package:borj/core/notifications/local_notifications_initializer.dart';
+import 'package:borj/core/notifications/native_notification_gateway.dart';
+import 'package:borj/core/notifications/noop_notification_scheduler.dart';
+import 'package:borj/core/notifications/notification_coordinator.dart';
+import 'package:borj/core/notifications/notification_owner.dart';
+import 'package:borj/core/notifications/notification_payload_codec.dart';
+import 'package:borj/core/notifications/notification_platform_capabilities.dart';
+import 'package:borj/core/notifications/notification_platform_providers.dart'
     as notification_platform;
-import 'package:dashboard_shakhsi/core/notifications/notification_request.dart';
-import 'package:dashboard_shakhsi/core/notifications/notification_schedule_repository.dart';
-import 'package:dashboard_shakhsi/core/notifications/notification_scheduler.dart';
-import 'package:dashboard_shakhsi/core/notifications/notification_startup_service.dart';
-import 'package:dashboard_shakhsi/core/notifications/notification_time_zone_initializer.dart';
-import 'package:dashboard_shakhsi/core/notifications/resolved_linux_notification_delivery_command_factory.dart';
-import 'package:dashboard_shakhsi/core/notifications/stable_notification_id.dart';
+import 'package:borj/core/notifications/notification_request.dart';
+import 'package:borj/core/notifications/notification_schedule_repository.dart';
+import 'package:borj/core/notifications/notification_scheduler.dart';
+import 'package:borj/core/notifications/notification_startup_service.dart';
+import 'package:borj/core/notifications/notification_time_zone_initializer.dart';
+import 'package:borj/core/notifications/resolved_linux_notification_delivery_command_factory.dart';
+import 'package:borj/core/notifications/stable_notification_id.dart';
 import 'package:drift/drift.dart' hide isNotNull;
 import 'package:drift/native.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -87,7 +87,7 @@ void main() {
 
     expect(
       execStart,
-      'ExecStart="/opt/dashboard-shakhsi/bin/dashboard-shakhsi" '
+      'ExecStart="/opt/borj/bin/borj" '
       '"$linuxNotificationDeliveryFlag" "${request.scheduleId}"',
     );
     expect(execStart, isNot(contains(request.title)));
@@ -133,7 +133,7 @@ void main() {
 
     final display = displayCalls.single;
     expect(display.id, StableNotificationId.fromScheduleId(request.scheduleId));
-    expect(display.title, 'داشبورد شخصی');
+    expect(display.title, 'برج');
     expect(display.body, 'یک یادآور جدید دارید.');
 
     final payload = NotificationPayloadCodec.decode(display.payload!);
@@ -312,7 +312,7 @@ LinuxSystemdNotificationScheduler _buildScheduler({
     gateway: gateway,
     commandFactory: ResolvedLinuxNotificationDeliveryCommandFactory(
       executablePathSource: const _FixedExecutablePathSource(
-        '/opt/dashboard-shakhsi/bin/dashboard-shakhsi',
+        '/opt/borj/bin/borj',
       ),
     ),
     renderer: const LinuxSystemdUnitRenderer(),
@@ -390,7 +390,7 @@ final class _ControlledSystemctlRunner implements LinuxProcessRunner {
 
     final timerName = arguments.firstWhere(
       (argument) => argument.endsWith('.timer'),
-      orElse: () => 'dashboard-shakhsi-notification-0000000000000000.timer',
+      orElse: () => 'borj-notification-0000000000000000.timer',
     );
     final baseName = timerName.substring(0, timerName.length - '.timer'.length);
 

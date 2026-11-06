@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:dashboard_shakhsi/core/notifications/async_fifo_keyed_mutex.dart';
-import 'package:dashboard_shakhsi/core/notifications/async_writer_preferring_rw_lock.dart';
+import 'package:borj/core/notifications/async_fifo_keyed_mutex.dart';
+import 'package:borj/core/notifications/async_writer_preferring_rw_lock.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

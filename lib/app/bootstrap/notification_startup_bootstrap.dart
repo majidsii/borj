@@ -1,5 +1,5 @@
-import 'package:dashboard_shakhsi/core/notifications/notification_platform_providers.dart';
-import 'package:dashboard_shakhsi/core/notifications/notification_startup_service.dart';
+import 'package:borj/core/notifications/notification_platform_providers.dart';
+import 'package:borj/core/notifications/notification_startup_service.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -17,7 +17,7 @@ final class FlutterNotificationStartupFailureReporter
       FlutterErrorDetails(
         exception: error,
         stack: stackTrace,
-        library: 'dashboard_shakhsi.notifications',
+        library: 'borj.notifications',
         context: ErrorDescription(
           'while reconciling persisted notifications at application startup',
         ),

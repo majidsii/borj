@@ -1,8 +1,8 @@
 import 'dart:async';
 
-import 'package:dashboard_shakhsi/core/notifications/notification_owner.dart';
-import 'package:dashboard_shakhsi/core/notifications/notification_request.dart';
-import 'package:dashboard_shakhsi/core/notifications/notification_schedule_repository.dart';
+import 'package:borj/core/notifications/notification_owner.dart';
+import 'package:borj/core/notifications/notification_request.dart';
+import 'package:borj/core/notifications/notification_schedule_repository.dart';
 
 final class MemoryNotificationScheduleRepository
     implements NotificationScheduleRepository {

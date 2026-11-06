@@ -1,4 +1,4 @@
-import 'package:dashboard_shakhsi/app/apple_visual/review/glass_review_screen.dart';
+import 'package:borj/app/apple_visual/review/glass_review_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 

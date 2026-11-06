@@ -57,7 +57,7 @@ final class NotificationPermissionService {
         id: 'notification-health',
       ),
       title: 'اعلان آزمایشی',
-      body: 'اعلان‌های داشبورد شخصی فعال هستند.',
+      body: 'اعلان‌های برج فعال هستند.',
       scheduledAtUtc: DateTime.fromMillisecondsSinceEpoch(0, isUtc: true),
       payload: const <String, String>{
         'source': 'notification-settings',

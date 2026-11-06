@@ -1,13 +1,13 @@
-import 'package:dashboard_shakhsi/core/recurrence/recurrence_calendar.dart';
-import 'package:dashboard_shakhsi/core/recurrence/recurrence_engine.dart';
-import 'package:dashboard_shakhsi/core/recurrence/recurrence_local_date_time.dart';
-import 'package:dashboard_shakhsi/core/recurrence/recurrence_occurrence.dart';
-import 'package:dashboard_shakhsi/features/tasks/domain/task_calendar_occurrence.dart';
-import 'package:dashboard_shakhsi/features/tasks/domain/task_item.dart';
-import 'package:dashboard_shakhsi/features/tasks/domain/task_occurrence_completion.dart';
-import 'package:dashboard_shakhsi/features/tasks/domain/task_recurrence_exception.dart';
-import 'package:dashboard_shakhsi/features/tasks/domain/task_recurrence_rule.dart';
-import 'package:dashboard_shakhsi/features/tasks/domain/task_status.dart';
+import 'package:borj/core/recurrence/recurrence_calendar.dart';
+import 'package:borj/core/recurrence/recurrence_engine.dart';
+import 'package:borj/core/recurrence/recurrence_local_date_time.dart';
+import 'package:borj/core/recurrence/recurrence_occurrence.dart';
+import 'package:borj/features/tasks/domain/task_calendar_occurrence.dart';
+import 'package:borj/features/tasks/domain/task_item.dart';
+import 'package:borj/features/tasks/domain/task_occurrence_completion.dart';
+import 'package:borj/features/tasks/domain/task_recurrence_exception.dart';
+import 'package:borj/features/tasks/domain/task_recurrence_rule.dart';
+import 'package:borj/features/tasks/domain/task_status.dart';
 import 'package:timezone/timezone.dart' as timezone;
 
 final class TaskOccurrenceProjector {

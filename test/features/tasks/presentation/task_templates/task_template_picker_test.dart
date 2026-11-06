@@ -1,5 +1,5 @@
-import 'package:dashboard_shakhsi/features/tasks/domain/task_template.dart';
-import 'package:dashboard_shakhsi/features/tasks/presentation/task_templates/task_template_picker.dart';
+import 'package:borj/features/tasks/domain/task_template.dart';
+import 'package:borj/features/tasks/presentation/task_templates/task_template_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 

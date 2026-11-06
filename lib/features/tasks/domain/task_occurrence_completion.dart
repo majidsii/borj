@@ -1,5 +1,5 @@
-import 'package:dashboard_shakhsi/core/errors/app_failure.dart';
-import 'package:dashboard_shakhsi/core/recurrence/recurrence_local_date_time.dart';
+import 'package:borj/core/errors/app_failure.dart';
+import 'package:borj/core/recurrence/recurrence_local_date_time.dart';
 
 final class TaskOccurrenceCompletion {
   TaskOccurrenceCompletion({

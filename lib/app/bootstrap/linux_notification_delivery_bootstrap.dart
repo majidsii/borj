@@ -1,13 +1,13 @@
 // ignore_for_file: prefer_initializing_formals
 
-import 'package:dashboard_shakhsi/core/database/app_database.dart';
-import 'package:dashboard_shakhsi/core/notifications/drift_notification_schedule_repository.dart';
-import 'package:dashboard_shakhsi/core/notifications/flutter_local_notifications_driver.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_notification_delivery_service.dart';
-import 'package:dashboard_shakhsi/core/notifications/local_notification_plugin_config.dart';
-import 'package:dashboard_shakhsi/core/notifications/native_notification_gateway.dart';
-import 'package:dashboard_shakhsi/core/notifications/notification_platform_capabilities.dart';
-import 'package:dashboard_shakhsi/core/notifications/notification_schedule_repository.dart';
+import 'package:borj/core/database/app_database.dart';
+import 'package:borj/core/notifications/drift_notification_schedule_repository.dart';
+import 'package:borj/core/notifications/flutter_local_notifications_driver.dart';
+import 'package:borj/core/notifications/linux_notification_delivery_service.dart';
+import 'package:borj/core/notifications/local_notification_plugin_config.dart';
+import 'package:borj/core/notifications/native_notification_gateway.dart';
+import 'package:borj/core/notifications/notification_platform_capabilities.dart';
+import 'package:borj/core/notifications/notification_schedule_repository.dart';
 import 'package:flutter/widgets.dart';
 
 typedef LinuxNotificationBindingInitializer = Future<void> Function();

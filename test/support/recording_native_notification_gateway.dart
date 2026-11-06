@@ -1,4 +1,4 @@
-import 'package:dashboard_shakhsi/core/notifications/native_notification_gateway.dart';
+import 'package:borj/core/notifications/native_notification_gateway.dart';
 
 final class RecordingNativeNotificationCall {
   const RecordingNativeNotificationCall({

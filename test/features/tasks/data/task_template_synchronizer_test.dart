@@ -1,8 +1,8 @@
-import 'package:dashboard_shakhsi/core/database/app_database.dart';
-import 'package:dashboard_shakhsi/features/tasks/data/drift_task_template_repository.dart';
-import 'package:dashboard_shakhsi/features/tasks/data/system_task_template_catalog.dart';
-import 'package:dashboard_shakhsi/features/tasks/data/task_template_synchronizer.dart';
-import 'package:dashboard_shakhsi/features/tasks/domain/task_template.dart';
+import 'package:borj/core/database/app_database.dart';
+import 'package:borj/features/tasks/data/drift_task_template_repository.dart';
+import 'package:borj/features/tasks/data/system_task_template_catalog.dart';
+import 'package:borj/features/tasks/data/task_template_synchronizer.dart';
+import 'package:borj/features/tasks/domain/task_template.dart';
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 

@@ -1,5 +1,5 @@
-import 'package:dashboard_shakhsi/core/errors/app_failure.dart';
-import 'package:dashboard_shakhsi/core/recurrence/recurrence_exception.dart';
+import 'package:borj/core/errors/app_failure.dart';
+import 'package:borj/core/recurrence/recurrence_exception.dart';
 
 final class TaskRecurrenceException {
   TaskRecurrenceException({

@@ -1,12 +1,12 @@
-import 'package:dashboard_shakhsi/core/notifications/notification_coordinator.dart';
-import 'package:dashboard_shakhsi/core/notifications/notification_owner.dart';
-import 'package:dashboard_shakhsi/core/notifications/notification_request.dart';
-import 'package:dashboard_shakhsi/features/tasks/application/task_occurrence_projector.dart';
-import 'package:dashboard_shakhsi/features/tasks/application/task_reminder_projector.dart';
-import 'package:dashboard_shakhsi/features/tasks/domain/task_item.dart';
-import 'package:dashboard_shakhsi/features/tasks/domain/task_recurrence_repository.dart';
-import 'package:dashboard_shakhsi/features/tasks/domain/task_recurrence_rule.dart';
-import 'package:dashboard_shakhsi/features/tasks/domain/task_reminder_repository.dart';
+import 'package:borj/core/notifications/notification_coordinator.dart';
+import 'package:borj/core/notifications/notification_owner.dart';
+import 'package:borj/core/notifications/notification_request.dart';
+import 'package:borj/features/tasks/application/task_occurrence_projector.dart';
+import 'package:borj/features/tasks/application/task_reminder_projector.dart';
+import 'package:borj/features/tasks/domain/task_item.dart';
+import 'package:borj/features/tasks/domain/task_recurrence_repository.dart';
+import 'package:borj/features/tasks/domain/task_recurrence_rule.dart';
+import 'package:borj/features/tasks/domain/task_reminder_repository.dart';
 
 final class TaskReminderProjectionService {
   factory TaskReminderProjectionService({

@@ -1,4 +1,4 @@
-import 'package:dashboard_shakhsi/core/date_time/app_clock.dart';
+import 'package:borj/core/date_time/app_clock.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

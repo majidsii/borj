@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'dart:collection';
 
-import 'package:dashboard_shakhsi/core/notifications/linux_process_request.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_process_starter.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_started_process.dart';
+import 'package:borj/core/notifications/linux_process_request.dart';
+import 'package:borj/core/notifications/linux_process_starter.dart';
+import 'package:borj/core/notifications/linux_started_process.dart';
 
 final class FakeLinuxProcessStarter implements LinuxProcessStarter {
   final Queue<_FakeLinuxProcessStartOutcome> _outcomes =

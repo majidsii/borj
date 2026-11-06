@@ -1,9 +1,9 @@
-import 'package:dashboard_shakhsi/core/notifications/linux_bounded_output.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_cancellation_token.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_process_result.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_systemd_timer_name.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_systemd_timer_status_parser.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_systemd_user_driver.dart';
+import 'package:borj/core/notifications/linux_bounded_output.dart';
+import 'package:borj/core/notifications/linux_cancellation_token.dart';
+import 'package:borj/core/notifications/linux_process_result.dart';
+import 'package:borj/core/notifications/linux_systemd_timer_name.dart';
+import 'package:borj/core/notifications/linux_systemd_timer_status_parser.dart';
+import 'package:borj/core/notifications/linux_systemd_user_driver.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../support/fake_linux_process_runner.dart';
@@ -132,7 +132,7 @@ void main() {
 
   group('LinuxSystemdUserDriver status', () {
     final name = LinuxSystemdTimerName.parse(
-      'dashboard-shakhsi-notification-0123456789abcdef.timer',
+      'borj-notification-0123456789abcdef.timer',
     );
 
     test('builds one exact machine-readable show request', () async {

@@ -1,7 +1,7 @@
 import 'dart:math' as math;
 import 'dart:ui' as ui;
 
-import 'package:dashboard_shakhsi/app/theme/original_design_tokens.dart';
+import 'package:borj/app/theme/original_design_tokens.dart';
 import 'package:flutter/material.dart';
 
 /// Pixel-oriented port of the original `.bgfx` CSS layer.

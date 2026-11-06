@@ -17,7 +17,7 @@ final class NotificationDeliveryPolicy {
         body: request.body,
       ),
       NotificationPrivacyMode.private => const NotificationDeliveryContent(
-        title: 'داشبورد شخصی',
+        title: 'برج',
         body: 'یک یادآور جدید دارید.',
       ),
     };

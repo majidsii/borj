@@ -1,5 +1,5 @@
-import 'package:dashboard_shakhsi/core/money/money.dart';
-import 'package:dashboard_shakhsi/features/legacy_import/domain/legacy_snapshot.dart';
+import 'package:borj/core/money/money.dart';
+import 'package:borj/features/legacy_import/domain/legacy_snapshot.dart';
 
 String legacyDigits(int value) => Money.toPersianDigits('$value');
 

@@ -1,21 +1,21 @@
 import 'dart:async';
 
-import 'package:dashboard_shakhsi/app/theme/original_design_tokens.dart';
-import 'package:dashboard_shakhsi/app/widgets/original_controls.dart';
-import 'package:dashboard_shakhsi/app/widgets/original_glass.dart';
-import 'package:dashboard_shakhsi/core/date_time/persian_date_label.dart';
-import 'package:dashboard_shakhsi/core/errors/app_failure.dart';
-import 'package:dashboard_shakhsi/core/ids/id_generator.dart';
-import 'package:dashboard_shakhsi/core/money/money.dart';
-import 'package:dashboard_shakhsi/core/money/money_input_formatter.dart';
-import 'package:dashboard_shakhsi/core/providers/persistence_providers.dart';
-import 'package:dashboard_shakhsi/features/dashboard/presentation/widgets/finance_charts.dart';
-import 'package:dashboard_shakhsi/features/dashboard/presentation/widgets/finance_preview_models.dart'
+import 'package:borj/app/theme/original_design_tokens.dart';
+import 'package:borj/app/widgets/original_controls.dart';
+import 'package:borj/app/widgets/original_glass.dart';
+import 'package:borj/core/date_time/persian_date_label.dart';
+import 'package:borj/core/errors/app_failure.dart';
+import 'package:borj/core/ids/id_generator.dart';
+import 'package:borj/core/money/money.dart';
+import 'package:borj/core/money/money_input_formatter.dart';
+import 'package:borj/core/providers/persistence_providers.dart';
+import 'package:borj/features/dashboard/presentation/widgets/finance_charts.dart';
+import 'package:borj/features/dashboard/presentation/widgets/finance_preview_models.dart'
     show FinanceEntryType, FinancePreviewMath;
-import 'package:dashboard_shakhsi/features/finance/application/finance_summary.dart';
-import 'package:dashboard_shakhsi/features/finance/domain/debt.dart';
-import 'package:dashboard_shakhsi/features/finance/domain/finance_transaction.dart';
-import 'package:dashboard_shakhsi/features/finance/domain/installment_plan.dart';
+import 'package:borj/features/finance/application/finance_summary.dart';
+import 'package:borj/features/finance/domain/debt.dart';
+import 'package:borj/features/finance/domain/finance_transaction.dart';
+import 'package:borj/features/finance/domain/installment_plan.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

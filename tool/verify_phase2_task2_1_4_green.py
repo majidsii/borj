@@ -30,7 +30,7 @@ panel_test = panel_test_path.read_text(encoding='utf-8')
 database = database_path.read_text(encoding='utf-8')
 
 required_interface = (
-    "import 'package:dashboard_shakhsi/features/tasks/domain/task_status.dart';",
+    "import 'package:borj/features/tasks/domain/task_status.dart';",
     'Stream<List<TaskItem>> watchByStatus(TaskStatus status);',
     'Future<TaskItem?> getById(String id);',
 )

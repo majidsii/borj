@@ -1,11 +1,11 @@
-import 'package:dashboard_shakhsi/core/recurrence/recurrence_calendar.dart';
-import 'package:dashboard_shakhsi/core/recurrence/recurrence_local_date_time.dart';
-import 'package:dashboard_shakhsi/features/tasks/application/task_reminder_projector.dart';
-import 'package:dashboard_shakhsi/features/tasks/domain/task_calendar_occurrence.dart';
-import 'package:dashboard_shakhsi/features/tasks/domain/task_item.dart';
-import 'package:dashboard_shakhsi/features/tasks/domain/task_reminder_rule.dart';
-import 'package:dashboard_shakhsi/features/tasks/domain/task_reminder_trigger.dart';
-import 'package:dashboard_shakhsi/features/tasks/domain/task_status.dart';
+import 'package:borj/core/recurrence/recurrence_calendar.dart';
+import 'package:borj/core/recurrence/recurrence_local_date_time.dart';
+import 'package:borj/features/tasks/application/task_reminder_projector.dart';
+import 'package:borj/features/tasks/domain/task_calendar_occurrence.dart';
+import 'package:borj/features/tasks/domain/task_item.dart';
+import 'package:borj/features/tasks/domain/task_reminder_rule.dart';
+import 'package:borj/features/tasks/domain/task_reminder_trigger.dart';
+import 'package:borj/features/tasks/domain/task_status.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

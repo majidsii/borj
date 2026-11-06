@@ -1,18 +1,18 @@
 import 'dart:async';
 
-import 'package:dashboard_shakhsi/core/notifications/notification_coordinator.dart';
-import 'package:dashboard_shakhsi/core/notifications/notification_owner.dart';
-import 'package:dashboard_shakhsi/core/notifications/notification_request.dart';
-import 'package:dashboard_shakhsi/core/notifications/notification_schedule_repository.dart';
-import 'package:dashboard_shakhsi/core/notifications/notification_scheduler.dart';
-import 'package:dashboard_shakhsi/features/tasks/application/task_reminder_projection_service.dart';
-import 'package:dashboard_shakhsi/features/tasks/data/reminder_aware_task_repository.dart';
-import 'package:dashboard_shakhsi/features/tasks/domain/task_item.dart';
-import 'package:dashboard_shakhsi/features/tasks/domain/task_reminder_repository.dart';
-import 'package:dashboard_shakhsi/features/tasks/domain/task_reminder_rule.dart';
-import 'package:dashboard_shakhsi/features/tasks/domain/task_reminder_trigger.dart';
-import 'package:dashboard_shakhsi/features/tasks/domain/task_repository.dart';
-import 'package:dashboard_shakhsi/features/tasks/domain/task_status.dart';
+import 'package:borj/core/notifications/notification_coordinator.dart';
+import 'package:borj/core/notifications/notification_owner.dart';
+import 'package:borj/core/notifications/notification_request.dart';
+import 'package:borj/core/notifications/notification_schedule_repository.dart';
+import 'package:borj/core/notifications/notification_scheduler.dart';
+import 'package:borj/features/tasks/application/task_reminder_projection_service.dart';
+import 'package:borj/features/tasks/data/reminder_aware_task_repository.dart';
+import 'package:borj/features/tasks/domain/task_item.dart';
+import 'package:borj/features/tasks/domain/task_reminder_repository.dart';
+import 'package:borj/features/tasks/domain/task_reminder_rule.dart';
+import 'package:borj/features/tasks/domain/task_reminder_trigger.dart';
+import 'package:borj/features/tasks/domain/task_repository.dart';
+import 'package:borj/features/tasks/domain/task_status.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

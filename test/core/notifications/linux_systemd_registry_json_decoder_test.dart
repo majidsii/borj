@@ -1,5 +1,5 @@
-import 'package:dashboard_shakhsi/core/notifications/linux_systemd_registry_json_decoder.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_systemd_schedule_registry_exception.dart';
+import 'package:borj/core/notifications/linux_systemd_registry_json_decoder.dart';
+import 'package:borj/core/notifications/linux_systemd_schedule_registry_exception.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

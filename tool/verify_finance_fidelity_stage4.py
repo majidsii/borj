@@ -66,7 +66,7 @@ for marker in [
         raise SystemExit(f"Missing finance test marker: {marker}")
 
 package_import = re.compile(
-    r"import\s+'package:dashboard_shakhsi/([^']+)';"
+    r"import\s+'package:borj/([^']+)';"
 )
 for source in required_files:
     text = source.read_text(encoding="utf-8")

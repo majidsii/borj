@@ -478,7 +478,7 @@ if (
 factory_imports = [
     line
     for line in analyzer_cleanup["factory_test"].splitlines()
-    if line.startswith("import 'package:dashboard_shakhsi/")
+    if line.startswith("import 'package:borj/")
 ]
 if factory_imports != sorted(factory_imports):
     print("ERROR: resolved factory test package imports are not sorted.")

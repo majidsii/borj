@@ -1,11 +1,11 @@
-import 'package:dashboard_shakhsi/core/errors/app_failure.dart';
-import 'package:dashboard_shakhsi/features/tasks/domain/task_item.dart';
-import 'package:dashboard_shakhsi/features/tasks/domain/task_recurrence_rule.dart';
-import 'package:dashboard_shakhsi/features/tasks/domain/task_reminder_rule.dart';
-import 'package:dashboard_shakhsi/features/tasks/domain/task_reminder_trigger.dart';
-import 'package:dashboard_shakhsi/features/tasks/domain/task_status.dart';
-import 'package:dashboard_shakhsi/features/tasks/presentation/task_details/task_recurrence_draft.dart';
-import 'package:dashboard_shakhsi/features/tasks/presentation/task_details/task_reminder_draft.dart';
+import 'package:borj/core/errors/app_failure.dart';
+import 'package:borj/features/tasks/domain/task_item.dart';
+import 'package:borj/features/tasks/domain/task_recurrence_rule.dart';
+import 'package:borj/features/tasks/domain/task_reminder_rule.dart';
+import 'package:borj/features/tasks/domain/task_reminder_trigger.dart';
+import 'package:borj/features/tasks/domain/task_status.dart';
+import 'package:borj/features/tasks/presentation/task_details/task_recurrence_draft.dart';
+import 'package:borj/features/tasks/presentation/task_details/task_reminder_draft.dart';
 
 enum TaskDetailsField {
   title,

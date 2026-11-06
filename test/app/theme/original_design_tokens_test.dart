@@ -1,4 +1,4 @@
-import 'package:dashboard_shakhsi/app/theme/original_design_tokens.dart';
+import 'package:borj/app/theme/original_design_tokens.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

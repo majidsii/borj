@@ -1,15 +1,15 @@
 // Public test doubles keep readable dependency parameter names.
 // ignore_for_file: prefer_initializing_formals
 
-import 'package:dashboard_shakhsi/core/notifications/linux_notification_delivery_exception.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_notification_delivery_result.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_notification_delivery_service.dart';
-import 'package:dashboard_shakhsi/core/notifications/native_notification_gateway.dart';
-import 'package:dashboard_shakhsi/core/notifications/notification_owner.dart';
-import 'package:dashboard_shakhsi/core/notifications/notification_payload_codec.dart';
-import 'package:dashboard_shakhsi/core/notifications/notification_request.dart';
-import 'package:dashboard_shakhsi/core/notifications/notification_schedule_repository.dart';
-import 'package:dashboard_shakhsi/core/notifications/stable_notification_id.dart';
+import 'package:borj/core/notifications/linux_notification_delivery_exception.dart';
+import 'package:borj/core/notifications/linux_notification_delivery_result.dart';
+import 'package:borj/core/notifications/linux_notification_delivery_service.dart';
+import 'package:borj/core/notifications/native_notification_gateway.dart';
+import 'package:borj/core/notifications/notification_owner.dart';
+import 'package:borj/core/notifications/notification_payload_codec.dart';
+import 'package:borj/core/notifications/notification_request.dart';
+import 'package:borj/core/notifications/notification_schedule_repository.dart';
+import 'package:borj/core/notifications/stable_notification_id.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -66,7 +66,7 @@ void main() {
 
       expect(result.kind, LinuxNotificationDeliveryExitKind.delivered);
       final display = harness.gateway.displays.single;
-      expect(display.title, 'داشبورد شخصی');
+      expect(display.title, 'برج');
       expect(display.body, 'یک یادآور جدید دارید.');
       expect(display.title, isNot(contains('PRIVATE_TITLE')));
       expect(display.body, isNot(contains('PRIVATE_BODY')));

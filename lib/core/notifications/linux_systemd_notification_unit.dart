@@ -110,7 +110,7 @@ final class LinuxSystemdUnitNames {
     final hash = _fnv1a64(utf8.encode(scheduleKey));
     final hex = hash.toRadixString(16).padLeft(16, '0');
 
-    return LinuxSystemdUnitNames._('dashboard-shakhsi-notification-$hex');
+    return LinuxSystemdUnitNames._('borj-notification-$hex');
   }
 
   factory LinuxSystemdUnitNames.parseBaseName(String baseName) {
@@ -128,7 +128,7 @@ final class LinuxSystemdUnitNames {
   }
 
   static final RegExp _baseNamePattern = RegExp(
-    r'^dashboard-shakhsi-notification-[0-9a-f]{16}$',
+    r'^borj-notification-[0-9a-f]{16}$',
   );
 
   final String baseName;

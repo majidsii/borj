@@ -1,7 +1,7 @@
-import 'package:dashboard_shakhsi/core/notifications/notification_coordinator.dart';
-import 'package:dashboard_shakhsi/core/notifications/notification_owner.dart';
-import 'package:dashboard_shakhsi/core/notifications/notification_request.dart';
-import 'package:dashboard_shakhsi/core/notifications/notification_scheduler.dart';
+import 'package:borj/core/notifications/notification_coordinator.dart';
+import 'package:borj/core/notifications/notification_owner.dart';
+import 'package:borj/core/notifications/notification_request.dart';
+import 'package:borj/core/notifications/notification_scheduler.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../support/fake_notification_scheduler.dart';

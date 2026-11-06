@@ -1,6 +1,6 @@
-import 'package:dashboard_shakhsi/app/apple_visual/review/glass_review_screen.dart';
-import 'package:dashboard_shakhsi/features/dashboard/presentation/dashboard_screen.dart';
-import 'package:dashboard_shakhsi/features/settings/presentation/settings_screen.dart';
+import 'package:borj/app/apple_visual/review/glass_review_screen.dart';
+import 'package:borj/features/dashboard/presentation/dashboard_screen.dart';
+import 'package:borj/features/settings/presentation/settings_screen.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

@@ -1,7 +1,7 @@
-import 'package:dashboard_shakhsi/app/router/notification_router_binding.dart';
-import 'package:dashboard_shakhsi/core/notifications/notification_navigation_queue.dart';
-import 'package:dashboard_shakhsi/core/notifications/notification_response_source.dart';
-import 'package:dashboard_shakhsi/core/notifications/notification_routing_providers.dart';
+import 'package:borj/app/router/notification_router_binding.dart';
+import 'package:borj/core/notifications/notification_navigation_queue.dart';
+import 'package:borj/core/notifications/notification_response_source.dart';
+import 'package:borj/core/notifications/notification_routing_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';

@@ -1,5 +1,5 @@
-import 'package:dashboard_shakhsi/app/bootstrap/app_bootstrap.dart';
-import 'package:dashboard_shakhsi/core/providers/persistence_providers.dart';
+import 'package:borj/app/bootstrap/app_bootstrap.dart';
+import 'package:borj/core/providers/persistence_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -14,12 +14,12 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [appDatabaseProvider.overrideWithValue(database)],
-        child: const DashboardShakhsiApp(),
+        child: const BorjApp(),
       ),
     );
     await tester.pump();
 
-    final dashboard = find.text('داشبورد شخصی');
+    final dashboard = find.text('برج');
 
     expect(dashboard, findsOneWidget);
     expect(Directionality.of(tester.element(dashboard)), TextDirection.rtl);

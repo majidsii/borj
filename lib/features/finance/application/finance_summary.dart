@@ -1,4 +1,4 @@
-import 'package:dashboard_shakhsi/core/money/money.dart';
+import 'package:borj/core/money/money.dart';
 
 class FinanceSummary {
   const FinanceSummary({

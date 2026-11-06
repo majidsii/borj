@@ -1,12 +1,12 @@
 import 'dart:convert';
 
-import 'package:dashboard_shakhsi/core/notifications/linux_systemd_environment.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_systemd_file_system.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_systemd_notification_unit.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_systemd_unit_renderer.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_systemd_user_unit_path_resolver.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_systemd_user_unit_store.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_systemd_user_unit_store_exception.dart';
+import 'package:borj/core/notifications/linux_systemd_environment.dart';
+import 'package:borj/core/notifications/linux_systemd_file_system.dart';
+import 'package:borj/core/notifications/linux_systemd_notification_unit.dart';
+import 'package:borj/core/notifications/linux_systemd_unit_renderer.dart';
+import 'package:borj/core/notifications/linux_systemd_user_unit_path_resolver.dart';
+import 'package:borj/core/notifications/linux_systemd_user_unit_store.dart';
+import 'package:borj/core/notifications/linux_systemd_user_unit_store_exception.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../support/fake_linux_systemd_file_system.dart';
@@ -385,8 +385,7 @@ void main() {
         final fileSystem = FakeLinuxSystemdFileSystem();
         final units = LinuxSystemdRenderedUnits(
           serviceFileName: serviceName,
-          timerFileName:
-              'dashboard-shakhsi-notification-0123456789abcdef.timer',
+          timerFileName: 'borj-notification-0123456789abcdef.timer',
           serviceContents: 'service\n',
           timerContents: 'timer\n',
         );
@@ -402,9 +401,8 @@ void main() {
     test('rejects unexpected unit file suffixes', () async {
       final fileSystem = FakeLinuxSystemdFileSystem();
       final units = LinuxSystemdRenderedUnits(
-        serviceFileName:
-            'dashboard-shakhsi-notification-0123456789abcdef.socket',
-        timerFileName: 'dashboard-shakhsi-notification-0123456789abcdef.timer',
+        serviceFileName: 'borj-notification-0123456789abcdef.socket',
+        timerFileName: 'borj-notification-0123456789abcdef.timer',
         serviceContents: 'service\n',
         timerContents: 'timer\n',
       );
@@ -418,9 +416,8 @@ void main() {
     test('rejects service and timer names with different bases', () async {
       final fileSystem = FakeLinuxSystemdFileSystem();
       final units = LinuxSystemdRenderedUnits(
-        serviceFileName:
-            'dashboard-shakhsi-notification-0123456789abcdef.service',
-        timerFileName: 'dashboard-shakhsi-notification-fedcba9876543210.timer',
+        serviceFileName: 'borj-notification-0123456789abcdef.service',
+        timerFileName: 'borj-notification-fedcba9876543210.timer',
         serviceContents: 'service\n',
         timerContents: 'timer\n',
       );

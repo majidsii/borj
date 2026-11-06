@@ -1,6 +1,6 @@
 import 'dart:typed_data';
 
-import 'package:dashboard_shakhsi/features/legacy_import/application/legacy_file_picker.dart';
+import 'package:borj/features/legacy_import/application/legacy_file_picker.dart';
 import 'package:file_picker/file_picker.dart';
 
 final class FilePickerLegacyFilePicker implements LegacyFilePicker {

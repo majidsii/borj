@@ -1,4 +1,4 @@
-import 'package:dashboard_shakhsi/features/tasks/domain/task_item.dart';
+import 'package:borj/features/tasks/domain/task_item.dart';
 import 'package:shamsi_date/shamsi_date.dart';
 
 const List<String> _taskJalaliMonthNames = <String>[

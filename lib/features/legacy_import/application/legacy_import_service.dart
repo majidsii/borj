@@ -2,20 +2,20 @@
 // formals cannot express for private names.
 // ignore_for_file: prefer_initializing_formals
 
-import 'package:dashboard_shakhsi/core/database/app_database.dart';
-import 'package:dashboard_shakhsi/core/date_time/app_clock.dart';
-import 'package:dashboard_shakhsi/core/errors/app_failure.dart';
-import 'package:dashboard_shakhsi/core/ids/id_generator.dart';
-import 'package:dashboard_shakhsi/core/money/money.dart';
-import 'package:dashboard_shakhsi/features/finance/data/drift_finance_repository.dart';
-import 'package:dashboard_shakhsi/features/finance/domain/debt.dart';
-import 'package:dashboard_shakhsi/features/finance/domain/finance_transaction.dart';
-import 'package:dashboard_shakhsi/features/finance/domain/installment_plan.dart';
-import 'package:dashboard_shakhsi/features/legacy_import/data/drift_legacy_import_ledger.dart';
-import 'package:dashboard_shakhsi/features/legacy_import/domain/legacy_import_report.dart';
-import 'package:dashboard_shakhsi/features/legacy_import/domain/legacy_snapshot.dart';
-import 'package:dashboard_shakhsi/features/tasks/domain/task_item.dart';
-import 'package:dashboard_shakhsi/features/tasks/domain/task_status.dart';
+import 'package:borj/core/database/app_database.dart';
+import 'package:borj/core/date_time/app_clock.dart';
+import 'package:borj/core/errors/app_failure.dart';
+import 'package:borj/core/ids/id_generator.dart';
+import 'package:borj/core/money/money.dart';
+import 'package:borj/features/finance/data/drift_finance_repository.dart';
+import 'package:borj/features/finance/domain/debt.dart';
+import 'package:borj/features/finance/domain/finance_transaction.dart';
+import 'package:borj/features/finance/domain/installment_plan.dart';
+import 'package:borj/features/legacy_import/data/drift_legacy_import_ledger.dart';
+import 'package:borj/features/legacy_import/domain/legacy_import_report.dart';
+import 'package:borj/features/legacy_import/domain/legacy_snapshot.dart';
+import 'package:borj/features/tasks/domain/task_item.dart';
+import 'package:borj/features/tasks/domain/task_status.dart';
 import 'package:drift/drift.dart';
 
 /// Plans, previews and executes a v1 import against one [AppDatabase].

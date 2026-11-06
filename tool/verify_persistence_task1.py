@@ -49,8 +49,8 @@ if 'double' in database:
 connection = (ROOT / 'lib/core/database/database_connection.dart').read_text(
     encoding='utf-8'
 )
-if "driftDatabase(name: 'dashboard_shakhsi')" not in connection:
-    raise SystemExit('Persistent database name is not dashboard_shakhsi.')
+if "driftDatabase(name: 'borj')" not in connection:
+    raise SystemExit('Persistent database name is not borj.')
 
 if '--generated' in sys.argv:
     generated = ROOT / 'lib/core/database/app_database.g.dart'

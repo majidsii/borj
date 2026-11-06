@@ -1,16 +1,16 @@
 import 'dart:async';
 
-import 'package:dashboard_shakhsi/app/apple_visual/foundation/apple_glass_shape.dart';
-import 'package:dashboard_shakhsi/app/apple_visual/foundation/apple_liquid_glass_recipe.dart';
-import 'package:dashboard_shakhsi/app/apple_visual/widgets/apple_liquid_glass.dart';
-import 'package:dashboard_shakhsi/app/theme/original_design_tokens.dart';
-import 'package:dashboard_shakhsi/app/widgets/original_controls.dart';
-import 'package:dashboard_shakhsi/core/ids/id_generator.dart';
-import 'package:dashboard_shakhsi/features/tasks/domain/task_item.dart';
-import 'package:dashboard_shakhsi/features/tasks/domain/task_recurrence_rule.dart';
-import 'package:dashboard_shakhsi/features/tasks/domain/task_reminder_rule.dart';
-import 'package:dashboard_shakhsi/features/tasks/presentation/task_details/task_details_draft.dart';
-import 'package:dashboard_shakhsi/features/tasks/presentation/task_details/task_details_form.dart';
+import 'package:borj/app/apple_visual/foundation/apple_glass_shape.dart';
+import 'package:borj/app/apple_visual/foundation/apple_liquid_glass_recipe.dart';
+import 'package:borj/app/apple_visual/widgets/apple_liquid_glass.dart';
+import 'package:borj/app/theme/original_design_tokens.dart';
+import 'package:borj/app/widgets/original_controls.dart';
+import 'package:borj/core/ids/id_generator.dart';
+import 'package:borj/features/tasks/domain/task_item.dart';
+import 'package:borj/features/tasks/domain/task_recurrence_rule.dart';
+import 'package:borj/features/tasks/domain/task_reminder_rule.dart';
+import 'package:borj/features/tasks/presentation/task_details/task_details_draft.dart';
+import 'package:borj/features/tasks/presentation/task_details/task_details_form.dart';
 import 'package:flutter/material.dart';
 
 enum TaskDetailsDialogMode { create, edit }

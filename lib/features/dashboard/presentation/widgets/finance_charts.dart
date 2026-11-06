@@ -1,10 +1,10 @@
 import 'dart:math' as math;
 
-import 'package:dashboard_shakhsi/app/theme/original_design_tokens.dart';
-import 'package:dashboard_shakhsi/core/money/money.dart';
-import 'package:dashboard_shakhsi/features/dashboard/presentation/widgets/finance_preview_models.dart'
+import 'package:borj/app/theme/original_design_tokens.dart';
+import 'package:borj/core/money/money.dart';
+import 'package:borj/features/dashboard/presentation/widgets/finance_preview_models.dart'
     show FinancePreviewMath;
-import 'package:dashboard_shakhsi/features/finance/application/finance_summary.dart';
+import 'package:borj/features/finance/application/finance_summary.dart';
 import 'package:flutter/material.dart';
 
 final class FinanceTrendChart extends StatelessWidget {

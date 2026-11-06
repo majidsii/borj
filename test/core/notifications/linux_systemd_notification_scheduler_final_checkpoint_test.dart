@@ -1,28 +1,28 @@
 import 'dart:convert';
 
-import 'package:dashboard_shakhsi/core/date_time/app_clock.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_bounded_output.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_cancellation_token.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_notification_delivery_command_factory.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_notification_request_fingerprint.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_process_request.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_process_result.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_process_runner.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_systemd_environment.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_systemd_notification_scheduler.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_systemd_notification_scheduler_exception.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_systemd_notification_unit.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_systemd_schedule_registry.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_systemd_schedule_registry_exception.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_systemd_schedule_registry_store.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_systemd_timer_name.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_systemd_unit_renderer.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_systemd_unit_transaction.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_systemd_user_driver.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_systemd_user_unit_path_resolver.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_systemd_user_unit_store.dart';
-import 'package:dashboard_shakhsi/core/notifications/notification_owner.dart';
-import 'package:dashboard_shakhsi/core/notifications/notification_request.dart';
+import 'package:borj/core/date_time/app_clock.dart';
+import 'package:borj/core/notifications/linux_bounded_output.dart';
+import 'package:borj/core/notifications/linux_cancellation_token.dart';
+import 'package:borj/core/notifications/linux_notification_delivery_command_factory.dart';
+import 'package:borj/core/notifications/linux_notification_request_fingerprint.dart';
+import 'package:borj/core/notifications/linux_process_request.dart';
+import 'package:borj/core/notifications/linux_process_result.dart';
+import 'package:borj/core/notifications/linux_process_runner.dart';
+import 'package:borj/core/notifications/linux_systemd_environment.dart';
+import 'package:borj/core/notifications/linux_systemd_notification_scheduler.dart';
+import 'package:borj/core/notifications/linux_systemd_notification_scheduler_exception.dart';
+import 'package:borj/core/notifications/linux_systemd_notification_unit.dart';
+import 'package:borj/core/notifications/linux_systemd_schedule_registry.dart';
+import 'package:borj/core/notifications/linux_systemd_schedule_registry_exception.dart';
+import 'package:borj/core/notifications/linux_systemd_schedule_registry_store.dart';
+import 'package:borj/core/notifications/linux_systemd_timer_name.dart';
+import 'package:borj/core/notifications/linux_systemd_unit_renderer.dart';
+import 'package:borj/core/notifications/linux_systemd_unit_transaction.dart';
+import 'package:borj/core/notifications/linux_systemd_user_driver.dart';
+import 'package:borj/core/notifications/linux_systemd_user_unit_path_resolver.dart';
+import 'package:borj/core/notifications/linux_systemd_user_unit_store.dart';
+import 'package:borj/core/notifications/notification_owner.dart';
+import 'package:borj/core/notifications/notification_request.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../support/fake_linux_systemd_file_system.dart';
@@ -316,7 +316,7 @@ final class _DeliveryFactory
     return LinuxSystemdNotificationUnit(
       scheduleKey: request.scheduleId,
       scheduledAtUtc: request.scheduledAtUtc,
-      executablePath: '/opt/dashboard-shakhsi',
+      executablePath: '/opt/borj',
       arguments: <String>['--deliver-notification', request.scheduleId],
     );
   }
@@ -598,7 +598,7 @@ final class _AutomaticProcessRunner implements LinuxProcessRunner {
 
     final timerName = arguments.firstWhere(
       (argument) => argument.endsWith('.timer'),
-      orElse: () => 'dashboard-shakhsi-notification-0000000000000000.timer',
+      orElse: () => 'borj-notification-0000000000000000.timer',
     );
     final baseName = timerName.substring(0, timerName.length - '.timer'.length);
 

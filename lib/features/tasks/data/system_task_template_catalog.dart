@@ -1,12 +1,12 @@
-import 'package:dashboard_shakhsi/core/notifications/notification_request.dart';
-import 'package:dashboard_shakhsi/core/recurrence/recurrence_calendar.dart';
-import 'package:dashboard_shakhsi/core/recurrence/recurrence_frequency.dart';
-import 'package:dashboard_shakhsi/core/recurrence/recurrence_invalid_date_policy.dart';
-import 'package:dashboard_shakhsi/core/recurrence/recurrence_time_zone.dart';
-import 'package:dashboard_shakhsi/core/recurrence/recurrence_weekday.dart';
-import 'package:dashboard_shakhsi/features/tasks/domain/task_reminder_trigger.dart';
-import 'package:dashboard_shakhsi/features/tasks/domain/task_template.dart';
-import 'package:dashboard_shakhsi/features/tasks/domain/task_template_recurrence.dart';
+import 'package:borj/core/notifications/notification_request.dart';
+import 'package:borj/core/recurrence/recurrence_calendar.dart';
+import 'package:borj/core/recurrence/recurrence_frequency.dart';
+import 'package:borj/core/recurrence/recurrence_invalid_date_policy.dart';
+import 'package:borj/core/recurrence/recurrence_time_zone.dart';
+import 'package:borj/core/recurrence/recurrence_weekday.dart';
+import 'package:borj/features/tasks/domain/task_reminder_trigger.dart';
+import 'package:borj/features/tasks/domain/task_template.dart';
+import 'package:borj/features/tasks/domain/task_template_recurrence.dart';
 
 final class SystemTaskTemplateCatalog {
   const SystemTaskTemplateCatalog();

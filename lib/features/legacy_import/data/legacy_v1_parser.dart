@@ -1,9 +1,9 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:borj/core/errors/app_failure.dart';
+import 'package:borj/features/legacy_import/domain/legacy_snapshot.dart';
 import 'package:cryptography/cryptography.dart';
-import 'package:dashboard_shakhsi/core/errors/app_failure.dart';
-import 'package:dashboard_shakhsi/features/legacy_import/domain/legacy_snapshot.dart';
 
 /// Parses v1's `data.json` (string-encoded values, or already-structured
 /// values) and v1's two JSON export files into a [LegacySnapshot].

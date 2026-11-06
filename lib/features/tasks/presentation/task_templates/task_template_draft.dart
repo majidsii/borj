@@ -1,5 +1,5 @@
-import 'package:dashboard_shakhsi/features/tasks/domain/task_template.dart';
-import 'package:dashboard_shakhsi/features/tasks/presentation/task_templates/task_template_recurrence_draft.dart';
+import 'package:borj/features/tasks/domain/task_template.dart';
+import 'package:borj/features/tasks/presentation/task_templates/task_template_recurrence_draft.dart';
 
 final class TaskTemplateDraft {
   TaskTemplateDraft({

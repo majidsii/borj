@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:dashboard_shakhsi/core/notifications/notification_response_source.dart';
+import 'package:borj/core/notifications/notification_response_source.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../support/notification_routing_test_harness.dart';

@@ -1,10 +1,10 @@
-import 'package:dashboard_shakhsi/core/database/app_database.dart';
-import 'package:dashboard_shakhsi/core/errors/app_failure.dart';
-import 'package:dashboard_shakhsi/features/tasks/data/drift_task_repository.dart';
-import 'package:dashboard_shakhsi/features/tasks/data/drift_task_time_repository.dart';
-import 'package:dashboard_shakhsi/features/tasks/domain/task_item.dart';
-import 'package:dashboard_shakhsi/features/tasks/domain/task_status.dart';
-import 'package:dashboard_shakhsi/features/tasks/domain/task_time_entry.dart';
+import 'package:borj/core/database/app_database.dart';
+import 'package:borj/core/errors/app_failure.dart';
+import 'package:borj/features/tasks/data/drift_task_repository.dart';
+import 'package:borj/features/tasks/data/drift_task_time_repository.dart';
+import 'package:borj/features/tasks/domain/task_item.dart';
+import 'package:borj/features/tasks/domain/task_status.dart';
+import 'package:borj/features/tasks/domain/task_time_entry.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../../support/test_database.dart';

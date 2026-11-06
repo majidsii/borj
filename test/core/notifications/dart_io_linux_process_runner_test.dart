@@ -1,11 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:dashboard_shakhsi/core/notifications/dart_io_linux_process_runner.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_cancellation_token.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_process_exception.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_process_request.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_started_process.dart';
+import 'package:borj/core/notifications/dart_io_linux_process_runner.dart';
+import 'package:borj/core/notifications/linux_cancellation_token.dart';
+import 'package:borj/core/notifications/linux_process_exception.dart';
+import 'package:borj/core/notifications/linux_process_request.dart';
+import 'package:borj/core/notifications/linux_started_process.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../support/fake_linux_started_process.dart';

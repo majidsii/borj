@@ -1,12 +1,12 @@
 import 'dart:async';
 
-import 'package:dashboard_shakhsi/app/theme/original_design_tokens.dart';
-import 'package:dashboard_shakhsi/app/widgets/original_controls.dart';
-import 'package:dashboard_shakhsi/app/widgets/original_glass.dart';
-import 'package:dashboard_shakhsi/features/tasks/domain/task_item.dart';
-import 'package:dashboard_shakhsi/features/tasks/domain/task_status.dart';
-import 'package:dashboard_shakhsi/features/tasks/presentation/task_board/task_board_operations.dart';
-import 'package:dashboard_shakhsi/features/tasks/presentation/task_details/task_planning_labels.dart';
+import 'package:borj/app/theme/original_design_tokens.dart';
+import 'package:borj/app/widgets/original_controls.dart';
+import 'package:borj/app/widgets/original_glass.dart';
+import 'package:borj/features/tasks/domain/task_item.dart';
+import 'package:borj/features/tasks/domain/task_status.dart';
+import 'package:borj/features/tasks/presentation/task_board/task_board_operations.dart';
+import 'package:borj/features/tasks/presentation/task_details/task_planning_labels.dart';
 import 'package:flutter/material.dart';
 
 final class TaskKanbanBoard extends StatelessWidget {

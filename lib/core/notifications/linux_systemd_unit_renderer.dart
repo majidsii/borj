@@ -41,8 +41,7 @@ final class LinuxSystemdUnitRenderer {
 
   LinuxSystemdRenderedUnits render(LinuxSystemdNotificationUnit unit) {
     final names = LinuxSystemdUnitNames.forScheduleKey(unit.scheduleKey);
-    final description =
-        'Dashboard Shakhsi scheduled notification ${names.baseName}';
+    final description = 'Borj scheduled notification ${names.baseName}';
 
     final command = <String>[
       unit.executablePath,

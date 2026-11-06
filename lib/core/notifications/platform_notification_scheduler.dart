@@ -1,4 +1,4 @@
-import 'package:dashboard_shakhsi/core/date_time/app_clock.dart';
+import 'package:borj/core/date_time/app_clock.dart';
 
 import 'native_notification_gateway.dart';
 import 'notification_delivery_policy.dart';

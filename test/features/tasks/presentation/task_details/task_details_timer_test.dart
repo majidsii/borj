@@ -1,8 +1,8 @@
-import 'package:dashboard_shakhsi/app/theme/original_theme.dart';
-import 'package:dashboard_shakhsi/core/database/app_database.dart';
-import 'package:dashboard_shakhsi/core/providers/persistence_providers.dart';
-import 'package:dashboard_shakhsi/features/tasks/presentation/task_details/task_details_draft.dart';
-import 'package:dashboard_shakhsi/features/tasks/presentation/task_details/task_details_form.dart';
+import 'package:borj/app/theme/original_theme.dart';
+import 'package:borj/core/database/app_database.dart';
+import 'package:borj/core/providers/persistence_providers.dart';
+import 'package:borj/features/tasks/presentation/task_details/task_details_draft.dart';
+import 'package:borj/features/tasks/presentation/task_details/task_details_form.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';

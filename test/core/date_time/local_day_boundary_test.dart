@@ -1,5 +1,5 @@
-import 'package:dashboard_shakhsi/core/date_time/local_date.dart';
-import 'package:dashboard_shakhsi/core/date_time/local_day_boundary.dart';
+import 'package:borj/core/date_time/local_date.dart';
+import 'package:borj/core/date_time/local_day_boundary.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

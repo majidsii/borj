@@ -1,4 +1,4 @@
-import 'package:dashboard_shakhsi/core/notifications/notification_platform_capabilities.dart';
+import 'package:borj/core/notifications/notification_platform_capabilities.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

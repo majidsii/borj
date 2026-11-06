@@ -1,6 +1,6 @@
-import 'package:dashboard_shakhsi/core/notifications/notification_permission.dart';
-import 'package:dashboard_shakhsi/core/notifications/notification_permission_service.dart';
-import 'package:dashboard_shakhsi/core/providers/persistence_providers.dart';
+import 'package:borj/core/notifications/notification_permission.dart';
+import 'package:borj/core/notifications/notification_permission_service.dart';
+import 'package:borj/core/providers/persistence_providers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 

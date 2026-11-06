@@ -1,12 +1,12 @@
-import 'package:dashboard_shakhsi/core/date_time/app_clock.dart';
-import 'package:dashboard_shakhsi/core/notifications/device_time_zone_source.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_systemd_notification_scheduler.dart';
-import 'package:dashboard_shakhsi/core/notifications/local_notifications_driver.dart';
-import 'package:dashboard_shakhsi/core/notifications/noop_notification_scheduler.dart';
-import 'package:dashboard_shakhsi/core/notifications/notification_platform_capabilities.dart';
-import 'package:dashboard_shakhsi/core/notifications/notification_startup_service.dart';
-import 'package:dashboard_shakhsi/core/notifications/notification_time_zone_initializer.dart';
-import 'package:dashboard_shakhsi/core/providers/persistence_providers.dart';
+import 'package:borj/core/date_time/app_clock.dart';
+import 'package:borj/core/notifications/device_time_zone_source.dart';
+import 'package:borj/core/notifications/linux_systemd_notification_scheduler.dart';
+import 'package:borj/core/notifications/local_notifications_driver.dart';
+import 'package:borj/core/notifications/noop_notification_scheduler.dart';
+import 'package:borj/core/notifications/notification_platform_capabilities.dart';
+import 'package:borj/core/notifications/notification_startup_service.dart';
+import 'package:borj/core/notifications/notification_time_zone_initializer.dart';
+import 'package:borj/core/providers/persistence_providers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 

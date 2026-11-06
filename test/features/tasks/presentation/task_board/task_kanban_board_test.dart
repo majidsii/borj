@@ -1,9 +1,9 @@
-import 'package:dashboard_shakhsi/app/theme/original_theme.dart';
-import 'package:dashboard_shakhsi/app/widgets/original_controls.dart';
-import 'package:dashboard_shakhsi/features/tasks/domain/task_item.dart';
-import 'package:dashboard_shakhsi/features/tasks/domain/task_status.dart';
-import 'package:dashboard_shakhsi/features/tasks/presentation/task_board/task_board_operations.dart';
-import 'package:dashboard_shakhsi/features/tasks/presentation/task_board/task_kanban_board.dart';
+import 'package:borj/app/theme/original_theme.dart';
+import 'package:borj/app/widgets/original_controls.dart';
+import 'package:borj/features/tasks/domain/task_item.dart';
+import 'package:borj/features/tasks/domain/task_status.dart';
+import 'package:borj/features/tasks/presentation/task_board/task_board_operations.dart';
+import 'package:borj/features/tasks/presentation/task_board/task_kanban_board.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 

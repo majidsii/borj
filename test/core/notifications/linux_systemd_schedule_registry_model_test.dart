@@ -1,8 +1,8 @@
-import 'package:dashboard_shakhsi/core/notifications/linux_systemd_notification_unit.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_systemd_schedule_registry.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_systemd_schedule_registry_exception.dart';
-import 'package:dashboard_shakhsi/core/notifications/linux_systemd_timer_name.dart';
-import 'package:dashboard_shakhsi/core/notifications/notification_owner.dart';
+import 'package:borj/core/notifications/linux_systemd_notification_unit.dart';
+import 'package:borj/core/notifications/linux_systemd_schedule_registry.dart';
+import 'package:borj/core/notifications/linux_systemd_schedule_registry_exception.dart';
+import 'package:borj/core/notifications/linux_systemd_timer_name.dart';
+import 'package:borj/core/notifications/notification_owner.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -247,33 +247,30 @@ void main() {
   group('LinuxSystemdUnitNames.parseBaseName', () {
     test('parses one exact app-owned base name', () {
       final names = LinuxSystemdUnitNames.parseBaseName(
-        'dashboard-shakhsi-notification-0123456789abcdef',
+        'borj-notification-0123456789abcdef',
       );
 
-      expect(names.baseName, 'dashboard-shakhsi-notification-0123456789abcdef');
+      expect(names.baseName, 'borj-notification-0123456789abcdef');
       expect(
         names.serviceFileName,
-        'dashboard-shakhsi-notification-0123456789abcdef.service',
+        'borj-notification-0123456789abcdef.service',
       );
-      expect(
-        names.timerFileName,
-        'dashboard-shakhsi-notification-0123456789abcdef.timer',
-      );
+      expect(names.timerFileName, 'borj-notification-0123456789abcdef.timer');
       expect(names, LinuxSystemdUnitNames.parseBaseName(names.baseName));
     });
 
     for (final invalid in <String>[
       '',
-      'dashboard-shakhsi-notification-0123456789abcde',
-      'dashboard-shakhsi-notification-0123456789abcdef0',
-      'dashboard-shakhsi-notification-0123456789ABCDEf',
-      'dashboard-shakhsi-notification-0123456789abcdef.timer',
-      ' dashboard-shakhsi-notification-0123456789abcdef',
-      'dashboard-shakhsi-notification-0123456789abcdef ',
-      '../dashboard-shakhsi-notification-0123456789abcdef',
+      'borj-notification-0123456789abcde',
+      'borj-notification-0123456789abcdef0',
+      'borj-notification-0123456789ABCDEf',
+      'borj-notification-0123456789abcdef.timer',
+      ' borj-notification-0123456789abcdef',
+      'borj-notification-0123456789abcdef ',
+      '../borj-notification-0123456789abcdef',
       'other-notification-0123456789abcdef',
-      'dashboard-shakhsi-notification-0123456789abcdef\n',
-      'dashboard-shakhsi-notification-0123456789abcdef\u0000',
+      'borj-notification-0123456789abcdef\n',
+      'borj-notification-0123456789abcdef\u0000',
     ]) {
       test('rejects invalid app-owned base name: $invalid', () {
         _expectFailure(
@@ -288,18 +285,18 @@ void main() {
   group('LinuxSystemdUnitDiscovery', () {
     test('stores sorted immutable complete and partial pairs', () {
       final namesA = LinuxSystemdUnitNames.parseBaseName(
-        'dashboard-shakhsi-notification-aaaaaaaaaaaaaaaa',
+        'borj-notification-aaaaaaaaaaaaaaaa',
       );
       final namesB = LinuxSystemdUnitNames.parseBaseName(
-        'dashboard-shakhsi-notification-bbbbbbbbbbbbbbbb',
+        'borj-notification-bbbbbbbbbbbbbbbb',
       );
       final partialA = LinuxSystemdPartialUnitPair(
-        baseName: 'dashboard-shakhsi-notification-cccccccccccccccc',
+        baseName: 'borj-notification-cccccccccccccccc',
         hasService: true,
         hasTimer: false,
       );
       final partialB = LinuxSystemdPartialUnitPair(
-        baseName: 'dashboard-shakhsi-notification-dddddddddddddddd',
+        baseName: 'borj-notification-dddddddddddddddd',
         hasService: false,
         hasTimer: true,
       );
@@ -332,10 +329,10 @@ void main() {
 
     test('supports value equality and stable hashing', () {
       final names = LinuxSystemdUnitNames.parseBaseName(
-        'dashboard-shakhsi-notification-aaaaaaaaaaaaaaaa',
+        'borj-notification-aaaaaaaaaaaaaaaa',
       );
       final partial = LinuxSystemdPartialUnitPair(
-        baseName: 'dashboard-shakhsi-notification-bbbbbbbbbbbbbbbb',
+        baseName: 'borj-notification-bbbbbbbbbbbbbbbb',
         hasService: true,
         hasTimer: false,
       );
@@ -354,12 +351,12 @@ void main() {
 
     for (final invalid in <LinuxSystemdPartialUnitPair Function()>[
       () => LinuxSystemdPartialUnitPair(
-        baseName: 'dashboard-shakhsi-notification-aaaaaaaaaaaaaaaa',
+        baseName: 'borj-notification-aaaaaaaaaaaaaaaa',
         hasService: true,
         hasTimer: true,
       ),
       () => LinuxSystemdPartialUnitPair(
-        baseName: 'dashboard-shakhsi-notification-aaaaaaaaaaaaaaaa',
+        baseName: 'borj-notification-aaaaaaaaaaaaaaaa',
         hasService: false,
         hasTimer: false,
       ),

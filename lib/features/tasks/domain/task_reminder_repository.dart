@@ -1,4 +1,4 @@
-import 'package:dashboard_shakhsi/features/tasks/domain/task_reminder_rule.dart';
+import 'package:borj/features/tasks/domain/task_reminder_rule.dart';
 
 abstract interface class TaskReminderRepository {
   Stream<List<TaskReminderRule>> watchByTask(String taskId);

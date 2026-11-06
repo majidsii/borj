@@ -1,8 +1,8 @@
-import 'package:dashboard_shakhsi/core/database/app_database.dart';
-import 'package:dashboard_shakhsi/core/notifications/notification_request.dart';
-import 'package:dashboard_shakhsi/features/tasks/domain/task_reminder_repository.dart';
-import 'package:dashboard_shakhsi/features/tasks/domain/task_reminder_rule.dart';
-import 'package:dashboard_shakhsi/features/tasks/domain/task_reminder_trigger.dart';
+import 'package:borj/core/database/app_database.dart';
+import 'package:borj/core/notifications/notification_request.dart';
+import 'package:borj/features/tasks/domain/task_reminder_repository.dart';
+import 'package:borj/features/tasks/domain/task_reminder_rule.dart';
+import 'package:borj/features/tasks/domain/task_reminder_trigger.dart';
 import 'package:drift/drift.dart';
 
 final class DriftTaskReminderRepository implements TaskReminderRepository {

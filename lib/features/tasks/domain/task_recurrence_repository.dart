@@ -1,8 +1,8 @@
-import 'package:dashboard_shakhsi/core/recurrence/recurrence_local_date_time.dart';
-import 'package:dashboard_shakhsi/features/tasks/domain/task_occurrence_completion.dart';
-import 'package:dashboard_shakhsi/features/tasks/domain/task_recurrence_bundle.dart';
-import 'package:dashboard_shakhsi/features/tasks/domain/task_recurrence_exception.dart';
-import 'package:dashboard_shakhsi/features/tasks/domain/task_recurrence_rule.dart';
+import 'package:borj/core/recurrence/recurrence_local_date_time.dart';
+import 'package:borj/features/tasks/domain/task_occurrence_completion.dart';
+import 'package:borj/features/tasks/domain/task_recurrence_bundle.dart';
+import 'package:borj/features/tasks/domain/task_recurrence_exception.dart';
+import 'package:borj/features/tasks/domain/task_recurrence_rule.dart';
 
 abstract interface class TaskRecurrenceRepository {
   Stream<List<TaskRecurrenceRule>> watchRules();

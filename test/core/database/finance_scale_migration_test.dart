@@ -1,9 +1,9 @@
 import 'dart:io';
 
-import 'package:dashboard_shakhsi/core/database/app_database.dart';
-import 'package:dashboard_shakhsi/core/ids/id_generator.dart';
-import 'package:dashboard_shakhsi/core/money/money.dart';
-import 'package:dashboard_shakhsi/features/finance/data/drift_finance_repository.dart';
+import 'package:borj/core/database/app_database.dart';
+import 'package:borj/core/ids/id_generator.dart';
+import 'package:borj/core/money/money.dart';
+import 'package:borj/features/finance/data/drift_finance_repository.dart';
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sqlite3/sqlite3.dart';

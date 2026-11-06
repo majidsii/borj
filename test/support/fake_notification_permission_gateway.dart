@@ -1,4 +1,4 @@
-import 'package:dashboard_shakhsi/core/notifications/notification_permission.dart';
+import 'package:borj/core/notifications/notification_permission.dart';
 
 final class FakeNotificationPermissionGateway
     implements NotificationPermissionGateway {

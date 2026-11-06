@@ -23,8 +23,9 @@ the probe numbers, because a failed budget changes how primitives are built.
 - Colours come from the kit `docs/superpowers/references/2026-11-05-glass-mockups/source/kit2.css` (spec §1: the kit wins over spec §4). Light / dark:
   - background `#FFFFFF` / `#1B1C20`; window `#FFFFFF` / `#24262B`
   - text `#1B2236` / `#F4F6FC`; textSecondary `#38425E` / `#C5CCE0`; textSecondaryStrong `#2C3550` / `#E1E6F5`; textTertiary `#5A6482` / `#98A2C0`
-  - link `#1F5FD0` / `#8DB5FF`; accent `#2F6FDB` / `#5B93F0`; teal `#0B857A` / `#3FD1C2`; success `#07665D` / `#4FD6A4`
-  - warn `#8F5400` / `#F0B35A`; danger `#B02440` / `#FF8A9B`; purple `#6B4BC0` / `#B79BFF`; checkBorder `#6F7896` / `#AEB8D6`
+  - link `#1F5FD0` / `#ACC9FF`; accent `#2F6FDB` / `#5B93F0`; teal `#0B857A` / `#3FD1C2`; success `#07665D` / `#66DBB0`
+  - warn `#8F5400` / `#F2BE71`; danger `#B02440` / `#FFB3BE`; purple `#6B4BC0` / `#D1BFFF`; checkBorder `#6F7896` / `#AEB8D6`
+  - the five dark semantic colours above are lightened from the kit (Decision 4); kit originals: link `#8DB5FF`, success `#4FD6A4`, warn `#F0B35A`, danger `#FF8A9B`, purple `#B79BFF`
   - hairline `rgba(27,34,54,.12)` / `rgba(255,255,255,.12)`; selection `rgba(47,111,219,.14)` / `rgba(255,255,255,.14)`
   - inner material: top `#FFFFFF` / `rgba(255,255,255,.26)`, bottom `rgba(236,242,255,.92)` / `rgba(255,255,255,.12)`, edge `rgba(50,72,140,.22)` / `rgba(0,0,0,.4)`, shadow `rgba(30,50,120,.26)` / `rgba(0,0,0,.45)`
   - glass text reference stops (`--g-bg-text`): light `rgba(255,255,255,.84)`, `rgba(242,246,255,.70)`, `rgba(228,236,254,.74)`; dark `rgba(120,124,150,.50)`, `rgba(86,89,110,.50)`, `rgba(66,68,86,.55)`
@@ -56,11 +57,11 @@ the probe numbers, because a failed budget changes how primitives are built.
 
    Shape appearance: `tinted` = `LiquidGlassAppearance.ios27Regular(brightness, tint: accent at alpha 0.9)`; `clear` =
    `LiquidGlassAppearance.ios27Clear()`; every other role = `LiquidGlassAppearance.ios27Regular(brightness)`.
-4. **Open decision for the owner: deviation from spec §3.2 (does not block Part A).** Spec §3.2 requires text on glass
-   ≥ 4.5:1 in the worst case. Measured against the brightest kit glass stop, the dark-mode semantic text colours are
-   below that: link 3.82, success 4.30, warn 4.23, danger 3.51, purple 3.43. (Accent, at 2.58, is a fill, not text.)
-   The contrast test covers only the roles that pass. Before Part B puts semantic text on glass, the owner either
-   approves the deviation or the dark colours are lightened.
+4. **Dark semantic text colours are lightened (owner, 2026-11-07: «پیشنهادتو برو»).** Spec §3.2 requires text on
+   glass ≥ 4.5:1 in the worst case. Against the brightest kit glass stop the kit's dark link, success, warn, danger and
+   purple measured 3.82, 4.30, 4.23, 3.51 and 3.43. Each is lightened in HSL (same hue and saturation) to the first
+   value ≥ 4.6:1 with 8-bit alpha blending: link `#ACC9FF` 4.69, success `#66DBB0` 4.60, warn `#F2BE71` 4.62,
+   danger `#FFB3BE` 4.65, purple `#D1BFFF` 4.71. Light mode is unchanged. Accent (2.58) is a fill, not text.
 5. **Money colours follow the boards.** Income amounts on the boards use `var(--success)` (24 uses; `--teal` is used
    4 times, never for amounts), so `moneyIncome = success` matches the board and spec §1 (the board wins).
 
@@ -641,8 +642,7 @@ git commit -m "feat(settings): persisted appearance preferences loaded before th
   - `AppBackground({required AppBackgroundKind kind, required Widget child})` with `enum AppBackgroundKind { phone, desk }`.
 
 - [ ] **Step 1: Write the failing contrast test.** It encodes the measured kit numbers. `textTertiary` is exempt by
-  name: the kit marks finished/disabled text as intentionally low contrast. Dark semantic colours are excluded, per
-  Decision 4.
+  name: the kit marks finished/disabled text as intentionally low contrast. Accent and teal are fills, not text roles.
 
 ```dart
 // test/app/theme/app_theme_contrast_test.dart
@@ -680,7 +680,10 @@ void main() {
       AppTheme.light.colors,
       ['text', 'textSecondary', 'textSecondaryStrong', 'link', 'success', 'warn', 'danger', 'purple'],
     ),
-    'dark': (AppTheme.dark.colors, ['text', 'textSecondary', 'textSecondaryStrong']),
+    'dark': (
+      AppTheme.dark.colors,
+      ['text', 'textSecondary', 'textSecondaryStrong', 'link', 'success', 'warn', 'danger', 'purple'],
+    ),
   };
 
   for (final MapEntry(key: mode, value: (colors, roles)) in cases.entries) {
@@ -859,13 +862,13 @@ final class AppColors {
     textSecondary: Color(0xFFC5CCE0),
     textSecondaryStrong: Color(0xFFE1E6F5),
     textTertiary: Color(0xFF98A2C0),
-    link: Color(0xFF8DB5FF),
+    link: Color(0xFFACC9FF), // kit #8DB5FF, lightened (Decision 4)
     accent: Color(0xFF5B93F0),
     teal: Color(0xFF3FD1C2),
-    success: Color(0xFF4FD6A4),
-    warn: Color(0xFFF0B35A),
-    danger: Color(0xFFFF8A9B),
-    purple: Color(0xFFB79BFF),
+    success: Color(0xFF66DBB0), // kit #4FD6A4, lightened
+    warn: Color(0xFFF2BE71), // kit #F0B35A, lightened
+    danger: Color(0xFFFFB3BE), // kit #FF8A9B, lightened
+    purple: Color(0xFFD1BFFF), // kit #B79BFF, lightened
     checkBorder: Color(0xFFAEB8D6),
     hairline: Color(0x1FFFFFFF),
     selection: Color(0x24FFFFFF),

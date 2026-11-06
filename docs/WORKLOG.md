@@ -21,7 +21,7 @@ Entry template:
 - **Type:** decided + planned
 - **What:** the owner walked through the prototype's Today screen («همه چیز عالیه») and Tasks screens, then said «عالیه باید پیاده بشه تا بعد اگر مشکل داشت فیکس کنیم» (implement it, fix problems later). The other screens were not reviewed one by one. Motion spec marked APPROVED with that quote, plus a note that `AppMotion` maps the Apple springs by name only (spec values 0.40/1.0 and 0.28/1.0; the source values 0.55/1.0 and 0.15/0.86 stay as provenance). Phase 1 is split: Part A (preferences JSON file, `AppTheme`, motion tokens + `MotionScope`, `AppGlass`/`GlassScope`/`GlassBackdropGroup` + reduce-transparency fallback, capture-budget tests, device perf probe) is planned; Part B (primitives, patterns, Appearance UI, review page, checkpoint) is planned after the probe numbers.
 - **Evidence / links:** plan `docs/superpowers/plans/2026-11-07-redesign-phase-1a-foundation.md` (commit `6bcbf6d` and the next one); measured: Vazirmatn `tnum` gives every Persian digit the same width (0.659 em).
-- **Follow-ups:** owner decision before Part B. Dark-mode semantic text colours (link 3.82, success 4.30, warn 4.23, danger 3.51, purple 3.43:1 against the brightest glass stop) are below spec §3.2's 4.5:1: approve the deviation, or lighten them. Owner yes/no to start Part A.
+- **Follow-ups:** decided the same day («پیشنهادتو برو»): the five dark semantic text colours are lightened to ≥ 4.6:1 (link `#ACC9FF`, success `#66DBB0`, warn `#F2BE71`, danger `#FFB3BE`, purple `#D1BFFF`; plan Decision 4), and Part A starts.
 
 ## 2026-11-07 — Apple UI kit 2026-11 revision adopted as the locked source
 - **Type:** implemented + found

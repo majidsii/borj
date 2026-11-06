@@ -22,14 +22,21 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--accent);outline-off
   </div>
 
   <div style="position: relative; padding: 18px 16px 0; display: flex; flex-direction: column; gap: 14px">
-    <section class="lg lg-l lg-text" style="border-radius: 26px; padding: 14px 14px 10px">
-      <div style="position: relative; height: 58px">
-        <div style="position: absolute; top: 4px; height: 50px; right: 4%; width: 28%; box-sizing: border-box; padding: 6px 10px; border-radius: 14px; background: #1FB5A8; color: #04302C; font-weight: 800; font-size: 13px">کار عمیق</div>
-        <div style="position: absolute; top: 4px; height: 50px; right: 50%; width: 20%; box-sizing: border-box; padding: 6px 10px; border-radius: 14px; background: #2F4FB8; color: #fff; font-weight: 800; font-size: 13px">جلسه</div>
-        <div style="position: absolute; top: 4px; height: 50px; right: 76%; width: 18%; box-sizing: border-box; padding: 6px 10px; border-radius: 14px; background: #C8324B; color: #fff; font-weight: 800; font-size: 13px">بیمه</div>
-        <div role="img" aria-label="اکنون ۱۴:۳۰" class="lg-in lg-lens" style="position: absolute; top: -6px; bottom: -6px; right: calc(44% - 32px); width: 64px; border-radius: 24px; display: flex; justify-content: center; padding-top: 3px; box-sizing: border-box; font-size: 12px; font-weight: 900">۱۴:۳۰</div>
+    <section class="lg lg-l lg-text" aria-label="برنامهٔ امروز" style="border-radius: 26px; padding: 12px 14px 10px">
+      <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; font-size: 12px">
+        <span style="font-size: 13px; font-weight: 800">برنامهٔ امروز</span>
+        <span style="color: var(--text2)">بعدی: <b style="color: var(--text)">جلسه</b> · ۳۰ دقیقهٔ دیگر</span>
       </div>
-      <div aria-hidden="true" style="display: flex; justify-content: space-between; margin-top: 8px; font-size: 11px; color:var(--text2)"><span>۸</span><span>۱۲</span><span>۱۶</span><span>۲۰</span></div>
+      <div style="position: relative; height: 50px">
+        <div aria-hidden="true" style="position: absolute; top: 0; bottom: 0; right: 0; width: 54.2%; border-radius: 12px; background: var(--fill-1)"></div>
+        <div style="position: absolute; top: 4px; height: 42px; right: 4.2%; width: 25%; box-sizing: border-box; padding: 5px 7px; border-radius: 12px; background: #1FB5A8; color: #04302C; font-weight: 800; font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; opacity: .55">کار عمیق ✓</div>
+        <div style="position: absolute; top: 4px; height: 42px; right: 58.3%; width: 12.5%; box-sizing: border-box; padding: 5px 7px; border-radius: 12px; background: #2F4FB8; color: #fff; font-weight: 800; font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">جلسه</div>
+        <div style="position: absolute; top: 4px; height: 42px; right: 83.3%; width: 12.5%; box-sizing: border-box; padding: 5px 7px; border-radius: 12px; background: #6B4BC0; color: #fff; font-weight: 800; font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">بیمه</div>
+        <div role="img" aria-label="اکنون ۱۴:۳۰" style="position: absolute; top: -4px; bottom: -4px; right: 54.2%; width: 2px; margin-right: -1px; border-radius: 2px; background: #C8324B"></div>
+      </div>
+      <div aria-hidden="true" style="position: relative; height: 18px; margin-top: 6px; font-size: 11px; color: var(--text2)">
+        <span style="position: absolute; right: 0%; transform: translateX(50%)">۸</span><span style="position: absolute; right: 16.7%; transform: translateX(50%)">۱۰</span><span style="position: absolute; right: 33.3%; transform: translateX(50%)">۱۲</span><span style="position: absolute; right: 54.2%; transform: translateX(50%); top: -2px; padding: 0 7px; border-radius: 99px; background: #C8324B; color: #fff; font-weight: 900">۱۴:۳۰</span><span style="position: absolute; right: 66.7%; transform: translateX(50%)">۱۶</span><span style="position: absolute; right: 83.3%; transform: translateX(50%)">۱۸</span><span style="position: absolute; right: 100%; transform: translateX(50%)">۲۰</span>
+      </div>
     </section>
 
     <section class="lg lg-l lg-text" style="border-radius: 26px; padding: 4px 16px">

@@ -1137,6 +1137,7 @@ As of this document:
 - Shader filters work on Linux desktop only with Impeller enabled (`flutter test integration_test/... -d linux --enable-impeller` → supported; without the flag → unsupported).
 - v1 data import is implemented (2026-11-04): Settings, then "Import from v1" (preview, one transaction, idempotent via `legacy_imports`). Release still needs part B (packaging) and part C (name برج / Borj applied and logo approved 2026-11-06; platform icon wiring remains).
 - IRT money is whole toman (scale 0, schema 9); `Money` arithmetic is overflow-checked.
+- 2026-11-06 session end: product renamed Borj (repo `majidsii/borj`, folders `~/projects/personal/borj/`), logo kit approved (`assets/brand/`), motion + Today customization spec drafted (`docs/superpowers/specs/2026-11-06-motion-and-today-customization-design.md`, awaiting owner review), clickable prototype of all screens https://claude.ai/artifact/B7XLCjeTuWKzPRwb63PL1g. Resume: owner reviews the prototype, then approve the motion spec, then write the redesign Phase 1 plan.
 - Next step: part B: packaging + Android signing + Android CI build.
 - Tasks 2.10–2.11 remain pending and must be designed individually before implementation.
 

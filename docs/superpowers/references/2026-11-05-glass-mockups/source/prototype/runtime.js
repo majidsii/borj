@@ -160,6 +160,24 @@ function mount(name, theme = state.theme) {
   return host;
 }
 
+// Boards are fixed-height pictures; in the prototype the content scrolls while chrome stays pinned.
+// Direct children positioned absolutely (tab bar, background light, decorative underlay) become fixed,
+// which inside the transformed device means "pinned to the screen", exactly like the app.
+function makeScrollable(host, name) {
+  const d = DOCS[name], sr = host.shadowRoot;
+  const root = [...sr.children].find(e => e.tagName === "DIV");
+  if (!root) return;
+  host.style.overflowY = "auto";
+  host.style.overscrollBehavior = "contain";
+  if (SHEETS.has(name)) { const dlg = findDialog(sr); if (dlg) { dlg.style.overflowY = "auto"; dlg.style.overscrollBehavior = "contain"; } return; }
+  if (d.k !== "phone") return;
+  [...root.children].forEach(c => { if (getComputedStyle(c).position === "absolute") c.style.position = "fixed"; });
+  root.style.height = "auto";
+  root.style.minHeight = d.h + "px";
+  root.style.paddingBottom = "120px";
+  root.style.boxSizing = "border-box";
+}
+
 function sizeDevice() {
   const first = Object.keys(DOCS).find(n => DOCS[n].k === state.device);
   const top = state.stack.length ? DOCS[state.stack[state.stack.length - 1].name] : DOCS[first];
@@ -188,6 +206,7 @@ function go(name, kind, opts = {}) {
   const entry = { name, kind, host, trig: opts.trig || null };
   if (opts.reset) { state.stack.forEach(l => l.host.remove()); state.stack = []; }
   $("device").appendChild(host);
+  makeScrollable(host, name);
   state.stack.push(entry);
   if (state.stack.length > 8) { const old = state.stack.splice(0, 1)[0]; old.host.remove(); }
   sizeDevice();
@@ -295,8 +314,7 @@ function revealIfFirst(sr, name) {
   if (state.seen.has(key)) return;
   state.seen.add(key);
   const R = state.reduced;
-  const rootEl = [...sr.children].find(e => e.tagName === "DIV");
-  const rootR = rootEl.getBoundingClientRect();
+  const rootR = sr.host.getBoundingClientRect();
   // cards/sections (not chrome): glass panels taller than 48px, outermost only, not pinned to the bottom bar
   const panels = [...sr.querySelectorAll(".lg")].filter(e => {
     const r = e.getBoundingClientRect();
@@ -304,7 +322,8 @@ function revealIfFirst(sr, name) {
     if (e.closest("nav") || e.matches("nav")) return false;
     if (e.parentElement && e.parentElement.closest(".lg")) return false;
     const pos = getComputedStyle(e).position;
-    if ((pos === "absolute" || pos === "fixed") && rootR.bottom - r.bottom < 140) return false;
+    if (pos === "fixed" || (pos === "absolute" && rootR.bottom - r.bottom < 140)) return false;
+    if (r.top > rootR.bottom + 400) return false; // far below the fold: no entrance needed
     return true;
   }).sort((a, b) => a.getBoundingClientRect().top - b.getBoundingClientRect().top || b.getBoundingClientRect().left - a.getBoundingClientRect().left).slice(0, 8);
   panels.forEach((p, i) => {
@@ -546,7 +565,10 @@ function setTheme(t) {
   state.stack.forEach((l, i) => {
     const fresh = mount(l.name, t);
     fresh.style.visibility = l.host.style.visibility;
+    const top = l.host.scrollTop;
     l.host.replaceWith(fresh);
+    makeScrollable(fresh, l.name);
+    fresh.scrollTop = top;
     const old = l.host; l.host = fresh;
     if (i === state.stack.length - 1 && !state.reduced) {
       $("device").appendChild(old); old.style.zIndex = 5;

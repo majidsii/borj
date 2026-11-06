@@ -85,7 +85,7 @@ Screens never write animation code; they use these patterns, so motion is consis
 | `UndoToast` | rises from the bottom 16 px + fade, `standard`; auto-hides after 5 s; exits the same path ×0.7 |
 | Numbers (`AnimatedNumber`) | rolls from old to new value with `dataUpdate`; Persian digits; tabular figures so width does not jump; under Reduce Motion jumps |
 | Tracks, rings, bars (`ProgressTrack`, `BarChart`, `CategoryTracks`) | animate from the previous value with `dataUpdate`; on cold start grow from 0 with `dataEnter`, bars staggered 30 ms by importance (largest first) |
-| `DayTimeline` now-lens | moves continuously with the clock (linear, recomputed each minute); no pulse |
+| `DayTimeline` now-line | a 2 px pomegranate line with a «۱۴:۳۰» pill (owner 2026-11-06 rejected the glass now-lens as unclear); the elapsed part of the day is tinted and past blocks fade; the line moves with the clock (recomputed each minute); no pulse |
 | `EmptyState` | appears with `quick` fade only |
 | Theme change (light/dark/auto) | 300 ms cross-fade of the whole surface; no flashing |
 | Glass materialize | a glass shape entering animates opacity and scale 0.96 → 1 together with renderer thickness; never a bare fade of a refraction layer |
@@ -111,7 +111,7 @@ instantly. Every entry lists the lead (what moves first) and what deliberately d
 - Kanban: drag pattern; changing status animates the card into the target column with `soft`.
 - Calendar month change: grid slides 24 px in the reading direction + fade, `standard` (month = forward is
   left in RTL); swipe tracks 1:1.
-- Day timeline: blocks keep their positions; the now-lens glides; dragging a block to reschedule is 1:1
+- Day timeline: blocks keep their positions; the now-line glides; dragging a block to reschedule is 1:1
   with 15-minute snap ticks (haptic on Android).
 - Timer: running state shows the digits rolling each second (no pulse, no loop); start/stop button morphs
   play ↔ pause icon with `quick`.

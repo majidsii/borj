@@ -37,7 +37,8 @@ body { background: var(--page); color: var(--ink); font-family: var(--font); fon
 .device { position: absolute; top: 0; left: 0; transform-origin: 0 0; }
 .device.phone { border-radius: 54px; box-shadow: 0 0 0 11px #0d0e11, 0 30px 60px rgba(0,0,0,.28); overflow: hidden; }
 .device.mac { border-radius: 14px; box-shadow: 0 0 0 1px rgba(0,0,0,.2), 0 30px 60px rgba(0,0,0,.28); overflow: hidden; }
-.layer { position: absolute; inset: 0; overflow: hidden; background: transparent; }
+.layer { position: absolute; inset: 0; overflow: hidden; background: transparent; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+.layer::-webkit-scrollbar { display: none; }
 .toast { position: absolute; left: 50%; bottom: 96px; transform: translate(-50%, 16px); opacity: 0; z-index: 99; display: flex; gap: 12px; align-items: center;
   background: var(--toast); color: var(--toast-ink); border-radius: 99px; padding: 8px 8px 8px 16px; font: 600 14px/1.4 var(--font); white-space: nowrap;
   transition: transform 300ms cubic-bezier(.23,1,.32,1), opacity 200ms cubic-bezier(.23,1,.32,1); pointer-events: none; }

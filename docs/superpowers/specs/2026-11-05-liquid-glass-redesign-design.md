@@ -20,7 +20,7 @@ Research inputs: `references/2026-11-05-apple-first-party-app-patterns.md`, `ref
 ## 2. Owner decisions (fixed)
 
 1. **Every element is Liquid Glass**: chrome (tab bar, sidebar, toolbar, sheets, buttons) AND content (cards, list rows, chips, tiles, panels). Apple's "glass only on chrome" rule is overridden by the owner.
-2. **No glass on glass.** Anything drawn on top of a glass shape (checkmarks, inner rows of a grouped card, segmented thumbs, chart marks, progress fills, the "now" lens over a timeline card) is a flat inner material (`lg-in` in the kit), not a second glass layer. The single exception is a deliberate lens on its own sibling layer.
+2. **No glass on glass.** Anything drawn on top of a glass shape (checkmarks, inner rows of a grouped card, segmented thumbs, chart marks, progress fills, the "now" marker on a timeline card — since 2026-11-06 a flat now-line, not a glass lens) is a flat inner material (`lg-in` in the kit), not a second glass layer. The single exception is a deliberate lens on its own sibling layer.
 3. **Backgrounds:** light mode = pure white `#FFFFFF`; dark mode = charcoal `#1B1C20` with a warm radial light from the top leading corner (exact gradient in `kit2.css`). Mac: the window sits on the charcoal desk in both modes; window content is white (light) or `#24262B` (dark).
 4. **Appearance setting:** روشن / تیره / خودکار (follow the system), plus a glass-intensity slider (iOS 27 "Liquid Glass" slider equivalent: more clear ↔ more tinted). Default خودکار, intensity middle.
 5. **Platforms:** phone layouts follow iOS 27 (Android target), desktop layouts follow macOS 27 (Linux, Windows). RTL, Jalali, Persian digits, Vazirmatn.

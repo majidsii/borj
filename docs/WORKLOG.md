@@ -17,6 +17,12 @@ Entry template:
 
 ---
 
+## 2026-11-06 — Clickable prototype of all screens; Today timeline fixed
+- **Type:** implemented (design artefact) + decided
+- **What:** all 39 boards (phone + desktop, light + dark) wired into one clickable prototype with the motion spec (sheets from triggers, push/back, tab lens, cold-start data reveals, data-change rolls/morphs, row remove + undo, inspector, theme cross-fade, Reduce Motion); screens scroll with chrome pinned; decorative bars under the glass removed from the prototype. Owner rejected the glass "now" lens on the Today timeline (unclear, covered blocks); replaced in `screens/Main.html` by the same now-line + «۱۴:۳۰» pill as the Day screen, real time positions matching the task list, elapsed part tinted, a header line «بعدی: جلسه · ۳۰ دقیقهٔ دیگر»; boards regenerated.
+- **Evidence / links:** prototype https://claude.ai/artifact/B7XLCjeTuWKzPRwb63PL1g (generator `references/2026-11-05-glass-mockups/source/prototype/`, `python3 build_prototype.py <out.html>`); every route and all 39 screens exercised in headless Chrome with 0 errors.
+- **Follow-ups (next session):** owner reviews the prototype screen by screen and lists what to change; then owner review of the motion spec; then the redesign Phase 1 plan. Today customization still lives in the separate prototype https://claude.ai/artifact/9EMLdeoU2PEjJfur64Nv1W (merge it into the main prototype). Some buttons only show press feedback (e.g. the amount keypad).
+
 ## 2026-11-06 — Motion system and Today customization designed (draft)
 - **Type:** researched + decided (direction)
 - **What:** installed and applied motion skills (Emil Kowalski set, LottieFiles motion-design, dylantarre data-viz and accessible-motion); built a live Today prototype (move, drag-to-resize with faint preview, hide/undo, add, reset/undo, motion samples, Reduce Motion) and audited it against the skills; wrote the motion + customization spec with per-screen choreography.

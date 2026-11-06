@@ -31,6 +31,8 @@ def split(out):
     w, h = (int(x) for x in re.search(r'"width":(\d+),"height":(\d+)', out).groups())
     css = css.replace(":root", ":host").replace("body{margin:0}", "")
     body = body.replace("min-height: 100vh", "min-height: 100%")
+    # the boards put coloured bars under the glass so refraction has something to show; they are not UI
+    body = re.sub(r'<div aria-hidden="true" style="position:absolute;inset:0;overflow:hidden;border-radius:inherit;pointer-events:none">.*?</div></div>', "", body, flags=re.S)
     return css, body, w, h
 
 

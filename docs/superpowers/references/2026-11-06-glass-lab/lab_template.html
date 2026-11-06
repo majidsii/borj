@@ -1,0 +1,202 @@
+<title>Borj Glass Lab</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600;800;900&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one section per Apple glass style, each drawn on Apple-like light and dark backdrops with its exact Sketch values beside it. */
+:root {
+  --page: #f4f5f7; --panel: #ffffff; --ink: #1b2236; --ink2: #5a6378; --line: #e3e5ea; --accent: #2f6fdb;
+  --font: "Vazirmatn", Tahoma, sans-serif; --mono: "IBM Plex Mono", ui-monospace, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --page: #121316; --panel: #1b1c20; --ink: #eeeae4; --ink2: #9b9ca5; --line: #2b2c33; --accent: #5b8cff; color-scheme: dark; } }
+:root[data-theme="dark"] { --page: #121316; --panel: #1b1c20; --ink: #eeeae4; --ink2: #9b9ca5; --line: #2b2c33; --accent: #5b8cff; color-scheme: dark; }
+body { background: var(--page); color: var(--ink); font-family: var(--font); font-size: 14px; line-height: 1.7; margin: 0;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 28px 64px; }
+.wrap { max-width: 1120px; margin: 0 auto; display: flex; flex-direction: column; gap: 28px; }
+h1 { font-size: 30px; font-weight: 900; margin: 0; line-height: 1.3; }
+h2 { font-size: 20px; font-weight: 800; margin: 0; }
+.lead { color: var(--ink2); max-width: 70ch; margin: 6px 0 0; }
+.note { color: var(--ink2); font-size: 13px; max-width: 80ch; margin: 0; }
+section { background: var(--panel); border-radius: 18px; padding: 18px; box-shadow: inset 0 0 0 1px var(--line); display: flex; flex-direction: column; gap: 14px; }
+.scenes { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+@media (max-width: 760px) { .scenes { grid-template-columns: minmax(0, 1fr); } }
+.scene { position: relative; height: 300px; border-radius: 14px; overflow: hidden; display: grid; place-items: center; }
+.scene.light { background:
+  radial-gradient(160px 120px at 18% 30%, #ffb347, transparent 70%), radial-gradient(180px 140px at 80% 25%, #4fc3f7, transparent 70%),
+  radial-gradient(200px 140px at 60% 85%, #e57373, transparent 70%), radial-gradient(160px 120px at 25% 85%, #81c784, transparent 70%), #ffffff; }
+.scene.dark { background:
+  radial-gradient(180px 140px at 85% 10%, rgba(255,170,95,.55), transparent 70%), radial-gradient(160px 120px at 20% 70%, #3949ab, transparent 70%),
+  radial-gradient(160px 120px at 70% 80%, #00897b, transparent 70%), linear-gradient(180deg, #232427, #18191c); }
+.lines { position: absolute; inset: 0; pointer-events: none; font: 800 15px/22px var(--font); color: rgba(0,0,0,.55); padding: 14px 18px; overflow: hidden; direction: rtl; }
+.scene.dark .lines { color: rgba(255,255,255,.6); }
+.stripes { position: absolute; left: 0; right: 0; top: 46%; height: 34px; background: repeating-linear-gradient(90deg, #222 0 6px, transparent 6px 14px); opacity: .5; }
+.scene.dark .stripes { background: repeating-linear-gradient(90deg, #fff 0 6px, transparent 6px 14px); opacity: .35; }
+.label { position: absolute; top: 8px; left: 10px; font: 600 11px var(--mono); padding: 2px 8px; border-radius: 99px; background: rgba(0,0,0,.55); color: #fff; z-index: 5; }
+.params { font: 400 12px/1.7 var(--mono); color: var(--ink2); direction: ltr; text-align: left; background: var(--page); border-radius: 12px; padding: 10px 12px; overflow-x: auto; white-space: pre; }
+.g { position: absolute; }
+.g > .bd { position: absolute; inset: 0; border-radius: inherit; }
+.g .layer { position: absolute; pointer-events: none; }
+.g .content { position: relative; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; gap: 8px; font: 700 13px var(--font); }
+.track { position: absolute; width: 64px; height: 28px; border-radius: 99px; background: #34c759; }
+.toggle-row { position: relative; width: 120px; height: 40px; display: grid; place-items: center; }
+.controls { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.controls button { border: 0; border-radius: 99px; padding: 7px 14px; background: var(--page); color: var(--ink); font: 600 13px var(--font); cursor: pointer; box-shadow: inset 0 0 0 1px var(--line); }
+.controls button[aria-pressed="true"] { background: var(--accent); color: #fff; box-shadow: none; }
+</style>
+
+<div class="wrap" dir="rtl">
+  <header>
+    <h1>آزمایشگاه شیشهٔ اپل</h1>
+    <p class="lead">هر نمونه با مقادیر خودِ فایل اسکچ رسمی اپل کشیده شده است: مات‌شدگی، اشباع رنگ، عمق و قدرت شکست نور لبه، لایه‌های پرکننده با همان حالت ترکیب، و همهٔ لایه‌های نور و سایهٔ لبه با همان جابه‌جایی و پخش. مقادیر خام زیر هر نمونه آمده است. نورها و سایه‌های لبه، مثل اسکچ، فقط بیرون از لبه دیده می‌شوند.</p>
+    <p class="note">مرورگر نزدیک‌ترین تقریب ممکن است: شکست نور فقط در کروم و مرورگرهای کرومی دیده می‌شود، گوشه‌ها گرد معمولی‌اند نه گوشهٔ نرم اپل، و ترکیب «تیره‌تر جمعی» با ضرب تقریب زده شده است. مرجع نهایی خود برنامه روی دستگاه است.</p>
+    <div class="controls" style="margin-top:10px">
+      <button id="refrOn" aria-pressed="true">شکست نور روشن</button><button id="refrOff" aria-pressed="false">بدون شکست نور</button>
+    </div>
+  </header>
+  <div id="list" style="display:flex;flex-direction:column;gap:28px"></div>
+</div>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs id="defs"></defs></svg>
+
+<script>
+const STYLES = /*@STYLES@*/;
+const BLEND = { normal: "normal", darken: "darken", multiply: "multiply", lighten: "lighten", screen: "screen", luminosity: "luminosity",
+  plusLighter: "plus-lighter", plusDarker: "multiply", overlay: "overlay", softLight: "soft-light", colorBurn: "color-burn", colorDodge: "color-dodge" };
+const CSS_PLUS_LIGHTER = CSS.supports("mix-blend-mode", "plus-lighter");
+const CSS_PLUS_DARKER = CSS.supports("mix-blend-mode", "plus-darker");
+let REFRACT = true, uid = 0;
+
+const col = c => { // "#RRGGBB@a" -> rgba
+  if (!c) return "transparent";
+  const [hex, a] = c.split("@"); const n = parseInt(hex.slice(1), 16);
+  return `rgba(${n >> 16 & 255}, ${n >> 8 & 255}, ${n & 255}, ${a === undefined ? 1 : a})`;
+};
+const blendOf = b => b === "plusLighter" ? (CSS_PLUS_LIGHTER ? "plus-lighter" : "screen") : b === "plusDarker" ? (CSS_PLUS_DARKER ? "plus-darker" : "multiply") : (BLEND[b] || "normal");
+
+// refraction: a displacement map that bends the backdrop inside a bevel band of width depth * half-size
+function refractionFilter(w, h, r, glass) {
+  const id = "rf" + (uid++);
+  const b = Math.max(2, glass.depth * Math.min(w, h) / 2), shift = glass.distortion * b;
+  const cv = document.createElement("canvas"); cv.width = w; cv.height = h;
+  const ctx = cv.getContext("2d"), img = ctx.createImageData(w, h);
+  const rr = Math.min(r, w / 2, h / 2), hx = w / 2, hy = h / 2;
+  const sdf = (x, y) => { const qx = Math.abs(x - hx) - (hx - rr), qy = Math.abs(y - hy) - (hy - rr);
+    return Math.hypot(Math.max(qx, 0), Math.max(qy, 0)) + Math.min(Math.max(qx, qy), 0) - rr; };
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+    const d = -sdf(x + .5, y + .5); let dx = 0, dy = 0;
+    if (d > 0 && d < b) {
+      const gx = sdf(x + 1.5, y + .5) - sdf(x - .5, y + .5), gy = sdf(x + .5, y + 1.5) - sdf(x + .5, y - .5);
+      const len = Math.hypot(gx, gy) || 1, t = 1 - d / b, m = t * t; // strongest at the rim
+      dx = gx / len * m; dy = gy / len * m;   // sample from outward: the edge magnifies the background
+    }
+    const i = (y * w + x) * 4; img.data[i] = 128 + dx * 127; img.data[i + 1] = 128 + dy * 127; img.data[i + 2] = 128; img.data[i + 3] = 255;
+  }
+  ctx.putImageData(img, 0, 0);
+  const url = cv.toDataURL();
+  const ca = glass.chromaticAberrationMultiplier || 0, s = shift * 2;
+  const disp = (inp, sc, out) => `<feDisplacementMap in="${inp}" in2="map" scale="${sc}" xChannelSelector="R" yChannelSelector="G" result="${out}"/>`;
+  const body = ca > 0
+    ? `${disp("SourceGraphic", s * (1 + ca * 0.25), "r")}${disp("SourceGraphic", s, "g")}${disp("SourceGraphic", s * (1 - ca * 0.25), "b")}
+       <feColorMatrix in="r" type="matrix" values="1 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0" result="rr"/>
+       <feColorMatrix in="g" type="matrix" values="0 0 0 0 0  0 1 0 0 0  0 0 0 0 0  0 0 0 1 0" result="gg"/>
+       <feColorMatrix in="b" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 1 0 0  0 0 0 1 0" result="bb"/>
+       <feComposite in="rr" in2="gg" operator="arithmetic" k2="1" k3="1"/><feComposite in2="bb" operator="arithmetic" k2="1" k3="1"/>`
+    : disp("SourceGraphic", s, "out");
+  document.getElementById("defs").insertAdjacentHTML("beforeend",
+    `<filter id="${id}" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB"><feImage href="${url}" x="0" y="0" width="${w}" height="${h}" result="map" preserveAspectRatio="none"/>${body}</filter>`);
+  return id;
+}
+
+// one glass shape: backdrop (blur/saturate/brightness + refraction), then Sketch's shadows (drawn under the
+// translucent fills, so they shade the inside too) and fills, each with its own blend mode
+function glass(style, w, h, r, content = "") {
+  const g = style.glass, el = document.createElement("div");
+  el.className = "g"; Object.assign(el.style, { width: w + "px", height: h + "px", borderRadius: r + "px" });
+  const blur = (g.radius || 0) / 2;
+  const fid = REFRACT ? refractionFilter(w, h, r, g) : null;
+  const bd = document.createElement("div"); bd.className = "bd";
+  bd.style.backdropFilter = `${fid ? `url(#${fid}) ` : ""}blur(${blur}px) saturate(${g.saturation ?? 1}) brightness(${g.brightness ?? 1})`;
+  bd.style.webkitBackdropFilter = `blur(${blur}px) saturate(${g.saturation ?? 1})`;
+  el.appendChild(bd);
+  // Sketch draws a layer's shadows behind it; the glass interior covers them, so only what spills past the
+  // edge shows: CSS box-shadow on a transparent box paints exactly that, and each keeps its own blend mode
+  for (const s of style.shadows || []) {
+    const L = document.createElement("div"); L.className = "layer";
+    Object.assign(L.style, { inset: 0, borderRadius: r + "px", boxShadow: `${s.x}px ${s.y}px ${s.blur}px ${s.spread}px ${col(s.color)}`, mixBlendMode: blendOf(s.blend) });
+    el.appendChild(L);
+  }
+  for (const f of style.fills || []) { // fills are clipped to the shape by their own radius (no wrapper: a wrapper would isolate the blend)
+    const F = document.createElement("div"); F.className = "layer";
+    Object.assign(F.style, { inset: 0, borderRadius: r + "px", background: f.color ? col(f.color) : "transparent", mixBlendMode: blendOf(f.blend), opacity: f.opacity ?? 1 });
+    el.appendChild(F);
+  }
+  const c = document.createElement("div"); c.className = "content"; c.innerHTML = content; el.appendChild(c);
+  return el;
+}
+
+function scene(kind, label, place) {
+  const s = document.createElement("div"); s.className = "scene " + kind;
+  s.innerHTML = `<div class="lines">برج آجر به آجر بالا می‌رود. هر روز یک آجر، هر ماه یک برج. جلسه با تیم طراحی ساعت ۱۵:۰۰، تمدید بیمه، خرید هدیهٔ تولد. مانده از بودجه ۷٬۵۰۰٬۰۰۰ تومان. برج آجر به آجر بالا می‌رود. هر روز یک آجر، هر ماه یک برج.</div><div class="stripes"></div><span class="label">${label}</span>`;
+  place(s); return s;
+}
+
+const fmt = (name, st) => {
+  const g = st.glass;
+  const lines = [`${name}`, `glass  blur ${g.radius}  depth ${g.depth}  distortion ${g.distortion}  saturation ${g.saturation}  brightness ${g.brightness}  chromatic ${g.chromaticAberrationMultiplier}`];
+  (st.fills || []).forEach((f, i) => lines.push(`fill ${i}  ${f.color}  ${f.blend}`));
+  (st.shadows || []).forEach((s, i) => lines.push(`shadow ${String(i).padStart(2)}  ${s.color.padEnd(14)} x ${String(s.x).padStart(6)} y ${String(s.y).padStart(4)} blur ${String(s.blur).padStart(4)} spread ${String(s.spread).padStart(6)}  ${s.blend}`));
+  if (st.corners && st.corners.radii) lines.push(`corners ${JSON.stringify(st.corners.radii)} smoothing ${st.corners.smoothing}`);
+  return lines.join("\n");
+};
+
+const SECTIONS = [
+  { key: "Regular - Small", title: "کوچک: دکمه‌ها، نوار زبانه، نوار ابزار", w: 160, h: 62, r: 31, content: "امروز · کارها · مالی" },
+  { key: "Regular - Small - Tinted", title: "کوچکِ رنگی: دکمهٔ اصلی هر صفحه", w: 62, h: 62, r: 31, content: "<span style='font-size:26px'>+</span>", tint: true },
+  { key: "Regular - Medium", title: "متوسط: برگه‌ها، منوها، کارت‌ها", w: 300, h: 150, r: 34, content: "برگهٔ ورود سریع" },
+  { key: "Regular - Large", title: "بزرگ: هشدارها و بازرس", w: 300, h: 184, r: 34, content: "تراکنش حذف شود؟" },
+];
+
+function build() {
+  const list = document.getElementById("list"); list.innerHTML = ""; document.getElementById("defs").innerHTML = "";
+  for (const sec of SECTIONS) {
+    const S = document.createElement("section");
+    S.innerHTML = `<h2>${sec.title}</h2>`;
+    const sc = document.createElement("div"); sc.className = "scenes";
+    for (const mode of ["Light", "Dark"]) {
+      const st = STYLES[`${mode}/${sec.key}`];
+      sc.appendChild(scene(mode.toLowerCase(), `${mode}/${sec.key}`, s => {
+        let content = `<span style="color:${mode === "Light" ? "#1b2236" : "#f1f2f7"}">${sec.content}</span>`;
+        const el = glass(st, sec.w, sec.h, sec.r, content);
+        if (sec.tint) el.style.background = "rgba(47,111,219,.85)", el.querySelector(".content").innerHTML = "<span style='color:#fff;font-size:26px'>+</span>";
+        s.appendChild(el);
+      }));
+    }
+    S.appendChild(sc);
+    const p = document.createElement("div"); p.className = "params"; p.dir = "ltr";
+    p.textContent = fmt(`Liquid Glass/Light/${sec.key}`, STYLES[`Light/${sec.key}`]) + "\n\n" + fmt(`Liquid Glass/Dark/${sec.key}`, STYLES[`Dark/${sec.key}`]);
+    S.appendChild(p);
+    list.appendChild(S);
+  }
+  // clear glass + knob lens
+  const S = document.createElement("section");
+  S.innerHTML = `<h2>شفاف و عدسیِ دستگیره</h2><p class="note">دستگیرهٔ کلید، اسلایدر و انتخاب‌گر بخش‌ها عدسیِ بدون مات‌شدگی است؛ تنها جایی که اپل شیشه را روی کنترل می‌گذارد.</p>`;
+  const sc = document.createElement("div"); sc.className = "scenes";
+  sc.appendChild(scene("light", "Clear · Knob/Light", s => {
+    const a = glass(STYLES["Clear"], 142, 66, 33, "<span style='color:#1b2236'>شفاف</span>"); a.style.transform = "translateY(-60px)"; s.appendChild(a);
+    const row = document.createElement("div"); row.className = "toggle-row"; row.style.transform = "translateY(60px)";
+    row.innerHTML = "<div class='track'></div>"; const k = glass(STYLES["Knob/Light"], 59, 37, 18.5); k.style.left = "40px"; row.appendChild(k); s.appendChild(row);
+  }));
+  sc.appendChild(scene("dark", "Knob/Dark", s => {
+    const row = document.createElement("div"); row.className = "toggle-row";
+    row.innerHTML = "<div class='track'></div>"; const k = glass(STYLES["Knob/Dark"], 59, 37, 18.5); k.style.left = "40px"; row.appendChild(k); s.appendChild(row);
+  }));
+  S.appendChild(sc);
+  const p = document.createElement("div"); p.className = "params"; p.dir = "ltr";
+  p.textContent = fmt("Liquid Glass/Clear", STYLES["Clear"]) + "\n\n" + fmt("Toggle knob (light, inline)", STYLES["Knob/Light"]) + "\n\n" + fmt("Toggle knob (dark, inline)", STYLES["Knob/Dark"]);
+  S.appendChild(p);
+  list.appendChild(S);
+}
+document.getElementById("refrOn").onclick = () => { REFRACT = true; document.getElementById("refrOn").setAttribute("aria-pressed", true); document.getElementById("refrOff").setAttribute("aria-pressed", false); build(); };
+document.getElementById("refrOff").onclick = () => { REFRACT = false; document.getElementById("refrOn").setAttribute("aria-pressed", false); document.getElementById("refrOff").setAttribute("aria-pressed", true); build(); };
+build();
+</script>

@@ -17,6 +17,12 @@ Entry template:
 
 ---
 
+## 2026-11-06 — Apple glass from the official Sketch kits; glass lab
+- **Type:** researched
+- **What:** downloaded the current Apple iOS 27 and macOS 27 UI kits (Sketch 2026.3.1) from Apple Design Resources into `~/projects/personal/borj/apple-kits/` (outside the repo); extracted every glass style (iOS 17, macOS 18) and every layer that uses glass (367 / 291) with sizes and corners; the 20 source-locked glass recipes are value-for-value identical in the new revision. Built a glass lab page that draws each Apple style from its exact values (backdrop blur/saturation, edge refraction from depth/distortion, fills with their blend modes, edge shadows outside the shape).
+- **Evidence / links:** `docs/superpowers/references/2026-11-06-apple-glass-from-sketch-kits.md`; `generated/apple_glass_usage_2026-11.json`; `tool/extract_apple_glass_usage.py`; lab `references/2026-11-06-glass-lab/` → https://claude.ai/artifact/UrTvVrjw2aiqYkMSPYGt6g; commit `25f1da5` and the next one.
+- **Follow-ups:** owner approval to adopt the new kit revision as the locked source (no recipe change); align prototype/app sizes with Apple's component geometry (tab bar 62, sheet corner 34, toolbar 44); allow the knob lens as the sanctioned glass-on-glass exception.
+
 ## 2026-11-06 — Prototype: Today customization merged, live controls
 - **Type:** implemented (design artefact)
 - **What:** the main prototype now carries Today edit mode (button «ویرایش» or long-press; drag to reorder; drag the handle to resize with a faint preview; hide + undo; add sheet; reset + undo). Generic controls work on every board: segmented controls and chip groups move a glass pill under the labels (tab bar too), switches toggle, the amount keypad types, +/- steppers change their number. Timeline blocks no longer truncate labels.

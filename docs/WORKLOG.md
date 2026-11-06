@@ -17,6 +17,12 @@ Entry template:
 
 ---
 
+## 2026-11-06 — Boards aligned to Apple component sizes; kit revision adoption dispatched
+- **Type:** implemented (design artefact) + decided
+- **What:** owner approved both (adopt the new kit revision; align sizes). Boards: phone tab bar is Regular-Small glass 62 pt tall (54 pt items + 4 pt padding), search circle 62×62, phone sheet corners 34, macOS toolbar controls 36 pt; boards and the prototype regenerated (prototype regression runs: 0 errors). Kit adoption written as `docs/superpowers/plans/2026-11-06-adopt-apple-kit-revision.md` and dispatched to a sonnet subagent (regenerate the Apple source chain, manifest, tests).
+- **Evidence / links:** prototype https://claude.ai/artifact/B7XLCjeTuWKzPRwb63PL1g; plan above.
+- **Follow-ups:** review the subagent's commit `chore: adopt the 2026-11 Apple UI kit revision as the locked visual source` (diff vs plan, `flutter analyze`, focused tests). If that commit does not exist, run the plan's Task 1 again.
+
 ## 2026-11-06 — Apple glass from the official Sketch kits; glass lab
 - **Type:** researched
 - **What:** downloaded the current Apple iOS 27 and macOS 27 UI kits (Sketch 2026.3.1) from Apple Design Resources into `~/projects/personal/borj/apple-kits/` (outside the repo); extracted every glass style (iOS 17, macOS 18) and every layer that uses glass (367 / 291) with sizes and corners; the 20 source-locked glass recipes are value-for-value identical in the new revision. Built a glass lab page that draws each Apple style from its exact values (backdrop blur/saturation, edge refraction from depth/distortion, fills with their blend modes, edge shadows outside the shape).

@@ -25,7 +25,7 @@ Future<void> bootstrapApp() async {
     return true;
   };
 
-  const preferencesStore = FileAppearancePreferencesStore(
+  final preferencesStore = FileAppearancePreferencesStore(
     directory: getApplicationDocumentsDirectory,
   );
   final initialPreferences = await preferencesStore.load();

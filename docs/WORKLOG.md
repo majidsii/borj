@@ -17,6 +17,12 @@ Entry template:
 
 ---
 
+## 2026-11-07 — Apple UI kit 2026-11 revision adopted as the locked source
+- **Type:** implemented + found
+- **What:** finished `docs/superpowers/plans/2026-11-06-adopt-apple-kit-revision.md` (steps 4–7) and squash-merged `wip/apple-kit-revision-adoption` into `feat/v2-complete-dashboard`. The metric changes parked on 2026-11-06 are real kit changes, not tool artefacts: re-running the extractor on the new kits reproduces the committed reference byte for byte, generator logic is unchanged apart from hash constants, and raw Sketch lookups confirm the frames. 160 macOS toolbar segmented controls narrow by exactly 1 pt per separator (the kit's separators are now 2 pt); the four 71 pt iOS "variants" were page-title text layers misclassified by name, which Apple replaced with a `_Header` symbol; the 34 pt close buttons joined the button class after Apple renamed them (same IDs and size); toolbar provenance renamed under the same IDs. No app widget reads metric variants, so no app size changes. Page-count tests updated 34/37 → 36/38.
+- **Evidence / links:** commit `e3c1579`; manifest "Current revision (2026-11-06)" section in `docs/superpowers/references/2026-08-09-apple-ui-kit-source-manifest.md`; `flutter analyze` clean; `flutter test` 1376 passed, 0 failed; `tool/verify_visual_foundation_2a_sources.py` and `..._source_filename_canonicalization.py` PASS; `dart format --output=none --set-exit-if-changed lib/app/apple_visual/generated` 0 changed.
+- **Follow-ups:** the generators' `--check` mode reports "stale" for formatted files on this branch and on the previous base alike (it compares unformatted output); nothing calls it. Branch `wip/apple-kit-revision-adoption` can be deleted once the owner agrees. Next: owner reviews the prototype and the motion spec, then the redesign Phase 1 plan.
+
 ## 2026-11-06 — Boards aligned to Apple component sizes; kit revision adoption dispatched
 - **Type:** implemented (design artefact) + decided
 - **What:** owner approved both (adopt the new kit revision; align sizes). Boards: phone tab bar is Regular-Small glass 62 pt tall (54 pt items + 4 pt padding), search circle 62×62, phone sheet corners 34, macOS toolbar controls 36 pt; boards and the prototype regenerated (prototype regression runs: 0 errors). Kit adoption written as `docs/superpowers/plans/2026-11-06-adopt-apple-kit-revision.md` and dispatched to a sonnet subagent (regenerate the Apple source chain, manifest, tests).

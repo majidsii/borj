@@ -11,7 +11,7 @@
 >
 > **Visual direction (2026-11-02):** Liquid Glass rendering now follows `docs/superpowers/specs/2026-11-02-liquid-glass-renderer-adoption-design.md`. It replaces the Gate C custom renderer and the pixel-golden acceptance rule. Glass is accepted perceptually (side-by-side with real iOS 27 / macOS 27 captures); design tokens stay source-derived. Read that spec before proposing any UI change.
 
-Last updated: **2026-11-04**
+Last updated: **2026-11-07**
 Current branch: `feat/v2-complete-dashboard`
 Latest fully verified checkpoint commit: `458499dfdb3504034d1d7115bd1515fe20ffc876`
 Project stack: Flutter desktop + Riverpod + Drift/SQLite
@@ -1138,7 +1138,7 @@ As of this document:
 - v1 data import is implemented (2026-11-04): Settings, then "Import from v1" (preview, one transaction, idempotent via `legacy_imports`). Release still needs part B (packaging) and part C (name برج / Borj applied and logo approved 2026-11-06; platform icon wiring remains).
 - IRT money is whole toman (scale 0, schema 9); `Money` arithmetic is overflow-checked.
 - 2026-11-06 session end: product renamed Borj (repo `majidsii/borj`, folders `~/projects/personal/borj/`), logo kit approved (`assets/brand/`), motion + Today customization spec drafted (`docs/superpowers/specs/2026-11-06-motion-and-today-customization-design.md`, awaiting owner review), clickable prototype of all screens https://claude.ai/artifact/B7XLCjeTuWKzPRwb63PL1g. Resume: owner reviews the prototype, then approve the motion spec, then write the redesign Phase 1 plan.
-- 2026-11-06 late session: prototype has Today edit mode and live controls; official Apple iOS/macOS 27 Sketch kits downloaded to `~/projects/personal/borj/apple-kits/` and analysed (`docs/superpowers/references/2026-11-06-apple-glass-from-sketch-kits.md`, glass lab https://claude.ai/artifact/UrTvVrjw2aiqYkMSPYGt6g); boards aligned to Apple sizes; kit revision adoption per `docs/superpowers/plans/2026-11-06-adopt-apple-kit-revision.md` is parked on branch `wip/apple-kit-revision-adoption` because regenerated metrics change existing values (see WORKLOG top entry) — investigate, then finish steps 4–7. Resume after that: owner reviews prototype + motion spec, then the redesign Phase 1 plan.
+- 2026-11-06 late session: prototype has Today edit mode and live controls; official Apple iOS/macOS 27 Sketch kits downloaded to `~/projects/personal/borj/apple-kits/` and analysed (`docs/superpowers/references/2026-11-06-apple-glass-from-sketch-kits.md`, glass lab https://claude.ai/artifact/UrTvVrjw2aiqYkMSPYGt6g); boards aligned to Apple sizes; kit revision adoption per `docs/superpowers/plans/2026-11-06-adopt-apple-kit-revision.md` is DONE (2026-11-07, `e3c1579`): the metric changes were verified as real kit changes (manifest `docs/superpowers/references/2026-08-09-apple-ui-kit-source-manifest.md`, "Current revision"). Resume: owner reviews prototype + motion spec, then the redesign Phase 1 plan.
 - Next step: part B: packaging + Android signing + Android CI build.
 - Tasks 2.10–2.11 remain pending and must be designed individually before implementation.
 

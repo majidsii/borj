@@ -6,7 +6,9 @@
 with professional data reveals.
 **Extends:** `2026-11-05-liquid-glass-redesign-design.md` (§3.3 motion note, §4 motion tokens, §7 phases).
 Boards still win on layout; this spec adds behaviour over time.
-**Prototype:** https://claude.ai/artifact/9EMLdeoU2PEjJfur64Nv1W (web approximation; glass is CSS).
+**Prototypes:** all 39 boards wired with this motion spec: https://claude.ai/artifact/B7XLCjeTuWKzPRwb63PL1g
+(generator `references/2026-11-05-glass-mockups/source/prototype/`); Today customization:
+https://claude.ai/artifact/9EMLdeoU2PEjJfur64Nv1W. Web approximations; glass is CSS.
 
 ## 1. Sources and how they were used
 

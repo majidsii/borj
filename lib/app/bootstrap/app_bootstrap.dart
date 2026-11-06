@@ -3,13 +3,15 @@ import 'dart:ui';
 import 'package:borj/app/bootstrap/notification_startup_bootstrap.dart';
 import 'package:borj/app/router/app_router.dart';
 import 'package:borj/app/theme/original_theme.dart';
-import 'package:borj/app/theme/theme_mode_controller.dart';
 import 'package:borj/core/providers/persistence_providers.dart';
+import 'package:borj/features/settings/application/appearance_preferences_controller.dart';
+import 'package:borj/features/settings/data/file_appearance_preferences_store.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:liquid_glass_renderer/liquid_glass_renderer.dart';
+import 'package:path_provider/path_provider.dart';
 
 Future<void> bootstrapApp() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -23,7 +25,19 @@ Future<void> bootstrapApp() async {
     return true;
   };
 
-  final container = ProviderContainer();
+  const preferencesStore = FileAppearancePreferencesStore(
+    directory: getApplicationDocumentsDirectory,
+  );
+  final initialPreferences = await preferencesStore.load();
+
+  final container = ProviderContainer(
+    overrides: [
+      appearancePreferencesStoreProvider.overrideWithValue(preferencesStore),
+      initialAppearancePreferencesProvider.overrideWithValue(
+        initialPreferences,
+      ),
+    ],
+  );
 
   runApp(
     UncontrolledProviderScope(
@@ -55,9 +69,11 @@ final class BorjApp extends ConsumerWidget {
       onGenerateTitle: (context) => 'برج',
       theme: OriginalTheme.light(),
       darkTheme: OriginalTheme.dark(),
-      themeMode: ref.watch(dashboardThemeModeProvider),
-      themeAnimationDuration: const Duration(milliseconds: 400),
-      themeAnimationCurve: Curves.easeOutCubic,
+      themeMode: ref.watch(
+        appearancePreferencesProvider.select((p) => p.mode.themeMode),
+      ),
+      themeAnimationDuration: const Duration(milliseconds: 300),
+      themeAnimationCurve: Curves.easeOut,
       routerConfig: ref.watch(appRouterProvider),
     );
   }

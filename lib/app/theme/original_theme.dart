@@ -1,3 +1,4 @@
+import 'package:borj/app/theme/app_theme.dart';
 import 'package:borj/app/theme/original_design_tokens.dart';
 import 'package:flutter/material.dart';
 
@@ -22,7 +23,10 @@ abstract final class OriginalTheme {
     );
 
     return base.copyWith(
-      extensions: <ThemeExtension<dynamic>>[palette],
+      extensions: <ThemeExtension<dynamic>>[
+        palette,
+        if (brightness == Brightness.dark) AppTheme.dark else AppTheme.light,
+      ],
       textTheme: base.textTheme.apply(
         fontFamily: 'Vazirmatn',
         bodyColor: palette.ink,

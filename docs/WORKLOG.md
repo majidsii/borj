@@ -17,6 +17,12 @@ Entry template:
 
 ---
 
+## 2026-11-06 — GitHub repo and local folders renamed to Borj
+- **Type:** implemented
+- **What:** `majidsii/dashboard-shakhsi` renamed to `majidsii/borj` (GitHub redirects old URLs; v1 releases unchanged); `origin` updated in the main repo and the v1 clone. Folders moved under `~/projects/personal/borj/`: `v1`, `main`, `v2-integration`, the glass/spike worktrees, `reference-captures`, `gate-c-wip-backup-2026-11-04`; `git worktree repair` run; native `build/` dirs dropped. Claude project memory copied to the new main path key.
+- **Evidence / links:** `git worktree list` shows the new paths; `git fetch` and `flutter analyze` clean in `borj/v2-integration`.
+- **Follow-ups:** none
+
 ## 2026-11-06 — v2 renamed to Borj
 - **Type:** implemented
 - **What:** Dart package `borj`, `BorjApp`, UI and notification title `برج`, `borj.*` loggers, AUMID `Majidsii.Borj`, systemd `borj-notification-*` units and registry, Drift file `borj.sqlite` with a one-time move of `dashboard_shakhsi.sqlite*`; app ID `app.borj` on Android (no longer upgrades over v1), Linux, macOS; binary `borj` on Linux/Windows; living docs and redesign boards. v1 data dir `dashboard-shakhsi` kept for the importer.

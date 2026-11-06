@@ -8,12 +8,6 @@ this file is the history behind it.
 Entry template:
 
 ```markdown
-## 2026-11-06 — Liquid Glass redesign approved (spec)
-
-- **What:** the owner approved 78 boards (39 screens, light and dark) after several design rounds; every element is Liquid Glass, never glass on glass; light = white, dark = charcoal with warm corner light.
-- **Docs:** spec `docs/superpowers/specs/2026-11-05-liquid-glass-redesign-design.md`; boards and generator `docs/superpowers/references/2026-11-05-glass-mockups/`; research `references/2026-11-05-{apple-first-party-app-patterns,design-skills-synthesis,ia-and-design-system-architecture}.md`.
-- **Next:** Phase 1 Foundation plan, then subagent-driven execution; product name and glass logo (owner decision).
-
 ## YYYY-MM-DD — <title>
 - **Type:** implemented | reviewed | researched | decided | found
 - **What:** one or two lines
@@ -22,6 +16,18 @@ Entry template:
 ```
 
 ---
+
+## 2026-11-06 — Product name decided: Borj (برج)
+- **Type:** decided
+- **What:** the owner approved برج (Latin "Borj") as the v2 product name, after two rounds with the `naming` skill. A tower built brick by brick; in Iranian speech برج is also a Jalali month ("سر برج").
+- **Evidence / links:** `docs/superpowers/references/2026-11-06-product-name-borj.md` (brief, rejected candidates, availability: `borj.app` and `getborj.com` unregistered; GitHub `borj`/`borjapp` taken).
+- **Follow-ups:** apply the name (app ID, binary, desktop entry, window title, data dir, Android package) with its own spec and plan; logo with the `logo-design` skill; owner may register `borj.app` and the Telegram handle.
+
+## 2026-11-06 — Liquid Glass redesign approved (spec)
+
+- **What:** the owner approved 78 boards (39 screens, light and dark) after several design rounds; every element is Liquid Glass, never glass on glass; light = white, dark = charcoal with warm corner light.
+- **Docs:** spec `docs/superpowers/specs/2026-11-05-liquid-glass-redesign-design.md`; boards and generator `docs/superpowers/references/2026-11-05-glass-mockups/`; research `references/2026-11-05-{apple-first-party-app-patterns,design-skills-synthesis,ia-and-design-system-architecture}.md`.
+- **Next:** Phase 1 Foundation plan, then subagent-driven execution; product name and glass logo (owner decision).
 
 ## 2026-11-04 — Release data foundation (money scale 0, v1 import)
 - **Type:** implemented

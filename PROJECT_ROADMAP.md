@@ -26,7 +26,7 @@ The owner delegated prioritization. Each item gets its own spec → plan → imp
 
 1. **Engineering baseline** — CI (analyze, test, Linux build) restored; v2 deleted the v1 workflow in `9f0573d`. — **DONE** (2026-11-03, checkpoint: docs/superpowers/checkpoints/2026-11-03-ci-baseline-checkpoint.md)
 2. **Liquid Glass adoption** — spec `2026-11-02-liquid-glass-renderer-adoption-design.md`. — **DONE** (2026-11-04, awaiting owner visual sign-off; checkpoint: docs/superpowers/checkpoints/2026-11-04-liquid-glass-adoption-checkpoint.md)
-3. **v2 release readiness** — import v1 `data.json` (v1 users exist; v2 has no importer today), product name decision (before release: app ID and data paths depend on it), packaging and release automation. Part A (data foundation: whole-toman money, checked arithmetic, v1 importer) — **DONE** (2026-11-04, checkpoint: docs/superpowers/checkpoints/2026-11-04-release-data-foundation-checkpoint.md). Remaining: part B (packaging, release automation, Android signing continuity) and part C (product name).
+3. **v2 release readiness** — import v1 `data.json` (v1 users exist; v2 has no importer today), product name decision (before release: app ID and data paths depend on it), packaging and release automation. Part A (data foundation: whole-toman money, checked arithmetic, v1 importer) — **DONE** (2026-11-04, checkpoint: docs/superpowers/checkpoints/2026-11-04-release-data-foundation-checkpoint.md). Remaining: part B (packaging, release automation, Android signing continuity) and part C (product name). Part C name decided 2026-11-06: **برج / Borj** (docs/superpowers/references/2026-11-06-product-name-borj.md); applying it (app ID, binary, data dir, Android package) and the logo are still open.
 4. **Habits and Goals** — complete the all-in-one product.
 5. **Tasks 2.9–2.11** — Trash/Undo/Audit, dashboard cards, Phase 2 checkpoint. No longer blocked by visual work.
 
@@ -1133,7 +1133,7 @@ As of this document:
 - CI baseline is DONE (2026-11-03): every push runs `tool/ci.sh` on GitHub Actions.
 - The Gate C custom renderer is removed (`c2d76dc`); glass goes through `AppleLiquidGlass`.
 - Shader filters work on Linux desktop only with Impeller enabled (`flutter test integration_test/... -d linux --enable-impeller` → supported; without the flag → unsupported).
-- v1 data import is implemented (2026-11-04): Settings, then "Import from v1" (preview, one transaction, idempotent via `legacy_imports`). Release still needs part B (packaging) and part C (product name).
+- v1 data import is implemented (2026-11-04): Settings, then "Import from v1" (preview, one transaction, idempotent via `legacy_imports`). Release still needs part B (packaging) and part C (name chosen 2026-11-06: برج / Borj; applying it and the logo remain).
 - IRT money is whole toman (scale 0, schema 9); `Money` arithmetic is overflow-checked.
 - Next step: part B: packaging + Android signing + Android CI build.
 - Tasks 2.10–2.11 remain pending and must be designed individually before implementation.

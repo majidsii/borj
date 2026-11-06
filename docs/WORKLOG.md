@@ -17,6 +17,12 @@ Entry template:
 
 ---
 
+## 2026-11-06 — Prototype: Today customization merged, live controls
+- **Type:** implemented (design artefact)
+- **What:** the main prototype now carries Today edit mode (button «ویرایش» or long-press; drag to reorder; drag the handle to resize with a faint preview; hide + undo; add sheet; reset + undo). Generic controls work on every board: segmented controls and chip groups move a glass pill under the labels (tab bar too), switches toggle, the amount keypad types, +/- steppers change their number. Timeline blocks no longer truncate labels.
+- **Evidence / links:** https://claude.ai/artifact/B7XLCjeTuWKzPRwb63PL1g; commits `08ad88b` and the next one; headless-Chrome runs of edit mode and controls with 0 errors.
+- **Follow-ups:** owner review of the prototype and of the motion spec; then the redesign Phase 1 plan.
+
 ## 2026-11-06 — Clickable prototype of all screens; Today timeline fixed
 - **Type:** implemented (design artefact) + decided
 - **What:** all 39 boards (phone + desktop, light + dark) wired into one clickable prototype with the motion spec (sheets from triggers, push/back, tab lens, cold-start data reveals, data-change rolls/morphs, row remove + undo, inspector, theme cross-fade, Reduce Motion); screens scroll with chrome pinned; decorative bars under the glass removed from the prototype. Owner rejected the glass "now" lens on the Today timeline (unclear, covered blocks); replaced in `screens/Main.html` by the same now-line + «۱۴:۳۰» pill as the Day screen, real time positions matching the task list, elapsed part tinted, a header line «بعدی: جلسه · ۳۰ دقیقهٔ دیگر»; boards regenerated.

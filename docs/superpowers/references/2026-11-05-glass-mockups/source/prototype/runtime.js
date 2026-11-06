@@ -107,6 +107,7 @@ function route(screen, label, el, root) {
         if (label === "انتقال" || label === "حساب جدید") return { to: "PhoneAddTxn", kind: "sheet" };
         break;
       case "PhoneSearch":
+        if (el.closest('[role="tablist"]')) return null;
         if (el.closest("li") || /[۰-۹]/.test(label)) return { to: "PhoneTaskDetail", kind: "sheet" };
         break;
       case "PhoneSettings":
@@ -286,6 +287,11 @@ function findDialog(sr) {
 // glass selection lens slides from the old tab/sidebar item to the new one; content itself does not move
 function slideLens(oldSr, newSr) {
   if (state.reduced) return;
+  { const sel = sr => sr.querySelector("nav .lg-in, aside .lg-in"); const a = sel(oldSr), b = sel(newSr);
+    if (a && b && b.parentElement) { const ra = stageRect(a), fake = document.createElement("div");
+      Object.assign(fake.style, { position: "absolute", left: 0, top: 0, width: 0, height: 0 });
+      fake.getBoundingClientRect = () => { const d = $("device").getBoundingClientRect(), s = state.scale; return { left: d.left + ra.x * s, top: d.top + ra.y * s, width: ra.w * s, height: ra.h * s }; };
+      slidePill(fake, b); return; } }
   const sel = sr => sr.querySelector("nav .lg-in, aside .lg-in, nav [aria-current], aside [aria-current]");
   const a = sel(oldSr), b = sel(newSr);
   if (!a || !b) return;
@@ -479,6 +485,97 @@ function toggleTimer(sr) {
   caption("PhoneTimer", "demo", "زمان‌سنج روشن: فقط رقم‌ها عوض می‌شوند، بدون تپش و حلقهٔ حرکتی");
 }
 
+// ---------- generic controls ----------
+// a glass pill slides from the old selection to the new one, under the labels (snappy, slight stretch)
+function slidePill(fromEl, toEl) {
+  if (state.reduced) return;
+  const box = toEl.parentElement, s = state.scale || 1;
+  const br = box.getBoundingClientRect(), a = fromEl.getBoundingClientRect(), b = toEl.getBoundingClientRect();
+  const cs = getComputedStyle(toEl);
+  const pill = document.createElement("div");
+  if (toEl.classList.contains("lg-in")) pill.className = "lg-in";
+  Object.assign(pill.style, { position: "absolute", left: (b.left - br.left) / s - box.clientLeft + "px", top: (b.top - br.top) / s - box.clientTop + "px",
+    width: b.width / s + "px", height: b.height / s + "px", borderRadius: cs.borderRadius, backgroundColor: cs.backgroundColor, backgroundImage: cs.backgroundImage,
+    boxShadow: cs.boxShadow, zIndex: 0, pointerEvents: "none" });
+  if (getComputedStyle(box).position === "static") box.style.position = "relative";
+  const kids = [...box.children].map(k => [k, k.style.position, k.style.zIndex]);
+  kids.forEach(([k]) => { if (getComputedStyle(k).position === "static") k.style.position = "relative"; k.style.zIndex = 1; });
+  const keep = [toEl.className, toEl.style.backgroundColor, toEl.style.backgroundImage, toEl.style.boxShadow];
+  toEl.classList.remove("lg-in"); toEl.style.backgroundColor = "transparent"; toEl.style.backgroundImage = "none"; toEl.style.boxShadow = "none";
+  box.appendChild(pill);
+  const dx = (a.left - b.left) / s, dy = (a.top - b.top) / s;
+  pill.animate([{ transform: `translate(${dx}px, ${dy}px)` }, { transform: `translate(${dx * 0.45}px, ${dy * 0.45}px) scaleX(1.1)`, offset: 0.5 }, { transform: "none" }],
+    { duration: 300, easing: EASE_OUT }).onfinish = () => {
+    pill.remove();
+    [toEl.className, toEl.style.backgroundColor, toEl.style.backgroundImage, toEl.style.boxShadow] = keep;
+    kids.forEach(([k, p, z]) => { k.style.position = p; k.style.zIndex = z; });
+  };
+}
+
+// segmented controls / chip groups: the clicked item takes the selected look of the old one
+function segSelect(btn) {
+  const box = btn.parentElement;
+  const sibs = [...box.children].filter(c => c.matches("button, a, [role='tab']"));
+  if (sibs.length < 2) return;
+  const isSel = c => c.getAttribute("aria-selected") === "true" || c.getAttribute("aria-pressed") === "true" || c.hasAttribute("aria-current") || c.classList.contains("lg-in");
+  let sel = sibs.find(isSel);
+  if (!sel) {
+    const bg = sibs.map(c => getComputedStyle(c).backgroundColor);
+    sel = sibs.find((c, i) => bg[i] !== "rgba(0, 0, 0, 0)" && bg.filter(x => x === bg[i]).length === 1);
+  }
+  if (!sel || sel === btn) return;
+  for (const at of ["class", "style", "aria-selected", "aria-pressed", "aria-current"]) {
+    const x = sel.getAttribute(at), y = btn.getAttribute(at);
+    if (x === null) btn.removeAttribute(at); else btn.setAttribute(at, x);
+    if (y === null) sel.removeAttribute(at); else sel.setAttribute(at, y);
+  }
+  slidePill(sel, btn);
+}
+
+function toggleSwitch(sw) {
+  const on = sw.getAttribute("aria-checked") !== "true";
+  sw.setAttribute("aria-checked", on);
+  const knob = sw.querySelector("span");
+  if (!sw.dataset.onBg) sw.dataset.onBg = sw.style.background;
+  const ms = state.reduced ? 0 : 200;
+  sw.style.transition = `background ${ms}ms ease-out`;
+  sw.style.background = on ? sw.dataset.onBg : "var(--ink-22)";
+  if (knob) { knob.style.transition = `transform ${ms}ms cubic-bezier(.23,1,.32,1)`; knob.style.transform = on ? "none" : "translateX(20px)"; }
+}
+
+// amount keypad: typing is instant (high frequency), digits only, Persian separators kept
+function keypad(btn, label, sr) {
+  const dlg = findDialog(sr) || sr;
+  if (!/^[۰-۹]+$/.test(label) && label !== "حذف رقم") return false;
+  const big = bigNumbers(dlg).sort((a, b) => parseFloat(getComputedStyle(b).fontSize) - parseFloat(getComputedStyle(a).fontSize))[0];
+  if (!big) return true;
+  const tpl = big.dataset.kt || big.textContent; big.dataset.kt = tpl;
+  const m = tpl.match(/[۰-۹][۰-۹٬,]*/);
+  if (!m) return true;
+  const sep = m[0].includes("٬") ? "٬" : ",";
+  let v = big.dataset.v !== undefined ? parseInt(big.dataset.v, 10) : parseInt(toLatin(m[0]).replace(/[٬,]/g, ""), 10);
+  if (big.dataset.v === undefined) v = 0; // first key starts a fresh amount
+  if (label === "حذف رقم") v = Math.floor(v / 10);
+  else v = Math.min(v * Math.pow(10, label.length) + parseInt(toLatin(label), 10), 999999999999);
+  big.dataset.v = v;
+  big.textContent = tpl.replace(m[0], toFa(String(v).replace(/\B(?=(\d{3})+(?!\d))/g, sep)));
+  return true;
+}
+
+// +/- steppers: the number next to them changes in place
+function stepper(btn, d) {
+  let n = btn.parentElement;
+  for (let i = 0; i < 3 && n; i++, n = n.parentElement) {
+    const num = [...n.querySelectorAll("*")].find(e => !e.children.length && /^[۰-۹]+$/.test(e.textContent.trim()));
+    if (num) {
+      const v = Math.max(1, parseInt(toLatin(num.textContent.trim()), 10) + d);
+      num.textContent = toFa(v);
+      if (!state.reduced) num.animate([{ transform: `translateY(${d > 0 ? 6 : -6}px)`, opacity: 0.3 }, { transform: "none", opacity: 1 }], { duration: 160, easing: EASE_OUT });
+      return;
+    }
+  }
+}
+
 // ---------- input ----------
 function onPress(e) {
   const el = e.target.closest("button, a, [role='button']");
@@ -507,7 +604,12 @@ function onClick(e, name, sr) {
   if (!el) return;
   if (el.matches("label") && e.target.matches("input")) return;
   const label = labelOf(el);
+  if (el.matches('[role="switch"]')) { toggleSwitch(el); return; }
+  if (name === "PhoneAddTxn" && keypad(el, label, sr)) return;
+  if (/^(افزایش|کاهش) /.test(label)) { stepper(el, label.startsWith("افزایش") ? 1 : -1); return; }
   const r = route(name, label, el, sr);
+  const inGroup = el.parentElement && el.parentElement.matches('[role="group"],[role="tablist"],[role="radiogroup"]');
+  if (inGroup && (!r || r.demo || r.kind === "seg")) segSelect(el);
   if (!r) return;
   if (r.demo) { r.demo(); return; }
   if (r.kind === "back" || r.kind === "close") { goBack({ bump: r.bump }); return; }

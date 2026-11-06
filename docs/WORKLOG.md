@@ -17,6 +17,12 @@ Entry template:
 
 ---
 
+## 2026-11-07 — Prototype and motion spec approved; redesign Phase 1 Part A planned
+- **Type:** decided + planned
+- **What:** the owner walked through the prototype's Today screen («همه چیز عالیه») and Tasks screens, then said «عالیه باید پیاده بشه تا بعد اگر مشکل داشت فیکس کنیم» (implement it, fix problems later). The other screens were not reviewed one by one. Motion spec marked APPROVED with that quote, plus a note that `AppMotion` maps the Apple springs by name only (spec values 0.40/1.0 and 0.28/1.0; the source values 0.55/1.0 and 0.15/0.86 stay as provenance). Phase 1 is split: Part A (preferences JSON file, `AppTheme`, motion tokens + `MotionScope`, `AppGlass`/`GlassScope`/`GlassBackdropGroup` + reduce-transparency fallback, capture-budget tests, device perf probe) is planned; Part B (primitives, patterns, Appearance UI, review page, checkpoint) is planned after the probe numbers.
+- **Evidence / links:** plan `docs/superpowers/plans/2026-11-07-redesign-phase-1a-foundation.md` (commit `6bcbf6d` and the next one); measured: Vazirmatn `tnum` gives every Persian digit the same width (0.659 em).
+- **Follow-ups:** owner decision before Part B. Dark-mode semantic text colours (link 3.82, success 4.30, warn 4.23, danger 3.51, purple 3.43:1 against the brightest glass stop) are below spec §3.2's 4.5:1: approve the deviation, or lighten them. Owner yes/no to start Part A.
+
 ## 2026-11-07 — Apple UI kit 2026-11 revision adopted as the locked source
 - **Type:** implemented + found
 - **What:** finished `docs/superpowers/plans/2026-11-06-adopt-apple-kit-revision.md` (steps 4–7) and squash-merged `wip/apple-kit-revision-adoption` into `feat/v2-complete-dashboard`. The metric changes parked on 2026-11-06 are real kit changes, not tool artefacts: re-running the extractor on the new kits reproduces the committed reference byte for byte, generator logic is unchanged apart from hash constants, and raw Sketch lookups confirm the frames. 160 macOS toolbar segmented controls narrow by exactly 1 pt per separator (the kit's separators are now 2 pt); the four 71 pt iOS "variants" were page-title text layers misclassified by name, which Apple replaced with a `_Header` symbol; the 34 pt close buttons joined the button class after Apple renamed them (same IDs and size); toolbar provenance renamed under the same IDs. No app widget reads metric variants, so no app size changes. Page-count tests updated 34/37 → 36/38.

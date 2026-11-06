@@ -29,7 +29,7 @@ the probe numbers, because a failed budget changes how primitives are built.
   - inner material: top `#FFFFFF` / `rgba(255,255,255,.26)`, bottom `rgba(236,242,255,.92)` / `rgba(255,255,255,.12)`, edge `rgba(50,72,140,.22)` / `rgba(0,0,0,.4)`, shadow `rgba(30,50,120,.26)` / `rgba(0,0,0,.45)`
   - glass text reference stops (`--g-bg-text`): light `rgba(255,255,255,.84)`, `rgba(242,246,255,.70)`, `rgba(228,236,254,.74)`; dark `rgba(120,124,150,.50)`, `rgba(86,89,110,.50)`, `rgba(66,68,86,.55)`
   - dark backdrop: vertical gradient `#232427` → `#18191C`, warm glow `rgba(255,170,95,.34)` at the top leading corner (phone) / `.30` (desk)
-- Money colours: income text = `success` (light teal `#0B857A` is 3.99:1 on glass, below 4.5), expense = `text`, over budget = `danger`.
+- Money colours: income text = `success` (as on the boards; light teal `#0B857A` would be 3.99:1 on glass), expense = `text`, over budget = `danger`.
 - Motion values (spec table, not the Apple source values): press 120 ms and quick 200 ms with `Cubic(0.23, 1, 0.32, 1)`; standard spring response 0.40 / damping 1.0; snappy 0.28 / 1.0; soft 0.35 / 0.80; dataUpdate 350 ms; dataEnter 450 ms; exitFactor 0.7; stagger 0, 50, 95, 135, 170, 200, 225, 240 ms; reduced 200 ms `Curves.easeOut`. Never use ease-in curves.
 - Spring construction: stiffness = (2π / response)², mass 1, `SpringDescription.withDampingRatio`.
 - Capture budget per frame: ≤ 3 on phone, ≤ 4 on desktop. Raster p90 ≤ 8 ms on the Linux dev machine (profile build).
@@ -56,9 +56,13 @@ the probe numbers, because a failed budget changes how primitives are built.
 
    Shape appearance: `tinted` = `LiquidGlassAppearance.ios27Regular(brightness, tint: accent at alpha 0.9)`; `clear` =
    `LiquidGlassAppearance.ios27Clear()`; every other role = `LiquidGlassAppearance.ios27Regular(brightness)`.
-4. **Known gap (for the owner, not fixed here).** Measured against the brightest kit glass stop, dark-mode semantic
-   text colours are below 4.5:1: link 3.82, success 4.30, warn 4.23, danger 3.51, purple 3.43 (accent 2.58 is a
-   fill, not text). The contrast test covers the roles that pass. Part B revisits these on device.
+4. **Open decision for the owner: deviation from spec §3.2 (does not block Part A).** Spec §3.2 requires text on glass
+   ≥ 4.5:1 in the worst case. Measured against the brightest kit glass stop, the dark-mode semantic text colours are
+   below that: link 3.82, success 4.30, warn 4.23, danger 3.51, purple 3.43. (Accent, at 2.58, is a fill, not text.)
+   The contrast test covers only the roles that pass. Before Part B puts semantic text on glass, the owner either
+   approves the deviation or the dark colours are lightened.
+5. **Money colours follow the boards.** Income amounts on the boards use `var(--success)` (24 uses; `--teal` is used
+   4 times, never for amounts), so `moneyIncome = success` matches the board and spec §1 (the board wins).
 
 ---
 
@@ -2136,30 +2140,32 @@ import 'package:flutter_test/flutter_test.dart';
 import '../../support/backdrop_capture_log.dart';
 
 void main() {
-  for (final brightness in Brightness.values) {
-    testWidgets('phone Today glass stays within 3 captures ($brightness)', (tester) async {
-      tester.view.physicalSize = const Size(390, 844);
-      tester.view.devicePixelRatio = 1;
-      addTearDown(tester.view.reset);
-      final count = await BackdropCaptureLog.record(() async {
-        await tester.pumpWidget(MaterialApp(
-          theme: ThemeData(brightness: brightness, extensions: [brightness == Brightness.dark ? AppTheme.dark : AppTheme.light]),
-          home: const GlassProbeScene.phone(),
-        ));
-        await tester.pump();
-        await tester.drag(find.byKey(GlassProbeScene.scrollKey), const Offset(0, -500));
-        await tester.pump();
-        await tester.pump(const Duration(milliseconds: 16));
-      });
-      // ignore: avoid_print
-      print('LG_CAPTURES scene=phone brightness=$brightness max=$count');
-      expect(count, lessThanOrEqualTo(3));
+  // One test per file: the renderer prints a count only when it rises within
+  // the process, so a second test in this file could report a lower number.
+  // The capture structure does not depend on brightness.
+  testWidgets('phone Today glass stays within 3 captures', (tester) async {
+    tester.view.physicalSize = const Size(390, 844);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    final count = await BackdropCaptureLog.record(() async {
+      await tester.pumpWidget(MaterialApp(
+        theme: ThemeData(brightness: Brightness.dark, extensions: [AppTheme.dark]),
+        home: const GlassProbeScene.phone(),
+      ));
+      await tester.pump();
+      await tester.drag(find.byKey(GlassProbeScene.scrollKey), const Offset(0, -500));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 16));
     });
-  }
+    // ignore: avoid_print
+    print('LG_CAPTURES scene=phone path=fake max=$count');
+    expect(count, lessThanOrEqualTo(3));
+  });
 }
 ```
 
   The desktop file is the same with `Size(1440, 900)`, `GlassProbeScene.desktop()`, `scene=desktop` and `lessThanOrEqualTo(4)`.
+  This measures the FakeGlass path. Task 6 repeats the count on real glass.
 
 - [ ] **Step 6: Run the three files; expect PASS. Note the printed `LG_CAPTURES` lines for the report.** If a budget
   fails, do not change the scene to pass: report the count and which groups produced it.
@@ -2201,23 +2207,36 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:liquid_glass_renderer/liquid_glass_renderer.dart';
 
+import '../test/support/backdrop_capture_log.dart';
+
 void main() {
   final binding = IntegrationTestWidgetsFlutterBinding.ensureInitialized();
   setUpAll(LiquidGlass.precache);
 
-  for (final (name, scene, size) in [
-    ('phone', const GlassProbeScene.phone(), const Size(390, 844)),
-    ('desktop', const GlassProbeScene.desktop(), const Size(1440, 900)),
+  // The renderer prints a count only when it rises within the process. Phone
+  // (budget 3) runs first; if desktop prints nothing, its count is at most the
+  // phone's, so still within 4. The reverse order could hide a phone count of 4.
+  for (final (name, scene, size, budget) in [
+    ('phone', const GlassProbeScene.phone(), const Size(390, 844), 3),
+    ('desktop', const GlassProbeScene.desktop(), const Size(1440, 900), 4),
   ]) {
-    testWidgets('$name probe scrolls within the raster budget on real glass', (tester) async {
+    testWidgets('$name probe scrolls within budget on real glass', (tester) async {
       expect(ui.ImageFilter.isShaderFilterSupported, isTrue,
           reason: 'shader filters unavailable: real glass is not active, the probe would measure FakeGlass');
       await binding.setSurfaceSize(size);
-      await tester.pumpWidget(MaterialApp(
-        theme: ThemeData(brightness: Brightness.dark, extensions: [AppTheme.dark]),
-        home: scene,
-      ));
-      await tester.pumpAndSettle();
+      final captures = await BackdropCaptureLog.record(() async {
+        await tester.pumpWidget(MaterialApp(
+          theme: ThemeData(brightness: Brightness.dark, extensions: [AppTheme.dark]),
+          home: scene,
+        ));
+        await tester.pumpAndSettle();
+      });
+      // ignore: avoid_print
+      print('LG_CAPTURES scene=$name path=real max=$captures');
+      if (!kProfileMode) {
+        // The counter only exists in debug builds.
+        expect(captures, lessThanOrEqualTo(budget));
+      }
 
       await binding.watchPerformance(() async {
         final watch = Stopwatch()..start();
@@ -2251,16 +2270,24 @@ import 'package:integration_test/integration_test_driver.dart';
 Future<void> main() => integrationDriver();
 ```
 
-- [ ] **Step 2: Run the debug probe on the desktop session**
+- [ ] **Step 2: Run the debug probe together with the full-glass proof, on the desktop session**
 
-Run: `flutter test integration_test/glass_perf_probe_test.dart -d linux`
-Expected: both tests PASS (debug does not gate), and two `LG_PERF … mode=debug` lines are printed.
+`isShaderFilterSupported` alone does not prove real glass: the layer also falls back to FakeGlass when Flutter GPU is
+unavailable (`liquid_glass_layer.dart:301`). The existing bevel-displacement test is the proof, so it runs in the same
+command and must pass. The Linux runner enables Flutter GPU (`linux/runner/my_application.cc:58`). Pass no extra
+flags, exactly as `tool/ci.sh --device` does.
 
-- [ ] **Step 3: Run the profile probe (gating)**
+Run: `flutter test integration_test/liquid_glass_full_glass_test.dart integration_test/glass_perf_probe_test.dart -d linux`
+Expected: all tests PASS. Two `LG_CAPTURES … path=real` lines within budget. Two `LG_PERF … mode=debug` lines
+(debug numbers are reported, not gated). If the full-glass test fails, the probe numbers are FakeGlass numbers:
+report that, and do not use them.
+
+- [ ] **Step 3: Run the profile probe (raster gate)**
 
 Run: `flutter drive --profile -d linux --driver=test_driver/integration_test.dart --target=integration_test/glass_perf_probe_test.dart`
-Expected: PASS, with `LG_PERF … mode=profile raster_p90_ms=… ≤ 8`. If profile drive does not work on this Linux
-setup, report the exact error and the debug numbers; do not gate on debug.
+Expected: PASS, with `LG_PERF … mode=profile raster_p90_ms=… ≤ 8`. Real glass in this run rests on Step 2 passing on
+the same machine. If profile drive does not work on this Linux setup, report the exact error and the debug numbers;
+do not gate on debug.
 
 - [ ] **Step 4: Run `tool/ci.sh --device`; expect PASS (the existing full-glass test and this probe).**
 

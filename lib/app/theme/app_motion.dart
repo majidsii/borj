@@ -29,13 +29,28 @@ final class AppCurveMotion {
 abstract final class AppMotion {
   static const Curve emphasized = Cubic(0.23, 1, 0.32, 1);
 
-  static const AppCurveMotion press = AppCurveMotion(Duration(milliseconds: 120), emphasized);
-  static const AppCurveMotion quick = AppCurveMotion(Duration(milliseconds: 200), emphasized);
-  static const AppSpring standard = AppSpring(response: 0.40, dampingRatio: 1.0);
+  static const AppCurveMotion press = AppCurveMotion(
+    Duration(milliseconds: 120),
+    emphasized,
+  );
+  static const AppCurveMotion quick = AppCurveMotion(
+    Duration(milliseconds: 200),
+    emphasized,
+  );
+  static const AppSpring standard = AppSpring(
+    response: 0.40,
+    dampingRatio: 1.0,
+  );
   static const AppSpring snappy = AppSpring(response: 0.28, dampingRatio: 1.0);
   static const AppSpring soft = AppSpring(response: 0.35, dampingRatio: 0.80);
-  static const AppCurveMotion dataUpdate = AppCurveMotion(Duration(milliseconds: 350), emphasized);
-  static const AppCurveMotion dataEnter = AppCurveMotion(Duration(milliseconds: 450), emphasized);
+  static const AppCurveMotion dataUpdate = AppCurveMotion(
+    Duration(milliseconds: 350),
+    emphasized,
+  );
+  static const AppCurveMotion dataEnter = AppCurveMotion(
+    Duration(milliseconds: 450),
+    emphasized,
+  );
   static const double exitFactor = 0.7;
   static const List<Duration> stagger = <Duration>[
     Duration.zero,
@@ -47,9 +62,13 @@ abstract final class AppMotion {
     Duration(milliseconds: 225),
     Duration(milliseconds: 240),
   ];
-  static const AppCurveMotion reduced = AppCurveMotion(Duration(milliseconds: 200), Curves.easeOut);
+  static const AppCurveMotion reduced = AppCurveMotion(
+    Duration(milliseconds: 200),
+    Curves.easeOut,
+  );
 
   static Duration exit(Duration entrance) => entrance * exitFactor;
 
-  static Duration staggerAt(int index) => stagger[math.min(index, stagger.length - 1)];
+  static Duration staggerAt(int index) =>
+      stagger[math.min(index, stagger.length - 1)];
 }

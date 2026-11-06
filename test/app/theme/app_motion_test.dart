@@ -33,7 +33,10 @@ void main() {
   });
 
   test('exit is 70% of the entrance; stagger caps at 240 ms', () {
-    expect(AppMotion.exit(const Duration(milliseconds: 400)), const Duration(milliseconds: 280));
+    expect(
+      AppMotion.exit(const Duration(milliseconds: 400)),
+      const Duration(milliseconds: 280),
+    );
     expect(AppMotion.staggerAt(0), Duration.zero);
     expect(AppMotion.staggerAt(3), const Duration(milliseconds: 135));
     expect(AppMotion.staggerAt(20), const Duration(milliseconds: 240));

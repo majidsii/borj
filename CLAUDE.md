@@ -11,13 +11,18 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this is
 
-Dashboard Shakhsi: a Persian, Jalali-calendar, offline-first personal dashboard
+Borj (برج): a Persian, Jalali-calendar, offline-first personal dashboard
 (finance + tasks today; habits and goals planned). Flutter for Linux (primary),
-Android, Windows and macOS.
+Android, Windows and macOS. Repository `majidsii/borj`; Dart package `borj`;
+app ID `app.borj`. The working name until 2026-11-06 was "Dashboard Shakhsi"
+(داشبورد شخصی); historical docs still use it. See
+`docs/superpowers/specs/2026-11-06-rename-to-borj-design.md`.
 
-- v1 (Python + HTML webview) is published on GitHub (`main`, releases v1.0.0–v1.2.0).
-  It stores user data in `~/.local/share/dashboard-shakhsi/data.json`
-  (Windows `%APPDATA%\dashboard-shakhsi\data.json`).
+- v1 (Python + HTML webview, still named Dashboard Shakhsi) is published on
+  GitHub (`main`, releases v1.0.0–v1.2.0). It stores user data in
+  `~/.local/share/dashboard-shakhsi/data.json`
+  (Windows `%APPDATA%\dashboard-shakhsi\data.json`). Keep that directory name in
+  the importer; it is v1's, not ours.
 - v2 is a full Flutter rewrite on `feat/v2-complete-dashboard`, not yet released.
   v2 imports v1 data from Settings (`lib/features/legacy_import/`).
 

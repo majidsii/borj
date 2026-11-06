@@ -17,6 +17,12 @@ Entry template:
 
 ---
 
+## 2026-11-06 — v2 renamed to Borj
+- **Type:** implemented
+- **What:** Dart package `borj`, `BorjApp`, UI and notification title `برج`, `borj.*` loggers, AUMID `Majidsii.Borj`, systemd `borj-notification-*` units and registry, Drift file `borj.sqlite` with a one-time move of `dashboard_shakhsi.sqlite*`; app ID `app.borj` on Android (no longer upgrades over v1), Linux, macOS; binary `borj` on Linux/Windows; living docs and redesign boards. v1 data dir `dashboard-shakhsi` kept for the importer.
+- **Evidence / links:** spec `docs/superpowers/specs/2026-11-06-rename-to-borj-design.md`; plan `docs/superpowers/plans/2026-11-06-rename-to-borj.md`; commits `03c360a`, `5938042`, `e15bbe7`; local `flutter analyze` clean, `flutter test` 1376 passed; `flutter build linux --release` → `bundle/borj`; running it moved the owner's `~/dashboard_shakhsi.sqlite` to `~/borj.sqlite` (backup taken first). Android not built (no SDK on this machine).
+- **Follow-ups:** GitHub repo rename and local folder move (same day, see next entries); `tool/bootstrap_native_targets.sh` regenerates runners with Latin titles, so re-apply `برج` labels if it is ever rerun.
+
 ## 2026-11-06 — Product name decided: Borj (برج)
 - **Type:** decided
 - **What:** the owner approved برج (Latin "Borj") as the v2 product name, after two rounds with the `naming` skill. A tower built brick by brick; in Iranian speech برج is also a Jalali month ("سر برج").

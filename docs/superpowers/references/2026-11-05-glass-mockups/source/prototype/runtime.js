@@ -207,6 +207,7 @@ function go(name, kind, opts = {}) {
   if (opts.reset) { state.stack.forEach(l => l.host.remove()); state.stack = []; }
   $("device").appendChild(host);
   makeScrollable(host, name);
+  if (name === "Main") enhanceToday(host);
   state.stack.push(entry);
   if (state.stack.length > 8) { const old = state.stack.splice(0, 1)[0]; old.host.remove(); }
   sizeDevice();
@@ -496,6 +497,7 @@ function labelOf(el) {
 function onClick(e, name, sr) {
   const a = e.target.closest("a"); if (a) e.preventDefault();
   if (topLayer()?.name !== name) return;
+  if (e.target.closest("[data-tedit],[data-tadd],.tb,.tsheet,.tscrim") || sr.host._today?.editing) return; // Today edit mode owns these taps
   if (SHEETS.has(name)) { const dlg = findDialog(sr); if (dlg && !dlg.contains(e.target)) { goBack(); return; } } // tap outside a sheet closes it
   let el = e.target.closest("button, a, [role='button'], li, label");
   if (!el) {
@@ -514,7 +516,7 @@ function onClick(e, name, sr) {
 }
 
 addEventListener("keydown", e => {
-  if (e.key === "Escape") goBack();
+  if (e.key === "Escape") { const T = topLayer()?.host._today; if (T && T.editing) setTodayEdit(T, false); else goBack(); }
   if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k" && state.device === "mac") { e.preventDefault(); go("MacSearch", "jump"); caption("MacSearch", "demo", "Ctrl+K بدون حرکت: کاری که روزی صدها بار تکرار می‌شود نباید منتظرت بگذارد"); }
 });
 
@@ -541,7 +543,7 @@ function renderIndex() {
   const nav = $("index");
   nav.innerHTML = GROUPS[state.device].map(([g, list]) => `<h2>${g}</h2>` + list.map(n => `<button data-go="${n}" aria-current="${n === cur}">${DOCS[n].n}${SHEETS.has(n) ? "<span>برگه</span>" : ""}</button>`).join("")).join("") +
     `<p class="note">روی دکمه‌ها و ردیف‌های خود صفحه بزنید تا جابه‌جایی‌ها و حرکت‌ها را ببینید. هر صفحه بار اول با ورود داده‌ها باز می‌شود و دفعه‌های بعد بی‌درنگ. Esc یعنی بازگشت.</p>
-     <p class="note">چیدمان و تغییر اندازهٔ کارت‌های امروز: <a href="https://claude.ai/artifact/9EMLdeoU2PEjJfur64Nv1W" target="_blank" rel="noopener">نمونهٔ جدا</a></p>`;
+     <p class="note">چیدمان صفحهٔ امروز: دکمهٔ «ویرایش» کنار عنوان، یا نیم ثانیه نگه داشتن روی یک کارت. بعد کارت‌ها را بکشید، دستگیرهٔ گوشه را برای اندازه بکشید، یا با منفی پنهانشان کنید.</p>`;
 }
 $("index").addEventListener("click", e => {
   const b = e.target.closest("[data-go]"); if (!b) return;
@@ -568,6 +570,7 @@ function setTheme(t) {
     const top = l.host.scrollTop;
     l.host.replaceWith(fresh);
     makeScrollable(fresh, l.name);
+    if (l.name === "Main") enhanceToday(fresh);
     fresh.scrollTop = top;
     const old = l.host; l.host = fresh;
     if (i === state.stack.length - 1 && !state.reduced) {
@@ -589,5 +592,249 @@ $("thDark").onclick = () => setTheme("dark");
 $("mvFull").onclick = () => setReduced(false);
 $("mvReduced").onclick = () => setReduced(true);
 $("backBtn").onclick = () => goBack();
+
+// ---------- Today customization on the Main board (motion spec §5) ----------
+const TODAY_IDS = ["timeline", "tasks", "budget", "habit", "loan"];
+const TODAY_SIZES = { timeline: ["w", "l"], tasks: ["w", "l"], budget: ["s", "w"], habit: ["s", "w"], loan: ["s", "w"] };
+const TODAY_NAMES = { timeline: "برنامهٔ امروز", tasks: "کارهای امروز", budget: "مانده از بودجه", habit: "پیاده‌روی", loan: "قسط وام مسکن" };
+const SIZE_FA = { s: "کوچک", w: "پهن", l: "بزرگ" };
+const TODAY_DEFAULT = () => [{ id: "timeline", size: "w" }, { id: "tasks", size: "w" }, { id: "budget", size: "s" }, { id: "habit", size: "s" }, { id: "loan", size: "w" }];
+state.today = { layout: TODAY_DEFAULT() };
+const TODAY_CSS = `
+.tedit{position:absolute;left:20px;bottom:4px;border:0;border-radius:99px;padding:6px 16px;font:800 14px/1.2 Vazirmatn,Tahoma,sans-serif;color:var(--text);cursor:pointer}
+.tedit.on{background:var(--accent)!important;color:#fff}
+.tgrid [data-size="s"]{grid-column:span 1}.tgrid [data-size="w"],.tgrid [data-size="l"]{grid-column:span 2}.tgrid [data-size="l"]{min-height:250px}
+.tb{position:absolute;width:28px;height:28px;border-radius:50%;border:0;padding:0;display:grid;place-items:center;opacity:0;transform:scale(.9);pointer-events:none;
+  transition:opacity 200ms cubic-bezier(.23,1,.32,1),transform 200ms cubic-bezier(.23,1,.32,1);z-index:6;color:var(--text);font:900 17px/1 Vazirmatn,sans-serif;cursor:pointer}
+.trm{top:-8px;right:-8px}.tsz{bottom:-8px;left:-8px;cursor:nwse-resize;touch-action:none}
+.tsz svg{width:14px;height:14px;stroke:currentColor;stroke-width:2.4;fill:none;stroke-linecap:round}
+.tgrid.editing [data-card]{transform:scale(.965);transition:transform 250ms cubic-bezier(.23,1,.32,1);cursor:grab;touch-action:none;user-select:none}
+.tgrid.editing [data-card] .tb{opacity:1;transform:none;pointer-events:auto}
+.tgrid.editing [data-card]>:not(.tb){pointer-events:none}
+.tgrid [data-card].tdrag{z-index:30;transition:none!important;cursor:grabbing}
+.tgrid [data-card].tghost{background:transparent!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;box-shadow:inset 0 0 0 2px var(--accent)!important;transform:none!important}
+.tgrid [data-card].tghost::after,.tgrid [data-card].tghost::before{display:none}
+.tgrid [data-card].tghost>:not(.tb){opacity:.28}.tgrid [data-card].tghost .tb{opacity:0!important}
+.tadd{display:none;justify-content:center;margin-top:14px}.tadd.on{display:flex}
+.tadd button,.tsheet button{border:0;border-radius:99px;padding:8px 18px;font:800 14px/1.2 Vazirmatn,sans-serif;color:var(--text);cursor:pointer}
+.tframe{position:absolute;z-index:40;pointer-events:none;overflow:hidden;box-sizing:border-box}
+.ttarget{position:absolute;z-index:41;pointer-events:none;border:2px dashed var(--accent);border-radius:26px;box-sizing:border-box;transition:all 300ms cubic-bezier(.23,1,.32,1)}
+.thint{position:absolute;z-index:42;pointer-events:none;background:var(--accent);color:#fff;font:800 12px/1.6 Vazirmatn,sans-serif;border-radius:99px;padding:0 10px}
+.tsheet{position:fixed;inset-inline:8px;bottom:8px;z-index:60;border-radius:34px;padding:18px 16px 22px;display:flex;flex-direction:column;gap:10px}
+.tsheet h3{margin:0;font:900 17px/1.4 Vazirmatn,sans-serif;color:var(--text)}.tsheet p{margin:0;font:500 12px/1.6 Vazirmatn,sans-serif;color:var(--text2)}
+.tsheet .tlist{display:grid;grid-template-columns:1fr 1fr;gap:8px}.tsheet .tlist button{border-radius:18px;text-align:start;padding:12px}
+.tsheet .tlist span{display:block;font-size:11px;color:var(--text2);font-weight:600}
+.tsheet .trow{display:flex;justify-content:space-between;gap:8px}.tsheet .tdone{background:var(--accent)!important;color:#fff!important}
+.tscrim{position:fixed;inset:0;z-index:59;background:rgba(0,0,0,.18)}`;
+
+function enhanceToday(host) {
+  const sr = host.shadowRoot;
+  const timeline = sr.querySelector('section[aria-label="برنامهٔ امروز"]');
+  if (!timeline) return;
+  const grid = timeline.parentElement;
+  const pair = [...grid.children].find(c => c.tagName === "DIV" && getComputedStyle(c).display === "grid");
+  if (pair) { [...pair.children].forEach(ch => grid.insertBefore(ch, pair)); pair.remove(); }
+  const cards = [...grid.children].filter(c => c.tagName === "SECTION");
+  const els = {};
+  cards.forEach((c, i) => {
+    const id = TODAY_IDS[i]; if (!id) return;
+    c.dataset.card = id; els[id] = c;
+    c.style.position = "relative";
+    c.insertAdjacentHTML("beforeend", `<button class="tb trm lg-in" data-rm aria-label="پنهان کردن ${TODAY_NAMES[id]}">−</button><button class="tb tsz lg-in" data-sz aria-label="تغییر اندازهٔ ${TODAY_NAMES[id]}"><svg viewBox="0 0 16 16"><path d="M3 6v7h7M3 13l9-9"/></svg></button>`);
+  });
+  grid.classList.add("tgrid");
+  Object.assign(grid.style, { display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: "14px 12px", gridAutoFlow: "row dense", position: "relative" });
+  const st = document.createElement("style"); st.textContent = TODAY_CSS; sr.appendChild(st);
+  const h1 = sr.querySelector("h1");
+  h1.parentElement.style.position = "relative";
+  const eb = document.createElement("button"); eb.className = "tedit lg lg-s lg-text"; eb.textContent = "ویرایش"; eb.dataset.tedit = "1";
+  h1.parentElement.appendChild(eb);
+  const add = document.createElement("div"); add.className = "tadd"; add.innerHTML = '<button class="lg lg-s lg-text" data-tadd>+ افزودن کارت</button>';
+  grid.after(add);
+  const T = { host, sr, grid, els, eb, add, editing: false, base: {} };
+  host._today = T;
+  cards.forEach(c => { T.base[c.dataset.card] = c.getBoundingClientRect().height / (state.scale || 1); });
+  applyToday(T);
+  sr.addEventListener("pointerdown", e => todayDown(T, e), true);
+  sr.addEventListener("click", e => todayClick(T, e), true);
+}
+
+function applyToday(T) {
+  const L = state.today.layout;
+  Object.entries(T.els).forEach(([id, el]) => { if (!L.some(c => c.id === id)) el.style.display = "none"; });
+  L.forEach(c => { const el = T.els[c.id]; el.style.display = ""; el.dataset.size = c.size; T.grid.appendChild(el); });
+  T.grid.querySelectorAll("[data-card] .tsz").forEach(b => { const id = b.closest("[data-card]").dataset.card; b.setAttribute("aria-label", `تغییر اندازهٔ ${TODAY_NAMES[id]}، اکنون ${SIZE_FA[state.today.layout.find(c => c.id === id)?.size] || ""}`); });
+}
+
+function todayFlip(T, mutate, skip) {
+  const s = state.scale || 1;
+  const before = new Map(Object.entries(T.els).map(([id, el]) => [id, el.style.display === "none" ? null : el.getBoundingClientRect()]));
+  mutate(); applyToday(T);
+  Object.entries(T.els).forEach(([id, el]) => {
+    if (el.style.display === "none" || id === skip) return;
+    const a = before.get(id), b = el.getBoundingClientRect();
+    const end = T.editing ? "scale(.965)" : "none";
+    if (state.reduced) { if (!a || Math.abs(a.left - b.left) + Math.abs(a.top - b.top) > 1) el.animate([{ opacity: .35 }, { opacity: 1 }], { duration: 200, easing: "ease-out" }); return; }
+    if (!a) { el.animate([{ opacity: 0, transform: "scale(.94)" }, { opacity: 1, transform: end }], { duration: 300, easing: SOFT }); return; }
+    const dx = (a.left - b.left) / s, dy = (a.top - b.top) / s;
+    if (Math.abs(dx) < 1 && Math.abs(dy) < 1 && Math.abs(a.width - b.width) < 1 && Math.abs(a.height - b.height) < 1) return;
+    el.animate([{ transformOrigin: "top right", transform: `translate(${dx}px, ${dy}px) scale(${a.width / b.width}, ${a.height / b.height})` }, { transformOrigin: "top right", transform: end }], { duration: 380, easing: EASE_OUT });
+  });
+}
+
+function setTodayEdit(T, on) {
+  T.editing = on;
+  T.grid.classList.toggle("editing", on);
+  T.add.classList.toggle("on", on);
+  T.eb.classList.toggle("on", on);
+  T.eb.textContent = on ? "تمام" : "ویرایش";
+  caption("Main", "demo", on ? "ویرایش: بکشید تا جابه‌جا شود، دستگیره را بکشید تا اندازه عوض شود، منفی یعنی پنهان" : "چیدمان ذخیره شد");
+  if (on && navigator.vibrate) try { navigator.vibrate(10); } catch (_) {}
+}
+
+function todayClick(T, e) {
+  const t = e.target;
+  if (t.closest(".tsheet,.tscrim")) return; // the add sheet handles its own taps
+  if (t.closest("[data-tedit]")) { e.stopPropagation(); setTodayEdit(T, !T.editing); return; }
+  if (t.closest("[data-tadd]")) { e.stopPropagation(); todaySheet(T, t.closest("[data-tadd]")); return; }
+  if (!T.editing) return;
+  e.stopPropagation(); e.preventDefault();
+  const rm = t.closest("[data-rm]"), sz = t.closest("[data-sz]");
+  if (rm) todayHide(T, rm.closest("[data-card]").dataset.card);
+  else if (sz && !T.resizeEnded) todayCycle(T, sz.closest("[data-card]").dataset.card);
+}
+
+function todayCycle(T, id) {
+  todayFlip(T, () => { const c = state.today.layout.find(x => x.id === id), s = TODAY_SIZES[id]; c.size = s[(s.indexOf(c.size) + 1) % s.length]; });
+}
+
+function todayHide(T, id) {
+  const el = T.els[id], s = state.scale || 1, g = T.grid.getBoundingClientRect(), r = el.getBoundingClientRect();
+  const idx = state.today.layout.findIndex(c => c.id === id), item = state.today.layout[idx];
+  const ghost = el.cloneNode(true); ghost.removeAttribute("data-card");
+  Object.assign(ghost.style, { position: "absolute", margin: 0, zIndex: 20, pointerEvents: "none", right: (g.right - r.right) / s + "px", top: (r.top - g.top) / s + "px", width: r.width / s + "px", height: r.height / s + "px", transform: "scale(.965)" });
+  T.grid.appendChild(ghost);
+  ghost.animate(state.reduced ? [{ opacity: 1 }, { opacity: 0 }] : [{ opacity: 1, transform: "scale(.965)" }, { opacity: 0, transform: "scale(.9)" }], { duration: state.reduced ? 200 : 180, easing: EASE_OUT, fill: "forwards" }).onfinish = () => ghost.remove();
+  todayFlip(T, () => state.today.layout.splice(idx, 1)); // leaves layout at once; siblings close the gap while it fades
+  toast(`«${TODAY_NAMES[id]}» پنهان شد`, () => todayFlip(T, () => state.today.layout.splice(idx, 0, item)));
+}
+
+function todaySheet(T, btn) {
+  const hidden = TODAY_IDS.filter(id => !state.today.layout.some(c => c.id === id));
+  const scrim = document.createElement("div"); scrim.className = "tscrim";
+  const sh = document.createElement("div"); sh.className = "tsheet lg lg-l lg-text";
+  sh.innerHTML = `<h3>افزودن کارت</h3><p>کارت‌های پنهان. پنهان کردن کارت هیچ داده‌ای را پاک نمی‌کند.</p>
+    <div class="tlist">${hidden.length ? hidden.map(id => `<button class="lg-in" data-addid="${id}">${TODAY_NAMES[id]}<span>${TODAY_SIZES[id].map(s => SIZE_FA[s]).join(" · ")}</span></button>`).join("") : '<p style="grid-column:span 2">همهٔ کارت‌ها روی صفحه هستند.</p>'}</div>
+    <div class="trow"><button class="lg-in" data-reset>بازگردانی چیدمان پیش‌فرض</button><button class="lg-in tdone" data-close>بستن</button></div>`;
+  T.sr.append(scrim, sh);
+  const from = stageRect(btn), to = stageRect(sh);
+  const fromT = `translate(${from.x + from.w / 2 - (to.x + to.w / 2)}px, ${from.y - to.y}px) scale(.3)`;
+  if (!state.reduced) { sh.animate([{ transform: fromT, opacity: 0 }, { transform: "none", opacity: 1 }], { duration: 380, easing: SOFT }); scrim.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 200 }); }
+  const close = () => {
+    const fin = () => { sh.remove(); scrim.remove(); };
+    if (state.reduced) return fin();
+    scrim.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 200, fill: "forwards" });
+    sh.animate([{ transform: "none", opacity: 1 }, { transform: fromT, opacity: 0 }], { duration: 240, easing: EASE_OUT, fill: "forwards" }).onfinish = fin;
+  };
+  scrim.onclick = close;
+  sh.addEventListener("click", e => {
+    e.stopPropagation();
+    const a = e.target.closest("[data-addid]");
+    if (a) { sh.remove(); scrim.remove(); const id = a.dataset.addid; todayFlip(T, () => state.today.layout.push({ id, size: TODAY_SIZES[id][TODAY_SIZES[id].length > 1 && id !== "budget" && id !== "habit" && id !== "loan" ? 0 : 0] })); return; }
+    if (e.target.closest("[data-reset]")) { sh.remove(); scrim.remove(); const prev = state.today.layout.map(c => ({ ...c })); todayFlip(T, () => { state.today.layout = TODAY_DEFAULT(); }); toast("چیدمان پیش‌فرض برگشت", () => todayFlip(T, () => { state.today.layout = prev; })); return; }
+    if (e.target.closest("[data-close]")) close();
+  });
+}
+
+function todayDown(T, e) {
+  const card = e.target.closest("[data-card]");
+  if (!card || e.target.closest("[data-tedit],[data-tadd]")) return;
+  const start = { x: e.clientX, y: e.clientY };
+  if (!T.editing) { // long-press anywhere on a card enters edit mode
+    const timer = setTimeout(() => setTodayEdit(T, true), 500);
+    const cancel = ev => { if (ev.type !== "pointermove" || Math.hypot(ev.clientX - start.x, ev.clientY - start.y) > 8) { clearTimeout(timer); off(); } };
+    const off = () => { removeEventListener("pointermove", cancel, true); removeEventListener("pointerup", cancel, true); };
+    addEventListener("pointermove", cancel, true); addEventListener("pointerup", cancel, true);
+    return;
+  }
+  e.preventDefault(); e.stopPropagation();
+  if (e.target.closest("[data-sz]")) return todayResizeStart(T, card, e);
+  if (e.target.closest("[data-rm]")) return;
+  const r0 = card.getBoundingClientRect();
+  const drag = { id: card.dataset.card, off: { x: e.clientX - r0.left, y: e.clientY - r0.top }, moved: false, last: null };
+  const s = state.scale || 1;
+  const follow = (el, ev) => {
+    el.classList.add("tdrag"); el.style.transform = ""; const n = el.getBoundingClientRect();
+    el.style.transform = `translate(${(ev.clientX - drag.off.x - n.left) / s}px, ${(ev.clientY - drag.off.y - n.top) / s}px) scale(1.04)`;
+    el.style.boxShadow = "0 24px 48px rgba(0,0,0,.22)";
+  };
+  const move = ev => {
+    if (!drag.moved && Math.hypot(ev.clientX - start.x, ev.clientY - start.y) < 6) return;
+    drag.moved = true;
+    const el = T.els[drag.id]; follow(el, ev);
+    const over = Object.values(T.els).find(c => { if (c === el || c.style.display === "none") return false; const r = c.getBoundingClientRect(); return ev.clientX > r.left && ev.clientX < r.right && ev.clientY > r.top && ev.clientY < r.bottom; });
+    if (!over) drag.last = null;
+    if (over && over.dataset.card !== drag.last) {
+      drag.last = over.dataset.card;
+      const L = state.today.layout, from = L.findIndex(c => c.id === drag.id), to = L.findIndex(c => c.id === over.dataset.card);
+      todayFlip(T, () => { const [it] = L.splice(from, 1); L.splice(to, 0, it); }, drag.id);
+      follow(el, ev);
+    }
+  };
+  const up = () => {
+    removeEventListener("pointermove", move, true); removeEventListener("pointerup", up, true);
+    const el = T.els[drag.id];
+    if (!drag.moved) return;
+    const cur = el.style.transform;
+    el.classList.remove("tdrag"); el.style.transform = ""; el.style.boxShadow = "";
+    if (!state.reduced) el.animate([{ transform: cur }, { transform: "scale(.965)" }], { duration: 400, easing: SOFT }); // the drop carried momentum: a little bounce
+  };
+  addEventListener("pointermove", move, true); addEventListener("pointerup", up, true);
+}
+
+// drag the handle: the frame follows freely (rubber band), the slot shows a faint preview of the nearest allowed size
+function todayResizeStart(T, card, e) {
+  const id = card.dataset.card, s = state.scale || 1, r = card.getBoundingClientRect();
+  const R = { x: e.clientX, y: e.clientY, w0: r.width / s, h0: r.height / s, moved: false };
+  const gw = T.grid.getBoundingClientRect().width / s;
+  const dimsOf = sz => ({ w: sz === "s" ? (gw - 12) / 2 : gw, h: sz === "l" ? Math.max(250, T.base[id]) : T.base[id] });
+  const band = (o, d, c = 0.55) => (o * d * c) / (d + c * Math.abs(o));
+  const rub = (v, lo, hi) => v < lo ? lo - band(lo - v, lo) : v > hi ? hi + band(v - hi, hi) : v;
+  const slot = () => { const g = T.grid.getBoundingClientRect(), b = T.els[id].getBoundingClientRect(); return { right: (g.right - b.right) / s, top: (b.top - g.top) / s, w: b.width / s, h: b.height / s }; };
+  const place = () => { const q = slot(); Object.assign(R.frame.style, { right: q.right + "px", top: q.top + "px" }); Object.assign(R.target.style, { right: q.right + "px", top: q.top + "px", width: q.w + "px", height: q.h + "px" }); Object.assign(R.hint.style, { right: q.right + 12 + "px", top: q.top - 12 + "px" }); };
+  const move = ev => {
+    if (!R.moved) {
+      if (Math.hypot(ev.clientX - R.x, ev.clientY - R.y) < 6) return;
+      R.moved = true;
+      R.frame = card.cloneNode(true); R.frame.removeAttribute("data-card"); R.frame.classList.add("tframe"); R.frame.querySelectorAll(".tb").forEach(b => b.remove());
+      R.frame.style.transform = "none";
+      R.target = document.createElement("div"); R.target.className = "ttarget";
+      R.hint = document.createElement("div"); R.hint.className = "thint";
+      T.grid.append(R.frame, R.target, R.hint);
+      card.classList.add("tghost");
+    }
+    const sizes = TODAY_SIZES[id].map(sz => ({ sz, ...dimsOf(sz) }));
+    const minW = Math.min(...sizes.map(d => d.w)), maxW = Math.max(...sizes.map(d => d.w)), minH = Math.min(...sizes.map(d => d.h)), maxH = Math.max(...sizes.map(d => d.h));
+    const w = rub(R.w0 - (ev.clientX - R.x) / s, minW, maxW), h = rub(R.h0 + (ev.clientY - R.y) / s, minH, maxH); // RTL: dragging left grows width
+    R.frame.style.width = w + "px"; R.frame.style.height = h + "px";
+    const best = sizes.reduce((a, d) => Math.hypot((d.w - w) / maxW, (d.h - h) / maxH) < Math.hypot((a.w - w) / maxW, (a.h - h) / maxH) ? d : a);
+    const c = state.today.layout.find(x => x.id === id);
+    if (best.sz !== c.size) { todayFlip(T, () => { c.size = best.sz; }); T.els[id].classList.add("tghost"); if (navigator.vibrate) try { navigator.vibrate(6); } catch (_) {} }
+    R.hint.textContent = SIZE_FA[c.size];
+    place();
+  };
+  const up = () => {
+    removeEventListener("pointermove", move, true); removeEventListener("pointerup", up, true);
+    if (!R.moved) return;
+    T.resizeEnded = true; setTimeout(() => { T.resizeEnded = false; }, 350);
+    const q = slot(), fin = () => { R.frame.remove(); R.target.remove(); T.els[id].classList.remove("tghost"); };
+    R.hint.remove(); R.target.style.opacity = "0";
+    if (state.reduced) return fin();
+    R.frame.animate([{ width: R.frame.style.width, height: R.frame.style.height }, { width: q.w + "px", height: q.h + "px" }], { duration: 420, easing: SOFT, fill: "forwards" }).onfinish = fin;
+  };
+  addEventListener("pointermove", move, true); addEventListener("pointerup", up, true);
+}
+
+// start
 if (state.reduced) setReduced(true);
 setDevice("phone");

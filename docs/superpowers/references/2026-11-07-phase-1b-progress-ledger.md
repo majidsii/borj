@@ -54,3 +54,22 @@ Task 6: re-review a2b8c86ee12bfb51f (opus) of 6f72bee..7cdd3d6 — OPEN:
 - Addressed: inset width, reduced-motion getRect check, grow, origin-null and back tests, minor items.
 - Deferred: SeededBackdropPassLayer is off under flutter test; the Flow paintChild opacity below t=0.3 is not seen by syncOpacity; a reduced-mode mid-fade grab opacity step.
 Next: fix round 2 for Task 6 (resume a361c98824f2bb85d, or a fresh agent) with the above.
+Task 8: integration 161e2f5 (SpringCurve swap, reduced curve, reduced-remove test); controller re-review by diff. Task 8: complete, merged into feat/redesign-phase-1b (brings spring_curve.dart identical to T6).
+Task 6: fix round 2 -> d890ca7: the drag paints from the frozen painted pose; re-grab has no jump; _adjust is removed; dismiss is 1-dy/h<0.6 or v>110. The new grab tests fail on 7cdd3d6. backdrop_layer_count counts seeded OpacitySeedLayer. Normal 3/3; reduced fade 4 (seeded fade pass), 3 settled.
+Decision (controller): a reduced-motion sheet fade may use 4 captures for its 200 ms (renderer seeded opacity pass); steady state is ≤3. The test asserts ≤4 during the fade and ≤3 settled (no skip).
+Task 6: 3c52436 reduced budget test unskipped (fade<=4, settled<=3; measured 4/3). Round-2 re-review (opus a9dd4d02703368f82) in flight.
+Task 6: round-2 re-review a9dd4d02703368f82 (opus): findings 1-3 addressed; new Important N1 drag gain 1/sy, N2 no exit anim when closing during settle; pre-existing Critical P4 pop during held drag (zombie route / double pop). Ruling: mid-open dismiss relative to drag accepted. Fix round 3/5 dispatched (FIX_BASE 3c52436).
+Task 6: minor (deferred): semantics rect stale under Flow transforms (a11y, pre-existing); drag starting on inner button doesn't move sheet; Flow paint opacity unseen by syncOpacity.
+Task 6: fix round 3 -> a7f712f (N1 screen-space drag, N2 close from painted pose, P4 isActive guards; new tests fail on 3c52436).
+Task 6: round-3 re-review (opus) all findings addressed. Task 6: complete (9a93690..a7f712f), merged into feat/redesign-phase-1b; full suite 1569 pass (1 skip), analyze/format clean.
+Task 6: minor (deferred): semantics rects frozen under Flow transforms (a11y); drag starting on inner button doesn't move sheet; drag-dismiss/close-during-settle slide linear; reduced close-during-settle slides+fades; settle stops dead after upward fling; delta scale from hit-test transform vs grab.sy (theoretical).
+Task 7: resumed (a5775f06296a220c8) for budget files via countCompositedBackdrops + probe toast triggers + GlassTextField in probe sheet + toast sample (end of list). Samples: sheet+rows sample agent aa191387d7a991d51 in ../phase-1b-samples (feat/1b-samples).
+Samples: f6bb1d7 (sheet, rows) controller-checked (review test iterates all samples, passes), merged.
+Decision (owner, 2026-11-07): «همه چیز باید کامل بشه بعدا منتشر میکنیم» — v2 ships only after the full redesign (phases 1–5) and release readiness; no interim release with the current look. Record in WORKLOG/roadmap at the Phase 1 checkpoint.
+Task 7: ad6a182 budgets with composited counter: phone+sheet+toast entrance 4/settled 3; desktop+toast entrance 5/settled 4 (seeded fade). Controller ruling: reject +1 (spec: never bare-fade glass) -> fix round 1: GlassVisibility inherited -> appearance.visibility; toast+sheet fade via visibility; budgets back to plain (supersedes the earlier reduced-fade +1 ruling).
+Task 7: 2a4d793 GlassVisibility; all budgets plain (phone 3/3, desktop 4/4, reduced 3/3). Review dispatched (opus).
+Task 7: review a7f5bfd2b83fe9280 (opus) Needs fixes: Critical reduced sheet no longer fades (nearest-wins GlassVisibility); Important undo can fire twice. Fix round 2/5 dispatched (FIX_BASE 2a4d793): multiplicative visibility, undo once, exit sampled in budgets, dead field.
+Task 7: minor (deferred): toast ignores keyboard inset (viewPadding only); no budget sampling of sheet drag/dismiss phases.
+Task 7: fix round 2 -> 651ba4f; re-review: Critical+Important addressed; counts phone+sheet+toast 3/3/3, desktop+toast 4/4/4, reduced sheet 3/3 with fractional visibility sampled. Task 7: complete, merged; full suite 1588 pass (1 skip).
+Task 7: minor (deferred -> final fix wave): glass_probe_scene toastTrigger field contradicts phone scene; sheet reduced close uses non-flipped curve (reads as ease-in, spec violation — fix in final wave).
+Next: Task 11 device probe, then final whole-branch review.

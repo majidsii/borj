@@ -17,6 +17,7 @@ class Pressable extends StatefulWidget {
     this.selected = false,
     this.button = true,
     this.hoverRadius = BorderRadius.zero,
+    this.overlayInset = EdgeInsets.zero,
     super.key,
   });
 
@@ -26,6 +27,10 @@ class Pressable extends StatefulWidget {
   final bool selected;
   final bool button;
   final BorderRadius hoverRadius;
+
+  /// Insets the hover and focus overlays from the child's bounds, so they
+  /// follow the visible shape when the child is padded for hit testing.
+  final EdgeInsets overlayInset;
 
   @override
   State<Pressable> createState() => _PressableState();
@@ -70,6 +75,10 @@ class _PressableState extends State<Pressable> {
         widget.child,
         if (_hovered)
           Positioned.fill(
+            left: widget.overlayInset.left,
+            top: widget.overlayInset.top,
+            right: widget.overlayInset.right,
+            bottom: widget.overlayInset.bottom,
             child: IgnorePointer(
               child: DecoratedBox(
                 key: const ValueKey('pressable-hover'),
@@ -82,6 +91,10 @@ class _PressableState extends State<Pressable> {
           ),
         if (_focused)
           Positioned.fill(
+            left: widget.overlayInset.left,
+            top: widget.overlayInset.top,
+            right: widget.overlayInset.right,
+            bottom: widget.overlayInset.bottom,
             child: IgnorePointer(
               child: DecoratedBox(
                 key: const ValueKey('pressable-focus'),

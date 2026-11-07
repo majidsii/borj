@@ -1,0 +1,56 @@
+# SDD ledger — plan: docs/superpowers/plans/2026-11-07-redesign-phase-1b-primitives.md
+Branch: feat/redesign-phase-1b (worktree ~/projects/personal/borj/phase-1b), base 410076d
+Task 1: dispatched (base 410076d, implementer sonnet a43be67b59cc5d806)
+Task 1: NEEDS_CONTEXT at Step 8 (fake path never warns on shape limit). Controller ruling: sanity moves to integration_test/glass_shape_limit_sanity_test.dart (real glass) + structural guard test/support/glass_shape_limit.dart used in budget tests. Resumed implementer.
+Parallel (owner asked 2026-11-07 «تا میتونی کار ها رو با ساب ایجنت ها موازی پیش ببر»): T5a formatter in ../phase-1b-t5 (branch feat/1b-t5-format, agent aacdcaa91636853f1); T10a shoot.py fix in ../phase-1b-t10 (branch feat/1b-t10-shoot).
+Task 1: implemented 676911b (fake budgets 2/3; device shape-limit sanity passes). Task 2: dispatched in ../phase-1b-t2 (branch feat/1b-t2, base 676911b) in parallel with Task 1 review.
+T5a: c2bbdf3 on feat/1b-t5-format; controller-reviewed (verbatim plan code, 2/2 tests, analyze/format clean). Merge into feat/redesign-phase-1b later.
+Task 1: review a6d0c21f42833bc47 Approved, 1 Important plan-mandated (expectNoMovement vacuous on missing subject) -> controller ruling: fix (strictness only) -> fix round 1/5 (FIX_BASE 676911b).
+Task 1: minor (deferred): shapeLimitExceeded assert inert on FakeGlass (guard covers); GlassOverlayContent without GlassOverlayBackdrop sets useBackdropGroup true with no group — check in Task 6.
+Task 1: fix round 1/5 (1 addressed; 9f15e31; controller re-review: diff checked, test/support 3/3). Task 1: complete (410076d..9f15e31). T5a merged into feat/redesign-phase-1b.
+Task 2: implemented 2de9e8d on feat/1b-t2 (DONE_WITH_CONCERNS: non-const IconData). Controller ruling: Critical (release icon tree-shaking) -> fix round 1/5: drop directional rebuild, helper skips Icon flips, merge feat/redesign-phase-1b first, run release build.
+T10a: b726844 shoot.py path fix merged; 78 board PNGs in ~/projects/personal/borj/reference-captures/boards-2026-11-05 (outside repo).
+Task 2: fix round 1/5 (e0a55b6; release build OK). feat/1b-t2 merged into feat/redesign-phase-1b at 9a93690; review of b12d543064b8ffb66ee0e511a9b63017cd5013db..e0a55b6 dispatched. Tasks 3,4,5,6,8 dispatched in parallel worktrees ../phase-1b-tN-impl (branches feat/1b-tN-impl, base 9a93690).
+Agents: T2 review acc986ac66cbed928; T3 a4f7c4460071396be; T4 ab0f960f2db42e962; T5 (AnimatedNumber only) a09afd70f2e9658ae; T6 a361c98824f2bb85d; T8 a8b30976353b24c25 (local spring curve with TODO -> replace with SpringCurve at merge).
+Note: T4 owns ProgressTrack semantics via formatPersianPercent (moved from T5).
+Task 2: review acc986ac66cbed928 Approved. Task 2: complete (b12d543..e0a55b6, merged at 9a93690).
+Task 2: minor (deferred): app_text.dart:39 literal white for onTint (constraint breach -> use thumbSurface or onTint token); Space key relies on ambient shortcuts, untested; Pressable Opacity wrapper toggles with enabled (prefer constant wrapper); missing tests: disabled opacity, selected semantics, touch no-hover, on-glass tinted, icon-only circle shape; icon-only circle not guaranteed under stretched constraints.
+Task 5: implemented 291f61b (feat/1b-t5-impl); review dispatched.
+Task 5: review acde7f90621669020 Approved. Task 5: complete (291f61b, merged).
+Task 5: minor (deferred): no test for same-value parent rebuild mid-roll, nor non-int passthrough; _from/_first mutated without setState (harmless).
+Task 8: implemented bbb4de3 (feat/1b-t8-impl; local spring TODO); review dispatched.
+Task 4: implemented 83f1d5c (feat/1b-t4-impl); review dispatched.
+Task 3: implemented e461fe0 (feat/1b-t3-impl); trailer said Sonnet -> asked to amend to Opus 5.5.
+Task 6: implemented 6f72bee (feat/1b-t6-impl). Overlay budget fake max=3. Renderer: useBackdropGroup without BackdropGroup self-wraps (safe, +1 capture). Probe sheet uses plain TextFields (swap to GlassTextField after T4 merge). No separate RED run. Review dispatched.
+Task 8: review aa3cb332037a69611 Approved. Not merged yet: integration step after T6 merge will swap local spring for SpringCurve and fix minors (reduced remove uses AppMotion.reduced.curve; move progress below reduced return; add reduced-remove test; cache settle).
+Reviews in flight: T6 opus a67121f6943c90811; T3 a1bc682e7a713875f; T4 a9495561eb31fac81.
+Task 4: review a9495561eb31fac81 Needs fixes: field padding not focusable; animateIn uses dataEnter on every change; RoundCheck literal white. Fix round 1/5 dispatched (FIX_BASE 83f1d5c) incl. minors label semantics + _ownNode dispose.
+Task 4: minor (deferred): NaN value would assert; TextField needs bounded width; RoundCheck controllers tick under reduced motion; ring fringe under fill; tests for Space/0.95 threshold/uncheck fade.
+Task 3: review a1bc682e7a713875f Approved with Important: hover/focus overlay covers padded 44pt box (chip, toggle). Fix round 1/5 dispatched (FIX_BASE 1568838): Pressable.overlayInset, toggle key test, segment icon tone, resize without post-frame snap.
+Task 3: minor (deferred): didUpdateWidget doesn't resync when segment list changes with same index; no mid-flight interruption test.
+Task 4: fix round 1/5 (5 addressed; 1fcc589; re-review ad677986b8a483aee all addressed). Task 4: complete (9a93690..1fcc589), merged into feat/redesign-phase-1b.
+Task 4: minor (deferred): ProgressTrack _first cleared on parent rebuild during enter; GestureDetector may duplicate tap semantics; focus-node disposal untested; label-once not asserted.
+Task 3: fix round 1/5 (4 addressed; 642491d; re-review a1f34d834979b50f0 all addressed). Task 3: complete (9a93690..642491d), merged at 350c90d (barrel conflict resolved by controller; analyze/format/design+support tests green).
+Task 3: minor (deferred): segment icon uses raw Icon (check semantics leak); overlay inset 6 duplicated; no resize-tracking or toggle focus-ring test.
+Task 9: dispatched in ../phase-1b-t9-impl (feat/1b-t9-impl, base 350c90d).
+Task 9: implemented 151416b; review dispatched.
+Task 9: review a1bf2a2e2d024e94b Approved. Task 9: complete (151416b), merged.
+Task 9: minor (deferred): duplicated greaterThan(0.5) assertion in appearance_section_test; no assertion of Persian semantic value string.
+Task 7: dispatched in ../phase-1b-t7-impl (feat/1b-t7-impl = phase-1b HEAD + feat/1b-t6-impl merged, barrel conflict resolved by controller), agent a5775f06296a220c8, in parallel with T6 opus review.
+Task 6: review a67121f6943c90811 (opus) Needs fixes: Critical mid-open grab jumps/dismisses; Important: sheet hugs content (134px @390), overlay budget test never sees sheet (debugPrint counter blind to non-repainting layers), reduced-motion test blind to Flow transforms, loose grow test. Controller ruling: probe trigger moves into chrome scope (board-faithful). New helper test/support/backdrop_layer_count.dart (composited BackdropFilterLayer count). Fix round 1/5 dispatched (FIX_BASE 6f72bee).
+Task 7: told to hold budget files until T6 fix merges.
+Cross-task note: Part A static budgets (2/3) were measured on first-frame full paint -> still valid; re-check with layer counter in final review.
+Task 7: toast d33ff3e (budget files pending). Task 10: dispatched in ../phase-1b-t10-impl (feat/1b-t10-impl, base 151416b) without sheet/toast/row samples (added after merge).
+Task 6: fix round 1 -> 7cdd3d6. Composited count sheet open: 3 mid-open/3 settled (old counter said 2 -> was blind). Helper skips OpacitySeedLayer (Part A phone reads 2 with skip, 5 without). Grab fix matches top edge but snaps scale to full. Scoped re-review (opus) dispatched.
+Task 10: implemented 94a1e56; review a5640fb052ea15cc2 Needs fixes: Critical — Appearance sample's nested ProviderScope overrides only store; Riverpod 2.6.1 resolves appearancePreferencesProvider in root -> mutates live app prefs. Fix round 1/5 dispatched (FIX_BASE 94a1e56).
+Task 10: minor (deferred): review page uses own-layer glass per sample (many captures; debug page only).
+Task 10: fix round 1/5 (993b765; controller re-review: all three providers overridden, regression test fails on old code per report, review tests 4 pass/1 skip). Task 10: complete (pending 3 samples: sheet, toast, rows), merged.
+Task 10: minor (deferred): full suite not re-run after fix (controller runs at integration).
+Task 6: re-review a2b8c86ee12bfb51f (opus) of 6f72bee..7cdd3d6 — OPEN:
+- Critical: mid-open grab keeps the top but snaps size and position (phone width 335→374, left 27→8, height 215→245). After a slow release the sheet drifts about 20 px away from rest (the _adjust fade outruns the spring).
+- Critical (regression): a re-grab during spring-back jumps 28–45 px. _dragStart rebases through _curved while the sheet is user-driven, and _probe.dy is stale.
+- Fix for both: the delegate records the painted rect and opacity on every path. Drag start freezes that pose and the controller value (no rebase through _curved). The drag paints the frozen pose plus a translation. Spring-back lerps from the frozen pose to the target. Delete _adjust and _adjustFactor. Tests: width and left within 1 px on the grab frame; the top never moves down after a slow release; a re-grab during spring-back does not jump.
+- Important: backdrop_layer_count.dart skips OpacitySeedLayer unconditionally, but it captures when seeded (a fractional opacity above the glass, e.g. FadeTransition; glass_composition_probe.dart:88-104). Count it when seeded is true, and add a reduced-motion overlay budget variant (likely 4 > 3).
+- Addressed: inset width, reduced-motion getRect check, grow, origin-null and back tests, minor items.
+- Deferred: SeededBackdropPassLayer is off under flutter test; the Flow paintChild opacity below t=0.3 is not seen by syncOpacity; a reduced-mode mid-fade grab opacity step.
+Next: fix round 2 for Task 6 (resume a361c98824f2bb85d, or a fresh agent) with the above.

@@ -38,7 +38,7 @@ final class GlassProbeScene extends StatelessWidget {
         child: desktop
             ? const _Desktop()
             : sheetTrigger
-            ? const _PhoneWithSheetTrigger()
+            ? const _Phone(trigger: _SheetTrigger())
             : const _Phone(),
       ),
     );
@@ -69,7 +69,10 @@ Widget _section(GlassRole role, int rows) => GlassScope(
 );
 
 final class _Phone extends StatelessWidget {
-  const _Phone();
+  const _Phone({this.trigger});
+
+  /// Extra chrome button in the bottom row (the sheet-trigger variant).
+  final Widget? trigger;
 
   @override
   Widget build(BuildContext context) {
@@ -106,6 +109,10 @@ final class _Phone extends StatelessWidget {
                   shape: AppleGlassShape.circle(),
                   child: SizedBox.square(dimension: 62),
                 ),
+                if (trigger != null) ...[
+                  const SizedBox(width: AppSpacing.s12),
+                  trigger!,
+                ],
               ],
             ),
           ),
@@ -179,34 +186,25 @@ final class _Desktop extends StatelessWidget {
   }
 }
 
-final class _PhoneWithSheetTrigger extends StatelessWidget {
-  const _PhoneWithSheetTrigger();
+final class _SheetTrigger extends StatelessWidget {
+  const _SheetTrigger();
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        const _Phone(),
-        Positioned(
-          top: 8,
-          left: AppSpacing.s16,
-          child: Builder(
-            builder: (context) => GlassButton(
-              key: const ValueKey('probe-open-sheet'),
-              label: 'باز کن',
-              onPressed: () {
-                final box = context.findRenderObject()! as RenderBox;
-                final origin = box.localToGlobal(Offset.zero) & box.size;
-                showGlassSheet<void>(
-                  context,
-                  origin: origin,
-                  builder: (context) => const _ProbeSheetContent(),
-                );
-              },
-            ),
-          ),
-        ),
-      ],
+    return Builder(
+      builder: (context) => GlassButton(
+        key: const ValueKey('probe-open-sheet'),
+        label: 'باز کن',
+        onPressed: () {
+          final box = context.findRenderObject()! as RenderBox;
+          final origin = box.localToGlobal(Offset.zero) & box.size;
+          showGlassSheet<void>(
+            context,
+            origin: origin,
+            builder: (context) => const _ProbeSheetContent(),
+          );
+        },
+      ),
     );
   }
 }

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """python3 shoot.py outdir Name... : plain-HTML copies of boards + headless chrome PNGs"""
 import re,os,sys,subprocess
-D=os.path.dirname(os.path.abspath(__file__)); P=os.path.join(D,'..','allscreens','project')
+D=os.path.dirname(os.path.abspath(__file__)); P=os.path.join(D,'..') if os.path.exists(os.path.join(D,'..','Main.dc.html')) else os.path.join(D,'..','allscreens','project')
 out=os.path.abspath(sys.argv[1]); os.makedirs(out,exist_ok=True)
 for n in sys.argv[2:]:
     h=open(os.path.join(P,n+'.dc.html'),encoding='utf-8').read()

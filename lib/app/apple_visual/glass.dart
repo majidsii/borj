@@ -10,5 +10,6 @@ export 'widgets/apple_liquid_glass.dart'
         GlassOverlayBackdrop,
         GlassOverlayContent,
         GlassRole,
+        GlassVisibility,
         GlassScope;
 export 'widgets/glass_inner.dart';

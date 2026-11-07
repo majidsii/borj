@@ -98,11 +98,14 @@ final class _GlassSheetRoute<T> extends PopupRoute<T> {
   ) {
     // Under reduced motion only opacity changes. Otherwise the frame places
     // the sheet itself (grow from origin, or 1:1 under the finger).
+    // The glass fades through the renderer (GlassVisibility), never through
+    // a parent opacity, which would seed an extra backdrop capture.
+    final fade = animation.drive(CurveTween(curve: AppMotion.reduced.curve));
     return reduced
-        ? FadeTransition(
-            opacity: animation.drive(
-              CurveTween(curve: AppMotion.reduced.curve),
-            ),
+        ? AnimatedBuilder(
+            animation: fade,
+            builder: (context, child) =>
+                GlassVisibility(value: fade.value, child: child!),
             child: child,
           )
         : child;
@@ -293,6 +296,19 @@ final class _GlassSheetFrameState extends State<_GlassSheetFrame>
     }
   }
 
+  /// The sheet's opacity for this frame, applied to its glass through
+  /// [GlassVisibility]. Mirrors the pose opacity the delegate records.
+  double _visibility() {
+    if (widget.route.reduced) return 1; // the route fades it instead
+    return switch (_phase.value) {
+      _Phase.dragging => _paint.grab.opacity,
+      _Phase.settling =>
+        _paint.release.opacity + (1 - _paint.release.opacity) * _settle.value,
+      _Phase.dismissing => _paint.release.opacity,
+      _Phase.idle => (_curved.value / 0.3).clamp(0.0, 1.0),
+    };
+  }
+
   @override
   Widget build(BuildContext context) {
     final colors = AppTheme.of(context).colors;
@@ -345,20 +361,30 @@ final class _GlassSheetFrameState extends State<_GlassSheetFrame>
           autofocus: true,
           child: Material(
             type: MaterialType.transparency,
-            child: Flow(
-              clipBehavior: Clip.none,
-              delegate: _SheetFlowDelegate(
-                animation: _curved,
-                controller: _controller,
-                phase: _phase,
-                settle: _settle,
-                paint: _paint,
-                origin: route.origin,
-                reduced: route.reduced,
-                bottomInset: bottom + _inset,
-                topInset: media.viewPadding.top + _inset,
+            child: AnimatedBuilder(
+              animation: Listenable.merge([
+                _curved,
+                _controller,
+                _phase,
+                _settle,
+              ]),
+              builder: (context, child) =>
+                  GlassVisibility(value: _visibility(), child: child!),
+              child: Flow(
+                clipBehavior: Clip.none,
+                delegate: _SheetFlowDelegate(
+                  animation: _curved,
+                  controller: _controller,
+                  phase: _phase,
+                  settle: _settle,
+                  paint: _paint,
+                  origin: route.origin,
+                  reduced: route.reduced,
+                  bottomInset: bottom + _inset,
+                  topInset: media.viewPadding.top + _inset,
+                ),
+                children: [sheet],
               ),
-              children: [sheet],
             ),
           ),
         ),
@@ -456,8 +482,7 @@ final class _SheetFlowDelegate extends FlowDelegate {
       transform: Matrix4.translationValues(pose.cx, pose.cy, 0)
         ..scaleByDouble(pose.sx, pose.sy, 1, 1)
         ..translateByDouble(-child.width / 2, -child.height / 2, 0, 1),
-      opacity: pose.opacity,
-    );
+    ); // opacity is applied to the glass by GlassVisibility, not here
   }
 
   _Pose _grownPose(Size size, Size child, _Pose resting) {

@@ -138,4 +138,52 @@ void main() {
       AppleGlassShapeKind.capsule,
     );
   });
+
+  for (final scoped in [false, true]) {
+    testWidgets('GlassVisibility(0.5) reaches the appearance '
+        '(${scoped ? 'grouped' : 'own layer'})', (tester) async {
+      const glass = AppGlass(
+        role: GlassRole.panel,
+        child: SizedBox(width: 100, height: 40),
+      );
+      await tester.pumpWidget(
+        _app(
+          GlassVisibility(
+            value: 0.5,
+            child: scoped
+                ? const GlassScope(kind: GlassLayerKind.content, child: glass)
+                : glass,
+          ),
+        ),
+      );
+      final lg = tester.widget<LiquidGlass>(find.byType(LiquidGlass));
+      expect(lg.appearance!.visibility, 0.5);
+    });
+  }
+
+  testWidgets('without GlassVisibility the appearance is fully visible', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      _app(const AppGlass(role: GlassRole.panel, child: SizedBox(width: 9))),
+    );
+    final lg = tester.widget<LiquidGlass>(find.byType(LiquidGlass));
+    expect(lg.appearance!.visibility, 1);
+  });
+
+  testWidgets('nested GlassVisibility values multiply', (tester) async {
+    await tester.pumpWidget(
+      _app(
+        const GlassVisibility(
+          value: 0.5,
+          child: GlassVisibility(
+            value: 0.5,
+            child: AppGlass(role: GlassRole.panel, child: SizedBox(width: 9)),
+          ),
+        ),
+      ),
+    );
+    final lg = tester.widget<LiquidGlass>(find.byType(LiquidGlass));
+    expect(lg.appearance!.visibility, 0.25);
+  });
 }

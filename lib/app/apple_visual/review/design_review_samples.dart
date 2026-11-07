@@ -158,6 +158,17 @@ final List<DesignReviewSample> designReviewSamples = <DesignReviewSample>[
     darkOnly: true,
     build: (_) => const _GlowCornerDemo(),
   ),
+  DesignReviewSample(
+    label: 'UndoToast',
+    board: 'PhoneTasks',
+    build: (_) => Builder(
+      builder: (context) => GlassButton(
+        label: 'حذف',
+        onPressed: () =>
+            showUndoToast(context, message: 'کار حذف شد', onUndo: () {}),
+      ),
+    ),
+  ),
 ];
 
 Widget _panel(Widget child) => AppGlass(

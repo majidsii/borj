@@ -5,6 +5,7 @@ import 'package:borj/app/theme/app_motion.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:liquid_glass_renderer/liquid_glass_renderer.dart';
 
 import '../../support/glass_test_app.dart';
 import '../../support/reduced_motion_expectations.dart';
@@ -135,6 +136,26 @@ void main() {
       findsNWidgets(2),
     ); // launcher + sheet; the inner button is flat
   });
+
+  for (final reduced in [true, false]) {
+    testWidgets('the sheet glass fades in through renderer visibility '
+        '(${reduced ? 'reduced' : 'normal'})', (tester) async {
+      await tester.pumpWidget(
+        glassTestApp(_launcher(), reduceMotion: reduced, overlayBackdrop: true),
+      );
+      await tester.tap(find.text('باز کن'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 16));
+      double visibility() => tester
+          .widget<LiquidGlass>(find.byType(LiquidGlass).last)
+          .appearance!
+          .visibility;
+      expect(visibility(), lessThan(1));
+      expect(visibility(), greaterThanOrEqualTo(0));
+      await tester.pumpAndSettle();
+      expect(visibility(), 1);
+    });
+  }
 
   testWidgets('reduced motion: fade only, rect never moves', (tester) async {
     await tester.pumpWidget(

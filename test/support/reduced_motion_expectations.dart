@@ -11,11 +11,20 @@ Future<void> expectNoMovement(
   Duration span = const Duration(milliseconds: 600),
 }) async {
   await trigger();
+  var checked = 0;
   for (var t = Duration.zero; t < span; t += const Duration(milliseconds: 16)) {
     await tester.pump(const Duration(milliseconds: 16));
-    if (within.evaluate().isEmpty) {
-      return; // the subject left the tree (for example a closed sheet)
+    if (checked == 0) {
+      expect(
+        within,
+        findsWidgets,
+        reason:
+            'expectNoMovement: subject not found; the check would be vacuous',
+      );
+    } else if (within.evaluate().isEmpty) {
+      break; // the subject left the tree (for example a closed sheet)
     }
+    checked++;
     for (final w in tester.widgetList<Transform>(
       find.descendant(of: within, matching: find.byType(Transform)),
     )) {
@@ -45,4 +54,5 @@ Future<void> expectNoMovement(
       );
     }
   }
+  expect(checked, greaterThan(0), reason: 'expectNoMovement checked no frame');
 }

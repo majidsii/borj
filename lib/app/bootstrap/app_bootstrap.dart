@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:borj/app/apple_visual/foundation/glass_preferences_scope.dart';
+import 'package:borj/app/apple_visual/glass.dart' show GlassOverlayBackdrop;
 import 'package:borj/app/bootstrap/notification_startup_bootstrap.dart';
 import 'package:borj/app/router/app_router.dart';
 import 'package:borj/app/theme/motion_scope.dart';
@@ -100,12 +101,14 @@ final class _AppearanceScopes extends ConsumerWidget {
     final reduceTransparency = ref.watch(
       appearancePreferencesProvider.select((p) => p.reduceTransparency),
     );
-    return MotionScope(
-      reduceMotionSetting: reduceMotion,
-      child: GlassPreferencesScope(
-        intensity: intensity,
-        reduceTransparency: reduceTransparency,
-        child: child,
+    return GlassOverlayBackdrop(
+      child: MotionScope(
+        reduceMotionSetting: reduceMotion,
+        child: GlassPreferencesScope(
+          intensity: intensity,
+          reduceTransparency: reduceTransparency,
+          child: child,
+        ),
       ),
     );
   }

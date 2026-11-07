@@ -7,6 +7,8 @@ export 'glass_chip.dart';
 export 'glass_segmented.dart';
 export 'glass_text_field.dart';
 export 'glass_toggle.dart';
+export 'patterns/glass_sheet.dart';
+export 'patterns/spring_curve.dart';
 export 'pressable.dart';
 export 'progress_track.dart';
 export 'round_check.dart';

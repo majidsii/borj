@@ -3,6 +3,7 @@ import 'package:borj/app/theme/app_theme.dart';
 import 'package:borj/core/formatting/persian_number.dart';
 import 'package:borj/features/settings/application/appearance_preferences_controller.dart';
 import 'package:borj/features/settings/data/in_memory_appearance_preferences_store.dart';
+import 'package:borj/features/settings/domain/appearance_preferences.dart';
 import 'package:borj/features/settings/presentation/appearance_section.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -126,8 +127,16 @@ final List<DesignReviewSample> designReviewSamples = <DesignReviewSample>[
     board: 'PhoneSettings',
     build: (_) => ProviderScope(
       overrides: [
+        // Override all three so nothing resolves in the app's root container:
+        // the review page must never change the live theme or write files.
         appearancePreferencesStoreProvider.overrideWithValue(
           InMemoryAppearancePreferencesStore(),
+        ),
+        initialAppearancePreferencesProvider.overrideWithValue(
+          AppearancePreferences.defaults,
+        ),
+        appearancePreferencesProvider.overrideWith(
+          AppearancePreferencesController.new,
         ),
       ],
       child: const AppearanceSection(),

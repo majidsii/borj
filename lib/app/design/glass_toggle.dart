@@ -68,6 +68,7 @@ class GlassToggle extends StatelessWidget {
       child: Pressable(
         button: false,
         hoverRadius: BorderRadius.circular(999),
+        overlayInset: const EdgeInsets.symmetric(vertical: 6),
         onPressed: callback == null ? null : () => callback(!value),
         child: SizedBox(width: 52, height: 44, child: Center(child: track)),
       ),

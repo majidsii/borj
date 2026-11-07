@@ -1,5 +1,4 @@
 import 'package:borj/app/apple_visual/glass.dart';
-import 'package:borj/app/design/app_icon.dart';
 import 'package:borj/app/design/pressable.dart';
 import 'package:borj/app/theme/app_motion.dart';
 import 'package:borj/app/theme/app_theme.dart';
@@ -67,7 +66,6 @@ class _GlassSegmentedState<T> extends State<GlassSegmented<T>>
   static const double _height = 34;
 
   late final _ThumbMotion _motion = _ThumbMotion(this);
-  double? _segmentWidth;
 
   int get _index {
     final i = widget.segments.indexWhere((s) => s.value == widget.selected);
@@ -168,13 +166,6 @@ class _GlassSegmentedState<T> extends State<GlassSegmented<T>>
         builder: (context, constraints) {
           final segmentWidth =
               (constraints.maxWidth - _gap * (count - 1)) / count;
-          final previous = _segmentWidth;
-          _segmentWidth = segmentWidth;
-          if (previous != null && previous != segmentWidth) {
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              if (mounted) _motion.controller.value = _index.toDouble();
-            });
-          }
           final direction = Directionality.of(context);
           return SizedBox(
             height: _height,
@@ -238,7 +229,7 @@ class _GlassSegmentedState<T> extends State<GlassSegmented<T>>
             mainAxisSize: MainAxisSize.min,
             children: [
               if (segment.icon != null) ...[
-                AppIcon(segment.icon!, size: 16),
+                Icon(segment.icon, size: 16, color: style.color),
                 const SizedBox(width: 4),
               ],
               Flexible(

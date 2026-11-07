@@ -2,6 +2,7 @@
 import 'package:borj/app/design/design.dart';
 import 'package:borj/app/theme/app_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../support/glass_test_app.dart';
@@ -103,5 +104,25 @@ void main() {
       ),
     );
     handle.dispose();
+  });
+
+  testWidgets('keyboard: Tab focuses, Space and Enter toggle', (tester) async {
+    var value = false;
+    await tester.pumpWidget(
+      glassTestApp(
+        StatefulBuilder(
+          builder: (context, setState) =>
+              _toggle(value, (v) => setState(() => value = v)),
+        ),
+      ),
+    );
+    await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+    await tester.pump();
+    await tester.sendKeyEvent(LogicalKeyboardKey.space);
+    await tester.pump();
+    expect(value, isTrue);
+    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+    await tester.pump();
+    expect(value, isFalse);
   });
 }

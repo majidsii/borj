@@ -1,5 +1,6 @@
 // test/app/design/glass_chip_test.dart
 import 'package:borj/app/design/design.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -57,5 +58,21 @@ void main() {
     );
     await tester.tap(find.text('a'));
     expect(taps, 1);
+  });
+
+  testWidgets('hover overlay follows the 32 tall chip, not the 44 hit box', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      glassTestApp(GlassChip(label: 'a', onPressed: () {})),
+    );
+    final mouse = await tester.createGesture(kind: PointerDeviceKind.mouse);
+    await mouse.addPointer(location: Offset.zero);
+    addTearDown(mouse.removePointer);
+    await mouse.moveTo(tester.getCenter(find.byType(GlassChip)));
+    await tester.pump();
+    final hover = find.byKey(const ValueKey('pressable-hover'));
+    expect(hover, findsOneWidget);
+    expect(tester.getSize(hover).height, 32);
   });
 }

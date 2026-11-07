@@ -121,8 +121,12 @@ The approved boards are `docs/superpowers/references/2026-11-05-glass-mockups/`
 `docs/superpowers/specs/2026-11-05-liquid-glass-redesign-design.md`. New code uses `AppGlass(role: GlassRole..., shape: AppleGlassShape..., child:)` inside a
 `GlassScope(kind: GlassLayerKind...)` (one layer, ≤ 16 shapes), with the scopes of one surface under one
 `GlassBackdropGroup`. Things drawn on glass use `GlassInner`. The legacy `AppleLiquidGlass` remains only for
-screens not yet migrated. The theme comes from
-`AppleVisualScope.of(context)` (follows app brightness). Only `apple_liquid_glass.dart`
+screens not yet migrated. New code takes brightness from
+`Theme.of(context).brightness` and tokens from `AppTheme.of(context)`
+(`lib/app/theme/app_theme.dart`). Reduce motion comes from
+`MotionScope.reducedOf(context)` with `AppMotion` tokens
+(`lib/app/theme/app_motion.dart`). `AppleVisualScope` applies to legacy glass
+only. Only `apple_liquid_glass.dart`
 and `app_bootstrap.dart` import `liquid_glass_renderer`. Acceptance is side-by-side
 perceptual, not pixel goldens: debug review page (long-press the brand island, run
 with `--dart-define=GLASS_REFERENCE_DIR=...`) and `tool/ci.sh --device` for the Linux

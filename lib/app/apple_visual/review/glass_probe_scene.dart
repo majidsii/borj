@@ -1,33 +1,45 @@
 import 'package:flutter/material.dart';
 
 import '../../design/glass_button.dart';
+import '../../design/glass_text_field.dart';
 import '../../design/patterns/glass_sheet.dart';
+import '../../design/patterns/undo_toast.dart';
 import '../../theme/app_background.dart';
 import '../../theme/app_theme.dart';
 import '../foundation/apple_glass_shape.dart';
 import '../widgets/apple_liquid_glass.dart';
-import '../widgets/glass_inner.dart';
 
 /// Glass layout of the Today boards, used by the capture-budget tests and the
 /// device perf probe. Content is placeholder; only the glass structure matters.
 final class GlassProbeScene extends StatelessWidget {
   const GlassProbeScene.phone({super.key})
     : desktop = false,
-      sheetTrigger = false;
+      sheetTrigger = false,
+      toastTrigger = false;
   const GlassProbeScene.desktop({super.key})
     : desktop = true,
-      sheetTrigger = false;
+      sheetTrigger = false,
+      toastTrigger = false;
 
   /// The phone scene with a button (key `probe-open-sheet`) over it that
   /// opens a sheet with 3 text fields and a tinted button.
   const GlassProbeScene.phoneWithSheetTrigger({super.key})
     : desktop = false,
-      sheetTrigger = true;
+      sheetTrigger = true,
+      toastTrigger = true;
+
+  /// The desktop scene with a button (key `probe-show-toast`) in the chrome
+  /// group that shows an undo toast.
+  const GlassProbeScene.desktopWithToastTrigger({super.key})
+    : desktop = true,
+      sheetTrigger = false,
+      toastTrigger = true;
 
   static const Key scrollKey = Key('glass-probe-scroll');
 
   final bool desktop;
   final bool sheetTrigger;
+  final bool toastTrigger;
 
   @override
   Widget build(BuildContext context) {
@@ -36,9 +48,9 @@ final class GlassProbeScene extends StatelessWidget {
       child: AppBackground(
         kind: desktop ? AppBackgroundKind.desk : AppBackgroundKind.phone,
         child: desktop
-            ? const _Desktop()
+            ? _Desktop(toastTrigger: toastTrigger)
             : sheetTrigger
-            ? const _Phone(trigger: _SheetTrigger())
+            ? const _Phone(trigger: _SheetAndToastTriggers())
             : const _Phone(),
       ),
     );
@@ -123,7 +135,9 @@ final class _Phone extends StatelessWidget {
 }
 
 final class _Desktop extends StatelessWidget {
-  const _Desktop();
+  const _Desktop({this.toastTrigger = false});
+
+  final bool toastTrigger;
 
   @override
   Widget build(BuildContext context) {
@@ -146,15 +160,16 @@ final class _Desktop extends StatelessWidget {
                 GlassScope(
                   kind: GlassLayerKind.chrome,
                   child: Row(
-                    children: const [
-                      AppGlass(
+                    children: [
+                      const AppGlass(
                         role: GlassRole.chrome,
                         child: SizedBox(width: 36, height: 36),
                       ),
-                      AppGlass(
+                      const AppGlass(
                         role: GlassRole.tinted,
                         child: SizedBox(width: 72, height: 36),
                       ),
+                      if (toastTrigger) const _ToastTrigger(),
                     ],
                   ),
                 ),
@@ -186,6 +201,34 @@ final class _Desktop extends StatelessWidget {
   }
 }
 
+final class _ToastTrigger extends StatelessWidget {
+  const _ToastTrigger();
+
+  @override
+  Widget build(BuildContext context) => Builder(
+    builder: (context) => GlassButton(
+      key: const ValueKey('probe-show-toast'),
+      icon: Icons.notifications_none,
+      onPressed: () =>
+          showUndoToast(context, message: 'کار حذف شد', onUndo: () {}),
+    ),
+  );
+}
+
+final class _SheetAndToastTriggers extends StatelessWidget {
+  const _SheetAndToastTriggers();
+
+  @override
+  Widget build(BuildContext context) => const Row(
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      _SheetTrigger(),
+      SizedBox(width: AppSpacing.s12),
+      _ToastTrigger(),
+    ],
+  );
+}
+
 final class _SheetTrigger extends StatelessWidget {
   const _SheetTrigger();
 
@@ -209,9 +252,27 @@ final class _SheetTrigger extends StatelessWidget {
   }
 }
 
-/// Stand-in sheet body: 3 fields on a flat inner material and a tinted button.
-final class _ProbeSheetContent extends StatelessWidget {
+/// Stand-in sheet body: 3 text fields and a tinted button.
+final class _ProbeSheetContent extends StatefulWidget {
   const _ProbeSheetContent();
+
+  @override
+  State<_ProbeSheetContent> createState() => _ProbeSheetContentState();
+}
+
+final class _ProbeSheetContentState extends State<_ProbeSheetContent> {
+  final List<TextEditingController> _controllers = List.generate(
+    3,
+    (_) => TextEditingController(),
+  );
+
+  @override
+  void dispose() {
+    for (final c in _controllers) {
+      c.dispose();
+    }
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -220,19 +281,10 @@ final class _ProbeSheetContent extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          for (var i = 0; i < 3; i++)
+          for (final c in _controllers)
             Padding(
               padding: const EdgeInsets.only(bottom: AppSpacing.s8),
-              child: GlassInner(
-                shape: const AppleGlassShape.rounded(AppRadii.inner),
-                child: const SizedBox(
-                  height: 44,
-                  width: double.infinity,
-                  child: TextField(
-                    decoration: InputDecoration(border: InputBorder.none),
-                  ),
-                ),
-              ),
+              child: GlassTextField(controller: c, hint: 'متن'),
             ),
           GlassButton(
             label: 'تأیید',

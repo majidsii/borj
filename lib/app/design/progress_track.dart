@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 enum ProgressTone { accent, success, warn, danger }
 
 /// A capsule progress bar. The fill starts at the start edge (right in RTL).
-class ProgressTrack extends StatelessWidget {
+class ProgressTrack extends StatefulWidget {
   const ProgressTrack({
     required this.value,
     this.tone = ProgressTone.accent,
@@ -24,7 +24,25 @@ class ProgressTrack extends StatelessWidget {
   final String? semanticLabel;
 
   @override
+  State<ProgressTrack> createState() => _ProgressTrackState();
+}
+
+class _ProgressTrackState extends State<ProgressTrack> {
+  bool _first = true;
+
+  @override
+  void didUpdateWidget(ProgressTrack oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _first = false;
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final value = widget.value;
+    final tone = widget.tone;
+    final height = widget.height;
+    final animateIn = widget.animateIn;
+    final semanticLabel = widget.semanticLabel;
     final colors = AppTheme.of(context).colors;
     final reduced = MotionScope.reducedOf(context);
     final fraction = value.clamp(0.0, 1.0);
@@ -34,7 +52,9 @@ class ProgressTrack extends StatelessWidget {
       ProgressTone.warn => colors.warn,
       ProgressTone.danger => colors.danger,
     };
-    final motion = animateIn ? AppMotion.dataEnter : AppMotion.dataUpdate;
+    final motion = animateIn && _first
+        ? AppMotion.dataEnter
+        : AppMotion.dataUpdate;
     final radius = BorderRadius.circular(height / 2);
 
     return Semantics(

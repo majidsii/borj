@@ -53,6 +53,10 @@ class _GlassTextFieldState extends State<GlassTextField> {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.focusNode != widget.focusNode) {
       (oldWidget.focusNode ?? _ownNode)?.removeListener(_onFocus);
+      if (widget.focusNode != null) {
+        _ownNode?.dispose();
+        _ownNode = null;
+      }
       _node.addListener(_onFocus);
       _focused = _node.hasFocus;
     }
@@ -83,19 +87,24 @@ class _GlassTextFieldState extends State<GlassTextField> {
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
         child: Align(
           alignment: AlignmentDirectional.centerStart,
-          child: TextField(
-            controller: widget.controller,
-            focusNode: _node,
-            autofocus: widget.autofocus,
-            keyboardType: widget.keyboardType,
-            textDirection: widget.textDirection,
-            onChanged: widget.onChanged,
-            onSubmitted: widget.onSubmitted,
-            cursorColor: colors.accent,
-            style: theme.text.body.copyWith(color: colors.text),
-            decoration: InputDecoration.collapsed(
-              hintText: widget.hint,
-              hintStyle: theme.text.body.copyWith(color: colors.textSecondary),
+          child: Semantics(
+            label: widget.label,
+            child: TextField(
+              controller: widget.controller,
+              focusNode: _node,
+              autofocus: widget.autofocus,
+              keyboardType: widget.keyboardType,
+              textDirection: widget.textDirection,
+              onChanged: widget.onChanged,
+              onSubmitted: widget.onSubmitted,
+              cursorColor: colors.accent,
+              style: theme.text.body.copyWith(color: colors.text),
+              decoration: InputDecoration.collapsed(
+                hintText: widget.hint,
+                hintStyle: theme.text.body.copyWith(
+                  color: colors.textSecondary,
+                ),
+              ),
             ),
           ),
         ),
@@ -124,7 +133,11 @@ class _GlassTextFieldState extends State<GlassTextField> {
 
     final stack = Stack(
       children: [
-        surface,
+        GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: _node.requestFocus,
+          child: surface,
+        ),
         Positioned.fill(child: IgnorePointer(child: ring)),
       ],
     );
@@ -134,11 +147,13 @@ class _GlassTextFieldState extends State<GlassTextField> {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
-        AppText(
-          widget.label!,
-          role: AppTextRole.footnote,
-          tone: AppTextTone.secondary,
-          weight: FontWeight.w700,
+        ExcludeSemantics(
+          child: AppText(
+            widget.label!,
+            role: AppTextRole.footnote,
+            tone: AppTextTone.secondary,
+            weight: FontWeight.w700,
+          ),
         ),
         const SizedBox(height: 6),
         stack,

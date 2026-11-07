@@ -111,7 +111,9 @@ class _RoundCheckState extends State<RoundCheck> with TickerProviderStateMixin {
       width: size,
       height: size,
       decoration: BoxDecoration(shape: BoxShape.circle, color: colors.success),
-      child: CustomPaint(painter: _MarkPainter(markProgress)),
+      child: CustomPaint(
+        painter: _MarkPainter(markProgress, colors.thumbSurface),
+      ),
     );
 
     final Widget visual;
@@ -167,9 +169,10 @@ class _RoundCheckState extends State<RoundCheck> with TickerProviderStateMixin {
 }
 
 class _MarkPainter extends CustomPainter {
-  const _MarkPainter(this.progress);
+  const _MarkPainter(this.progress, this.color);
 
   final double progress;
+  final Color color;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -185,7 +188,7 @@ class _MarkPainter extends CustomPainter {
     canvas.drawPath(
       out,
       Paint()
-        ..color = const Color(0xFFFFFFFF)
+        ..color = color
         ..style = PaintingStyle.stroke
         ..strokeWidth = 2
         ..strokeCap = StrokeCap.round
@@ -194,5 +197,6 @@ class _MarkPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(_MarkPainter old) => old.progress != progress;
+  bool shouldRepaint(_MarkPainter old) =>
+      old.progress != progress || old.color != color;
 }

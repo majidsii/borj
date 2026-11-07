@@ -86,4 +86,41 @@ void main() {
     expect(find.byType(AppGlass), findsOneWidget);
     expect(find.byType(GlassInner), findsOneWidget);
   });
+
+  testWidgets('tapping the padding focuses the field', (tester) async {
+    final controller = TextEditingController();
+    addTearDown(controller.dispose);
+    await tester.pumpWidget(
+      glassTestApp(
+        SizedBox(
+          width: 300,
+          child: GlassTextField(controller: controller, hint: 'h'),
+        ),
+      ),
+    );
+    final rect = tester.getRect(find.byType(GlassTextField));
+    await tester.tapAt(rect.topLeft + const Offset(3, 3));
+    await tester.pump();
+    final editable = tester.widget<EditableText>(find.byType(EditableText));
+    expect(editable.focusNode.hasFocus, isTrue);
+  });
+
+  testWidgets('label is part of the field semantics', (tester) async {
+    final handle = tester.ensureSemantics();
+    final controller = TextEditingController();
+    addTearDown(controller.dispose);
+    await tester.pumpWidget(
+      glassTestApp(
+        SizedBox(
+          width: 300,
+          child: GlassTextField(controller: controller, label: 'عنوان'),
+        ),
+      ),
+    );
+    expect(
+      tester.getSemantics(find.byType(TextField)).label,
+      contains('عنوان'),
+    );
+    handle.dispose();
+  });
 }

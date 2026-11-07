@@ -3,6 +3,7 @@ import 'package:borj/app/design/design.dart';
 import 'package:borj/app/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:liquid_glass_renderer/liquid_glass_renderer.dart';
 
 import '../../support/backdrop_layer_count.dart';
 
@@ -30,9 +31,15 @@ void main() {
     await tester.tap(find.byKey(const ValueKey('probe-open-sheet')));
     await tester.pump();
     var worst = 0;
+    var sawFractional = false;
     for (var i = 0; i < 14; i++) {
       await tester.pump(const Duration(milliseconds: 16)); // during the fade
       expect(find.text('تأیید'), findsOneWidget);
+      final v = tester
+          .widget<LiquidGlass>(find.byType(LiquidGlass).last)
+          .appearance!
+          .visibility;
+      if (v > 0 && v < 1) sawFractional = true;
       worst = worst < countCompositedBackdrops(tester)
           ? countCompositedBackdrops(tester)
           : worst;
@@ -40,6 +47,7 @@ void main() {
     expect(find.text('تأیید'), findsOneWidget);
     await tester.pumpAndSettle();
     expect(find.text('تأیید'), findsOneWidget);
+    expect(sawFractional, isTrue, reason: 'the fade must really be sampled');
     final settled = countCompositedBackdrops(tester);
     // ignore: avoid_print
     print(

@@ -170,4 +170,20 @@ void main() {
     final lg = tester.widget<LiquidGlass>(find.byType(LiquidGlass));
     expect(lg.appearance!.visibility, 1);
   });
+
+  testWidgets('nested GlassVisibility values multiply', (tester) async {
+    await tester.pumpWidget(
+      _app(
+        const GlassVisibility(
+          value: 0.5,
+          child: GlassVisibility(
+            value: 0.5,
+            child: AppGlass(role: GlassRole.panel, child: SizedBox(width: 9)),
+          ),
+        ),
+      ),
+    );
+    final lg = tester.widget<LiquidGlass>(find.byType(LiquidGlass));
+    expect(lg.appearance!.visibility, 0.25);
+  });
 }

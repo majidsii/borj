@@ -111,7 +111,7 @@ final class _UndoToastState extends State<_UndoToast>
 
   void _leave() {
     if (_leaving) return;
-    _leaving = true;
+    setState(() => _leaving = true); // also stops the toast taking taps
     _timer?.cancel();
     unawaited(_controller.reverse());
   }
@@ -150,36 +150,40 @@ final class _UndoToastState extends State<_UndoToast>
                 child: faded,
               );
             },
-            child: AppGlass(
-              role: GlassRole.chrome,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacing.s16,
-                  vertical: 10,
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Flexible(
-                      child: Semantics(
-                        liveRegion: true,
-                        container: true,
-                        child: AppText(
-                          widget.message,
-                          role: AppTextRole.callout,
+            child: IgnorePointer(
+              ignoring: _leaving,
+              child: AppGlass(
+                role: GlassRole.chrome,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.s16,
+                    vertical: 10,
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Flexible(
+                        child: Semantics(
+                          liveRegion: true,
+                          container: true,
+                          child: AppText(
+                            widget.message,
+                            role: AppTextRole.callout,
+                          ),
                         ),
                       ),
-                    ),
-                    const SizedBox(width: AppSpacing.s12),
-                    GlassButton(
-                      label: widget.undoLabel,
-                      variant: GlassButtonVariant.plain,
-                      onPressed: () {
-                        widget.onUndo();
-                        _leave();
-                      },
-                    ),
-                  ],
+                      const SizedBox(width: AppSpacing.s12),
+                      GlassButton(
+                        label: widget.undoLabel,
+                        variant: GlassButtonVariant.plain,
+                        onPressed: () {
+                          if (_leaving) return;
+                          widget.onUndo();
+                          _leave();
+                        },
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),

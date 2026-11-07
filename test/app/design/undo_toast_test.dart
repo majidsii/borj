@@ -104,4 +104,34 @@ void main() {
     handle.dispose();
     await tester.pump(const Duration(seconds: 6));
   });
+
+  testWidgets('undo fires once on a double tap', (tester) async {
+    var undone = 0;
+    await tester.pumpWidget(
+      glassTestApp(_launcher(() => undone++), overlayBackdrop: true),
+    );
+    await tester.tap(find.text('حذف'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('برگرداندن'));
+    await tester.pump(const Duration(milliseconds: 16));
+    await tester.tap(find.text('برگرداندن'), warnIfMissed: false);
+    await tester.pumpAndSettle();
+    expect(undone, 1);
+  });
+
+  testWidgets('undo during the auto-hide exit does nothing', (tester) async {
+    var undone = 0;
+    await tester.pumpWidget(
+      glassTestApp(_launcher(() => undone++), overlayBackdrop: true),
+    );
+    await tester.tap(find.text('حذف'));
+    await tester.pumpAndSettle(); // shows; the 5 s timer is not elapsed
+    await tester.pump(const Duration(seconds: 5));
+    await tester.pump(const Duration(milliseconds: 30)); // mid exit
+    expect(find.text('برگرداندن'), findsOneWidget);
+    await tester.tap(find.text('برگرداندن'), warnIfMissed: false);
+    await tester.pumpAndSettle();
+    expect(undone, 0);
+    expect(find.text('کار حذف شد'), findsNothing);
+  });
 }

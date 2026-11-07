@@ -26,7 +26,7 @@ final class GlassProbeScene extends StatelessWidget {
   const GlassProbeScene.phoneWithSheetTrigger({super.key})
     : desktop = false,
       sheetTrigger = true,
-      toastTrigger = true;
+      toastTrigger = false;
 
   /// The desktop scene with a button (key `probe-show-toast`) in the chrome
   /// group that shows an undo toast.

@@ -33,6 +33,18 @@ void main() {
     await tester.pump(const Duration(seconds: 1)); // settled, before auto-hide
     expect(find.text('کار حذف شد'), findsOneWidget);
     final settled = countCompositedBackdrops(tester);
+    // The auto-hide exit: sample it too.
+    await tester.pump(const Duration(seconds: 4));
+    var exitWorst = 0;
+    for (var i = 0; i < 20; i++) {
+      await tester.pump(const Duration(milliseconds: 16));
+      if (i < 3) expect(find.text('کار حذف شد'), findsOneWidget);
+      final n = countCompositedBackdrops(tester);
+      if (n > exitWorst) exitWorst = n;
+    }
+    // ignore: avoid_print
+    print('LG_COMPOSITED scene=desktop+toast exit=$exitWorst');
+    expect(exitWorst, lessThanOrEqualTo(4));
     // ignore: avoid_print
     print('LG_COMPOSITED scene=desktop+toast entrance=$worst settled=$settled');
     // ignore: avoid_print

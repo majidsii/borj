@@ -130,22 +130,35 @@ final class _GlassGroupMarker extends InheritedWidget {
 /// and highlight fade with [value] (0 to 1) and so do the children inside each
 /// glass shape. Use it instead of a parent `Opacity` or `FadeTransition`,
 /// which would force the renderer into a seeded extra capture pass.
-final class GlassVisibility extends InheritedWidget {
-  const GlassVisibility({required this.value, required super.child, super.key});
+final class GlassVisibility extends StatelessWidget {
+  const GlassVisibility({required this.value, required this.child, super.key});
 
   final double value;
+  final Widget child;
 
-  /// The nearest visibility above [context] (1 when there is none).
+  /// The effective visibility at [context]: the product of every
+  /// [GlassVisibility] above it (1 when there is none).
   static double of(BuildContext context) =>
       context
-          .dependOnInheritedWidgetOfExactType<GlassVisibility>()
-          ?.value
-          .clamp(0.0, 1.0) ??
+          .dependOnInheritedWidgetOfExactType<_GlassVisibilityScope>()
+          ?.effective ??
       1.0;
 
   @override
-  bool updateShouldNotify(GlassVisibility oldWidget) =>
-      oldWidget.value != value;
+  Widget build(BuildContext context) => _GlassVisibilityScope(
+    effective: value.clamp(0.0, 1.0) * of(context),
+    child: child,
+  );
+}
+
+final class _GlassVisibilityScope extends InheritedWidget {
+  const _GlassVisibilityScope({required this.effective, required super.child});
+
+  final double effective;
+
+  @override
+  bool updateShouldNotify(_GlassVisibilityScope oldWidget) =>
+      oldWidget.effective != effective;
 }
 
 abstract final class GlassContext {

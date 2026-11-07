@@ -27,4 +27,28 @@ void main() {
       span: const Duration(milliseconds: 64),
     );
   });
+
+  testWidgets('ignores the static flip of a directional Icon in RTL', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      const Directionality(
+        textDirection: TextDirection.rtl,
+        child: SizedBox(
+          key: ValueKey('subject'),
+          child: Icon(Icons.chevron_left),
+        ),
+      ),
+    );
+    expect(
+      find.descendant(of: find.byType(Icon), matching: find.byType(Transform)),
+      findsOneWidget,
+    );
+    await expectNoMovement(
+      tester,
+      within: find.byKey(const ValueKey('subject')),
+      trigger: () async {},
+      span: const Duration(milliseconds: 64),
+    );
+  });
 }

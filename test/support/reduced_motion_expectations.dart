@@ -25,9 +25,18 @@ Future<void> expectNoMovement(
       break; // the subject left the tree (for example a closed sheet)
     }
     checked++;
-    for (final w in tester.widgetList<Transform>(
-      find.descendant(of: within, matching: find.byType(Transform)),
-    )) {
+    // Icon mirrors matchTextDirection glyphs in RTL with a static Transform;
+    // that is a flip, not motion.
+    final iconFlips = find
+        .descendant(of: find.byType(Icon), matching: find.byType(Transform))
+        .evaluate()
+        .toSet();
+    for (final element
+        in find
+            .descendant(of: within, matching: find.byType(Transform))
+            .evaluate()
+            .where((e) => !iconFlips.contains(e))) {
+      final w = element.widget as Transform;
       expect(
         w.transform.isIdentity(),
         isTrue,

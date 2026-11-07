@@ -1,6 +1,7 @@
 import 'package:borj/app/theme/original_design_tokens.dart';
 import 'package:borj/app/widgets/aurora_background.dart';
 import 'package:borj/features/legacy_import/presentation/legacy_import_section.dart';
+import 'package:borj/features/settings/presentation/appearance_section.dart';
 import 'package:flutter/material.dart';
 
 final class SettingsScreen extends StatelessWidget {
@@ -49,6 +50,8 @@ final class SettingsScreen extends StatelessWidget {
                         ),
                       ],
                     ),
+                    const SizedBox(height: 20),
+                    const AppearanceSection(),
                     const SizedBox(height: 20),
                     const LegacyImportSection(),
                   ],

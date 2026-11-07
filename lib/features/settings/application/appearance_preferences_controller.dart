@@ -28,8 +28,19 @@ final class AppearancePreferencesController
   Future<void> setMode(AppearanceMode mode) =>
       _update(state.copyWith(mode: mode));
 
-  Future<void> setGlassIntensity(double value) =>
-      _update(state.copyWith(glassIntensity: value));
+  /// Updates the intensity in memory only. Call from the slider's `onChanged`.
+  void previewGlassIntensity(double value) {
+    state = state.copyWith(glassIntensity: value);
+  }
+
+  /// Saves the current state. Call from the slider's `onChangeEnd`.
+  Future<void> commitGlassIntensity() => _save(state);
+
+  /// Preview plus commit, for callers that are not a slider.
+  Future<void> setGlassIntensity(double value) {
+    previewGlassIntensity(value);
+    return commitGlassIntensity();
+  }
 
   Future<void> setReduceMotion(bool value) =>
       _update(state.copyWith(reduceMotion: value));
@@ -39,6 +50,10 @@ final class AppearancePreferencesController
 
   Future<void> _update(AppearancePreferences next) async {
     state = next;
+    await _save(next);
+  }
+
+  Future<void> _save(AppearancePreferences next) async {
     try {
       await ref.read(appearancePreferencesStoreProvider).save(next);
     } on Object catch (error, stack) {

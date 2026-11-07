@@ -71,4 +71,41 @@ void main() {
     );
     expect(errors.single.exception, isA<StateError>());
   });
+
+  group('glass intensity persistence', () {
+    late InMemoryAppearancePreferencesStore store;
+    late ProviderContainer container;
+
+    setUp(() {
+      store = InMemoryAppearancePreferencesStore();
+      container = ProviderContainer(
+        overrides: [
+          appearancePreferencesStoreProvider.overrideWithValue(store),
+        ],
+      );
+      addTearDown(container.dispose);
+    });
+
+    test('preview changes state without saving; commit persists', () async {
+      final controller = container.read(appearancePreferencesProvider.notifier);
+
+      controller.previewGlassIntensity(0.9);
+
+      expect(container.read(appearancePreferencesProvider).glassIntensity, 0.9);
+      expect((await store.load()).glassIntensity, 0.5);
+
+      await controller.commitGlassIntensity();
+
+      expect((await store.load()).glassIntensity, 0.9);
+    });
+
+    test('setGlassIntensity previews and commits', () async {
+      await container
+          .read(appearancePreferencesProvider.notifier)
+          .setGlassIntensity(0.2);
+
+      expect(container.read(appearancePreferencesProvider).glassIntensity, 0.2);
+      expect((await store.load()).glassIntensity, 0.2);
+    });
+  });
 }

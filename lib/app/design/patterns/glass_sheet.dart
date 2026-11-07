@@ -31,7 +31,7 @@ Future<T?> showGlassSheet<T>(
 
 abstract final class GlassSheet {
   static void close<T>(BuildContext context, [T? result]) =>
-      Navigator.of(context).pop(result);
+      Navigator.of(context, rootNavigator: true).pop(result);
 }
 
 /// Vertical drag velocity (px/s) above which a release dismisses.
@@ -98,7 +98,14 @@ final class _GlassSheetRoute<T> extends PopupRoute<T> {
   ) {
     // Under reduced motion only opacity changes. Otherwise the frame places
     // the sheet itself (grow from origin, or 1:1 under the finger).
-    return reduced ? FadeTransition(opacity: animation, child: child) : child;
+    return reduced
+        ? FadeTransition(
+            opacity: animation.drive(
+              CurveTween(curve: AppMotion.reduced.curve),
+            ),
+            child: child,
+          )
+        : child;
   }
 }
 
@@ -111,13 +118,23 @@ final class _GlassSheetFrame extends StatefulWidget {
   State<_GlassSheetFrame> createState() => _GlassSheetFrameState();
 }
 
-final class _GlassSheetFrameState extends State<_GlassSheetFrame> {
+final class _GlassSheetFrameState extends State<_GlassSheetFrame>
+    with SingleTickerProviderStateMixin {
   final GlobalKey _sheetKey = GlobalKey();
 
   /// True while the user drags, and until the sheet is back fully open: the
   /// sheet then follows the controller 1:1 with a plain translation.
   final ValueNotifier<bool> _userDriven = ValueNotifier<bool>(false);
   late final CurvedAnimation _curved;
+
+  /// Where the delegate last painted the sheet's top relative to its resting
+  /// top, so a grab during the open or close animation starts from it.
+  final _PoseProbe _probe = _PoseProbe();
+
+  /// Pixel offset (from [_probe]) that keeps the sheet where it was grabbed;
+  /// [_adjustFactor] fades it out after release.
+  double _adjust = 0;
+  late final AnimationController _adjustFactor;
 
   AnimationController get _controller => widget.route.sheetController;
 
@@ -130,18 +147,25 @@ final class _GlassSheetFrameState extends State<_GlassSheetFrame> {
       reverseCurve: _GlassSheetRoute._close.flipped,
     );
     _controller.addStatusListener(_onStatus);
+    _adjustFactor = AnimationController(
+      vsync: this,
+      duration: AppMotion.quick.duration,
+    )..addStatusListener(_onStatus);
   }
 
   @override
   void dispose() {
     _controller.removeStatusListener(_onStatus);
+    _adjustFactor.dispose();
     _curved.dispose();
     _userDriven.dispose();
     super.dispose();
   }
 
   void _onStatus(AnimationStatus status) {
-    if (status == AnimationStatus.completed && _userDriven.value) {
+    if (_userDriven.value &&
+        _controller.status == AnimationStatus.completed &&
+        _adjustFactor.value == 0) {
       _userDriven.value = false; // identical pose at t = 1
     }
   }
@@ -149,7 +173,17 @@ final class _GlassSheetFrameState extends State<_GlassSheetFrame> {
   double? get _sheetHeight => _sheetKey.currentContext?.size?.height;
 
   void _dragStart(DragStartDetails details) {
+    final h = _sheetHeight;
     _controller.stop();
+    // Rebase to the visual fraction so the grab does not jump; the leftover
+    // difference between the grown pose and a plain translation is kept as a
+    // pixel offset that fades out after release.
+    final f = _controller.isCompleted
+        ? 1.0
+        : _curved.value.clamp(0.0, 1.0).toDouble();
+    _controller.value = f;
+    _adjust = h == null ? 0 : _probe.dy - (1 - f) * h;
+    _adjustFactor.value = 1;
     _userDriven.value = true;
   }
 
@@ -160,6 +194,7 @@ final class _GlassSheetFrameState extends State<_GlassSheetFrame> {
   }
 
   void _dragEnd(DragEndDetails details) {
+    _adjustFactor.animateTo(0, curve: AppMotion.quick.curve);
     final h = _sheetHeight;
     final vy = details.velocity.pixelsPerSecond.dy;
     if (h == null ||
@@ -189,7 +224,7 @@ final class _GlassSheetFrameState extends State<_GlassSheetFrame> {
 
   void _dragCancel() {
     if (_controller.value >= 1) {
-      _userDriven.value = false;
+      _adjustFactor.animateTo(0, curve: AppMotion.quick.curve);
     } else {
       _dragEnd(DragEndDetails());
     }
@@ -253,9 +288,13 @@ final class _GlassSheetFrameState extends State<_GlassSheetFrame> {
                 animation: _curved,
                 controller: _controller,
                 userDriven: _userDriven,
+                probe: _probe,
+                adjust: () => _adjust * _adjustFactor.value,
+                adjustListenable: _adjustFactor,
                 origin: route.origin,
                 reduced: route.reduced,
                 bottomInset: bottom + _inset,
+                topInset: media.viewPadding.top + _inset,
               ),
               children: [sheet],
             ),
@@ -266,6 +305,10 @@ final class _GlassSheetFrameState extends State<_GlassSheetFrame> {
   }
 }
 
+final class _PoseProbe {
+  double dy = 0;
+}
+
 /// Lays out the sheet at the bottom and paints it: grown from the trigger
 /// (spring), 1:1 under the finger, or still (reduced motion; the route fades).
 final class _SheetFlowDelegate extends FlowDelegate {
@@ -273,27 +316,51 @@ final class _SheetFlowDelegate extends FlowDelegate {
     required this.animation,
     required this.controller,
     required this.userDriven,
+    required this.probe,
+    required this.adjust,
+    required Listenable adjustListenable,
     required this.origin,
     required this.reduced,
     required this.bottomInset,
-  }) : super(repaint: Listenable.merge([animation, controller, userDriven]));
+    required this.topInset,
+  }) : super(
+         repaint: Listenable.merge([
+           animation,
+           controller,
+           userDriven,
+           adjustListenable,
+         ]),
+       );
 
   final Animation<double> animation;
   final AnimationController controller;
   final ValueNotifier<bool> userDriven;
+  final _PoseProbe probe;
+  final double Function() adjust;
   final Rect? origin;
   final bool reduced;
   final double bottomInset;
+  final double topInset;
 
   @override
   Size getSize(BoxConstraints constraints) => constraints.biggest;
 
   @override
   BoxConstraints getConstraintsForChild(int i, BoxConstraints constraints) =>
-      BoxConstraints(
-        maxWidth: math.min(_maxSheetWidth, constraints.maxWidth - 2 * _inset),
-        maxHeight: math.max(0, constraints.maxHeight - bottomInset - _inset),
-      );
+      () {
+        final width = math.max(
+          0.0,
+          math.min(_maxSheetWidth, constraints.maxWidth - 2 * _inset),
+        );
+        return BoxConstraints(
+          minWidth: width,
+          maxWidth: width,
+          maxHeight: math.max(
+            0,
+            constraints.maxHeight - bottomInset - topInset,
+          ),
+        );
+      }();
 
   @override
   void paintChildren(FlowPaintingContext context) {
@@ -308,13 +375,14 @@ final class _SheetFlowDelegate extends FlowDelegate {
         0,
         transform: Matrix4.translationValues(
           base.dx,
-          base.dy + (1 - controller.value) * child.height,
+          base.dy + (1 - controller.value) * child.height + adjust(),
           0,
         ),
       );
       return;
     }
     if (reduced) {
+      probe.dy = 0;
       context.paintChild(
         0,
         transform: Matrix4.translationValues(base.dx, base.dy, 0),
@@ -332,6 +400,7 @@ final class _SheetFlowDelegate extends FlowDelegate {
           40,
         );
     final lerped = Rect.lerp(from, target, t)!;
+    probe.dy = lerped.top - target.top;
     final sx = math.max(0.2, lerped.width / target.width);
     final sy = math.max(0.2, lerped.height / target.height);
     final matrix = Matrix4.translationValues(
@@ -354,8 +423,10 @@ final class _SheetFlowDelegate extends FlowDelegate {
       old.userDriven != userDriven ||
       old.origin != origin ||
       old.reduced != reduced ||
-      old.bottomInset != bottomInset;
+      old.bottomInset != bottomInset ||
+      old.topInset != topInset;
 
   @override
-  bool shouldRelayout(_SheetFlowDelegate old) => old.bottomInset != bottomInset;
+  bool shouldRelayout(_SheetFlowDelegate old) =>
+      old.bottomInset != bottomInset || old.topInset != topInset;
 }

@@ -1,6 +1,7 @@
 import 'dart:ui' as ui;
 
 import 'package:borj/app/apple_visual/review/glass_probe_scene.dart';
+import 'package:borj/app/design/design.dart';
 import 'package:borj/app/theme/app_theme.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +10,7 @@ import 'package:integration_test/integration_test.dart';
 import 'package:liquid_glass_renderer/liquid_glass_renderer.dart';
 
 import '../test/support/backdrop_capture_log.dart';
+import '../test/support/backdrop_layer_count.dart';
 
 void main() {
   final binding = IntegrationTestWidgetsFlutterBinding.ensureInitialized();
@@ -83,4 +85,139 @@ void main() {
       }
     });
   }
+
+  Widget overlayApp(Widget scene) => MaterialApp(
+    theme: ThemeData(brightness: Brightness.dark, extensions: [AppTheme.dark]),
+    builder: (context, child) => GlassOverlayBackdrop(child: child!),
+    home: scene,
+  );
+
+  void expectRealGlass() => expect(
+    ui.ImageFilter.isShaderFilterSupported,
+    isTrue,
+    reason:
+        'shader filters unavailable: real glass is not active, the probe would measure FakeGlass',
+  );
+
+  void fireToast(WidgetTester tester) => tester
+      .widget<GlassButton>(find.byKey(const ValueKey('probe-show-toast')))
+      .onPressed!();
+
+  Future<int> sampleFrames(WidgetTester tester, int frames) async {
+    var worst = 0;
+    for (var i = 0; i < frames; i++) {
+      await tester.pump(const Duration(milliseconds: 16));
+      final n = countCompositedBackdrops(tester);
+      if (n > worst) worst = n;
+    }
+    return worst;
+  }
+
+  // Scrolls the content behind an overlay for 3 s. The overlay's barrier sits
+  // over the content, so a pointer fling cannot reach it; drive the scroll
+  // position directly instead.
+  Future<void> scrollBehind(WidgetTester tester) async {
+    final position = tester
+        .state<ScrollableState>(
+          find
+              .descendant(
+                of: find.byKey(GlassProbeScene.scrollKey),
+                matching: find.byType(Scrollable),
+              )
+              .first,
+        )
+        .position;
+    final watch = Stopwatch()..start();
+    var down = true;
+    while (watch.elapsed < const Duration(seconds: 3)) {
+      final target = down ? position.maxScrollExtent : 0.0;
+      final future = position.animateTo(
+        target,
+        duration: const Duration(milliseconds: 600),
+        curve: Curves.easeOut,
+      );
+      await tester.pumpAndSettle();
+      await future;
+      down = !down;
+    }
+  }
+
+  void reportPerf(String scene, String key) {
+    final summary = binding.reportData![key]! as Map<String, dynamic>;
+    final p90 = (summary['90th_percentile_frame_rasterizer_time_millis'] as num)
+        .toDouble();
+    // ignore: avoid_print
+    print(
+      'LG_PERF scene=$scene mode=${kProfileMode ? 'profile' : 'debug'} raster_p90_ms=$p90',
+    );
+    if (kProfileMode) {
+      expect(p90, lessThanOrEqualTo(8.0));
+    }
+  }
+
+  testWidgets('phoneWithSheetTrigger sheet and toast within budget', (
+    tester,
+  ) async {
+    expectRealGlass();
+    await binding.setSurfaceSize(const Size(390, 844));
+    await tester.pumpWidget(
+      overlayApp(const GlassProbeScene.phoneWithSheetTrigger()),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const ValueKey('probe-open-sheet')));
+    final sheetWorst = await sampleFrames(tester, 30);
+    await tester.pumpAndSettle();
+    fireToast(tester);
+    final toastWorst = await sampleFrames(tester, 30);
+    final worst = sheetWorst > toastWorst ? sheetWorst : toastWorst;
+    // ignore: avoid_print
+    print(
+      'LG_COMPOSITED scene=phoneWithSheetTrigger sheet=$sheetWorst toast=$toastWorst',
+    );
+    // ignore: avoid_print
+    print('LG_CAPTURES scene=phoneWithSheetTrigger path=real max=$worst');
+    if (!kProfileMode) {
+      expect(worst, lessThanOrEqualTo(3));
+    }
+    await tester.pump(const Duration(seconds: 5)); // let the toast hide
+
+    await binding.watchPerformance(
+      () => scrollBehind(tester),
+      reportKey: 'glass_probe_phone_overlay',
+    );
+    reportPerf('phoneWithSheetTrigger', 'glass_probe_phone_overlay');
+  });
+
+  testWidgets('desktopWithToastTrigger toast within budget', (tester) async {
+    expectRealGlass();
+    await binding.setSurfaceSize(const Size(1440, 900));
+    await tester.pumpWidget(
+      overlayApp(const GlassProbeScene.desktopWithToastTrigger()),
+    );
+    await tester.pumpAndSettle();
+    fireToast(tester);
+    final worst = await sampleFrames(tester, 30);
+    // ignore: avoid_print
+    print('LG_COMPOSITED scene=desktopWithToastTrigger toast=$worst');
+    // ignore: avoid_print
+    print('LG_CAPTURES scene=desktopWithToastTrigger path=real max=$worst');
+    if (!kProfileMode) {
+      expect(worst, lessThanOrEqualTo(4));
+    }
+
+    await binding.watchPerformance(() async {
+      final watch = Stopwatch()..start();
+      var up = true;
+      while (watch.elapsed < const Duration(seconds: 3)) {
+        await tester.fling(
+          find.byKey(GlassProbeScene.scrollKey),
+          Offset(0, up ? -600 : 600),
+          2400,
+        );
+        await tester.pumpAndSettle();
+        up = !up;
+      }
+    }, reportKey: 'glass_probe_desktop_overlay');
+    reportPerf('desktopWithToastTrigger', 'glass_probe_desktop_overlay');
+  });
 }

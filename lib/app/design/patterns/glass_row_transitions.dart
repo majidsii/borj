@@ -1,41 +1,15 @@
+import 'package:borj/app/design/patterns/spring_curve.dart';
 import 'package:borj/app/theme/app_motion.dart';
 import 'package:borj/app/theme/motion_scope.dart';
-import 'package:flutter/physics.dart';
 import 'package:flutter/widgets.dart';
 
-// TODO(phase-1b): replace with SpringCurve from spring_curve.dart after merge
-class _RowSpringCurve extends Curve {
-  const _RowSpringCurve(this.spring);
-
-  final AppSpring spring;
-
-  @override
-  double transformInternal(double t) {
-    if (t >= 1) return 1;
-    final sim = SpringSimulation(spring.description, 0, 1, 0);
-    return sim.x(t * _settleSeconds(spring));
-  }
-}
-
-// TODO(phase-1b): replace with SpringCurve from spring_curve.dart after merge
-double _settleSeconds(AppSpring spring) {
-  final sim = SpringSimulation(spring.description, 0, 1, 0);
-  var t = 0.0;
-  while (t < 5 && !sim.isDone(t)) {
-    t += 0.004;
-  }
-  return t;
-}
-
-// TODO(phase-1b): replace with SpringCurve from spring_curve.dart after merge
-Duration _settleDuration(AppSpring spring) =>
-    Duration(microseconds: (_settleSeconds(spring) * 1e6).round());
-
-const Curve _springCurve = _RowSpringCurve(AppMotion.standard);
+final SpringCurve _springCurve = SpringCurve(AppMotion.standard);
 
 /// Insert duration of a row: the settle time of the standard spring. A `final`
 /// (not `const`) because the settle time is computed.
-final Duration glassRowInsertDuration = _settleDuration(AppMotion.standard);
+final Duration glassRowInsertDuration = SpringCurve.settleDuration(
+  AppMotion.standard,
+);
 
 /// Remove duration of a row. Same as [glassRowInsertDuration].
 final Duration glassRowRemoveDuration = glassRowInsertDuration;
@@ -95,10 +69,16 @@ Widget glassRowRemove(
   Animation<double> animation,
   Widget child,
 ) {
-  final progress = ReverseAnimation(animation); // 0 to 1
   if (MotionScope.reducedOf(context)) {
-    return FadeTransition(opacity: animation, child: child);
+    return FadeTransition(
+      opacity: CurvedAnimation(
+        parent: animation,
+        curve: AppMotion.reduced.curve,
+      ),
+      child: child,
+    );
   }
+  final progress = ReverseAnimation(animation); // 0 to 1
   final ghostEnd =
       _ghostDuration.inMicroseconds / glassRowRemoveDuration.inMicroseconds;
   final ghost = CurvedAnimation(

@@ -97,4 +97,33 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('نو'), findsOneWidget);
   });
+
+  testWidgets('reduced motion remove: fade only, slot leaves at the end', (
+    tester,
+  ) async {
+    final items = ['یک', 'دو', 'سه'];
+    await tester.pumpWidget(glassTestApp(_list(items), reduceMotion: true));
+    final removed = items.removeAt(1);
+    await expectNoMovement(
+      tester,
+      within: find.byType(AnimatedList),
+      trigger: () async {
+        _listKey.currentState!.removeItem(
+          1,
+          (context, animation) =>
+              glassRowRemove(context, animation, _row(removed)),
+          duration: glassRowDuration(tester.element(find.byType(AnimatedList))),
+        );
+      },
+    );
+    expect(
+      find.ancestor(
+        of: find.text('دو'),
+        matching: find.byType(ScaleTransition),
+      ),
+      findsNothing,
+    );
+    await tester.pumpAndSettle();
+    expect(find.text('دو'), findsNothing);
+  });
 }

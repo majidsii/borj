@@ -67,4 +67,17 @@ void main() {
       AppTheme.dark.colors.text,
     );
   });
+
+  test('Part B tokens', () {
+    expect(AppTheme.light.colors.switchOn, const Color(0xFF1FB5A8));
+    expect(AppTheme.dark.colors.switchOn, const Color(0xFF1FB5A8));
+    expect(AppTheme.light.colors.switchOff, const Color(0x1F1B2236));
+    expect(AppTheme.dark.colors.switchOff, const Color(0x29FFFFFF));
+    expect(AppTheme.dark.colors.thumbSurface, const Color(0xFFFFFFFF));
+    expect(AppTheme.dark.colors.thumbText, const Color(0xFF1F5FD0));
+    expect(AppTheme.light.colors.pressShadow, const Color(0x33141E50));
+    expect(AppTheme.light.colors.knobShadow, const Color(0x59141E50));
+    expect(AppTheme.light.colors.scrim, const Color(0x400A0E1E));
+    expect(AppTheme.dark.colors.scrim, const Color(0x73000000));
+  });
 }

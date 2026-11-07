@@ -110,6 +110,52 @@ final class _GlassScopeMarker extends InheritedWidget {
       oldWidget.kind != kind;
 }
 
+/// Marks the subtree of one glass shape (spec: no glass on glass).
+final class _OnGlassMarker extends InheritedWidget {
+  const _OnGlassMarker({required super.child});
+
+  @override
+  bool updateShouldNotify(_OnGlassMarker oldWidget) => false;
+}
+
+/// Marks a subtree whose glass joins the nearest Flutter BackdropGroup.
+final class _GlassGroupMarker extends InheritedWidget {
+  const _GlassGroupMarker({required super.child});
+
+  @override
+  bool updateShouldNotify(_GlassGroupMarker oldWidget) => false;
+}
+
+abstract final class GlassContext {
+  /// True inside an [AppGlass]: draw with GlassInner or a flat fill there.
+  static bool isOnGlass(BuildContext context) =>
+      context.getInheritedWidgetOfExactType<_OnGlassMarker>() != null;
+
+  static bool _joinsGroup(BuildContext context) =>
+      context.getInheritedWidgetOfExactType<_GlassGroupMarker>() != null;
+}
+
+/// Bare backdrop group at the app root, for overlays (sheets, toasts). Screen
+/// glass does not join it; only [GlassOverlayContent] does.
+final class GlassOverlayBackdrop extends StatelessWidget {
+  const GlassOverlayBackdrop({required this.child, super.key});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) => BackdropGroup(child: child);
+}
+
+/// Wraps overlay content (a sheet, a toast) so its glass shares the root group.
+final class GlassOverlayContent extends StatelessWidget {
+  const GlassOverlayContent({required this.child, super.key});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) => _GlassGroupMarker(child: child);
+}
+
 /// One glass shape of the redesign (spec §3.1). Visuals come from the role,
 /// the theme and [GlassPreferencesScope]; the constructor takes none.
 final class AppGlass extends StatelessWidget {
@@ -163,6 +209,10 @@ final class AppGlass extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    assert(
+      !GlassContext.isOnGlass(context),
+      'AppGlass inside another AppGlass: use GlassInner (no glass on glass)',
+    );
     final marker = context
         .dependOnInheritedWidgetOfExactType<_GlassScopeMarker>();
     if (marker != null) {
@@ -174,7 +224,7 @@ final class AppGlass extends StatelessWidget {
       return LiquidGlass.grouped(
         shape: _liquidShape(shape),
         appearance: _appearance(context),
-        child: child,
+        child: _OnGlassMarker(child: child),
       );
     }
     final kind = GlassLayerKind.forRole(role);
@@ -186,10 +236,10 @@ final class AppGlass extends StatelessWidget {
         preferences.intensity,
       ),
       fake: _fake(kind, preferences),
-      useBackdropGroup: BackdropGroup.of(context) != null,
+      useBackdropGroup: GlassContext._joinsGroup(context),
       shape: _liquidShape(shape),
       appearance: _appearance(context),
-      child: child,
+      child: _OnGlassMarker(child: child),
     );
   }
 }
@@ -211,7 +261,7 @@ final class GlassScope extends StatelessWidget {
         preferences.intensity,
       ),
       fake: AppGlass._fake(kind, preferences),
-      useBackdropGroup: BackdropGroup.of(context) != null,
+      useBackdropGroup: GlassContext._joinsGroup(context),
       child: _GlassScopeMarker(kind: kind, child: child),
     );
   }
@@ -224,5 +274,6 @@ final class GlassBackdropGroup extends StatelessWidget {
   final Widget child;
 
   @override
-  Widget build(BuildContext context) => BackdropGroup(child: child);
+  Widget build(BuildContext context) =>
+      BackdropGroup(child: _GlassGroupMarker(child: child));
 }

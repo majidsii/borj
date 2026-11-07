@@ -48,6 +48,13 @@ final class AppColors {
     required this.backdropTop,
     required this.backdropBottom,
     required this.warmGlow,
+    required this.switchOn,
+    required this.switchOff,
+    required this.thumbSurface,
+    required this.thumbText,
+    required this.pressShadow,
+    required this.knobShadow,
+    required this.scrim,
     required this.glassTextStops,
   });
 
@@ -75,6 +82,13 @@ final class AppColors {
     backdropTop: Color(0xFFFFFFFF),
     backdropBottom: Color(0xFFFFFFFF),
     warmGlow: Color(0x00FFAA5F),
+    switchOn: Color(0xFF1FB5A8),
+    switchOff: Color(0x1F1B2236),
+    thumbSurface: Color(0xFFFFFFFF),
+    thumbText: Color(0xFF1F5FD0),
+    pressShadow: Color(0x33141E50), // rgba(20,30,80,.20)
+    knobShadow: Color(0x59141E50), // rgba(20,30,80,.35)
+    scrim: Color(0x400A0E1E),
     glassTextStops: <Color>[
       Color(0xD6FFFFFF), // rgba(255,255,255,.84)
       Color(0xB3F2F6FF), // rgba(242,246,255,.70)
@@ -106,6 +120,13 @@ final class AppColors {
     backdropTop: Color(0xFF232427),
     backdropBottom: Color(0xFF18191C),
     warmGlow: Color(0x57FFAA5F), // rgba(255,170,95,.34)
+    switchOn: Color(0xFF1FB5A8),
+    switchOff: Color(0x29FFFFFF),
+    thumbSurface: Color(0xFFFFFFFF),
+    thumbText: Color(0xFF1F5FD0),
+    pressShadow: Color(0x33141E50), // rgba(20,30,80,.20)
+    knobShadow: Color(0x59141E50), // rgba(20,30,80,.35)
+    scrim: Color(0x73000000),
     glassTextStops: <Color>[
       Color(0x80787C96), // rgba(120,124,150,.50)
       Color(0x8056596E), // rgba(86,89,110,.50)
@@ -138,6 +159,13 @@ final class AppColors {
   final Color backdropTop;
   final Color backdropBottom;
   final Color warmGlow;
+  final Color switchOn;
+  final Color switchOff;
+  final Color thumbSurface;
+  final Color thumbText;
+  final Color pressShadow;
+  final Color knobShadow;
+  final Color scrim;
 
   /// The kit's `--g-bg-text` stops: the reference surfaces for text contrast.
   final List<Color> glassTextStops;
@@ -187,6 +215,13 @@ final class AppColors {
       backdropTop: c(backdropTop, other.backdropTop),
       backdropBottom: c(backdropBottom, other.backdropBottom),
       warmGlow: c(warmGlow, other.warmGlow),
+      switchOn: c(switchOn, other.switchOn),
+      switchOff: c(switchOff, other.switchOff),
+      thumbSurface: c(thumbSurface, other.thumbSurface),
+      thumbText: c(thumbText, other.thumbText),
+      pressShadow: c(pressShadow, other.pressShadow),
+      knobShadow: c(knobShadow, other.knobShadow),
+      scrim: c(scrim, other.scrim),
       glassTextStops: <Color>[
         for (var i = 0; i < glassTextStops.length; i++)
           c(glassTextStops[i], other.glassTextStops[i]),

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../support/backdrop_capture_log.dart';
+import '../../support/glass_shape_limit.dart';
 
 void main() {
   // One test per file: the renderer prints a count only when it rises within
@@ -13,7 +14,7 @@ void main() {
     tester.view.physicalSize = const Size(390, 844);
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.reset);
-    final count = await BackdropCaptureLog.record(() async {
+    final record = await BackdropCaptureLog.record(() async {
       await tester.pumpWidget(
         MaterialApp(
           theme: ThemeData(
@@ -30,9 +31,15 @@ void main() {
       );
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 16));
+      expectScopesWithinShapeLimit(tester);
     });
     // ignore: avoid_print
-    print('LG_CAPTURES scene=phone path=fake max=$count');
-    expect(count, lessThanOrEqualTo(3));
+    print('LG_CAPTURES scene=phone path=fake max=${record.maxCaptures}');
+    expect(record.maxCaptures, lessThanOrEqualTo(3));
+    expect(
+      record.shapeLimitExceeded,
+      isFalse,
+      reason: 'a GlassScope holds more than 16 shapes',
+    );
   });
 }

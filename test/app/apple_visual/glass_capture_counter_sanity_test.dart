@@ -8,7 +8,7 @@ void main() {
   testWidgets('five ungrouped glass shapes are counted as five captures', (
     tester,
   ) async {
-    final count = await BackdropCaptureLog.record(() async {
+    final record = await BackdropCaptureLog.record(() async {
       await tester.pumpWidget(
         MaterialApp(
           home: Column(
@@ -26,9 +26,9 @@ void main() {
       await tester.pump();
     });
     // ignore: avoid_print
-    print('SANITY_COUNT $count');
+    print('SANITY_COUNT ${record.maxCaptures}');
     expect(
-      count,
+      record.maxCaptures,
       greaterThanOrEqualTo(5),
       reason:
           'the debug counter is not observable; the budget tests are invalid',

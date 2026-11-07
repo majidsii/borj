@@ -31,7 +31,7 @@ void main() {
             'shader filters unavailable: real glass is not active, the probe would measure FakeGlass',
       );
       await binding.setSurfaceSize(size);
-      final captures = await BackdropCaptureLog.record(() async {
+      final record = await BackdropCaptureLog.record(() async {
         await tester.pumpWidget(
           MaterialApp(
             theme: ThemeData(
@@ -44,10 +44,15 @@ void main() {
         await tester.pumpAndSettle();
       });
       // ignore: avoid_print
-      print('LG_CAPTURES scene=$name path=real max=$captures');
+      print('LG_CAPTURES scene=$name path=real max=${record.maxCaptures}');
       if (!kProfileMode) {
         // The counter only exists in debug builds.
-        expect(captures, lessThanOrEqualTo(budget));
+        expect(record.maxCaptures, lessThanOrEqualTo(budget));
+        expect(
+          record.shapeLimitExceeded,
+          isFalse,
+          reason: 'a GlassScope holds more than 16 shapes',
+        );
       }
 
       await binding.watchPerformance(() async {

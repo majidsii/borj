@@ -123,6 +123,16 @@ final List<DesignReviewSample> designReviewSamples = <DesignReviewSample>[
     build: (_) => const _AnimatedNumberDemo(),
   ),
   DesignReviewSample(
+    label: 'GlassSheet',
+    board: 'PhoneAddTxn',
+    build: (_) => const _SheetDemo(),
+  ),
+  DesignReviewSample(
+    label: 'Row insert / remove',
+    board: 'PhoneTasks',
+    build: (_) => const _RowTransitionDemo(),
+  ),
+  DesignReviewSample(
     label: 'Appearance section',
     board: 'PhoneSettings',
     build: (_) => ProviderScope(
@@ -295,6 +305,137 @@ class _AnimatedNumberDemoState extends State<_AnimatedNumberDemo> {
       GlassButton(
         onPressed: () => setState(() => _value += 1200),
         label: '+${formatPersianInteger(1200)}',
+      ),
+    ],
+  );
+}
+
+class _SheetDemo extends StatelessWidget {
+  const _SheetDemo();
+
+  @override
+  Widget build(BuildContext context) => Builder(
+    builder: (buttonContext) => GlassButton(
+      label: 'افزودن تراکنش',
+      onPressed: () {
+        final box = buttonContext.findRenderObject()! as RenderBox;
+        final origin = box.localToGlobal(Offset.zero) & box.size;
+        showGlassSheet<void>(
+          buttonContext,
+          origin: origin,
+          builder: (_) => const _SheetForm(),
+        );
+      },
+    ),
+  );
+}
+
+class _SheetForm extends StatefulWidget {
+  const _SheetForm();
+
+  @override
+  State<_SheetForm> createState() => _SheetFormState();
+}
+
+class _SheetFormState extends State<_SheetForm> {
+  final TextEditingController _amount = TextEditingController();
+  final TextEditingController _note = TextEditingController();
+
+  @override
+  void dispose() {
+    _amount.dispose();
+    _note.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsets.all(16),
+    child: Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        GlassTextField(controller: _amount, label: 'مبلغ'),
+        const SizedBox(height: 12),
+        GlassTextField(controller: _note, label: 'توضیح'),
+        const SizedBox(height: 16),
+        GlassButton(
+          variant: GlassButtonVariant.tinted,
+          label: 'ذخیره',
+          onPressed: () => GlassSheet.close(context),
+        ),
+      ],
+    ),
+  );
+}
+
+/// Most rows kept in the list, so the scope stays at 16 shapes or fewer.
+const int _maxDemoRows = 8;
+
+class _RowTransitionDemo extends StatefulWidget {
+  const _RowTransitionDemo();
+
+  @override
+  State<_RowTransitionDemo> createState() => _RowTransitionDemoState();
+}
+
+class _RowTransitionDemoState extends State<_RowTransitionDemo> {
+  final GlobalKey<AnimatedListState> _listKey = GlobalKey<AnimatedListState>();
+  final List<int> _items = <int>[3, 2, 1];
+  int _next = 4;
+
+  Widget _row(int id) => Padding(
+    padding: const EdgeInsets.symmetric(vertical: 4),
+    child: AppGlass(
+      role: GlassRole.row,
+      shape: const AppleGlassShape.rounded(16),
+      child: Padding(
+        padding: const EdgeInsets.all(14),
+        child: AppText('ردیف ${formatPersianInteger(id)}'),
+      ),
+    ),
+  );
+
+  void _insert() {
+    if (_items.length >= _maxDemoRows) return;
+    _items.insert(0, _next++);
+    _listKey.currentState!.insertItem(0, duration: glassRowDuration(context));
+  }
+
+  void _remove() {
+    if (_items.isEmpty) return;
+    final id = _items.removeAt(0);
+    _listKey.currentState!.removeItem(
+      0,
+      (context, animation) => glassRowRemove(context, animation, _row(id)),
+      duration: glassRowDuration(context),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) => Column(
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          GlassButton(onPressed: _insert, label: 'افزودن'),
+          const SizedBox(width: 8),
+          GlassButton(onPressed: _remove, label: 'حذف'),
+        ],
+      ),
+      const SizedBox(height: 8),
+      SizedBox(
+        height: 360,
+        child: GlassScope(
+          kind: GlassLayerKind.content,
+          child: AnimatedList(
+            key: _listKey,
+            initialItemCount: _items.length,
+            itemBuilder: (context, index, animation) =>
+                glassRowInsert(context, animation, _row(_items[index])),
+          ),
+        ),
       ),
     ],
   );

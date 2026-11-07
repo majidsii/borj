@@ -167,6 +167,9 @@ final class _SheetPaintState {
   /// Pose and route-controller value at release (spring-back / dismiss start).
   _Pose release = const _Pose(0, 0, 1, 1, 1);
   double releaseValue = 1;
+
+  /// Resting pose centre of the last paint (spring-back distance).
+  double restingCy = 0;
 }
 
 final class _GlassSheetFrameState extends State<_GlassSheetFrame>
@@ -204,6 +207,17 @@ final class _GlassSheetFrameState extends State<_GlassSheetFrame>
   }
 
   void _onStatus(AnimationStatus status) {
+    final phase = _phase.value;
+    if (status == AnimationStatus.reverse &&
+        (phase == _Phase.settling || phase == _Phase.dragging)) {
+      // The route is closing (Escape, barrier, GlassSheet.close, system back)
+      // while we hold a pose of our own: close from what is on screen.
+      _settle.stop();
+      _paint.release = _paint.painted;
+      _paint.releaseValue = _controller.value;
+      _phase.value = _Phase.dismissing;
+      return;
+    }
     if (_phase.value == _Phase.settling &&
         _settle.status == AnimationStatus.completed &&
         _controller.status == AnimationStatus.completed) {
@@ -224,10 +238,12 @@ final class _GlassSheetFrameState extends State<_GlassSheetFrame>
   }
 
   void _dragUpdate(DragUpdateDetails details) {
-    if (_phase.value != _Phase.dragging) return;
+    if (_phase.value != _Phase.dragging || !widget.route.isActive) return;
+    // primaryDelta is in the sheet's scaled local space; the sheet must move
+    // 1:1 with the finger on screen.
     _paint.dragDy.value = math.max(
       0,
-      _paint.dragDy.value + (details.primaryDelta ?? 0),
+      _paint.dragDy.value + (details.primaryDelta ?? 0) * _paint.grab.sy,
     );
   }
 
@@ -236,12 +252,14 @@ final class _GlassSheetFrameState extends State<_GlassSheetFrame>
   void _dragCancel() => _release(Velocity.zero);
 
   void _release(Velocity velocity) {
-    if (_phase.value != _Phase.dragging) return;
+    if (_phase.value != _Phase.dragging || !widget.route.isActive) return;
     final h = _sheetHeight;
-    final vy = velocity.pixelsPerSecond.dy;
+    final vy = velocity.pixelsPerSecond.dy * _paint.grab.sy; // screen px/s
     final dy = _paint.dragDy.value;
     _paint.release = _paint.grab.shifted(dy);
     _paint.releaseValue = _controller.value;
+    // Relative to the drag (not to how open the sheet is): releasing without
+    // dragging always reopens it.
     if (h == null ||
         h <= 0 ||
         vy > _dismissVelocity ||
@@ -259,8 +277,15 @@ final class _GlassSheetFrameState extends State<_GlassSheetFrame>
         curve: AppMotion.reduced.curve,
       );
     } else {
+      // Progress velocity along the way back to rest.
+      final distance = _paint.restingCy - _paint.release.cy;
       _settle.animateWith(
-        SpringSimulation(AppMotion.soft.description, 0, 1, -vy / h),
+        SpringSimulation(
+          AppMotion.soft.description,
+          0,
+          1,
+          distance.abs() < 1 ? 0 : vy / distance,
+        ),
       );
     }
     if (!_controller.isCompleted) {
@@ -425,6 +450,7 @@ final class _SheetFlowDelegate extends FlowDelegate {
         pose = reduced ? resting : _grownPose(size, child, resting);
     }
     paint.painted = pose;
+    paint.restingCy = resting.cy;
     context.paintChild(
       0,
       transform: Matrix4.translationValues(pose.cx, pose.cy, 0)

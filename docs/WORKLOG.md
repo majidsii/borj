@@ -17,6 +17,36 @@ Entry template:
 
 ---
 
+## 2026-11-07 — Redesign Phase 1 Part A implemented: foundation and glass budget probe
+- **Type:** implemented
+- **What:** six plan tasks plus a final-review fix wave, merged fast-forward from `feat/redesign-phase-1a`:
+  - appearance preferences in `borj-preferences.json`, loaded before `runApp`; the load never throws and saves are serialized;
+  - `AppTheme` tokens and `AppBackground`;
+  - `AppMotion` and `MotionScope`;
+  - `AppGlass`, `GlassScope`, `GlassBackdropGroup`, `GlassInner` and `GlassPreferencesScope`, with the reduce-transparency fallback and an import-boundary test;
+  - probe scenes with capture-budget tests;
+  - a device perf probe.
+
+  Final review fixes:
+  - appearance scopes split from `MaterialApp`, so a glass-intensity change does not rebuild the app (identity test);
+  - glass intensity has preview and commit, so a slider saves only on release;
+  - the `CLAUDE.md` brightness and token source is corrected for new code.
+
+  `tool/ci.sh --device` now runs one integration file per `flutter test` call, because a second app launch in one call fails on Linux.
+- **Evidence / links:**
+  - Plan: `docs/superpowers/plans/2026-11-07-redesign-phase-1a-foundation.md`. Commits `b12e53b`..`ec144d4`.
+  - `flutter test --exclude-tags device` 1438 passed; `flutter analyze` clean; format clean; `tool/ci.sh --device` exit 0.
+  - Captures per frame: FakeGlass phone 2 / desktop 3; real glass phone 2 / desktop 3. Budget is 3 / 4.
+  - Raster p90 on real glass, with the full-glass proof passing: profile phone 1.028 ms / desktop 0.864 ms (budget 8 ms); debug about 1.1–1.35 ms.
+- **Follow-ups:** the budget passed, so Part B (primitives, patterns, Appearance UI, review page, Phase 1 checkpoint) proceeds as planned, without the degrade-first path. Part B must:
+  - wire the slider `onChanged` → `previewGlassIntensity` and `onChangeEnd`/cancel → `commitGlassIntensity`;
+  - split long lists into `GlassScope`s of ≤ 16 shapes (the renderer silently drops extra shapes) and make the capture log fail on the shape-limit warning;
+  - count captures during interaction (sheets, toasts), not only at settle;
+  - add a barrel import for the new glass API;
+  - add a glow-corner contrast check to the review page.
+
+  Not yet measured: the owner's A34 (Android profile build).
+
 ## 2026-11-07 — Prototype and motion spec approved; redesign Phase 1 Part A planned
 - **Type:** decided + planned
 - **What:** the owner walked through the prototype's Today screen («همه چیز عالیه») and Tasks screens, then said «عالیه باید پیاده بشه تا بعد اگر مشکل داشت فیکس کنیم» (implement it, fix problems later). The other screens were not reviewed one by one. Motion spec marked APPROVED with that quote, plus a note that `AppMotion` maps the Apple springs by name only (spec values 0.40/1.0 and 0.28/1.0; the source values 0.55/1.0 and 0.15/0.86 stay as provenance). Phase 1 is split: Part A (preferences JSON file, `AppTheme`, motion tokens + `MotionScope`, `AppGlass`/`GlassScope`/`GlassBackdropGroup` + reduce-transparency fallback, capture-budget tests, device perf probe) is planned; Part B (primitives, patterns, Appearance UI, review page, checkpoint) is planned after the probe numbers.

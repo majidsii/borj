@@ -1,16 +1,19 @@
-// ignore_for_file: non_const_argument_for_const_parameter
 import 'package:borj/app/design/app_text.dart';
 import 'package:borj/app/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 
-/// An icon tinted by an [AppTextTone]. With [directional] it mirrors in RTL
-/// through `IconData.matchTextDirection`.
+/// An icon tinted by an [AppTextTone].
+///
+/// Directional icons (back, forward, chevrons) are `IconData` constants that
+/// already carry `matchTextDirection: true`, such as `Icons.arrow_back` and
+/// `Icons.chevron_left`. Flutter's [Icon] mirrors them in RTL by itself, so
+/// AppIcon needs no flag and never rebuilds the `IconData` (a non-const
+/// instance would break release icon tree-shaking).
 class AppIcon extends StatelessWidget {
   const AppIcon(
     this.icon, {
     this.size = 20,
     this.tone = AppTextTone.primary,
-    this.directional = false,
     this.semanticLabel,
     super.key,
   });
@@ -18,25 +21,14 @@ class AppIcon extends StatelessWidget {
   final IconData icon;
   final double size;
   final AppTextTone tone;
-  final bool directional;
   final String? semanticLabel;
 
   @override
   Widget build(BuildContext context) {
-    final color = tone.resolve(AppTheme.of(context).colors);
-    // Rebuilt only to set matchTextDirection. This makes the instance
-    // non-const, which blocks release icon tree-shaking (see report).
-    final data = IconData(
-      icon.codePoint,
-      fontFamily: icon.fontFamily,
-      fontPackage: icon.fontPackage,
-      fontFamilyFallback: icon.fontFamilyFallback,
-      matchTextDirection: directional,
-    );
     final child = Icon(
-      data,
+      icon,
       size: size,
-      color: color,
+      color: tone.resolve(AppTheme.of(context).colors),
       semanticLabel: semanticLabel,
     );
     return semanticLabel == null ? ExcludeSemantics(child: child) : child;

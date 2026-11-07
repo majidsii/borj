@@ -30,12 +30,10 @@ void main() {
     );
   });
 
-  testWidgets('directional icon flips in RTL without a Transform', (
+  testWidgets('directional const icon flips in RTL, AppIcon adds no Transform', (
     tester,
   ) async {
-    await tester.pumpWidget(
-      glassTestApp(const AppIcon(Icons.chevron_left, directional: true)),
-    );
+    await tester.pumpWidget(glassTestApp(const AppIcon(Icons.chevron_left)));
     final icon = tester.widget<Icon>(find.byType(Icon));
     expect(icon.icon!.matchTextDirection, isTrue);
     // Flutter's own Icon mirrors matchTextDirection glyphs with a Transform

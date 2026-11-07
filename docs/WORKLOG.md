@@ -17,6 +17,35 @@ Entry template:
 
 ---
 
+## 2026-11-07 — Redesign Phase 1 Part B in progress (paused: owner out of tokens)
+- **Type:** implemented (partial) + handoff
+- **What:** the Part B plan (`docs/superpowers/plans/2026-11-07-redesign-phase-1b-primitives.md`) runs in parallel worktrees, at the owner's request («تا میتونی کار ها رو با ساب ایجنت ها موازی پیش ببر»). Branch `feat/redesign-phase-1b` holds these reviewed and merged tasks:
+  - Task 1 (on-glass marker, overlay backdrop group, tokens, capture log v2, test helpers)
+  - Task 2 (AppText, AppIcon, Pressable, GlassButton)
+  - Task 3 (toggle, segmented, chip)
+  - Task 4 (text field, progress track, round check)
+  - Task 5 (Persian formatting, AnimatedNumber)
+  - Task 9 (Appearance section in Settings)
+  - Task 10 (review page design samples; the sheet, toast and row samples are still to add)
+- **Pending branches:**
+  - `feat/1b-t6-impl` (GlassSheet). The fix round is done (7cdd3d6). An opus re-review was running when the session paused. The open question is whether a mid-open grab still snaps the scale to full size.
+  - `feat/1b-t7-impl` (UndoToast, d33ff3e). Its budget test files are deliberately on hold until Task 6 merges.
+  - `feat/1b-t8-impl` (row transitions, bbb4de3). Approved. At merge, swap the local spring for `SpringCurve`.
+- **Found:** the debugPrint capture counter cannot see layers that do not repaint, such as the page under a popup. Task 6 added `test/support/backdrop_layer_count.dart`, which counts the composited `BackdropFilterLayer`s instead. Measured with the sheet open: 3 (phone budget 3).
+- **Resume steps:**
+  1. Re-review Task 6, or re-run that review (diff `review-6f72bee..7cdd3d6`).
+  2. Merge T6 into `feat/redesign-phase-1b`.
+  3. Resume T7's budget tests using `countCompositedBackdrops`, then merge.
+  4. Merge T8, swapping in `SpringCurve`.
+  5. Swap the probe sheet's TextFields for `GlassTextField`.
+  6. Add the sheet, toast and row samples to `designReviewSamples`.
+  7. Task 11 (device probe during interaction).
+  8. Final whole-branch review with a fix wave.
+  9. Merge into `feat/v2-complete-dashboard`.
+  10. Task 12 checkpoint and owner sign-off.
+- **Evidence / links:** the full ledger, with every agent, review, ruling and deferred minor, is `docs/superpowers/references/2026-11-07-phase-1b-progress-ledger.md`. Board PNGs are outside the repo, in `~/projects/personal/borj/reference-captures/boards-2026-11-05/`.
+- **Follow-ups:** the steps above. The A34 profile run is still open and needs the owner's phone.
+
 ## 2026-11-07 — Redesign Phase 1 Part A implemented: foundation and glass budget probe
 - **Type:** implemented
 - **What:** six plan tasks plus a final-review fix wave, merged fast-forward from `feat/redesign-phase-1a`:

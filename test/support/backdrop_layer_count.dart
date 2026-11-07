@@ -6,16 +6,23 @@ import 'package:flutter_test/flutter_test.dart';
 /// own, and each distinct non-null key counts once (a [BackdropGroup] shares
 /// one capture). Unlike the renderer's debug counter, this sees layers that
 /// were not repainted in the frame (a page under a popup).
+bool _captures(BackdropFilterLayer layer) {
+  if (layer.runtimeType.toString() != 'OpacitySeedLayer') return true;
+  // ignore: avoid_dynamic_calls
+  return (layer as dynamic).seeded == true;
+}
+
 int countCompositedBackdrops(WidgetTester tester) {
   final root = tester.binding.renderViews.first.debugLayer;
   if (root == null) return 0;
   var independent = 0;
   final keys = <Object>{};
   void walk(Layer layer) {
-    // OpacitySeedLayer is a renderer-internal subclass that seeds opacity; it
-    // does not capture the backdrop.
-    if (layer is BackdropFilterLayer &&
-        layer.runtimeType.toString() != 'OpacitySeedLayer') {
+    // OpacitySeedLayer (renderer-internal, marked @internal, so not
+    // importable without an analyzer warning) is a BackdropFilterLayer that
+    // only captures while `seeded`: a fractional opacity sits above the glass.
+    // Read `seeded` dynamically for that reason.
+    if (layer is BackdropFilterLayer && _captures(layer)) {
       final key = layer.backdropKey;
       if (key == null) {
         independent++;

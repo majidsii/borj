@@ -6,29 +6,38 @@ import 'package:flutter_test/flutter_test.dart';
 import '../../support/glass_test_app.dart';
 import '../../support/reduced_motion_expectations.dart';
 
-Widget _launcher({void Function(Object?)? onResult, bool withOrigin = true}) =>
-    Builder(
-      builder: (context) => GlassButton(
-        label: 'باز کن',
-        onPressed: () async {
-          final box = context.findRenderObject()! as RenderBox;
-          final origin = box.localToGlobal(Offset.zero) & box.size;
-          final result = await showGlassSheet<String>(
-            context,
-            origin: withOrigin ? origin : null,
-            builder: (context) => Padding(
-              padding: const EdgeInsets.all(16),
-              child: GlassButton(
+Widget _launcher({
+  void Function(Object?)? onResult,
+  bool withOrigin = true,
+  double extraHeight = 0,
+}) => Builder(
+  builder: (context) => GlassButton(
+    label: 'باز کن',
+    onPressed: () async {
+      final box = context.findRenderObject()! as RenderBox;
+      final origin = box.localToGlobal(Offset.zero) & box.size;
+      final result = await showGlassSheet<String>(
+        context,
+        origin: withOrigin ? origin : null,
+        builder: (context) => Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SizedBox(height: extraHeight),
+              GlassButton(
                 label: 'تأیید',
                 variant: GlassButtonVariant.tinted,
                 onPressed: () => GlassSheet.close(context, 'ok'),
               ),
-            ),
-          );
-          onResult?.call(result);
-        },
-      ),
-    );
+            ],
+          ),
+        ),
+      );
+      onResult?.call(result);
+    },
+  ),
+);
 
 void main() {
   for (final v in glassTestVariants) {
@@ -218,10 +227,14 @@ void main() {
     expect(rect.center.dx, closeTo(720, 0.5));
   });
 
-  testWidgets('grabbing mid-open does not jump; slow release springs back', (
-    tester,
-  ) async {
-    await tester.pumpWidget(glassTestApp(_launcher(), overlayBackdrop: true));
+  testWidgets('grabbing mid-open keeps size and position; slow release '
+      'springs back without ever moving down', (tester) async {
+    tester.view.physicalSize = const Size(390, 844);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    await tester.pumpWidget(
+      glassTestApp(_launcher(withOrigin: false), overlayBackdrop: true),
+    );
     await tester.tap(find.text('باز کن'));
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 150));
@@ -230,16 +243,87 @@ void main() {
     final gesture = await tester.startGesture(
       before.topCenter + const Offset(0, 10),
     );
+    await gesture.moveBy(const Offset(0, 20));
     await tester.pump();
-    expect(tester.getRect(sheet).top, closeTo(before.top, 2));
-    await gesture.moveBy(const Offset(0, 15));
-    await tester.pump();
-    final dragged = tester.getRect(sheet).top - before.top;
-    expect(dragged, closeTo(15, 3));
+    final grabbed = tester.getRect(sheet);
+    expect(grabbed.width, closeTo(before.width, 1));
+    expect(grabbed.left, closeTo(before.left, 1));
+    expect(grabbed.height, closeTo(before.height, 1));
+    expect(grabbed.top - before.top, closeTo(20, 3)); // 1:1 from the grab
     await gesture.up();
+    var prev = tester.getRect(sheet);
+    for (var i = 0; i < 80; i++) {
+      await tester.pump(const Duration(milliseconds: 16));
+      final now = tester.getRect(sheet);
+      expect(now.top, lessThanOrEqualTo(prev.top + 0.5), reason: "frame $i");
+      prev = now;
+    }
     await tester.pumpAndSettle();
     expect(find.text('تأیید'), findsOneWidget);
-    final screen = tester.view.physicalSize / tester.view.devicePixelRatio;
-    expect(tester.getRect(sheet).bottom, closeTo(screen.height - 8, 1));
+    expect(tester.getRect(sheet).bottom, closeTo(844 - 8, 1));
+    expect(tester.getRect(sheet).width, closeTo(374, 1));
+  });
+
+  testWidgets('re-grab during spring-back after a mid-open grab: no jump', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(390, 844);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    await tester.pumpWidget(glassTestApp(_launcher(), overlayBackdrop: true));
+    await tester.tap(find.text('باز کن'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 150));
+    final sheet = find.byType(AppGlass).last;
+    final first = await tester.startGesture(
+      tester.getRect(sheet).topCenter + const Offset(0, 10),
+    );
+    await first.moveBy(const Offset(0, 20));
+    await tester.pump();
+    await first.up();
+    await tester.pump(const Duration(milliseconds: 96));
+    final before = tester.getRect(sheet);
+    final second = await tester.startGesture(
+      before.topCenter + const Offset(0, 10),
+    );
+    await second.moveBy(const Offset(0, 20));
+    await tester.pump();
+    final after = tester.getRect(sheet);
+    expect(after.top - before.top, closeTo(20, 3));
+    expect(after.width, closeTo(before.width, 1));
+    expect(after.left, closeTo(before.left, 1));
+    await second.up();
+    await tester.pumpAndSettle();
+    expect(find.text('تأیید'), findsOneWidget);
+  });
+
+  testWidgets('re-grab 40 ms after releasing a fully-open drag: no jump', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      glassTestApp(_launcher(extraHeight: 100), overlayBackdrop: true),
+    );
+    await tester.tap(find.text('باز کن'));
+    await tester.pumpAndSettle();
+    final sheet = find.byType(AppGlass).last;
+    final first = await tester.startGesture(
+      tester.getRect(sheet).topCenter + const Offset(0, 10),
+    );
+    await first.moveBy(const Offset(0, 41));
+    await tester.pump();
+    await first.up();
+    await tester.pump(const Duration(milliseconds: 40));
+    final before = tester.getRect(sheet);
+    final second = await tester.startGesture(
+      before.topCenter + const Offset(0, 10),
+    );
+    await second.moveBy(const Offset(0, 20));
+    await tester.pump();
+    final after = tester.getRect(sheet);
+    expect(after.top - before.top, closeTo(20, 3));
+    expect(after.width, closeTo(before.width, 1));
+    await second.up();
+    await tester.pumpAndSettle();
+    expect(find.text('تأیید'), findsOneWidget);
   });
 }

@@ -126,6 +126,28 @@ final class _GlassGroupMarker extends InheritedWidget {
   bool updateShouldNotify(_GlassGroupMarker oldWidget) => false;
 }
 
+/// Fades the glass of its subtree through the renderer: the refraction, tint
+/// and highlight fade with [value] (0 to 1) and so do the children inside each
+/// glass shape. Use it instead of a parent `Opacity` or `FadeTransition`,
+/// which would force the renderer into a seeded extra capture pass.
+final class GlassVisibility extends InheritedWidget {
+  const GlassVisibility({required this.value, required super.child, super.key});
+
+  final double value;
+
+  /// The nearest visibility above [context] (1 when there is none).
+  static double of(BuildContext context) =>
+      context
+          .dependOnInheritedWidgetOfExactType<GlassVisibility>()
+          ?.value
+          .clamp(0.0, 1.0) ??
+      1.0;
+
+  @override
+  bool updateShouldNotify(GlassVisibility oldWidget) =>
+      oldWidget.value != value;
+}
+
 abstract final class GlassContext {
   /// True inside an [AppGlass]: draw with GlassInner or a flat fill there.
   static bool isOnGlass(BuildContext context) =>
@@ -197,13 +219,20 @@ final class AppGlass extends StatelessWidget {
 
   LiquidGlassAppearance _appearance(BuildContext context) {
     final brightness = Theme.of(context).brightness;
+    final visibility = GlassVisibility.of(context);
     return switch (role) {
       GlassRole.tinted => LiquidGlassAppearance.ios27Regular(
         brightness: brightness,
         tint: AppTheme.of(context).colors.accent.withValues(alpha: 0.9),
+        visibility: visibility,
       ),
-      GlassRole.clear => const LiquidGlassAppearance.ios27Clear(),
-      _ => LiquidGlassAppearance.ios27Regular(brightness: brightness),
+      GlassRole.clear => LiquidGlassAppearance.ios27Clear(
+        visibility: visibility,
+      ),
+      _ => LiquidGlassAppearance.ios27Regular(
+        brightness: brightness,
+        visibility: visibility,
+      ),
     };
   }
 

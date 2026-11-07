@@ -139,7 +139,11 @@ final class _UndoToastState extends State<_UndoToast>
             animation: _curved,
             builder: (context, child) {
               final t = _curved.value;
-              final faded = Opacity(opacity: t.clamp(0.0, 1.0), child: child);
+              // The glass fades through the renderer, never a parent opacity.
+              final faded = GlassVisibility(
+                value: t.clamp(0.0, 1.0),
+                child: child!,
+              );
               if (widget.reduced) return faded;
               return Transform.translate(
                 offset: Offset(0, (1 - t) * _rise),

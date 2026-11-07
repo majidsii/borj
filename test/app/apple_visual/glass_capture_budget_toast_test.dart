@@ -50,10 +50,7 @@ void main() {
     );
     // ignore: avoid_print
     print('LG_CAPTURES scene=phone+sheet+toast path=composited max=$worst');
-    // Same accepted deviation as the reduced sheet fade: while the toast's
-    // opacity is fractional the renderer's seeded OpacitySeedLayer adds one
-    // capture. Steady state must be within the budget.
-    expect(worst, lessThanOrEqualTo(3 + 1));
+    expect(worst, lessThanOrEqualTo(3));
     expect(settled, lessThanOrEqualTo(3));
   });
 }

@@ -7,9 +7,6 @@ import 'package:flutter_test/flutter_test.dart';
 import '../../support/backdrop_layer_count.dart';
 
 void main() {
-  // Controller ruling: during the 200 ms reduced fade the renderer's seeded
-  // OpacitySeedLayer (fractional FadeTransition above the sheet glass) adds a
-  // fourth capture; at steady state the budget is 3.
   testWidgets('phone with a sheet fading in (reduced motion) stays within 3', (
     tester,
   ) async {
@@ -48,7 +45,7 @@ void main() {
     print(
       'LG_COMPOSITED scene=phone+sheet reduced fade=$worst settled=$settled',
     );
-    expect(worst, lessThanOrEqualTo(4)); // seeded fade pass, see above
+    expect(worst, lessThanOrEqualTo(3));
     expect(settled, lessThanOrEqualTo(3));
   });
 }

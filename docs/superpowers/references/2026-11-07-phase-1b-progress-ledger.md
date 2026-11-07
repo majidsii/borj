@@ -46,3 +46,11 @@ Task 10: implemented 94a1e56; review a5640fb052ea15cc2 Needs fixes: Critical —
 Task 10: minor (deferred): review page uses own-layer glass per sample (many captures; debug page only).
 Task 10: fix round 1/5 (993b765; controller re-review: all three providers overridden, regression test fails on old code per report, review tests 4 pass/1 skip). Task 10: complete (pending 3 samples: sheet, toast, rows), merged.
 Task 10: minor (deferred): full suite not re-run after fix (controller runs at integration).
+Task 6: re-review a2b8c86ee12bfb51f (opus) of 6f72bee..7cdd3d6 — OPEN:
+- Critical: mid-open grab keeps the top but snaps size and position (phone width 335→374, left 27→8, height 215→245). After a slow release the sheet drifts about 20 px away from rest (the _adjust fade outruns the spring).
+- Critical (regression): a re-grab during spring-back jumps 28–45 px. _dragStart rebases through _curved while the sheet is user-driven, and _probe.dy is stale.
+- Fix for both: the delegate records the painted rect and opacity on every path. Drag start freezes that pose and the controller value (no rebase through _curved). The drag paints the frozen pose plus a translation. Spring-back lerps from the frozen pose to the target. Delete _adjust and _adjustFactor. Tests: width and left within 1 px on the grab frame; the top never moves down after a slow release; a re-grab during spring-back does not jump.
+- Important: backdrop_layer_count.dart skips OpacitySeedLayer unconditionally, but it captures when seeded (a fractional opacity above the glass, e.g. FadeTransition; glass_composition_probe.dart:88-104). Count it when seeded is true, and add a reduced-motion overlay budget variant (likely 4 > 3).
+- Addressed: inset width, reduced-motion getRect check, grow, origin-null and back tests, minor items.
+- Deferred: SeededBackdropPassLayer is off under flutter test; the Flow paintChild opacity below t=0.3 is not seen by syncOpacity; a reduced-mode mid-fade grab opacity step.
+Next: fix round 2 for Task 6 (resume a361c98824f2bb85d, or a fresh agent) with the above.

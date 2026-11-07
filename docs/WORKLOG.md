@@ -28,7 +28,7 @@ Entry template:
   - Task 9 (Appearance section in Settings)
   - Task 10 (review page design samples; the sheet, toast and row samples are still to add)
 - **Pending branches:**
-  - `feat/1b-t6-impl` (GlassSheet). The fix round is done (7cdd3d6). An opus re-review was running when the session paused. The open question is whether a mid-open grab still snaps the scale to full size.
+  - `feat/1b-t6-impl` (GlassSheet). The fix round is done (7cdd3d6). The opus re-review found it still open: a mid-open grab snaps the size, and a re-grab during spring-back jumps. The capture helper also undercounts when `OpacitySeedLayer` is seeded. The fix design is in the ledger; fix round 2 is next.
   - `feat/1b-t7-impl` (UndoToast, d33ff3e). Its budget test files are deliberately on hold until Task 6 merges.
   - `feat/1b-t8-impl` (row transitions, bbb4de3). Approved. At merge, swap the local spring for `SpringCurve`.
 - **Found:** the debugPrint capture counter cannot see layers that do not repaint, such as the page under a popup. Task 6 added `test/support/backdrop_layer_count.dart`, which counts the composited `BackdropFilterLayer`s instead. Measured with the sheet open: 3 (phone budget 3).

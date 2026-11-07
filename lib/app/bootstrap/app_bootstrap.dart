@@ -63,7 +63,7 @@ final class BorjApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     ref.watch(taskTemplateStartupProvider);
-    final preferences = ref.watch(appearancePreferencesProvider);
+    final mode = ref.watch(appearancePreferencesProvider.select((p) => p.mode));
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
       locale: const Locale('fa', 'IR'),
@@ -72,18 +72,41 @@ final class BorjApp extends ConsumerWidget {
       onGenerateTitle: (context) => 'برج',
       theme: OriginalTheme.light(),
       darkTheme: OriginalTheme.dark(),
-      themeMode: preferences.mode.themeMode,
+      themeMode: mode.themeMode,
       themeAnimationDuration: const Duration(milliseconds: 300),
       themeAnimationCurve: Curves.easeOut,
-      builder: (context, child) => MotionScope(
-        reduceMotionSetting: preferences.reduceMotion,
-        child: GlassPreferencesScope(
-          intensity: preferences.glassIntensity,
-          reduceTransparency: preferences.reduceTransparency,
-          child: child ?? const SizedBox.shrink(),
-        ),
-      ),
+      builder: (context, child) =>
+          _AppearanceScopes(child: child ?? const SizedBox.shrink()),
       routerConfig: ref.watch(appRouterProvider),
+    );
+  }
+}
+
+/// Reads the preferences that only the scopes need, so a slider tick rebuilds
+/// these scopes and their dependents but not `MaterialApp`.
+final class _AppearanceScopes extends ConsumerWidget {
+  const _AppearanceScopes({required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final reduceMotion = ref.watch(
+      appearancePreferencesProvider.select((p) => p.reduceMotion),
+    );
+    final intensity = ref.watch(
+      appearancePreferencesProvider.select((p) => p.glassIntensity),
+    );
+    final reduceTransparency = ref.watch(
+      appearancePreferencesProvider.select((p) => p.reduceTransparency),
+    );
+    return MotionScope(
+      reduceMotionSetting: reduceMotion,
+      child: GlassPreferencesScope(
+        intensity: intensity,
+        reduceTransparency: reduceTransparency,
+        child: child,
+      ),
     );
   }
 }

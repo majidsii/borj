@@ -47,4 +47,31 @@ void main() {
     );
     expect(value, isTrue);
   });
+
+  testWidgets('dependents rebuild when the setting changes', (tester) async {
+    var builds = 0;
+    late bool value;
+    final child = Builder(
+      builder: (context) {
+        builds++;
+        value = MotionScope.reducedOf(context);
+        return const SizedBox();
+      },
+    );
+    Widget app({required bool setting}) => MediaQuery(
+      data: const MediaQueryData(),
+      child: MotionScope(reduceMotionSetting: setting, child: child),
+    );
+
+    await tester.pumpWidget(app(setting: false));
+    expect(value, isFalse);
+    final first = builds;
+
+    await tester.pumpWidget(app(setting: false));
+    expect(builds, first);
+
+    await tester.pumpWidget(app(setting: true));
+    expect(builds, first + 1);
+    expect(value, isTrue);
+  });
 }

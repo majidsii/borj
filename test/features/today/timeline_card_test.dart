@@ -1,4 +1,5 @@
 import 'package:borj/app/design/design.dart';
+import 'package:borj/app/theme/app_theme.dart';
 import 'package:borj/features/today/application/today_agenda_builder.dart';
 import 'package:borj/features/today/presentation/timeline_card.dart';
 import 'package:borj/features/today/presentation/today_grid.dart';
@@ -224,6 +225,40 @@ void main() {
       tester,
       within: find.byType(TimelineCard),
       trigger: () async => tester.pump(),
+    );
+  });
+
+  double luminance(Color c) => c.computeLuminance();
+  double contrast(Color a, Color b) {
+    final l1 = luminance(a), l2 = luminance(b);
+    return (l1 > l2 ? l1 + 0.05 : l2 + 0.05) / ((l1 > l2 ? l2 : l1) + 0.05);
+  }
+
+  testWidgets('now-pill text is readable over danger in light and dark', (
+    tester,
+  ) async {
+    for (final b in [Brightness.light, Brightness.dark]) {
+      await tester.pumpWidget(_card(agenda, now, b: b));
+      await tester.pump(const Duration(seconds: 1)); // theme cross-fade
+      final colors =
+          (b == Brightness.dark ? AppTheme.dark : AppTheme.light).colors;
+      final text = tester.widget<Text>(
+        find.descendant(
+          of: find.byKey(const ValueKey('timeline-now-pill')),
+          matching: find.text('۱۴:۳۰'),
+        ),
+      );
+      expect(
+        contrast(text.style!.color!, colors.danger),
+        greaterThanOrEqualTo(4.5),
+        reason: '$b',
+      );
+    }
+    // Not vacuous: the old onTint white fails in dark.
+    final dark = AppTheme.dark.colors;
+    expect(
+      contrast(AppTextTone.onTint.resolve(dark), dark.danger),
+      lessThan(4.5),
     );
   });
 }

@@ -275,7 +275,7 @@ class _Scale extends StatelessWidget {
                 child: AppText(
                   formatClock(now),
                   role: AppTextRole.caption2,
-                  tone: AppTextTone.onTint,
+                  tone: AppTextTone.inverse,
                   weight: FontWeight.w800,
                   textAlign: TextAlign.center,
                 ),

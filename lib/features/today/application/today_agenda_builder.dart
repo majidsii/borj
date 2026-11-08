@@ -51,12 +51,13 @@ class TodayAgendaBuilder {
       floatingTimeZoneId: timeZoneId,
     );
 
-    final timed = <TodayEntry>[
+    final ordered = <(TodayEntry, int)>[
       for (final o in occurrences)
         if (o.status != TaskCalendarOccurrenceStatus.skipped &&
             o.status != TaskCalendarOccurrenceStatus.canceled)
-          _entry(o, location),
-    ]..sort((a, b) => a.localStart!.compareTo(b.localStart!));
+          (_entry(o, location), o.task.displayNumber),
+    ]..sort(_byStartNumberId);
+    final timed = [for (final (entry, _) in ordered) entry];
 
     final ruleTaskIds = {for (final r in rules) r.taskId};
     final untimed = <TodayEntry>[
@@ -75,6 +76,15 @@ class TodayAgendaBuilder {
     ];
 
     return TodayAgenda(day: day, timed: timed, untimed: untimed);
+  }
+
+  /// Stable order: start time, then task display number, then task id.
+  static int _byStartNumberId((TodayEntry, int) a, (TodayEntry, int) b) {
+    final byStart = a.$1.localStart!.compareTo(b.$1.localStart!);
+    if (byStart != 0) return byStart;
+    final byNumber = a.$2.compareTo(b.$2);
+    if (byNumber != 0) return byNumber;
+    return a.$1.taskId.compareTo(b.$1.taskId);
   }
 
   TodayEntry _entry(TaskCalendarOccurrence o, timezone.Location location) {

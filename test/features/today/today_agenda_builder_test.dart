@@ -1,8 +1,10 @@
+import 'package:borj/core/recurrence/recurrence_exception.dart';
 import 'package:borj/core/recurrence/recurrence_local_date_time.dart';
 import 'package:borj/core/recurrence/recurrence_rule.dart';
 import 'package:borj/core/recurrence/recurrence_time_zone.dart';
 import 'package:borj/features/tasks/domain/task_item.dart';
 import 'package:borj/features/tasks/domain/task_occurrence_completion.dart';
+import 'package:borj/features/tasks/domain/task_recurrence_exception.dart';
 import 'package:borj/features/tasks/domain/task_recurrence_rule.dart';
 import 'package:borj/features/tasks/domain/task_status.dart';
 import 'package:borj/features/today/application/today_agenda_builder.dart';
@@ -16,12 +18,13 @@ TaskItem _task(
   DateTime? startUtc,
   DateTime? dueUtc,
   int? minutes,
+  int? number,
   TaskStatus status = TaskStatus.planned,
 }) {
   final t = DateTime.utc(2026, 11, 1);
   return TaskItem(
     id: id,
-    displayNumber: id.hashCode & 0xffff,
+    displayNumber: number ?? (id.hashCode & 0xffff) + 1,
     title: 'task $id',
     priority: 0,
     status: status,
@@ -48,12 +51,13 @@ void main() {
     List<TaskItem> tasks, {
     List<TaskRecurrenceRule> rules = const [],
     List<TaskOccurrenceCompletion> completions = const [],
+    List<TaskRecurrenceException> exceptions = const [],
     DateTime? at,
   }) => TodayAgendaBuilderTestHelper(
     builder.build(
       tasks: tasks,
       rules: rules,
-      exceptions: const [],
+      exceptions: exceptions,
       completions: completions,
       nowUtc: at ?? nowUtc,
       timeZoneId: _tz,
@@ -192,6 +196,115 @@ void main() {
     // Without the completion the same entry is not done.
     final open = agenda([task], rules: [rule]);
     expect(open.value.timed.single.done, isFalse);
+  });
+
+  test('equal start times order by displayNumber, then taskId', () {
+    final due = DateTime.utc(2026, 11, 4, 6, 0); // 09:30
+    final a = agenda([
+      _task('z', dueUtc: due, number: 5),
+      _task('b', dueUtc: due, number: 7),
+      _task('a', dueUtc: due, number: 7),
+      _task('first', dueUtc: due, number: 2),
+    ]);
+    expect(a.timedIds, ['first', 'z', 'a', 'b']);
+  });
+
+  test('00:00 and 23:59 local are in; next-day 00:00 is out', () {
+    final a = agenda([
+      _task('mid', dueUtc: DateTime.utc(2026, 11, 3, 20, 30)), // 00:00 Nov 4
+      _task('last', dueUtc: DateTime.utc(2026, 11, 4, 20, 29)), // 23:59
+      _task('next', dueUtc: DateTime.utc(2026, 11, 4, 20, 30)), // 00:00 Nov 5
+      _task('before', dueUtc: DateTime.utc(2026, 11, 3, 20, 29)), // 23:59 Nov 3
+    ]);
+    expect(a.timedIds, ['mid', 'last']);
+    expect(a.value.timed.first.localStart, DateTime(2026, 11, 4, 0, 0));
+    expect(a.value.timed.last.localStart, DateTime(2026, 11, 4, 23, 59));
+  });
+
+  group('recurrence exceptions', () {
+    final created = DateTime.utc(2026, 11, 1);
+    final task = _task(
+      'rec',
+      startUtc: DateTime.utc(2026, 11, 1, 5, 30), // 09:00 Tehran
+    );
+    final rule = TaskRecurrenceRule(
+      id: 'rule',
+      taskId: 'rec',
+      rule: RecurrenceRule.daily(
+        anchorLocalDateTime: RecurrenceLocalDateTime(
+          year: 2026,
+          month: 11,
+          day: 1,
+          hour: 9,
+        ),
+        timeZone: const RecurrenceTimeZone.floating(),
+      ),
+      createdAtUtc: created,
+      updatedAtUtc: created,
+    );
+    TaskRecurrenceException exception(RecurrenceException e) =>
+        TaskRecurrenceException(
+          id: 'ex',
+          taskId: 'rec',
+          exception: e,
+          createdAtUtc: created,
+          updatedAtUtc: created,
+        );
+    RecurrenceLocalDateTime at(int day, int hour) =>
+        RecurrenceLocalDateTime(year: 2026, month: 11, day: day, hour: hour);
+
+    test('control: the occurrence is at 09:00 without exceptions', () {
+      final a = agenda([task], rules: [rule]);
+      expect(a.value.timed.single.localStart, DateTime(2026, 11, 4, 9, 0));
+    });
+
+    test('moved into today appears at its moved time', () {
+      final a = agenda(
+        [task],
+        rules: [rule],
+        exceptions: [
+          exception(
+            RecurrenceException.move(
+              originalLocalDateTime: at(5, 9),
+              movedToLocalDateTime: at(4, 16),
+            ),
+          ),
+        ],
+      );
+      final starts = [for (final e in a.value.timed) e.localStart];
+      expect(starts, [
+        DateTime(2026, 11, 4, 9, 0),
+        DateTime(2026, 11, 4, 16, 0),
+      ]);
+      expect(a.value.timed.last.originalLocalDateTime, at(5, 9));
+    });
+
+    test('moved out of today is absent', () {
+      final a = agenda(
+        [task],
+        rules: [rule],
+        exceptions: [
+          exception(
+            RecurrenceException.move(
+              originalLocalDateTime: at(4, 9),
+              movedToLocalDateTime: at(6, 10),
+            ),
+          ),
+        ],
+      );
+      expect(a.value.timed, isEmpty);
+    });
+
+    test('a skipped occurrence is absent', () {
+      final a = agenda(
+        [task],
+        rules: [rule],
+        exceptions: [
+          exception(RecurrenceException.skip(originalLocalDateTime: at(4, 9))),
+        ],
+      );
+      expect(a.value.timed, isEmpty);
+    });
   });
 }
 

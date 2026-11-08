@@ -28,6 +28,10 @@ class _GlassPushRoute<T> extends PageRoute<T>
     with CupertinoRouteTransitionMixin<T> {
   _GlassPushRoute(GlassPushPage<T> page) : super(settings: page);
 
+  // Keeps the page's state when the background wrapper appears or goes away
+  // (a window class change), by reparenting instead of remounting.
+  final GlobalKey _bodyKey = GlobalKey(debugLabel: 'push-page-body');
+
   GlassPushPage<T> get _page => settings as GlassPushPage<T>;
 
   static bool _animated(BuildContext context) =>
@@ -82,7 +86,10 @@ class _GlassPushRoute<T> extends PageRoute<T>
     // group makes all its glass share a capture. A page pushed inside a
     // branch navigator is already under the shell's group and adds none.
     final inGroup = GlassContext.inBackdropGroup(context);
-    final body = inGroup ? page : GlassBackdropGroup(child: page);
+    final body = KeyedSubtree(
+      key: _bodyKey,
+      child: inGroup ? page : GlassBackdropGroup(child: page),
+    );
     // Branch pushes on medium and expanded are instant and sit over the
     // shell's window background; painting our own, sized to the content
     // area, would leave a seam in dark mode.

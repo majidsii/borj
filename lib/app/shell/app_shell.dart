@@ -49,14 +49,9 @@ class _AppShellState extends State<AppShell> {
     initialLocation: index == widget.navigationShell.currentIndex,
   );
 
-  void _goItem(SidebarItem item) {
-    final uri = Uri.parse(item.location);
-    if (uri.hasQuery || uri.path != sectionLocation(item.section)) {
-      GoRouter.of(context).go(item.location);
-    } else {
-      _goBranch(item.section.index);
-    }
-  }
+  // Rows always go to their exact location: goBranch would restore the
+  // branch's last location (a query, a pushed detail) instead.
+  void _goItem(SidebarItem item) => GoRouter.of(context).go(item.location);
 
   Widget _content(EdgeInsets extraPadding, {bool removeStart = false}) {
     final media = MediaQuery.of(context);

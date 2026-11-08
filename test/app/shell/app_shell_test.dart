@@ -384,7 +384,17 @@ void main() {
 
     await tester.tap(find.byKey(const ValueKey('field')));
     await tester.pump();
-    expect(FocusManager.instance.primaryFocus, isNotNull);
+    final fieldFocus = tester
+        .widget<TextField>(find.byKey(const ValueKey('field')))
+        .focusNode;
+    final editable = tester.state<EditableTextState>(
+      find.descendant(
+        of: find.byKey(const ValueKey('field')),
+        matching: find.byType(EditableText),
+      ),
+    );
+    expect(editable.widget.focusNode.hasPrimaryFocus, isTrue);
+    expect(fieldFocus, anyOf(isNull, same(editable.widget.focusNode)));
     await ctrlK();
     expect(s.log, ['search']);
     await tester.tap(find.byKey(const ValueKey('tab-tasks')));

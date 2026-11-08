@@ -175,6 +175,69 @@ void main() {
     expect(selected('/finance'), findsNothing);
   });
 
+  group('sidebar rows go to their exact location', () {
+    Finder row(String l) => find.byKey(ValueKey('sidebar-item-$l'));
+    Finder selected(String l) =>
+        find.descendant(of: row(l), matching: find.byType(GlassInner));
+
+    testWidgets('debts -> Tasks -> تراکنش‌ها shows FinancePanel, selected', (
+      tester,
+    ) async {
+      await _size(tester, const Size(1440, 900));
+      await pumpBorjTestApp(tester);
+      for (final l in ['/finance?section=debts', '/tasks', '/finance']) {
+        await tester.tap(row(l));
+        await tester.pumpAndSettle();
+      }
+      expect(find.byType(FinancePanel), findsOneWidget);
+      expect(selected('/finance'), findsOneWidget);
+      expect(selected('/finance?section=debts'), findsNothing);
+    });
+
+    testWidgets('a pushed finance detail is not restored by the row', (
+      tester,
+    ) async {
+      await _size(tester, const Size(1440, 900));
+      final container = await pumpBorjTestApp(tester);
+      container.read(appRouterProvider).go('/finance/debts/debt_1');
+      await tester.pumpAndSettle();
+      expect(find.byType(PendingScreen), findsOneWidget);
+      await tester.tap(row('/'));
+      await tester.pumpAndSettle();
+      await tester.tap(row('/finance'));
+      await tester.pumpAndSettle();
+      expect(find.byType(FinancePanel), findsOneWidget);
+      expect(find.byType(PendingScreen), findsNothing);
+    });
+
+    testWidgets('تقویم -> Today -> همهٔ کارها selects همهٔ کارها', (
+      tester,
+    ) async {
+      await _size(tester, const Size(1440, 900));
+      await pumpBorjTestApp(tester);
+      for (final l in ['/tasks?view=calendar', '/', '/tasks']) {
+        await tester.tap(row(l));
+        await tester.pumpAndSettle();
+      }
+      expect(selected('/tasks'), findsOneWidget);
+      expect(selected('/tasks?view=calendar'), findsNothing);
+    });
+  });
+
+  testWidgets('a pushed page keeps its element across 390 <-> 1440', (
+    tester,
+  ) async {
+    await _size(tester, const Size(1440, 900));
+    final container = await pumpBorjTestApp(tester);
+    container.read(appRouterProvider).go('/finance/debts/debt_1');
+    await tester.pumpAndSettle();
+    final before = tester.element(find.byType(PendingScreen));
+    await _size(tester, const Size(390, 844));
+    await tester.pumpAndSettle();
+    expect(find.byType(PendingScreen), findsOneWidget);
+    expect(tester.element(find.byType(PendingScreen)), same(before));
+  });
+
   testWidgets('expanded: the sidebar settings row opens Settings', (
     tester,
   ) async {

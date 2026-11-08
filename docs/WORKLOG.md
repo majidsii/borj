@@ -17,6 +17,14 @@ Entry template:
 
 ---
 
+## 2026-11-08 — Redesign Phase 1 complete (Part B primitives, final review, checkpoint)
+- **Type:** implemented + reviewed + decided
+- **What:** Part B Tasks 1–11 merged on `feat/redesign-phase-1b` (primitives, sheet, toast, row transitions, Appearance section, review samples, device probe during interaction), then a whole-branch opus review and a fix wave (glass fades only through `GlassVisibility`, reduced-motion sheet jumps, flipped reduced curves, toast double removal, tokens, tests).
+- **Found:** on a device, the composited capture counter overcounted: glass inside a renderer seeded pass reads the pass, and only the pass's seed (keyed) reads the root. The counter now mirrors `SeededBackdropPassLayer.addToScene` (`b5a7120`); real glass is within budget (phone 3, desktop 4 with overlays).
+- **Decided:** (owner, 2026-11-07) «همه چیز باید کامل بشه بعدا منتشر میکنیم» — v2 ships only after the full redesign (phases 1–5) and release readiness; no interim release with the current look.
+- **Evidence / links:** checkpoint `docs/superpowers/checkpoints/2026-11-08-redesign-phase-1-checkpoint.md`; ledger `docs/superpowers/references/2026-11-07-phase-1b-progress-ledger.md`; at `1d4f747`: 1619 passed / 1 skipped, analyze and format clean, `tool/ci.sh --device` exit 0, profile raster p90 ≤ 2.12 ms.
+- **Follow-ups:** owner perceptual sign-off on the review page (light/dark, boards, glow corner); A34 profile run; merge into `feat/v2-complete-dashboard`; deferred minors listed in the checkpoint.
+
 ## 2026-11-07 — Redesign Phase 1 Part B in progress (paused: owner out of tokens)
 - **Type:** implemented (partial) + handoff
 - **What:** the Part B plan (`docs/superpowers/plans/2026-11-07-redesign-phase-1b-primitives.md`) runs in parallel worktrees, at the owner's request («تا میتونی کار ها رو با ساب ایجنت ها موازی پیش ببر»). Branch `feat/redesign-phase-1b` holds these reviewed and merged tasks:

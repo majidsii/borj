@@ -110,6 +110,7 @@ class GlassButton extends StatelessWidget {
       onPressed: onPressed,
       semanticLabel: semanticLabel,
       hoverRadius: radius,
+      dimsGlass: !onGlass && variant != GlassButtonVariant.plain,
       child: surface,
     );
   }

@@ -67,6 +67,7 @@ class GlassChip extends StatelessWidget {
       onPressed: onPressed,
       selected: selected,
       hoverRadius: BorderRadius.circular(999),
+      dimsGlass: surface is AppGlass,
       overlayInset: const EdgeInsets.symmetric(vertical: 6),
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 6),

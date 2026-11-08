@@ -4,6 +4,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import '../../support/glass_fade_expectations.dart';
 import '../../support/glass_test_app.dart';
 
 void main() {
@@ -74,5 +75,17 @@ void main() {
     final hover = find.byKey(const ValueKey('pressable-hover'));
     expect(hover, findsOneWidget);
     expect(tester.getSize(hover).height, 32);
+  });
+
+  testWidgets('disabled chip dims its glass through GlassVisibility', (
+    tester,
+  ) async {
+    await tester.pumpWidget(glassTestApp(const GlassChip(label: 'امروز')));
+    expect(GlassVisibility.of(tester.element(find.byType(AppGlass))), 0.4);
+    expect(bareFadesAboveGlass(tester, find.byType(GlassChip)), isEmpty);
+    await tester.pumpWidget(
+      glassTestApp(GlassChip(label: 'امروز', onPressed: () {})),
+    );
+    expect(GlassVisibility.of(tester.element(find.byType(AppGlass))), 1);
   });
 }

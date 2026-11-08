@@ -1,13 +1,46 @@
+// ignore_for_file: invalid_use_of_internal_member
 import 'package:borj/app/design/design.dart';
+import 'package:borj/app/theme/app_motion.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+// ignore: implementation_imports
+import 'package:liquid_glass_renderer/src/internal/backdrop_seed.dart';
 
+import '../../support/backdrop_capture_log.dart';
+import '../../support/backdrop_layer_count.dart';
+import '../../support/glass_fade_expectations.dart';
 import '../../support/glass_test_app.dart';
 import '../../support/reduced_motion_expectations.dart';
 
 void main() {
+  // Dedicated and first: the renderer prints its bare-fade warning once per
+  // isolate, so this must be the first test that could trigger it.
+  testWidgets('disabled and pressed glass never bare-fades', (tester) async {
+    final record = await BackdropCaptureLog.record(() async {
+      await tester.pumpWidget(
+        glassTestApp(
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              GlassButton(onPressed: () {}, label: 'یک'),
+              const GlassButton(onPressed: null, label: 'دو'),
+            ],
+          ),
+          reduceMotion: true,
+        ),
+      );
+      final gesture = await tester.startGesture(
+        tester.getCenter(find.text('یک')),
+      );
+      await tester.pump(const Duration(milliseconds: 250));
+      await gesture.up();
+      await tester.pumpAndSettle();
+    });
+    expect(record.bareFadeWarned, isFalse);
+  });
+
   for (final v in glassTestVariants) {
     testWidgets('renders every variant without errors (${v.name})', (
       tester,
@@ -101,11 +134,79 @@ void main() {
       ),
     );
     expect(find.byType(AnimatedScale), findsNothing);
-    expect(
-      tester.widget<AnimatedOpacity>(find.byType(AnimatedOpacity)).opacity,
-      0.7,
-    );
+    // Glass fades through GlassVisibility (glass and label together), never
+    // through a parent opacity.
+    expect(find.byType(AnimatedOpacity), findsNothing);
+    await tester.pump(AppMotion.reduced.duration);
+    expect(GlassVisibility.of(tester.element(find.byType(AppGlass))), 0.7);
+    expect(bareFadesAboveGlass(tester, find.byType(GlassButton)), isEmpty);
     await gesture.up();
+    await tester.pump();
+    await tester.pump(AppMotion.reduced.duration);
+    expect(GlassVisibility.of(tester.element(find.byType(AppGlass))), 1);
+  });
+
+  group('disabled glass', () {
+    tearDown(() => SeededBackdropPassLayer.debugModeOverride = null);
+
+    for (final seed in [BackdropSeed.none, BackdropSeed.identity]) {
+      testWidgets('captures like the enabled button (seed ${seed.name})', (
+        tester,
+      ) async {
+        SeededBackdropPassLayer.debugModeOverride = seed;
+        Widget app({required bool enabled}) => glassTestApp(
+          GlassButton(onPressed: enabled ? () {} : null, label: 'یک'),
+        );
+        await tester.pumpWidget(app(enabled: true));
+        final enabled = countCompositedBackdrops(tester);
+        await tester.pumpWidget(app(enabled: false));
+        expect(countCompositedBackdrops(tester), enabled);
+        expect(bareFadesAboveGlass(tester, find.byType(GlassButton)), isEmpty);
+        expect(GlassVisibility.of(tester.element(find.byType(AppGlass))), 0.4);
+      });
+    }
+
+    testWidgets('same wrapper structure enabled and disabled', (tester) async {
+      Widget app({required bool enabled}) => glassTestApp(
+        GlassButton(onPressed: enabled ? () {} : null, label: 'یک'),
+      );
+      await tester.pumpWidget(app(enabled: true));
+      final before = find
+          .descendant(
+            of: find.byType(GlassButton),
+            matching: find.byType(Semantics),
+          )
+          .evaluate()
+          .map((e) => e.widget.runtimeType)
+          .toList();
+      final element = tester.element(find.byType(AppGlass));
+      await tester.pumpWidget(app(enabled: false));
+      expect(tester.element(find.byType(AppGlass)), same(element));
+      expect(
+        find
+            .descendant(
+              of: find.byType(GlassButton),
+              matching: find.byType(Semantics),
+            )
+            .evaluate()
+            .map((e) => e.widget.runtimeType)
+            .toList(),
+        before,
+      );
+    });
+
+    testWidgets('inside a GlassScope the glass dims too', (tester) async {
+      await tester.pumpWidget(
+        glassTestApp(
+          const GlassScope(
+            kind: GlassLayerKind.chrome,
+            child: GlassButton(onPressed: null, label: 'یک'),
+          ),
+        ),
+      );
+      expect(GlassVisibility.of(tester.element(find.byType(AppGlass))), 0.4);
+      expect(bareFadesAboveGlass(tester, find.byType(GlassScope)), isEmpty);
+    });
   });
 
   testWidgets('on glass: chrome is flat GlassInner, no nested glass', (

@@ -1,3 +1,4 @@
+import 'package:borj/app/apple_visual/glass.dart';
 import 'package:borj/app/theme/app_motion.dart';
 import 'package:borj/app/theme/app_theme.dart';
 import 'package:borj/app/theme/motion_scope.dart';
@@ -9,6 +10,12 @@ import 'package:flutter/material.dart';
 /// Pointer-down scales the child to 0.97 over [AppMotion.press]; under Reduce
 /// Motion it fades to 0.7 instead. [hoverRadius] rounds the hover and focus
 /// overlays to the child's own shape.
+///
+/// A disabled child dims to 0.4. When the child is an [AppGlass] surface, set
+/// [dimsGlass]: the dim (and the reduced-motion press fade) then runs through
+/// [GlassVisibility], because a parent `Opacity` would only fade the glass's
+/// children and force a seeded extra capture pass. Flat children keep
+/// `Opacity`.
 class Pressable extends StatefulWidget {
   const Pressable({
     required this.child,
@@ -18,6 +25,7 @@ class Pressable extends StatefulWidget {
     this.button = true,
     this.hoverRadius = BorderRadius.zero,
     this.overlayInset = EdgeInsets.zero,
+    this.dimsGlass = false,
     super.key,
   });
 
@@ -32,9 +40,16 @@ class Pressable extends StatefulWidget {
   /// follow the visible shape when the child is padded for hit testing.
   final EdgeInsets overlayInset;
 
+  /// True when [child] is an [AppGlass] surface that this widget must dim
+  /// through [GlassVisibility] instead of `Opacity`.
+  final bool dimsGlass;
+
   @override
   State<Pressable> createState() => _PressableState();
 }
+
+const double _disabledOpacity = 0.4;
+const double _reducedPress = 0.7;
 
 class _PressableState extends State<Pressable> {
   bool _pressed = false;
@@ -108,13 +123,15 @@ class _PressableState extends State<Pressable> {
       ],
     );
 
-    content = reduced
+    content = reduced && !widget.dimsGlass
         ? AnimatedOpacity(
-            opacity: _pressed ? 0.7 : 1,
+            opacity: _pressed ? _reducedPress : 1,
             duration: AppMotion.reduced.duration,
             curve: AppMotion.reduced.curve,
             child: content,
           )
+        : reduced
+        ? content // reduced glass press fades through GlassVisibility below
         : AnimatedScale(
             scale: _pressed ? 0.97 : 1,
             duration: AppMotion.press.duration,
@@ -175,6 +192,19 @@ class _PressableState extends State<Pressable> {
       child: content,
     );
 
-    return _enabled ? content : Opacity(opacity: 0.4, child: content);
+    // Same wrapper structure enabled or disabled; only the value changes.
+    final disabledDim = _enabled ? 1.0 : _disabledOpacity;
+    if (widget.dimsGlass) {
+      final target = disabledDim * (reduced && _pressed ? _reducedPress : 1.0);
+      return TweenAnimationBuilder<double>(
+        tween: Tween<double>(end: target),
+        duration: reduced ? AppMotion.reduced.duration : Duration.zero,
+        curve: AppMotion.reduced.curve,
+        child: content,
+        builder: (context, value, child) =>
+            GlassVisibility(value: value, child: child!),
+      );
+    }
+    return Opacity(opacity: disabledDim, child: content);
   }
 }

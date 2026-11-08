@@ -12,7 +12,7 @@ export 'package:borj/features/today/domain/today_entry.dart';
 
 /// Builds Today's agenda. Every time in the result is a wall-clock value in
 /// [timeZoneId], held in a naive `DateTime`, so the device zone never matters.
-final class TodayAgendaBuilder {
+class TodayAgendaBuilder {
   const TodayAgendaBuilder({this.projector = const TaskOccurrenceProjector()});
 
   final TaskOccurrenceProjector projector;

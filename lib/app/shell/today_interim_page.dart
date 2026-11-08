@@ -25,7 +25,7 @@ class TodayInterimPage extends ConsumerWidget {
             ref.watch(appClockProvider).nowLocal(),
           ),
           onTitleLongPress: kDebugMode
-              ? () => context.go(AppRoutes.glassReview)
+              ? () => context.push(AppRoutes.glassReview)
               : null,
         ),
         const LegacyImportBanner(),

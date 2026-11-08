@@ -6,6 +6,8 @@ import 'package:borj/app/design/design.dart';
 import 'package:borj/app/router/app_router.dart';
 import 'package:borj/app/shell/pending_screen.dart';
 import 'package:borj/app/shell/today_interim_page.dart';
+import 'package:borj/app/theme/app_background.dart';
+import 'package:borj/features/dashboard/presentation/widgets/finance_panel.dart';
 import 'package:borj/features/dashboard/presentation/widgets/tasks_panel.dart';
 import 'package:borj/features/settings/presentation/settings_screen.dart';
 import 'package:flutter/material.dart';
@@ -54,6 +56,125 @@ void main() {
     },
   );
 
+  testWidgets('compact: a focused Finance field stays above the keyboard', (
+    tester,
+  ) async {
+    await _size(tester, const Size(390, 844));
+    tester.view.viewInsets = const FakeViewPadding(bottom: 300);
+    addTearDown(tester.view.resetViewInsets);
+    await pumpBorjTestApp(tester);
+    await tester.tap(find.byKey(const ValueKey('tab-finance')));
+    await tester.pumpAndSettle();
+    final field = find.byType(EditableText).first;
+    tester.state<EditableTextState>(field).requestKeyboard();
+    await tester.pumpAndSettle();
+    expect(tester.getBottomLeft(field).dy, lessThanOrEqualTo(844 - 300));
+  });
+
+  testWidgets('compact: a focused field is revealed above the tab bar', (
+    tester,
+  ) async {
+    await _size(tester, const Size(390, 844));
+    await pumpBorjTestApp(tester);
+    await tester.tap(find.byKey(const ValueKey('tab-finance')));
+    await tester.pumpAndSettle();
+    final fields = find.byType(EditableText);
+    var lowest = fields.first;
+    for (var i = 0; i < fields.evaluate().length; i++) {
+      final f = fields.at(i);
+      if (tester.getBottomLeft(f).dy > tester.getBottomLeft(lowest).dy) {
+        lowest = f;
+      }
+    }
+    // Park the field at the very bottom of the viewport, behind the tab bar.
+    final state = Scrollable.of(tester.element(lowest));
+    state.position.jumpTo(
+      (state.position.pixels + tester.getBottomLeft(lowest).dy - 830).clamp(
+        0,
+        state.position.maxScrollExtent,
+      ),
+    );
+    await tester.pump();
+    expect(tester.getBottomLeft(lowest).dy, greaterThan(758));
+    tester.state<EditableTextState>(lowest).requestKeyboard();
+    await tester.pumpAndSettle();
+    final tabTop = tester.getTopLeft(find.byType(GlassTabBar)).dy;
+    expect(tester.getBottomLeft(lowest).dy, lessThanOrEqualTo(tabTop));
+  });
+
+  group('page background', () {
+    Finder backgroundsAbove() => find.ancestor(
+      of: find.byType(PendingScreen),
+      matching: find.byType(AppBackground),
+    );
+    Finder shellContent() => find.byKey(const ValueKey('shell-content'));
+
+    testWidgets('expanded: a branch push adds no AppBackground', (
+      tester,
+    ) async {
+      await _size(tester, const Size(1440, 900));
+      final container = await pumpBorjTestApp(tester);
+      container.read(appRouterProvider).go('/finance/debts/debt_1');
+      await tester.pumpAndSettle();
+      expect(find.byType(PendingScreen), findsOneWidget);
+      // Only the shell's own background sits above the page.
+      expect(backgroundsAbove(), findsOneWidget);
+      expect(
+        find.descendant(of: backgroundsAbove(), matching: shellContent()),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('compact: a branch push keeps its own AppBackground', (
+      tester,
+    ) async {
+      await _size(tester, const Size(390, 844));
+      final container = await pumpBorjTestApp(tester);
+      container.read(appRouterProvider).go('/finance/debts/debt_1');
+      await tester.pumpAndSettle();
+      expect(backgroundsAbove(), findsNWidgets(2));
+    });
+
+    testWidgets('expanded: a root push paints one AppBackground', (
+      tester,
+    ) async {
+      await _size(tester, const Size(1440, 900));
+      final container = await pumpBorjTestApp(tester);
+      unawaited(container.read(appRouterProvider).push('/backup'));
+      await tester.pumpAndSettle();
+      expect(backgroundsAbove(), findsOneWidget);
+      expect(
+        find.descendant(of: backgroundsAbove(), matching: shellContent()),
+        findsNothing,
+      );
+    });
+  });
+
+  testWidgets('expanded: the پول rows both show FinancePanel and select', (
+    tester,
+  ) async {
+    await _size(tester, const Size(1440, 900));
+    await pumpBorjTestApp(tester);
+    Finder selected(String location) => find.descendant(
+      of: find.byKey(ValueKey('sidebar-item-$location')),
+      matching: find.byType(GlassInner),
+    );
+    await tester.tap(find.byKey(const ValueKey('sidebar-item-/finance')));
+    await tester.pumpAndSettle();
+    expect(find.byType(FinancePanel), findsOneWidget);
+    expect(selected('/finance'), findsOneWidget);
+    await tester.tap(find.byKey(const ValueKey('sidebar-item-/tasks')));
+    await tester.pumpAndSettle();
+    expect(find.byType(FinancePanel), findsNothing);
+    await tester.tap(
+      find.byKey(const ValueKey('sidebar-item-/finance?section=debts')),
+    );
+    await tester.pumpAndSettle();
+    expect(find.byType(FinancePanel), findsOneWidget);
+    expect(selected('/finance?section=debts'), findsOneWidget);
+    expect(selected('/finance'), findsNothing);
+  });
+
   testWidgets('expanded: the sidebar settings row opens Settings', (
     tester,
   ) async {
@@ -78,6 +199,10 @@ void main() {
     );
     await pumpPage(tester);
     expect(find.byType(GlassReviewScreen), findsOneWidget);
+    // Pushed, not replaced: back returns to Today.
+    GoRouter.of(tester.element(find.byType(GlassReviewScreen))).pop();
+    await tester.pumpAndSettle();
+    expect(find.byType(TodayInterimPage), findsOneWidget);
   });
 
   testWidgets('unknown location shows the error page; its action goes home', (

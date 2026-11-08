@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:borj/app/apple_visual/review/glass_review_screen.dart';
 import 'package:borj/app/design/design.dart';
 import 'package:borj/app/shell/app_shell.dart';
@@ -245,19 +247,82 @@ final appRouterProvider = Provider<GoRouter>((ref) {
 });
 
 /// A scrolling branch root for the legacy panels: safe-area padding, no
-/// max-width cap.
-final class _BranchPage extends StatelessWidget {
+/// max-width cap. The shell's bottom padding (tab bar) is part of the scroll
+/// extent, so Flutter's own reveal can leave a focused field under the tab
+/// bar; this page nudges it above the padding zone.
+final class _BranchPage extends StatefulWidget {
   const _BranchPage({required this.child});
 
   final Widget child;
 
   @override
+  State<_BranchPage> createState() => _BranchPageState();
+}
+
+final class _BranchPageState extends State<_BranchPage> {
+  final ScrollController _controller = ScrollController();
+  double _bottomPadding = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    FocusManager.instance.addListener(_scheduleReveal);
+  }
+
+  @override
+  void dispose() {
+    FocusManager.instance.removeListener(_scheduleReveal);
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void _scheduleReveal() {
+    WidgetsBinding.instance.addPostFrameCallback((_) => _reveal());
+  }
+
+  void _reveal() {
+    if (!mounted || !_controller.hasClients) return;
+    final focus = FocusManager.instance.primaryFocus;
+    final focusBox = focus?.context?.findRenderObject();
+    final viewBox = context.findRenderObject();
+    if (focusBox is! RenderBox ||
+        viewBox is! RenderBox ||
+        !focusBox.attached ||
+        !focusBox.hasSize ||
+        !viewBox.hasSize) {
+      return;
+    }
+    if (!(focus!.context!.findAncestorStateOfType<_BranchPageState>() ==
+        this)) {
+      return;
+    }
+    final fieldBottom = focusBox
+        .localToGlobal(Offset(0, focusBox.size.height))
+        .dy;
+    final limit =
+        viewBox.localToGlobal(Offset(0, viewBox.size.height)).dy -
+        _bottomPadding;
+    final overlap = fieldBottom + 8 - limit;
+    if (overlap <= 0) return;
+    final position = _controller.position;
+    final target = math.min(
+      position.pixels + overlap,
+      position.maxScrollExtent,
+    );
+    if (target > position.pixels) position.jumpTo(target);
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final padding = MediaQuery.paddingOf(context);
+    if (_bottomPadding != padding.bottom) {
+      _bottomPadding = padding.bottom;
+      _scheduleReveal();
+    }
     return SingleChildScrollView(
-      padding:
-          MediaQuery.paddingOf(context) +
-          const EdgeInsets.symmetric(horizontal: 16),
-      child: child,
+      controller: _controller,
+      padding: padding + const EdgeInsets.symmetric(horizontal: 16),
+      child: widget.child,
     );
   }
 }

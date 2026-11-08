@@ -1,7 +1,10 @@
+import 'dart:math' as math;
+
 import 'package:borj/app/design/design.dart';
 import 'package:borj/app/shell/shell_destinations.dart';
 import 'package:borj/app/shell/window_class.dart';
 import 'package:borj/app/theme/app_background.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
@@ -63,11 +66,26 @@ class _AppShellState extends State<AppShell> {
       final rtl = Directionality.of(context) == TextDirection.rtl;
       padding = rtl ? padding.copyWith(right: 0) : padding.copyWith(left: 0);
     }
-    return GlassBackdropGroup(
-      key: const ValueKey('shell-content'),
-      child: MediaQuery(
-        data: media.copyWith(padding: padding + extraPadding),
-        child: KeyedSubtree(key: _navigatorKey, child: widget.navigationShell),
+    padding += extraPadding;
+    // Like Scaffold.resizeToAvoidBottomInset: the content region ends at the
+    // keyboard, and the padding that reached below it is consumed. The chrome
+    // stays in the full-size stack.
+    final keyboard = media.viewInsets.bottom;
+    padding = padding.copyWith(bottom: math.max(0, padding.bottom - keyboard));
+    return Padding(
+      padding: EdgeInsets.only(bottom: keyboard),
+      child: GlassBackdropGroup(
+        key: const ValueKey('shell-content'),
+        child: MediaQuery(
+          data: media.copyWith(
+            padding: padding,
+            viewInsets: media.viewInsets.copyWith(bottom: 0),
+          ),
+          child: KeyedSubtree(
+            key: _navigatorKey,
+            child: widget.navigationShell,
+          ),
+        ),
       ),
     );
   }
@@ -87,6 +105,12 @@ class _AppShellState extends State<AppShell> {
             widget.onSettings,
         const SingleActivator(LogicalKeyboardKey.keyK, control: true):
             widget.onSearch,
+        if (defaultTargetPlatform == TargetPlatform.macOS) ...{
+          const SingleActivator(LogicalKeyboardKey.comma, meta: true):
+              widget.onSettings,
+          const SingleActivator(LogicalKeyboardKey.keyK, meta: true):
+              widget.onSearch,
+        },
       },
       child: Focus(
         autofocus: true,

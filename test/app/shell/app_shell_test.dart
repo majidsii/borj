@@ -1,6 +1,7 @@
 import 'package:borj/app/design/design.dart';
 import 'package:borj/app/shell/app_shell.dart';
 import 'package:borj/app/shell/window_class.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -200,17 +201,19 @@ void main() {
     expect(find.text('today 1'), findsOneWidget);
   });
 
-  testWidgets('expanded: sidebar item with a sub-path navigates there', (
+  testWidgets('expanded: sidebar item with a query navigates there', (
     tester,
   ) async {
     final s = _setup();
     await _pump(tester, s.router, const Size(1440, 900));
-    await tester.tap(find.byKey(const ValueKey('sidebar-item-/finance/debts')));
+    await tester.tap(
+      find.byKey(const ValueKey('sidebar-item-/finance?section=debts')),
+    );
     await tester.pumpAndSettle();
-    expect(find.text('debts 0'), findsOneWidget);
+    expect(find.text('finance 0'), findsOneWidget);
     expect(
       find.descendant(
-        of: find.byKey(const ValueKey('sidebar-item-/finance/debts')),
+        of: find.byKey(const ValueKey('sidebar-item-/finance?section=debts')),
         matching: find.byType(GlassInner),
       ),
       findsOneWidget,
@@ -225,6 +228,31 @@ void main() {
     await tester.sendKeyEvent(LogicalKeyboardKey.keyK);
     await tester.sendKeyUpEvent(LogicalKeyboardKey.controlLeft);
     expect(s.log, ['settings', 'search']);
+  });
+
+  testWidgets('macOS: Cmd+, and Cmd+K; other platforms ignore Cmd', (
+    tester,
+  ) async {
+    Future<void> cmd(LogicalKeyboardKey key) async {
+      await tester.sendKeyDownEvent(LogicalKeyboardKey.metaLeft);
+      await tester.sendKeyEvent(key);
+      await tester.sendKeyUpEvent(LogicalKeyboardKey.metaLeft);
+    }
+
+    final s = _setup();
+    await _pump(tester, s.router, const Size(1440, 900));
+    await cmd(LogicalKeyboardKey.keyK);
+    expect(s.log, isEmpty);
+    debugDefaultTargetPlatformOverride = TargetPlatform.macOS;
+    try {
+      final m = _setup();
+      await _pump(tester, m.router, const Size(1440, 900));
+      await cmd(LogicalKeyboardKey.comma);
+      await cmd(LogicalKeyboardKey.keyK);
+      expect(m.log, ['settings', 'search']);
+    } finally {
+      debugDefaultTargetPlatformOverride = null;
+    }
   });
 
   testWidgets('compact: toolbar actions render in the chrome; RTL order', (
@@ -327,6 +355,24 @@ void main() {
     );
   });
 
+  for (final (size, key) in [
+    (const Size(800, 844), 'medium'),
+    (const Size(1440, 900), 'expanded'),
+  ]) {
+    testWidgets('$key: the page padding clears the toolbar, not the rail', (
+      tester,
+    ) async {
+      tester.view.padding = const FakeViewPadding(top: 24, left: 10, right: 12);
+      addTearDown(tester.view.resetPadding);
+      final s = _setup();
+      await _pump(tester, s.router, size);
+      expect(_pagePadding.top, 24 + 58);
+      // RTL: the rail is on the right (start); the page sees none of it.
+      expect(_pagePadding.right, 0);
+      expect(_pagePadding.left, 10);
+    });
+  }
+
   testWidgets('Ctrl+K survives text focus and a tab switch', (tester) async {
     final s = _setup();
     await _pump(tester, s.router, const Size(390, 844));
@@ -338,8 +384,7 @@ void main() {
 
     await tester.tap(find.byKey(const ValueKey('field')));
     await tester.pump();
-    FocusManager.instance.primaryFocus?.unfocus();
-    await tester.pump();
+    expect(FocusManager.instance.primaryFocus, isNotNull);
     await ctrlK();
     expect(s.log, ['search']);
     await tester.tap(find.byKey(const ValueKey('tab-tasks')));

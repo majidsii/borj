@@ -13,6 +13,7 @@ import 'test_database.dart';
 Future<ProviderContainer> pumpBorjTestApp(
   WidgetTester tester, {
   List<Override> overrides = const <Override>[],
+  Widget Function(Widget app)? wrap,
 }) async {
   final database = openTestDatabase();
   final container = ProviderContainer(
@@ -33,7 +34,10 @@ Future<ProviderContainer> pumpBorjTestApp(
     await database.close();
   });
   await tester.pumpWidget(
-    UncontrolledProviderScope(container: container, child: const BorjApp()),
+    UncontrolledProviderScope(
+      container: container,
+      child: wrap == null ? const BorjApp() : wrap(const BorjApp()),
+    ),
   );
   await tester.pumpAndSettle();
   return container;

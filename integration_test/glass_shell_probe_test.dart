@@ -49,8 +49,18 @@ void main() {
       isTrue,
       reason: 'real glass is not active',
     );
-    useWindowSize(tester, const Size(390, 844));
-    final container = await pumpBorjTestApp(tester);
+    // setSurfaceSize keeps the real view (real raster timings); the app is
+    // shown a 390 x 844 logical window through a MediaQuery override.
+    const phone = Size(390, 844);
+    await binding.setSurfaceSize(phone);
+    addTearDown(() => binding.setSurfaceSize(null));
+    final container = await pumpBorjTestApp(
+      tester,
+      wrap: (app) => MediaQuery(
+        data: MediaQueryData.fromView(tester.view).copyWith(size: phone),
+        child: app,
+      ),
+    );
     expect(find.byKey(const ValueKey('shell-compact')), findsOneWidget);
     final today = await sample(tester, 30);
     await tester.tap(find.byKey(const ValueKey('tab-tasks')));

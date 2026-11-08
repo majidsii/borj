@@ -6,6 +6,28 @@ import 'package:flutter_test/flutter_test.dart';
 import '../../support/glass_test_app.dart';
 
 void main() {
+  for (final v in glassTestVariants) {
+    testWidgets('renders every role without errors (${v.name})', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        glassTestApp(
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              for (final role in AppTextRole.values)
+                AppText('سلام ۱۲۳', role: role, tabular: true),
+            ],
+          ),
+          brightness: v.brightness,
+          textScale: v.textScale,
+        ),
+      );
+      expect(tester.takeException(), isNull);
+      expect(find.text('سلام ۱۲۳'), findsNWidgets(AppTextRole.values.length));
+    });
+  }
+
   testWidgets('role and tone resolve from AppTheme', (tester) async {
     await tester.pumpWidget(
       glassTestApp(

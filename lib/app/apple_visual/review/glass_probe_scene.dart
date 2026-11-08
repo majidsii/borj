@@ -21,12 +21,13 @@ final class GlassProbeScene extends StatelessWidget {
       sheetTrigger = false,
       toastTrigger = false;
 
-  /// The phone scene with a button (key `probe-open-sheet`) over it that
-  /// opens a sheet with 3 text fields and a tinted button.
+  /// The phone scene with two buttons in its chrome row: `probe-open-sheet`
+  /// opens a sheet with 3 text fields and a tinted button, `probe-show-toast`
+  /// shows an undo toast (so both triggers are present: [toastTrigger] is true).
   const GlassProbeScene.phoneWithSheetTrigger({super.key})
     : desktop = false,
       sheetTrigger = true,
-      toastTrigger = false;
+      toastTrigger = true;
 
   /// The desktop scene with a button (key `probe-show-toast`) in the chrome
   /// group that shows an undo toast.
@@ -39,6 +40,8 @@ final class GlassProbeScene extends StatelessWidget {
 
   final bool desktop;
   final bool sheetTrigger;
+
+  /// Whether the scene builds the `probe-show-toast` button.
   final bool toastTrigger;
 
   @override

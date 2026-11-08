@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import '../../support/glass_material_expectations.dart';
 import '../../support/glass_test_app.dart';
 
 enum _Mode { light, dark, auto }
@@ -141,5 +142,15 @@ void main() {
       ),
     );
     handle.dispose();
+  });
+
+  testWidgets('reduce transparency: the row control uses the flat material', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      glassTestApp(_segmented(_Mode.dark, (_) {}), reduceTransparency: true),
+    );
+    expect(tester.takeException(), isNull);
+    expect(glassLayerFakeFlags(tester), [true]);
   });
 }

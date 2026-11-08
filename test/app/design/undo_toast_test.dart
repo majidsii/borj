@@ -134,4 +134,37 @@ void main() {
     expect(undone, 0);
     expect(find.text('کار حذف شد'), findsNothing);
   });
+
+  testWidgets('a new toast in the old one\'s last exit frame is safe', (
+    tester,
+  ) async {
+    late BuildContext context;
+    await tester.pumpWidget(
+      glassTestApp(
+        Builder(
+          builder: (c) {
+            context = c;
+            return const SizedBox.shrink();
+          },
+        ),
+        reduceMotion: true,
+        overlayBackdrop: true,
+      ),
+    );
+    showUndoToast(context, message: 'الف', onUndo: () {});
+    await tester.pumpAndSettle(const Duration(milliseconds: 50));
+    await tester.pump(const Duration(seconds: 5)); // A starts leaving
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 190)); // A: last frame next
+    showUndoToast(context, message: 'ب', onUndo: () {});
+    await tester.pump(const Duration(milliseconds: 20)); // A reaches dismissed
+    await tester.pumpAndSettle(const Duration(milliseconds: 50));
+    expect(tester.takeException(), isNull);
+    expect(find.text('ب'), findsOneWidget);
+    expect(find.text('الف'), findsNothing);
+    await tester.pump(const Duration(seconds: 5));
+    await tester.pumpAndSettle();
+    expect(find.text('ب'), findsNothing);
+    expect(tester.takeException(), isNull);
+  });
 }

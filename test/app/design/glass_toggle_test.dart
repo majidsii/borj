@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import '../../support/glass_material_expectations.dart';
 import '../../support/glass_test_app.dart';
 import '../../support/reduced_motion_expectations.dart';
 
@@ -124,5 +125,16 @@ void main() {
     await tester.sendKeyEvent(LogicalKeyboardKey.enter);
     await tester.pump();
     expect(value, isFalse);
+  });
+
+  testWidgets('reduce transparency: the toggle has no glass to fake', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      glassTestApp(_toggle(true, (_) {}), reduceTransparency: true),
+    );
+    expect(tester.takeException(), isNull);
+    expect(glassLayerFakeFlags(tester), isEmpty);
+    expect(find.byKey(const ValueKey('glass-toggle-track')), findsOneWidget);
   });
 }

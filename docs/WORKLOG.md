@@ -17,6 +17,18 @@ Entry template:
 
 ---
 
+## 2026-11-09 — Redesign Phase 2 Part B (Today) in progress — paused by the owner (tokens)
+- **Type:** implemented (partial) + handoff
+- **What:** plan `docs/superpowers/plans/2026-11-09-redesign-phase-2b-today.md` (controller amendments A1–A5, Decisions 1–7). Branch `feat/redesign-phase-2b` (worktree `~/projects/personal/borj/phase-2b`). Done, reviewed and merged on the branch: Task 1 (date labels, `TodayAgendaBuilder`, nowUtc / task-zone wall clock), Task 2 (providers `minuteTickProvider`, `todayNowProvider`, `todayAgendaProvider`, `todayInstallmentProvider`, `todayIsNewUserProvider`, `TodayCompletion`; `pumpBorjTestApp` minuteTicks/seed), Task 3 (card grid + `TodayCard`), Task 4 (timeline card; `AppTextTone.inverse` for the now-pill), Task 5 (today's tasks card; `AppText.decoration`), Task 6 (installment card), Task 7 (header + date chip + onboarding; Decision 6 chip text follows the theme).
+- **Task 8 (TodayPage) — mid-task:** `0a9c900` (Decision 7: grid columns follow the grid width, ≥ 720 → 4 else 2; robust timeline header) is the agent's committed fix; `8bdb90a` is a WIP commit of the rest (TodayPage, entrance, router `/` → TodayPage, test helpers, page and budget tests) — UNVERIFIED: the full suite, `TZ=UTC`, format and analyze were not run on it and it has not been reviewed.
+- **Ledger:** `docs/superpowers/references/2026-11-09-phase-2b-progress-ledger.md`; briefs and constraints for the remaining tasks: `docs/superpowers/references/2026-11-09-phase-2b-briefs/`.
+- **Resume steps:**
+  1. `cd ~/projects/personal/borj/phase-2b`; Flutter 3.47.5 on PATH.
+  2. Finish Task 8 from `8bdb90a`: add the narrow-width timeline test (width 160 and 222, text scale 1.3), then run `flutter analyze`, the format check, `flutter test --exclude-tags device`, `TZ=UTC flutter test test/features/today`; fix failures; make the A4 tests (600×844, 1024×800 at 1.0 / 1.3) pass; squash or follow up the WIP commit with the brief's message `feat(today): today page with cold-start entrance`. Then a task review (opus).
+  3. Task 9 (review samples + device probe on a populated Today with the cold-start entrance, amendment A5).
+  4. Final whole-branch review + one fix wave, checkpoint, WORKLOG, roadmap, merge into `feat/v2-complete-dashboard`.
+- **Follow-ups:** Part C (Today customization, schema 10) after Part B.
+
 ## 2026-11-09 — Redesign Phase 2 Part A (app shell) complete
 - **Type:** implemented + reviewed
 - **What:** final fix wave after the paused session (owner «ادامه بده»): the shell resizes for the keyboard with a reveal above the tab bar (I1); desktop «پول» rows open the legacy FinancePanel until Phase 4 and sidebar rows always `go` to their location (I2 + re-review regression); no dark seam on branch pushes; debug review via push; ⌘ shortcuts on macOS; rail tooltip semantics; stable pushed-page tree across window classes. Commits `33bc38d`, `3636e7b`, `1292151`.

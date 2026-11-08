@@ -116,6 +116,8 @@ A5. **Probe measures the cold start (Task 9).** Seed the task and the installmen
 
 6. **Date chip text follows the theme** (controller, 2026-11-09, from the A3 contrast check): white `onTint` on the near-transparent clear glass over the white light background is 1.00:1. The chip keeps `GlassRole.clear` and uses `AppTextTone.primary` / `secondaryStrong`. The board's navy-tinted chip with white text needs a tinted-dark glass role and token: deferred.
 
+7. **Grid columns follow the grid's own width** (controller, 2026-11-09, from the A4 check): 4 columns when the grid is at least 720 px wide, otherwise 2. A 600 px medium window (grid ≈ 456 px) gets 2 columns; four would make a wide card ≈ 222 px and overflow its content. Deviation from motion spec §5.1 ("medium 4 columns"); Part C's customization uses the same rule.
+
 ## File structure
 
 ```

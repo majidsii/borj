@@ -1143,7 +1143,8 @@ As of this document:
 - 2026-11-08: **Redesign Phase 1 (foundation + primitives) is complete**; checkpoint `docs/superpowers/checkpoints/2026-11-08-redesign-phase-1-checkpoint.md`. Owner signed off 2026-11-08 («اوکیه»); the A34 profile run moves to the Phase 2 checkpoint. Owner decision 2026-11-07: v2 ships only after the full redesign (phases 1–5) and release readiness, with no interim release.
 - 2026-11-08 evening: redesign Phase 2 Part A (app shell) implemented on `feat/redesign-phase-2a` (head `ee1e298`); paused by the owner before its final fix wave. Resume from the WORKLOG entry "Redesign Phase 2 Part A (app shell) implemented; final fix wave pending" and the ledger `docs/superpowers/references/2026-11-08-phase-2a-progress-ledger.md`.
 - 2026-11-09: redesign Phase 2 Part A (app shell) COMPLETE; checkpoint `docs/superpowers/checkpoints/2026-11-09-redesign-phase-2a-checkpoint.md`; merged into `feat/v2-complete-dashboard`.
-- Next step: Phase 2 Part B (Today rebuilt to the boards), plan first; release part B (packaging + Android signing + Android CI build) follows the redesign.
+- 2026-11-09: Phase 2 Part B (Today) Tasks 1–7 done on `feat/redesign-phase-2b`; Task 8 paused mid-task (WIP `8bdb90a`, unverified). Resume from the WORKLOG entry "Redesign Phase 2 Part B (Today) in progress — paused by the owner".
+- Next step: finish Part B Task 8, Task 9, final review, checkpoint; release part B (packaging + Android signing + Android CI build) follows the redesign.
 - Tasks 2.10–2.11 remain pending and must be designed individually before implementation.
 
 ---

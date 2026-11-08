@@ -9,6 +9,7 @@ export 'glass_text_field.dart';
 export 'glass_toggle.dart';
 export 'patterns/glass_row_transitions.dart';
 export 'patterns/glass_sheet.dart';
+export 'patterns/glass_sidebar.dart';
 export 'patterns/glass_tab_bar.dart';
 export 'patterns/sliding_lens.dart';
 export 'patterns/spring_curve.dart';

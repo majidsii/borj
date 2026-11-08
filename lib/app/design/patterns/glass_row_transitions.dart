@@ -1,3 +1,4 @@
+import 'package:borj/app/apple_visual/glass.dart';
 import 'package:borj/app/design/patterns/spring_curve.dart';
 import 'package:borj/app/theme/app_motion.dart';
 import 'package:borj/app/theme/motion_scope.dart';
@@ -24,6 +25,25 @@ Duration glassRowDuration(BuildContext context) =>
     ? AppMotion.reduced.duration
     : glassRowInsertDuration;
 
+/// Fades the glass rows below through the renderer ([GlassVisibility]), never
+/// through a parent `FadeTransition`, which would only fade the glass's
+/// children and force an extra capture pass.
+Widget _glassFade(Animation<double> opacity, Widget child) => AnimatedBuilder(
+  animation: opacity,
+  builder: (context, child) =>
+      GlassVisibility(value: opacity.value.clamp(0.0, 1.0), child: child!),
+  child: child,
+);
+
+/// Reduced-motion fade: ease-out in both directions. The remove animation runs
+/// 1 to 0, so its reverse curve is the flipped one (a plain ease-out reversed
+/// reads as ease-in).
+Animation<double> _reducedFade(Animation<double> animation) => CurvedAnimation(
+  parent: animation,
+  curve: AppMotion.reduced.curve,
+  reverseCurve: AppMotion.reduced.curve.flipped,
+);
+
 /// `AnimatedList` insert builder: the slot opens with the standard spring
 /// while the row fades in over [AppMotion.quick]. Reduce Motion: fade only.
 Widget glassRowInsert(
@@ -32,13 +52,7 @@ Widget glassRowInsert(
   Widget child,
 ) {
   if (MotionScope.reducedOf(context)) {
-    return FadeTransition(
-      opacity: CurvedAnimation(
-        parent: animation,
-        curve: AppMotion.reduced.curve,
-      ),
-      child: child,
-    );
+    return _glassFade(_reducedFade(animation), child);
   }
   final fadeEnd =
       AppMotion.quick.duration.inMicroseconds /
@@ -47,8 +61,8 @@ Widget glassRowInsert(
     axis: Axis.vertical,
     alignment: AlignmentDirectional.topStart,
     sizeFactor: CurvedAnimation(parent: animation, curve: _springCurve),
-    child: FadeTransition(
-      opacity: CurvedAnimation(
+    child: _glassFade(
+      CurvedAnimation(
         parent: animation,
         curve: Interval(
           0,
@@ -56,7 +70,7 @@ Widget glassRowInsert(
           curve: AppMotion.quick.curve,
         ),
       ),
-      child: child,
+      child,
     ),
   );
 }
@@ -70,13 +84,7 @@ Widget glassRowRemove(
   Widget child,
 ) {
   if (MotionScope.reducedOf(context)) {
-    return FadeTransition(
-      opacity: CurvedAnimation(
-        parent: animation,
-        curve: AppMotion.reduced.curve,
-      ),
-      child: child,
-    );
+    return _glassFade(_reducedFade(animation), child);
   }
   final progress = ReverseAnimation(animation); // 0 to 1
   final ghostEnd =
@@ -91,9 +99,9 @@ Widget glassRowRemove(
     sizeFactor: ReverseAnimation(
       CurvedAnimation(parent: progress, curve: _springCurve),
     ),
-    child: FadeTransition(
-      opacity: ReverseAnimation(ghost),
-      child: ScaleTransition(
+    child: _glassFade(
+      ReverseAnimation(ghost),
+      ScaleTransition(
         scale: Tween<double>(begin: 1, end: _ghostScale).animate(ghost),
         child: child,
       ),

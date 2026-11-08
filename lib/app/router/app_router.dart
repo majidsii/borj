@@ -2,6 +2,7 @@ import 'package:borj/app/apple_visual/review/glass_review_screen.dart';
 import 'package:borj/app/design/design.dart';
 import 'package:borj/app/shell/app_shell.dart';
 import 'package:borj/app/shell/pending_screen.dart';
+import 'package:borj/app/shell/search_shell.dart';
 import 'package:borj/app/shell/today_interim_page.dart';
 import 'package:borj/app/shell/window_class.dart';
 import 'package:borj/features/dashboard/presentation/widgets/finance_panel.dart';
@@ -114,7 +115,13 @@ final appRouterProvider = Provider<GoRouter>((ref) {
           actionsFor: (c, wc) =>
               _actionsFor(c, wc, navigationShell.currentIndex),
           onSettings: () => router.push(AppRoutes.settings),
-          onSearch: () => router.push(AppRoutes.search),
+          onSearch: () {
+            if (WindowClass.of(context) == WindowClass.compact) {
+              router.push(AppRoutes.search);
+            } else {
+              showSearchOverlay(rootNavigatorKey.currentContext!);
+            }
+          },
         ),
         branches: <StatefulShellBranch>[
           StatefulShellBranch(
@@ -187,10 +194,11 @@ final appRouterProvider = Provider<GoRouter>((ref) {
           ),
         ),
       ),
-      _pending(
-        AppRoutes.search,
-        'جست‌وجو',
+      GoRoute(
+        path: AppRoutes.search,
         parentNavigatorKey: rootNavigatorKey,
+        pageBuilder: (context, state) =>
+            GlassPushPage(key: state.pageKey, child: const SearchShellScreen()),
       ),
       _pending(
         '${AppRoutes.habits}/:habitId',

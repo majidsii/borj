@@ -194,7 +194,30 @@ class _AppShellState extends State<AppShell> {
                   start: sideWidth + 16 + startPad,
                   end: 20 + endPad,
                   top: 14 + pad.top,
-                  child: ShellToolbar(actions: actions, buttonSize: 44),
+                  child: SizedBox(
+                    height: 44,
+                    child: Stack(
+                      children: [
+                        ShellToolbar(actions: actions, buttonSize: 44),
+                        // Trailing side, before the trailing action circles.
+                        PositionedDirectional(
+                          end: actions.where((a) => !a.leading).length * 52.0,
+                          top: 0,
+                          child: SizedBox(
+                            key: const ValueKey('toolbar-search'),
+                            width: 230,
+                            height: 44,
+                            child: GlassButton(
+                              onPressed: widget.onSearch,
+                              icon: Icons.search,
+                              label: 'جست‌وجو',
+                              semanticLabel: 'جست‌وجو',
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
               ],
             ),

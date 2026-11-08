@@ -1,3 +1,4 @@
+import 'package:borj/app/apple_visual/glass.dart';
 import 'package:borj/app/shell/window_class.dart';
 import 'package:borj/app/theme/app_background.dart';
 import 'package:borj/app/theme/app_theme.dart';
@@ -77,7 +78,11 @@ class _GlassPushRoute<T> extends PageRoute<T>
   @override
   Widget buildContent(BuildContext context) => AppBackground(
     kind: AppBackgroundKind.phone,
-    child: Material(type: MaterialType.transparency, child: _page.child),
+    // A pushed page sits outside the shell's content group: this one group
+    // makes all of its glass share a single capture.
+    child: GlassBackdropGroup(
+      child: Material(type: MaterialType.transparency, child: _page.child),
+    ),
   );
 
   @override

@@ -109,19 +109,22 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         NoTransitionPage(key: state.pageKey, child: const RouteErrorScreen()),
     routes: <RouteBase>[
       StatefulShellRoute.indexedStack(
-        builder: (context, state, navigationShell) => AppShell(
-          navigationShell: navigationShell,
-          location: state.uri.toString(),
-          actionsFor: (c, wc) =>
-              _actionsFor(c, wc, navigationShell.currentIndex),
-          onSettings: () => router.push(AppRoutes.settings),
-          onSearch: () {
-            if (WindowClass.of(context) == WindowClass.compact) {
-              router.push(AppRoutes.search);
-            } else {
-              showSearchOverlay(rootNavigatorKey.currentContext!);
-            }
-          },
+        pageBuilder: (context, state, navigationShell) => NoTransitionPage(
+          key: state.pageKey,
+          child: AppShell(
+            navigationShell: navigationShell,
+            location: state.uri.toString(),
+            actionsFor: (c, wc) =>
+                _actionsFor(c, wc, navigationShell.currentIndex),
+            onSettings: () => router.push(AppRoutes.settings),
+            onSearch: () {
+              if (WindowClass.of(context) == WindowClass.compact) {
+                router.push(AppRoutes.search);
+              } else {
+                showSearchOverlay(rootNavigatorKey.currentContext!);
+              }
+            },
+          ),
         ),
         branches: <StatefulShellBranch>[
           StatefulShellBranch(

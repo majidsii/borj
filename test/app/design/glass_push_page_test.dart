@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../support/backdrop_layer_count.dart';
 import '../../support/glass_fade_expectations.dart';
 import '../../support/glass_test_app.dart';
 import '../../support/reduced_motion_expectations.dart';
@@ -257,4 +258,61 @@ void main() {
       expect(tester.takeException(), isNull);
     });
   }
+
+  testWidgets('a pushed page shares one backdrop group for all its glass', (
+    tester,
+  ) async {
+    await tester.binding.setSurfaceSize(const Size(390, 844));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    Widget shapes(int n) => Column(
+      children: [
+        for (var i = 0; i < n; i++)
+          GlassScope(
+            kind: GlassLayerKind.content,
+            child: AppGlass(
+              role: GlassRole.panel,
+              shape: const AppleGlassShape.rounded(20),
+              child: const SizedBox(width: 100, height: 40),
+            ),
+          ),
+      ],
+    );
+    Future<int> countFor(int n) async {
+      final router = GoRouter(
+        routes: [
+          GoRoute(
+            path: '/',
+            pageBuilder: (context, state) =>
+                const NoTransitionPage<void>(child: SizedBox()),
+            routes: [
+              GoRoute(
+                path: 'p',
+                pageBuilder: (context, state) =>
+                    GlassPushPage<void>(key: state.pageKey, child: shapes(n)),
+              ),
+            ],
+          ),
+        ],
+      );
+      await tester.pumpWidget(_app(router));
+      router.go('/p');
+      await tester.pumpAndSettle();
+      expect(
+        find
+            .ancestor(
+              of: find.byType(AppGlass),
+              matching: find.byType(GlassBackdropGroup),
+            )
+            .evaluate()
+            .toSet(),
+        hasLength(1),
+      );
+      return countCompositedBackdrops(tester);
+    }
+
+    final one = await countFor(1);
+    await tester.pumpWidget(const SizedBox.shrink());
+    final three = await countFor(3);
+    expect(three, one);
+  });
 }

@@ -83,16 +83,10 @@ void main() {
   ) async {
     useWindowSize(tester, const Size(1440, 900));
     await pumpBorjTestApp(tester);
-    // The app's first page route already fades the shell (a settled route,
-    // not the overlay): that is the baseline the overlay must not add to.
-    final baseline = bareFadesAboveGlass(tester, find.byType(Navigator)).length;
     await _ctrlK(tester);
     await tester.pump();
     expect(find.byType(GlassOverlayContent), findsOneWidget);
-    expect(
-      bareFadesAboveGlass(tester, find.byType(Navigator)).length,
-      baseline,
-    );
+    expect(bareFadesAboveGlass(tester, find.byType(Navigator)), isEmpty);
     // No transition frames: the first pump after opening is the final one.
     await tester.pump(const Duration(milliseconds: 1));
     expect(find.text('جست‌وجو به‌زودی'), findsOneWidget);

@@ -103,6 +103,9 @@ void main() {
     void walk(List<RouteBase> routes) {
       for (final r in routes) {
         if (r is GoRoute && r.builder != null) offenders.add(r.path);
+        if (r is StatefulShellRoute && r.builder != null) {
+          offenders.add('StatefulShellRoute');
+        }
         walk(r.routes);
       }
     }

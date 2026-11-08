@@ -50,6 +50,7 @@ class AppText extends StatelessWidget {
     this.textAlign,
     this.maxLines,
     this.tabular = false,
+    this.decoration,
     super.key,
   });
 
@@ -60,6 +61,7 @@ class AppText extends StatelessWidget {
   final TextAlign? textAlign;
   final int? maxLines;
   final bool tabular;
+  final TextDecoration? decoration;
 
   @override
   Widget build(BuildContext context) {
@@ -78,6 +80,7 @@ class AppText extends StatelessWidget {
     var style = base.copyWith(
       color: tone.resolve(theme.colors),
       fontWeight: weight,
+      decoration: decoration,
     );
     if (tabular) {
       style = theme.text.tabular(style);

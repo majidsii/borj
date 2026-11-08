@@ -80,6 +80,7 @@ void main() {
     await tester.pumpWidget(_lens(a));
     await tester.pump(const Duration(milliseconds: 16));
     final after = painted(tester);
-    expect((after.center.dx - before.center.dx).abs(), lessThan(30));
+    // One frame of travel at most; a restart from the old rect would jump ~100.
+    expect((after.center.dx - before.center.dx).abs(), lessThanOrEqualTo(25));
   });
 }

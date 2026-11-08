@@ -126,6 +126,8 @@ class _Tab extends StatelessWidget {
         onPressed: onTap,
         semanticLabel: destination.label,
         child: SizedBox(
+          // Pressable's Stack loosens width; fill the cell so content centres.
+          width: double.infinity,
           height: GlassTabBar.height - 8,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,

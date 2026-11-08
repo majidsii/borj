@@ -13,19 +13,23 @@ Widget _bar({
   Brightness brightness = Brightness.light,
   double textScale = 1.0,
   bool reduceMotion = false,
+  bool ltr = false,
 }) => glassTestApp(
   brightness: brightness,
   textScale: textScale,
   reduceMotion: reduceMotion,
-  SizedBox(
-    width: 390,
-    child: GlassScope(
-      kind: GlassLayerKind.chrome,
-      child: GlassTabBar(
-        destinations: shellDestinations,
-        selectedIndex: selected,
-        onSelected: onSelected ?? (_) {},
-        onSearch: onSearch ?? () {},
+  Directionality(
+    textDirection: ltr ? TextDirection.ltr : TextDirection.rtl,
+    child: SizedBox(
+      width: 390,
+      child: GlassScope(
+        kind: GlassLayerKind.chrome,
+        child: GlassTabBar(
+          destinations: shellDestinations,
+          selectedIndex: selected,
+          onSelected: onSelected ?? (_) {},
+          onSearch: onSearch ?? () {},
+        ),
       ),
     ),
   ),
@@ -134,4 +138,38 @@ void main() {
           tester.pumpWidget(_bar(selected: 2, reduceMotion: true)),
     );
   });
+
+  testWidgets('tab icon and label are centred in their cell', (tester) async {
+    await tester.pumpWidget(_bar());
+    for (final d in shellDestinations) {
+      final tab = find.byKey(ValueKey('tab-${d.section.name}'));
+      final cx = tester.getCenter(tab).dx;
+      final icon = find.descendant(of: tab, matching: find.byType(AppIcon));
+      final label = find.descendant(of: tab, matching: find.text(d.label));
+      expect(tester.getCenter(icon).dx, closeTo(cx, 0.5), reason: d.label);
+      expect(tester.getCenter(label).dx, closeTo(cx, 0.5), reason: d.label);
+    }
+  });
+
+  for (final ltr in [false, true]) {
+    testWidgets('the lens lands on the selected tab (${ltr ? 'LTR' : 'RTL'})', (
+      tester,
+    ) async {
+      for (var i = 0; i < shellDestinations.length; i++) {
+        await tester.pumpWidget(_bar(selected: i, ltr: ltr));
+        await tester.pumpAndSettle();
+        final tab = tester.getRect(
+          find.byKey(ValueKey('tab-${shellDestinations[i].section.name}')),
+        );
+        final lens = tester.getRect(
+          find.descendant(
+            of: find.byKey(const ValueKey('tab-lens')),
+            matching: find.byType(GlassInner),
+          ),
+        );
+        expect(lens.center.dx, closeTo(tab.center.dx, 0.5), reason: 'index $i');
+        expect(lens.width, closeTo(tab.width, 0.5), reason: 'index $i');
+      }
+    });
+  }
 }

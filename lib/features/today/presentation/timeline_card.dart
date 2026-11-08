@@ -101,18 +101,14 @@ class _Scale extends StatelessWidget {
     final (startHour, endHour) = timelineRange(agenda.timed);
     final span = (endHour - startHour) * 60.0;
     double fraction(DateTime t) {
-      final minutes =
-          (t
-                  .difference(
-                    DateTime(
-                      agenda.day.year,
-                      agenda.day.month,
-                      agenda.day.day,
-                      startHour,
-                    ),
-                  )
-                  .inMinutes)
-              .toDouble();
+      // Wall-clock arithmetic only (no DateTime.difference between naive
+      // values, which a device-zone DST shift would skew).
+      final days = DateTime.utc(t.year, t.month, t.day)
+          .difference(
+            DateTime.utc(agenda.day.year, agenda.day.month, agenda.day.day),
+          )
+          .inDays;
+      final minutes = days * 1440 + t.hour * 60 + t.minute - startHour * 60;
       return (minutes / span).clamp(0.0, 1.0);
     }
 
@@ -185,6 +181,7 @@ class _Scale extends StatelessWidget {
             s.add(Duration(minutes: e.durationMinutes ?? 30)),
           );
           final minW = 30 / span;
+          final blockWidth = math.min(math.max(f1 - f0, minW) * width, width);
           final past =
               showNow &&
               s.add(Duration(minutes: e.durationMinutes ?? 30)).isBefore(now);
@@ -192,9 +189,9 @@ class _Scale extends StatelessWidget {
           children.add(
             PositionedDirectional(
               key: ValueKey('timeline-block-${e.taskId}'),
-              start: f0 * width,
+              start: math.min(f0 * width, width - blockWidth),
               top: 4 + lane * laneHeight,
-              width: math.max(f1 - f0, minW) * width,
+              width: blockWidth,
               height: 42,
               child: Opacity(
                 opacity: past ? 0.55 : 1,
@@ -264,7 +261,10 @@ class _Scale extends StatelessWidget {
           if (showNow)
             PositionedDirectional(
               key: const ValueKey('timeline-now-pill'),
-              start: fraction(now) * width - 22,
+              start: (fraction(now) * width - 22).clamp(
+                0.0,
+                math.max(0.0, width - 44),
+              ),
               width: 44,
               top: -2,
               child: DecoratedBox(
@@ -285,6 +285,7 @@ class _Scale extends StatelessWidget {
         return Column(
           children: [
             SizedBox(
+              key: const ValueKey('timeline-scale'),
               height: laneHeight * lanes,
               child: Stack(clipBehavior: Clip.none, children: children),
             ),

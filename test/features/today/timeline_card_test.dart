@@ -261,4 +261,42 @@ void main() {
       lessThan(4.5),
     );
   });
+
+  for (final c in [(8, 5, '۸:۰۵'), (19, 55, '۱۹:۵۵')]) {
+    testWidgets('now-pill stays inside the scale at ${c.$3}', (tester) async {
+      await tester.pumpWidget(_card(agenda, DateTime(2026, 11, 4, c.$1, c.$2)));
+      final pill = tester.getRect(
+        find.byKey(const ValueKey('timeline-now-pill')),
+      );
+      final scale = tester.getRect(
+        find.byKey(const ValueKey('timeline-scale')),
+      );
+      expect(pill.left, greaterThanOrEqualTo(scale.left - 0.01));
+      expect(pill.right, lessThanOrEqualTo(scale.right + 0.01));
+      expect(
+        find.descendant(
+          of: find.byKey(const ValueKey('timeline-now-pill')),
+          matching: find.text(c.$3),
+        ),
+        findsOneWidget,
+      );
+    });
+  }
+
+  testWidgets('a short block near the scale end stays inside it', (
+    tester,
+  ) async {
+    final a = TodayAgenda(
+      day: _day,
+      timed: [_e('tail', 19, 50, minutes: 5)],
+      untimed: const [],
+    );
+    await tester.pumpWidget(_card(a, now));
+    final block = tester.getRect(
+      find.byKey(const ValueKey('timeline-block-tail')),
+    );
+    final scale = tester.getRect(find.byKey(const ValueKey('timeline-scale')));
+    expect(block.left, greaterThanOrEqualTo(scale.left - 0.01));
+    expect(block.right, lessThanOrEqualTo(scale.right + 0.01));
+  });
 }

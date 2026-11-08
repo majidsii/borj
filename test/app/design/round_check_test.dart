@@ -1,5 +1,6 @@
 // test/app/design/round_check_test.dart
 import 'package:borj/app/design/design.dart';
+import 'package:borj/app/theme/app_motion.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -97,5 +98,36 @@ void main() {
       ),
     );
     handle.dispose();
+  });
+
+  testWidgets('reduced motion: unchecking fades out with ease-out', (
+    tester,
+  ) async {
+    var value = true;
+    await tester.pumpWidget(
+      glassTestApp(
+        StatefulBuilder(
+          builder: (context, setState) =>
+              _check(value, (v) => setState(() => value = v)),
+        ),
+        reduceMotion: true,
+      ),
+    );
+    await tester.tap(find.byType(RoundCheck));
+    await tester.pump();
+    await tester.pump(AppMotion.reduced.duration * 0.25);
+    final outgoing = find.ancestor(
+      of: find.byKey(const ValueKey('checked')),
+      matching: find.descendant(
+        of: find.byType(AnimatedSwitcher),
+        matching: find.byType(FadeTransition),
+      ),
+    );
+    // Fast first, like the incoming ease-out: not the reverse of an ease-out.
+    expect(
+      tester.widget<FadeTransition>(outgoing).opacity.value,
+      closeTo(1 - AppMotion.reduced.curve.transform(0.25), 0.03),
+    );
+    await tester.pumpAndSettle();
   });
 }

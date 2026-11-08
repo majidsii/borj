@@ -34,7 +34,7 @@ class _RoundCheckState extends State<RoundCheck> with TickerProviderStateMixin {
   );
   late final AnimationController _mark = AnimationController(
     vsync: this,
-    duration: const Duration(milliseconds: 200),
+    duration: AppMotion.quick.duration,
     value: widget.checked ? 1 : 0,
   );
   late final AnimationController _opacity = AnimationController(
@@ -121,7 +121,9 @@ class _RoundCheckState extends State<RoundCheck> with TickerProviderStateMixin {
       visual = AnimatedSwitcher(
         duration: AppMotion.reduced.duration,
         switchInCurve: AppMotion.reduced.curve,
-        switchOutCurve: AppMotion.reduced.curve,
+        // The outgoing child runs its controller in reverse, so it needs the
+        // flipped curve to ease out rather than in.
+        switchOutCurve: AppMotion.reduced.curve.flipped,
         transitionBuilder: (child, animation) =>
             FadeTransition(opacity: animation, child: child),
         child: widget.checked
@@ -140,7 +142,8 @@ class _RoundCheckState extends State<RoundCheck> with TickerProviderStateMixin {
               scale: _scale,
               child: AnimatedBuilder(
                 animation: _mark,
-                builder: (context, _) => filled(_mark.value),
+                builder: (context, _) =>
+                    filled(AppMotion.quick.curve.transform(_mark.value)),
               ),
             ),
           ),

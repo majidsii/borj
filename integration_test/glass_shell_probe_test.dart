@@ -40,7 +40,13 @@ void main() {
     print(
       'LG_PERF scene=$scene mode=${kProfileMode ? 'profile' : 'debug'} raster_p90_ms=$p90',
     );
-    if (kProfileMode) expect(p90, lessThanOrEqualTo(8.0));
+    if (kProfileMode) {
+      // Guard against a vacuous run: real frames, real raster times.
+      final frames = (summary['frame_count'] as num).toInt();
+      expect(frames, greaterThanOrEqualTo(60), reason: 'too few frames');
+      expect(p90, greaterThan(0), reason: 'no raster time recorded');
+      expect(p90, lessThanOrEqualTo(8.0));
+    }
   }
 
   testWidgets('phoneShell within budget on real glass', (tester) async {
@@ -58,7 +64,10 @@ void main() {
       tester,
       wrap: (app) => MediaQuery(
         data: MediaQueryData.fromView(tester.view).copyWith(size: phone),
-        child: app,
+        child: Align(
+          alignment: Alignment.topLeft,
+          child: SizedBox(width: 390, height: 844, child: app),
+        ),
       ),
     );
     expect(find.byKey(const ValueKey('shell-compact')), findsOneWidget);
@@ -145,6 +154,7 @@ void main() {
         greaterThan(today.worst),
         reason: 'the overlay glass must be counted',
       );
+      expect(overlay.worst, greaterThanOrEqualTo(2));
     }
     // A physicalSize override makes the engine report ~0 ms raster times, so
     // the perf run uses the real OS window (1180 wide: still expanded).
@@ -166,6 +176,6 @@ void main() {
         up = !up;
       }
     }, reportKey: 'glass_shell_desktop');
-    reportPerf('desktopShell', 'glass_shell_desktop');
+    reportPerf('desktopShellLegacyTasks', 'glass_shell_desktop');
   });
 }

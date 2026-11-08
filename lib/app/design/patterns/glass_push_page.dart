@@ -76,14 +76,18 @@ class _GlassPushRoute<T> extends PageRoute<T>
   }
 
   @override
-  Widget buildContent(BuildContext context) => AppBackground(
-    kind: AppBackgroundKind.phone,
-    // A pushed page sits outside the shell's content group: this one group
-    // makes all of its glass share a single capture.
-    child: GlassBackdropGroup(
-      child: Material(type: MaterialType.transparency, child: _page.child),
-    ),
-  );
+  Widget buildContent(BuildContext context) {
+    final page = Material(type: MaterialType.transparency, child: _page.child);
+    return AppBackground(
+      kind: AppBackgroundKind.phone,
+      // A page pushed at the root sits outside the shell's content group:
+      // one group makes all its glass share a capture. A page pushed inside a
+      // branch navigator is already under the shell's group and adds none.
+      child: GlassContext.inBackdropGroup(context)
+          ? page
+          : GlassBackdropGroup(child: page),
+    );
+  }
 
   @override
   Widget buildTransitions(

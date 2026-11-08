@@ -1,5 +1,10 @@
+import 'dart:async';
+import 'dart:math' as math;
+
 import 'package:borj/app/apple_visual/review/glass_review_screen.dart';
+import 'package:borj/app/design/design.dart';
 import 'package:borj/app/router/app_router.dart';
+import 'package:borj/app/shell/pending_screen.dart';
 import 'package:borj/app/shell/today_interim_page.dart';
 import 'package:borj/features/dashboard/presentation/widgets/tasks_panel.dart';
 import 'package:borj/features/settings/presentation/settings_screen.dart';
@@ -8,6 +13,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../support/backdrop_layer_count.dart';
 import '../../support/borj_test_app.dart';
 
 Future<void> _size(WidgetTester tester, Size size) async =>
@@ -113,4 +119,34 @@ void main() {
     walk(router.configuration.routes);
     expect(offenders, isEmpty);
   });
+
+  testWidgets(
+    'compact: a detail pushed in a branch joins only the shell group',
+    (tester) async {
+      await _size(tester, const Size(390, 844));
+      final container = await pumpBorjTestApp(tester);
+      unawaited(container.read(appRouterProvider).push('/tasks/t1'));
+      var worst = 0;
+      for (var i = 0; i < 20; i++) {
+        await tester.pump(const Duration(milliseconds: 16));
+        worst = math.max(worst, countCompositedBackdrops(tester));
+      }
+      await tester.pumpAndSettle();
+      expect(find.byType(PendingScreen), findsOneWidget);
+      expect(
+        find
+            .ancestor(
+              of: find.descendant(
+                of: find.byType(PendingScreen),
+                matching: find.byType(AppGlass),
+              ),
+              matching: find.byType(GlassBackdropGroup),
+            )
+            .evaluate()
+            .toSet(),
+        hasLength(1),
+      );
+      expect(worst, lessThanOrEqualTo(3));
+    },
+  );
 }

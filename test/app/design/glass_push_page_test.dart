@@ -61,6 +61,7 @@ Widget _app(
   bool reduceMotion = false,
   Brightness brightness = Brightness.light,
   double textScale = 1.0,
+  bool underGroup = false,
 }) {
   return MediaQuery(
     data: MediaQueryData(
@@ -78,7 +79,7 @@ Widget _app(
           child: GlassPreferencesScope(
             intensity: 0.5,
             reduceTransparency: false,
-            child: child!,
+            child: underGroup ? GlassBackdropGroup(child: child!) : child!,
           ),
         ),
       ),
@@ -277,7 +278,7 @@ void main() {
           ),
       ],
     );
-    Future<int> countFor(int n) async {
+    Future<int> countFor(int n, {bool underGroup = false}) async {
       final router = GoRouter(
         routes: [
           GoRoute(
@@ -294,7 +295,7 @@ void main() {
           ),
         ],
       );
-      await tester.pumpWidget(_app(router));
+      await tester.pumpWidget(_app(router, underGroup: underGroup));
       router.go('/p');
       await tester.pumpAndSettle();
       expect(
@@ -311,8 +312,47 @@ void main() {
     }
 
     final one = await countFor(1);
+    expect(one, greaterThanOrEqualTo(1));
     await tester.pumpWidget(const SizedBox.shrink());
     final three = await countFor(3);
     expect(three, one);
+  });
+
+  testWidgets('a page pushed inside an existing group adds no second group', (
+    tester,
+  ) async {
+    await tester.binding.setSurfaceSize(const Size(390, 844));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    final router = GoRouter(
+      routes: [
+        GoRoute(
+          path: '/',
+          pageBuilder: (context, state) =>
+              const NoTransitionPage<void>(child: SizedBox()),
+          routes: [
+            GoRoute(
+              path: 'p',
+              pageBuilder: (context, state) => GlassPushPage<void>(
+                key: state.pageKey,
+                child: const _GlassPage(label: 'p'),
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+    await tester.pumpWidget(_app(router, underGroup: true));
+    router.go('/p');
+    await tester.pumpAndSettle();
+    expect(
+      find
+          .ancestor(
+            of: find.byType(AppGlass),
+            matching: find.byType(GlassBackdropGroup),
+          )
+          .evaluate()
+          .toSet(),
+      hasLength(1),
+    );
   });
 }

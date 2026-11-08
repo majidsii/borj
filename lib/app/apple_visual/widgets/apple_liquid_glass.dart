@@ -166,6 +166,10 @@ abstract final class GlassContext {
   static bool isOnGlass(BuildContext context) =>
       context.getInheritedWidgetOfExactType<_OnGlassMarker>() != null;
 
+  /// True when a [GlassBackdropGroup] (or overlay content group) is above
+  /// [context]: glass below it already shares that group's one capture.
+  static bool inBackdropGroup(BuildContext context) => _joinsGroup(context);
+
   static bool _joinsGroup(BuildContext context) =>
       context.getInheritedWidgetOfExactType<_GlassGroupMarker>() != null;
 }

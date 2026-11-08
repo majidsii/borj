@@ -20,7 +20,12 @@ class AppearanceSection extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         const Padding(
-          padding: EdgeInsets.fromLTRB(12, 0, 12, 6),
+          padding: EdgeInsets.fromLTRB(
+            AppSpacing.s12,
+            0,
+            AppSpacing.s12,
+            AppSpacing.s8,
+          ),
           child: AppText(
             'ظاهر',
             role: AppTextRole.footnote,
@@ -31,12 +36,15 @@ class AppearanceSection extends ConsumerWidget {
           role: GlassRole.panel,
           shape: const AppleGlassShape.rounded(AppRadii.card),
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.s16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Padding(
-                  padding: const EdgeInsets.only(top: 12, bottom: 10),
+                  padding: const EdgeInsets.only(
+                    top: AppSpacing.s12,
+                    bottom: AppSpacing.s12,
+                  ),
                   child: GlassSegmented<AppearanceMode>(
                     semanticLabel: 'حالت ظاهری',
                     selected: prefs.mode,
@@ -68,7 +76,7 @@ class AppearanceSection extends ConsumerWidget {
                   ],
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(top: 6),
+                  padding: const EdgeInsets.only(top: AppSpacing.s8),
                   child: Row(
                     children: [
                       const AppIcon(Icons.blur_on, tone: AppTextTone.secondary),
@@ -80,9 +88,9 @@ class AppearanceSection extends ConsumerWidget {
                             thumbColor: colors.thumbSurface,
                             trackHeight: 4,
                             thumbShape: const RoundSliderThumbShape(
-                              enabledThumbRadius: 12,
+                              enabledThumbRadius: AppSpacing.s12,
                             ),
-                            overlayColor: Colors.transparent,
+                            overlayColor: colors.accent.withValues(alpha: 0),
                           ),
                           child: Slider(
                             value: prefs.glassIntensity,
@@ -101,7 +109,10 @@ class AppearanceSection extends ConsumerWidget {
                   ),
                 ),
                 const Padding(
-                  padding: EdgeInsets.only(top: 4, bottom: 12),
+                  padding: EdgeInsets.only(
+                    top: AppSpacing.s4,
+                    bottom: AppSpacing.s12,
+                  ),
                   child: AppText(
                     'کم‌شدت‌تر یعنی شفاف‌تر و ساده‌تر؛ پرشدت‌تر یعنی خواناتر.',
                     role: AppTextRole.footnote,
@@ -153,7 +164,7 @@ class _SwitchRow extends StatelessWidget {
       child: ConstrainedBox(
         constraints: const BoxConstraints(minHeight: 56),
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8),
+          padding: const EdgeInsets.symmetric(vertical: AppSpacing.s8),
           child: Row(
             children: [
               Expanded(
@@ -174,7 +185,7 @@ class _SwitchRow extends StatelessWidget {
                   ],
                 ),
               ),
-              const SizedBox(width: 12),
+              const SizedBox(width: AppSpacing.s12),
               GlassToggle(
                 value: value,
                 onChanged: onChanged,

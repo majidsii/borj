@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:borj/app/design/design.dart';
+import 'package:borj/app/shell/shell_destinations.dart';
 import 'package:borj/app/theme/app_theme.dart';
 import 'package:borj/core/formatting/persian_number.dart';
 import 'package:borj/features/settings/application/appearance_preferences_controller.dart';
@@ -169,7 +172,168 @@ final List<DesignReviewSample> designReviewSamples = <DesignReviewSample>[
       ),
     ),
   ),
+  DesignReviewSample(
+    label: 'GlassTabBar',
+    board: 'Main',
+    build: (_) =>
+        const GlassScope(kind: GlassLayerKind.chrome, child: _TabBarDemo()),
+  ),
+  DesignReviewSample(
+    label: 'GlassSidebar',
+    board: 'MacToday',
+    build: (_) => GlassScope(
+      kind: GlassLayerKind.chrome,
+      child: SizedBox(
+        width: GlassSidebar.width,
+        height: 560,
+        child: GlassSidebar(
+          groups: sidebarGroups(),
+          selectedLocation: '/',
+          onSelected: (_) {},
+          onSettings: () {},
+        ),
+      ),
+    ),
+  ),
+  DesignReviewSample(
+    label: 'GlassSidebar rail',
+    board: 'MacToday',
+    build: (_) => GlassScope(
+      kind: GlassLayerKind.chrome,
+      child: SizedBox(
+        width: GlassSidebar.railWidth,
+        height: 560,
+        child: GlassSidebar(
+          groups: sidebarGroups(),
+          selectedLocation: '/',
+          rail: true,
+          onSelected: (_) {},
+          onSettings: () {},
+        ),
+      ),
+    ),
+  ),
+  DesignReviewSample(
+    label: 'ShellToolbar',
+    board: 'Main',
+    build: (_) => GlassScope(
+      kind: GlassLayerKind.chrome,
+      child: ShellToolbar(
+        buttonSize: 44,
+        actions: [
+          ShellAction(
+            icon: Icons.calendar_month_outlined,
+            label: 'تقویم',
+            leading: true,
+            onPressed: (_) {},
+          ),
+          ShellAction(
+            icon: Icons.settings_outlined,
+            label: 'تنظیمات',
+            leading: true,
+            onPressed: (_) {},
+          ),
+          ShellAction(
+            icon: Icons.add,
+            label: 'ورود سریع',
+            primary: true,
+            onPressed: (_) {},
+          ),
+        ],
+      ),
+    ),
+  ),
+  DesignReviewSample(
+    label: 'LargeTitleHeader',
+    board: 'Main',
+    build: (_) =>
+        const LargeTitleHeader(title: 'امروز', subtitle: 'یکشنبه، ۱۷ آبان'),
+  ),
+  DesignReviewSample(
+    label: 'EmptyState',
+    board: 'PhoneEmptyToday',
+    build: (_) => EmptyState(
+      icon: Icons.wb_sunny_outlined,
+      title: 'امروز کاری نداری',
+      message: 'یک کار تازه اضافه کن',
+      actionLabel: 'افزودن کار',
+      onAction: () {},
+    ),
+  ),
+  DesignReviewSample(
+    label: 'GlassInspector',
+    board: 'MacTasks',
+    build: (_) => const _InspectorDemo(),
+  ),
 ];
+
+class _TabBarDemo extends StatefulWidget {
+  const _TabBarDemo();
+
+  @override
+  State<_TabBarDemo> createState() => _TabBarDemoState();
+}
+
+class _TabBarDemoState extends State<_TabBarDemo> {
+  int _selected = 0;
+  Timer? _timer;
+
+  @override
+  void initState() {
+    super.initState();
+    _timer = Timer.periodic(const Duration(milliseconds: 1500), (_) {
+      if (mounted) setState(() => _selected = (_selected + 1) % 3);
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => GlassTabBar(
+    destinations: shellDestinations,
+    selectedIndex: _selected,
+    onSelected: (i) => setState(() => _selected = i),
+    onSearch: () {},
+  );
+}
+
+class _InspectorDemo extends StatefulWidget {
+  const _InspectorDemo();
+
+  @override
+  State<_InspectorDemo> createState() => _InspectorDemoState();
+}
+
+class _InspectorDemoState extends State<_InspectorDemo> {
+  bool _open = false;
+
+  @override
+  Widget build(BuildContext context) => Column(
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      GlassButton(
+        onPressed: () => setState(() => _open = !_open),
+        label: _open ? 'بستن' : 'باز کردن',
+      ),
+      const SizedBox(height: 8),
+      SizedBox(
+        height: 360,
+        child: GlassInspector(
+          open: _open,
+          onClose: () => setState(() => _open = false),
+          child: const Padding(
+            padding: EdgeInsets.all(16),
+            child: AppText('جزئیات کار', role: AppTextRole.headline),
+          ),
+        ),
+      ),
+    ],
+  );
+}
 
 Widget _panel(Widget child) => AppGlass(
   role: GlassRole.panel,

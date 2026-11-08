@@ -12,7 +12,7 @@ export 'package:borj/features/today/domain/today_entry.dart';
 
 /// Builds Today's agenda. Every time in the result is a wall-clock value in
 /// [timeZoneId], held in a naive `DateTime`, so the device zone never matters.
-class TodayAgendaBuilder {
+base class TodayAgendaBuilder {
   const TodayAgendaBuilder({this.projector = const TaskOccurrenceProjector()});
 
   final TaskOccurrenceProjector projector;
@@ -78,13 +78,18 @@ class TodayAgendaBuilder {
     return TodayAgenda(day: day, timed: timed, untimed: untimed);
   }
 
-  /// Stable order: start time, then task display number, then task id.
+  /// Stable order: start time, display number, task id, then occurrence key.
   static int _byStartNumberId((TodayEntry, int) a, (TodayEntry, int) b) {
     final byStart = a.$1.localStart!.compareTo(b.$1.localStart!);
     if (byStart != 0) return byStart;
     final byNumber = a.$2.compareTo(b.$2);
     if (byNumber != 0) return byNumber;
-    return a.$1.taskId.compareTo(b.$1.taskId);
+    final byId = a.$1.taskId.compareTo(b.$1.taskId);
+    if (byId != 0) return byId;
+    final aKey = a.$1.originalLocalDateTime;
+    final bKey = b.$1.originalLocalDateTime;
+    if (aKey == null || bKey == null) return 0;
+    return aKey.compareTo(bKey);
   }
 
   TodayEntry _entry(TaskCalendarOccurrence o, timezone.Location location) {

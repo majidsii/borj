@@ -200,12 +200,14 @@ void main() {
 
   test('equal start times order by displayNumber, then taskId', () {
     final due = DateTime.utc(2026, 11, 4, 6, 0); // 09:30
-    final a = agenda([
-      _task('z', dueUtc: due, number: 5),
-      _task('b', dueUtc: due, number: 7),
-      _task('a', dueUtc: due, number: 7),
-      _task('first', dueUtc: due, number: 2),
-    ]);
+    final a = agenda(
+      [
+        _task('b', dueUtc: due, number: 7),
+        _task('a', dueUtc: due, number: 7),
+        _task('z', dueUtc: due, number: 5),
+        _task('first', dueUtc: due, number: 2),
+      ].reversed.toList(),
+    );
     expect(a.timedIds, ['first', 'z', 'a', 'b']);
   });
 
@@ -293,6 +295,26 @@ void main() {
         ],
       );
       expect(a.value.timed, isEmpty);
+    });
+
+    test('same task, same minute: ordered by occurrence key', () {
+      // Nov 5 09:00 is moved onto Nov 4 09:00, beside Nov 4's own 09:00.
+      final moved = exception(
+        RecurrenceException.move(
+          originalLocalDateTime: at(5, 9),
+          movedToLocalDateTime: at(4, 9),
+        ),
+      );
+      for (final rules in [
+        [rule],
+        [rule].reversed.toList(),
+      ]) {
+        final a = agenda([task], rules: rules, exceptions: [moved]);
+        expect(
+          [for (final e in a.value.timed) e.originalLocalDateTime],
+          [at(4, 9), at(5, 9)],
+        );
+      }
     });
 
     test('a skipped occurrence is absent', () {

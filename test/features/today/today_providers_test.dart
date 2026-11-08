@@ -12,11 +12,26 @@ import 'package:borj/features/tasks/domain/task_recurrence_rule.dart';
 import 'package:borj/features/tasks/domain/task_status.dart';
 import 'package:borj/features/today/application/today_agenda_builder.dart';
 import 'package:borj/features/today/application/today_providers.dart';
+import 'package:fake_async/fake_async.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:timezone/data/latest.dart' as tzdata;
+import 'package:timezone/timezone.dart' as timezone;
 
 import '../../support/test_database.dart';
+
+final class _ElapsedClock implements AppClock {
+  _ElapsedClock(this.start, this.elapsed);
+
+  final DateTime start;
+  final Duration Function() elapsed;
+
+  @override
+  DateTime nowUtc() => start.add(elapsed());
+
+  @override
+  DateTime nowLocal() => nowUtc();
+}
 
 final class _CountingBuilder extends TodayAgendaBuilder {
   _CountingBuilder();
@@ -168,7 +183,69 @@ void main() {
     });
   });
 
+  group('unknown time zone', () {
+    test('todayNowProvider and todayAgendaProvider return an error', () async {
+      final database = openTestDatabase();
+      addTearDown(database.close);
+      final bad = ProviderContainer(
+        overrides: [
+          appDatabaseProvider.overrideWithValue(database),
+          appClockProvider.overrideWithValue(
+            FixedAppClock(utcValue: nowUtc, localValue: nowUtc),
+          ),
+          taskCalendarTimeZoneProvider.overrideWith(
+            (ref) => Future.value('Mars/Olympus'),
+          ),
+          minuteTickProvider.overrideWith((ref) => Stream.value(nowUtc)),
+        ],
+      );
+      addTearDown(bad.dispose);
+      bad.listen(todayNowProvider, (_, _) {});
+      bad.listen(todayAgendaProvider, (_, _) {});
+      await until(() => bad.read(todayNowProvider).hasError);
+      expect(
+        bad.read(todayNowProvider).error,
+        isA<timezone.LocationNotFoundException>(),
+      );
+      await until(() => bad.read(todayAgendaProvider).hasError);
+    });
+  });
+
   group('minuteTickProvider', () {
+    test('ticks at UTC minute boundaries and cancels on dispose', () {
+      FakeAsync().run((async) {
+        final start = DateTime.utc(2026, 11, 4, 11, 0, 30);
+        final container = ProviderContainer(
+          overrides: [
+            appClockProvider.overrideWithValue(
+              _ElapsedClock(start, () => async.elapsed),
+            ),
+          ],
+        );
+        final ticks = <DateTime>[];
+        container.listen<AsyncValue<DateTime>>(
+          minuteTickProvider,
+          (_, next) => next.whenData(ticks.add),
+          fireImmediately: true,
+        );
+        async.flushMicrotasks();
+        expect(ticks, [start]);
+
+        async.elapse(const Duration(seconds: 29));
+        expect(ticks, hasLength(1));
+        async.elapse(const Duration(seconds: 1)); // +30 s: 11:01:00
+        expect(ticks.last, DateTime.utc(2026, 11, 4, 11, 1));
+        expect(ticks, hasLength(2));
+        async.elapse(const Duration(seconds: 60)); // +90 s: 11:02:00
+        expect(ticks.last, DateTime.utc(2026, 11, 4, 11, 2));
+        expect(ticks, hasLength(3));
+
+        container.dispose();
+        async.flushMicrotasks();
+        expect(async.pendingTimers, isEmpty);
+      });
+    });
+
     test('emits the clock nowUtc immediately', () async {
       final fresh = ProviderContainer(
         overrides: [

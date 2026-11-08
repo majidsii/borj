@@ -50,7 +50,13 @@ class GlassSidebar extends StatelessWidget {
         best = i;
       }
     }
-    return best;
+    if (best != null) return best;
+    // No row matches: fall back to the first row of the location's section.
+    final section = sectionOfPath(path);
+    for (final i in items) {
+      if (i.section == section) return i;
+    }
+    return null;
   }
 
   @override
@@ -175,6 +181,8 @@ class _Row extends StatelessWidget {
           ? GlassInner(shape: const AppleGlassShape.rounded(12), child: content)
           : content,
     );
-    return rail ? Tooltip(message: label, child: row) : row;
+    return rail
+        ? Tooltip(message: label, excludeFromSemantics: true, child: row)
+        : row;
   }
 }

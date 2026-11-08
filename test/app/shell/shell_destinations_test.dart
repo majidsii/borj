@@ -25,8 +25,8 @@ void main() {
       '/',
       '/tasks',
       '/tasks?view=calendar',
-      '/finance/transactions',
-      '/finance/debts',
+      '/finance',
+      '/finance?section=debts',
     ]);
   });
 

@@ -64,15 +64,34 @@ void main() {
     expect(find.text('بودجه'), findsNothing);
   });
 
+  testWidgets('rail: the label is announced once', (tester) async {
+    final handle = tester.ensureSemantics();
+    await tester.pumpWidget(_sidebar(rail: true));
+    expect(find.bySemanticsLabel('تراکنش‌ها'), findsOneWidget);
+    handle.dispose();
+  });
+
   testWidgets('selection by location, prefix and query', (tester) async {
     await tester.pumpWidget(_sidebar(selected: '/finance/debts/42'));
-    expect(_innerOf('/finance/debts'), findsOneWidget);
+    expect(_innerOf('/finance'), findsOneWidget);
     expect(_innerOf('/'), findsNothing);
+    await tester.pumpWidget(_sidebar(selected: '/finance?section=debts'));
+    expect(_innerOf('/finance?section=debts'), findsOneWidget);
+    expect(_innerOf('/finance'), findsNothing);
     await tester.pumpWidget(_sidebar(selected: '/tasks?view=board'));
     expect(_innerOf('/tasks'), findsOneWidget);
     await tester.pumpWidget(_sidebar(selected: '/tasks?view=calendar'));
     expect(_innerOf('/tasks?view=calendar'), findsOneWidget);
     expect(_innerOf('/tasks'), findsNothing);
+  });
+
+  testWidgets('no match falls back to the first item of the section', (
+    tester,
+  ) async {
+    await tester.pumpWidget(_sidebar(selected: '/finance/unknown?x=1'));
+    expect(_innerOf('/finance'), findsOneWidget);
+    await tester.pumpWidget(_sidebar(selected: '/tasks/7?view=board'));
+    expect(_innerOf('/tasks'), findsOneWidget);
   });
 
   testWidgets('tap reports the item; settings row at the bottom', (
@@ -90,9 +109,7 @@ void main() {
         onSettings: () => settings = true,
       ),
     );
-    await tester.tap(
-      find.byKey(const ValueKey('sidebar-item-/finance/transactions')),
-    );
+    await tester.tap(find.byKey(const ValueKey('sidebar-item-/finance')));
     expect(picked?.label, 'تراکنش‌ها');
     final settingsRow = find.byKey(const ValueKey('sidebar-settings'));
     expect(tester.getBottomLeft(settingsRow).dy, greaterThan(700));

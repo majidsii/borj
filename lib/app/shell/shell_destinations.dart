@@ -100,10 +100,13 @@ List<SidebarGroup> sidebarGroups() {
     SidebarGroup(
       label: 'پول',
       items: <SidebarItem>[
+        // Until Phase 4 rebuilds finance both rows show the legacy
+        // FinancePanel (it ignores the query); /finance/transactions and
+        // /finance/debts stay routed for notifications.
         const SidebarItem(
           label: 'تراکنش‌ها',
           icon: Icons.receipt_long_outlined,
-          location: '/finance/transactions',
+          location: '/finance',
           section: ShellSection.finance,
         ),
         if (ShellFeatures.budgets)
@@ -116,7 +119,7 @@ List<SidebarGroup> sidebarGroups() {
         const SidebarItem(
           label: 'قسط و بدهی',
           icon: Icons.handshake_outlined,
-          location: '/finance/debts',
+          location: '/finance?section=debts',
           section: ShellSection.finance,
         ),
       ],
@@ -133,4 +136,14 @@ List<SidebarGroup> sidebarGroups() {
     for (final g in groups)
       if (g.items.isNotEmpty) g,
   ];
+}
+
+/// The section whose branch root is the first segment of [path], if any.
+ShellSection? sectionOfPath(String path) {
+  final first = path.split('/').where((s) => s.isNotEmpty).firstOrNull;
+  for (final d in shellDestinations) {
+    final root = d.location.split('/').where((s) => s.isNotEmpty).firstOrNull;
+    if (root == first) return d.section;
+  }
+  return null;
 }

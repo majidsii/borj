@@ -5,6 +5,7 @@ import 'package:borj/features/today/application/today_providers.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:timezone/data/latest.dart' as tzdata;
 
 import 'test_database.dart';
 
@@ -19,6 +20,7 @@ Future<ProviderContainer> pumpBorjTestApp(
   Stream<DateTime>? minuteTicks,
   Future<void> Function(ProviderContainer container)? seed,
 }) async {
+  tzdata.initializeTimeZones();
   final database = openTestDatabase();
   final container = ProviderContainer(
     overrides: <Override>[
@@ -35,6 +37,8 @@ Future<ProviderContainer> pumpBorjTestApp(
         (ref) =>
             minuteTicks ?? Stream.value(ref.read(appClockProvider).nowUtc()),
       ),
+      // Today needs the task zone; the platform channel is absent in tests.
+      taskCalendarTimeZoneProvider.overrideWith((ref) => 'Asia/Tehran'),
       ...overrides,
     ],
   );

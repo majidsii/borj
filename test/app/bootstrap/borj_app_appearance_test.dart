@@ -4,13 +4,17 @@ import 'package:borj/app/theme/motion_scope.dart';
 import 'package:borj/core/providers/persistence_providers.dart';
 import 'package:borj/features/settings/application/appearance_preferences_controller.dart';
 import 'package:borj/features/settings/domain/appearance_preferences.dart';
+import 'package:borj/features/today/application/today_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:timezone/data/latest.dart' as tzdata;
 
 import '../../support/test_database.dart';
 
 void main() {
+  setUpAll(tzdata.initializeTimeZones);
+
   testWidgets('the first frame already uses the stored mode', (tester) async {
     final database = openTestDatabase();
     addTearDown(database.close);
@@ -18,6 +22,10 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
+          minuteTickProvider.overrideWith(
+            (ref) => Stream.value(DateTime.utc(2026, 11, 4, 11)),
+          ),
+          taskCalendarTimeZoneProvider.overrideWith((ref) => 'Asia/Tehran'),
           appDatabaseProvider.overrideWithValue(database),
           initialAppearancePreferencesProvider.overrideWithValue(
             const AppearancePreferences(mode: AppearanceMode.dark),
@@ -44,6 +52,10 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
+          minuteTickProvider.overrideWith(
+            (ref) => Stream.value(DateTime.utc(2026, 11, 4, 11)),
+          ),
+          taskCalendarTimeZoneProvider.overrideWith((ref) => 'Asia/Tehran'),
           appDatabaseProvider.overrideWithValue(database),
           initialAppearancePreferencesProvider.overrideWithValue(preferences),
         ],

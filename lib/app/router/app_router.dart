@@ -5,11 +5,11 @@ import 'package:borj/app/design/design.dart';
 import 'package:borj/app/shell/app_shell.dart';
 import 'package:borj/app/shell/pending_screen.dart';
 import 'package:borj/app/shell/search_shell.dart';
-import 'package:borj/app/shell/today_interim_page.dart';
 import 'package:borj/app/shell/window_class.dart';
 import 'package:borj/features/dashboard/presentation/widgets/finance_panel.dart';
 import 'package:borj/features/dashboard/presentation/widgets/tasks_panel.dart';
 import 'package:borj/features/settings/presentation/settings_screen.dart';
+import 'package:borj/features/today/presentation/today_page.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -135,7 +135,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
                 path: AppRoutes.dashboard,
                 pageBuilder: (context, state) => NoTransitionPage(
                   key: state.pageKey,
-                  child: const TodayInterimPage(),
+                  child: const TodayPage(),
                 ),
               ),
             ],

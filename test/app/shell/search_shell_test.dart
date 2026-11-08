@@ -1,6 +1,6 @@
 import 'package:borj/app/design/design.dart';
 import 'package:borj/app/shell/search_shell.dart';
-import 'package:borj/app/shell/today_interim_page.dart';
+import 'package:borj/features/today/presentation/today_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -29,7 +29,7 @@ void main() {
       expect(tester.testTextInput.hasAnyClients, isTrue);
       GoRouter.of(tester.element(find.byType(SearchShellScreen))).pop();
       await tester.pumpAndSettle();
-      expect(find.byType(TodayInterimPage), findsOneWidget);
+      expect(find.byType(TodayPage), findsOneWidget);
     },
   );
 

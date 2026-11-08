@@ -5,11 +5,11 @@ import 'package:borj/app/apple_visual/review/glass_review_screen.dart';
 import 'package:borj/app/design/design.dart';
 import 'package:borj/app/router/app_router.dart';
 import 'package:borj/app/shell/pending_screen.dart';
-import 'package:borj/app/shell/today_interim_page.dart';
 import 'package:borj/app/theme/app_background.dart';
 import 'package:borj/features/dashboard/presentation/widgets/finance_panel.dart';
 import 'package:borj/features/dashboard/presentation/widgets/tasks_panel.dart';
 import 'package:borj/features/settings/presentation/settings_screen.dart';
+import 'package:borj/features/today/presentation/today_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -22,11 +22,11 @@ Future<void> _size(WidgetTester tester, Size size) async =>
     useWindowSize(tester, size);
 
 void main() {
-  testWidgets('opens on the interim Today', (tester) async {
+  testWidgets('opens on Today', (tester) async {
     await _size(tester, const Size(390, 844));
     await pumpBorjTestApp(tester);
-    expect(find.byType(TodayInterimPage), findsOneWidget);
-    expect(find.text('صفحهٔ امروز در حال ساخت است'), findsOneWidget);
+    expect(find.byType(TodayPage), findsOneWidget);
+    expect(find.byKey(const ValueKey('today-onboarding')), findsOneWidget);
     expect(find.byKey(const ValueKey('shell-compact')), findsOneWidget);
   });
 
@@ -52,7 +52,7 @@ void main() {
       expect(find.byType(SettingsScreen), findsOneWidget);
       GoRouter.of(tester.element(find.byType(SettingsScreen))).pop();
       await tester.pumpAndSettle();
-      expect(find.byType(TodayInterimPage), findsOneWidget);
+      expect(find.byType(TodayPage), findsOneWidget);
     },
   );
 
@@ -265,7 +265,7 @@ void main() {
     // Pushed, not replaced: back returns to Today.
     GoRouter.of(tester.element(find.byType(GlassReviewScreen))).pop();
     await tester.pumpAndSettle();
-    expect(find.byType(TodayInterimPage), findsOneWidget);
+    expect(find.byType(TodayPage), findsOneWidget);
   });
 
   testWidgets('unknown location shows the error page; its action goes home', (
@@ -278,7 +278,7 @@ void main() {
     expect(find.byKey(const ValueKey('route-error')), findsOneWidget);
     await tester.tap(find.text('رفتن به امروز'));
     await tester.pumpAndSettle();
-    expect(find.byType(TodayInterimPage), findsOneWidget);
+    expect(find.byType(TodayPage), findsOneWidget);
   });
 
   testWidgets('expanded: no 780 px cap on the panels', (tester) async {

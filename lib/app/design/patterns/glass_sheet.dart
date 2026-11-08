@@ -100,15 +100,28 @@ final class _GlassSheetRoute<T> extends PopupRoute<T> {
     // the sheet itself (grow from origin, or 1:1 under the finger).
     // The glass fades through the renderer (GlassVisibility), never through
     // a parent opacity, which would seed an extra backdrop capture.
-    final fade = animation.drive(CurveTween(curve: AppMotion.reduced.curve));
-    return reduced
-        ? AnimatedBuilder(
-            animation: fade,
-            builder: (context, child) =>
-                GlassVisibility(value: fade.value, child: child!),
-            child: child,
-          )
-        : child;
+    // CurvedAnimation keeps the direction a run started with, so closing a
+    // reduced open mid-run does not jump. Reverse is ease-out in time.
+    if (!reduced) return child;
+    final fade = _fade ??= CurvedAnimation(
+      parent: animation,
+      curve: AppMotion.reduced.curve,
+      reverseCurve: AppMotion.reduced.curve.flipped,
+    );
+    return AnimatedBuilder(
+      animation: fade,
+      builder: (context, child) =>
+          GlassVisibility(value: fade.value, child: child!),
+      child: child,
+    );
+  }
+
+  CurvedAnimation? _fade;
+
+  @override
+  void dispose() {
+    _fade?.dispose();
+    super.dispose();
   }
 }
 
@@ -271,15 +284,12 @@ final class _GlassSheetFrameState extends State<_GlassSheetFrame>
       Navigator.of(context).pop();
       return;
     }
-    _phase.value = _Phase.settling;
-    _settle.value = 0;
     if (widget.route.reduced) {
-      _settle.animateTo(
-        1,
-        duration: AppMotion.reduced.duration,
-        curve: AppMotion.reduced.curve,
-      );
+      // No translation under Reduce Motion: the sheet is back at rest at once.
+      _phase.value = _Phase.idle;
     } else {
+      _phase.value = _Phase.settling;
+      _settle.value = 0;
       // Progress velocity along the way back to rest.
       final distance = _paint.restingCy - _paint.release.cy;
       _settle.animateWith(
@@ -467,7 +477,10 @@ final class _SheetFlowDelegate extends FlowDelegate {
         pose = _Pose.lerp(paint.release, resting, settle.value, child);
       case _Phase.dismissing:
         final from = paint.releaseValue;
-        final p = from <= 0
+        // Reduced motion: hold the release pose; the route fades it out.
+        final p = reduced
+            ? 0.0
+            : from <= 0
             ? 1.0
             : ((from - controller.value) / from).clamp(0.0, 1.0);
         final distance = size.height - paint.release.rect(child).top;

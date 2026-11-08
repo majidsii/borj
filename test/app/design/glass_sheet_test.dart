@@ -189,6 +189,127 @@ void main() {
     expect(find.text('تأیید'), findsOneWidget);
   });
 
+  group('reduced motion: drag release never moves the sheet', () {
+    Future<void> openTall(WidgetTester tester) async {
+      tester.view.physicalSize = const Size(390, 844);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.reset);
+      await tester.pumpWidget(
+        glassTestApp(
+          _launcher(extraHeight: 300),
+          reduceMotion: true,
+          overlayBackdrop: true,
+        ),
+      );
+      await tester.tap(find.text('باز کن'));
+      await tester.pumpAndSettle();
+    }
+
+    double glassVisibility(WidgetTester tester) => tester
+        .widget<LiquidGlass>(find.byType(LiquidGlass).last)
+        .appearance!
+        .visibility;
+
+    testWidgets('release that reopens snaps to rest on the first frame', (
+      tester,
+    ) async {
+      await openTall(tester);
+      final sheet = find.byType(AppGlass).last;
+      final rest = tester.getRect(sheet);
+      final gesture = await tester.startGesture(
+        rest.topCenter + const Offset(0, 10),
+      );
+      await gesture.moveBy(const Offset(0, 40));
+      await tester.pump();
+      expect(tester.getRect(sheet).top - rest.top, closeTo(40, 1));
+      await gesture.up();
+      for (var i = 0; i < 20; i++) {
+        await tester.pump(const Duration(milliseconds: 16));
+        expect(tester.getRect(sheet), rest, reason: 'frame $i');
+      }
+      await tester.pumpAndSettle();
+      expect(tester.getRect(sheet), rest);
+      expect(find.text('تأیید'), findsOneWidget);
+    });
+
+    testWidgets('release that dismisses holds its pose while opacity falls', (
+      tester,
+    ) async {
+      await openTall(tester);
+      final sheet = find.byType(AppGlass).last;
+      final rest = tester.getRect(sheet);
+      final gesture = await tester.startGesture(
+        rest.topCenter + const Offset(0, 10),
+      );
+      await gesture.moveBy(const Offset(0, 260));
+      await tester.pump();
+      final held = tester.getRect(sheet);
+      expect(held.top - rest.top, closeTo(260, 1));
+      await gesture.up();
+      final seen = <double>[];
+      for (var i = 0; i < 20; i++) {
+        await tester.pump(const Duration(milliseconds: 16));
+        if (find.text('تأیید').evaluate().isEmpty) break;
+        expect(tester.getRect(sheet), held, reason: 'frame $i');
+        seen.add(glassVisibility(tester));
+      }
+      expect(seen.length, greaterThan(3));
+      expect(seen.last, lessThan(seen.first));
+      for (var i = 1; i < seen.length; i++) {
+        expect(seen[i], lessThanOrEqualTo(seen[i - 1] + 1e-9));
+      }
+      await tester.pumpAndSettle();
+      expect(find.text('تأیید'), findsNothing);
+    });
+  });
+
+  testWidgets('reduced close fades with an ease-out in time, never ease-in', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      glassTestApp(_launcher(), reduceMotion: true, overlayBackdrop: true),
+    );
+    await tester.tap(find.text('باز کن'));
+    await tester.pumpAndSettle();
+    double visibility() => tester
+        .widget<LiquidGlass>(find.byType(LiquidGlass).last)
+        .appearance!
+        .visibility;
+    expect(visibility(), 1);
+    final context = tester.element(find.text('تأیید'));
+    GlassSheet.close<void>(context);
+    await tester.pump();
+    final total = AppMotion.reduced.duration.inMilliseconds;
+    await tester.pump(Duration(milliseconds: total ~/ 4));
+    final dropped = 1 - visibility();
+    expect(dropped, closeTo(Curves.easeOut.transform(0.25), 0.03));
+    expect(dropped, greaterThan(0.25));
+    await tester.pumpAndSettle();
+  });
+
+  testWidgets('reduced fade keeps its curve direction when closed mid-open', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      glassTestApp(_launcher(), reduceMotion: true, overlayBackdrop: true),
+    );
+    await tester.tap(find.text('باز کن'));
+    await tester.pump();
+    await tester.pump(AppMotion.reduced.duration ~/ 2);
+    double visibility() => tester
+        .widget<LiquidGlass>(find.byType(LiquidGlass).last)
+        .appearance!
+        .visibility;
+    await tester.pump(const Duration(milliseconds: 16));
+    final before = visibility();
+    expect(before, inExclusiveRange(0.2, 0.95));
+    GlassSheet.close<void>(tester.element(find.text('تأیید')));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 16));
+    expect((visibility() - before).abs(), lessThan(0.15));
+    await tester.pumpAndSettle();
+  });
+
   testWidgets('system back closes the sheet', (tester) async {
     await tester.pumpWidget(glassTestApp(_launcher(), overlayBackdrop: true));
     await tester.tap(find.text('باز کن'));

@@ -128,7 +128,7 @@ screens not yet migrated. New code takes brightness from
 (`lib/app/theme/app_motion.dart`). `AppleVisualScope` applies to legacy glass
 only. Only `apple_liquid_glass.dart`
 and `app_bootstrap.dart` import `liquid_glass_renderer`. Acceptance is side-by-side
-perceptual, not pixel goldens: debug review page (long-press the brand island, run
+perceptual, not pixel goldens: debug review page (long-press the Today large title, run
 with `--dart-define=GLASS_REFERENCE_DIR=...`) and `tool/ci.sh --device` for the Linux
 full-glass test. See
 `docs/superpowers/specs/2026-11-02-liquid-glass-renderer-adoption-design.md` and

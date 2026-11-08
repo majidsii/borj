@@ -70,7 +70,7 @@ void main() {
       ),
     );
 
-    final context = tester.element(find.text('برج'));
+    final context = tester.element(find.byKey(const ValueKey('today-title')));
     final glass = GlassPreferencesScope.of(context);
     expect(glass.intensity, 0.8);
     expect(glass.reduceTransparency, isTrue);
@@ -85,7 +85,9 @@ void main() {
     await pumpApp(tester, AppearancePreferences.defaults);
     final before = tester.widget<MaterialApp>(find.byType(MaterialApp));
     expect(
-      GlassPreferencesScope.of(tester.element(find.text('برج'))).intensity,
+      GlassPreferencesScope.of(
+        tester.element(find.byKey(const ValueKey('today-title'))),
+      ).intensity,
       0.5,
     );
 
@@ -98,7 +100,9 @@ void main() {
     await tester.pump();
 
     expect(
-      GlassPreferencesScope.of(tester.element(find.text('برج'))).intensity,
+      GlassPreferencesScope.of(
+        tester.element(find.byKey(const ValueKey('today-title'))),
+      ).intensity,
       0.3,
     );
     expect(

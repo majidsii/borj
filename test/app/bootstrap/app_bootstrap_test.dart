@@ -19,10 +19,10 @@ void main() {
     );
     await tester.pump();
 
-    final dashboard = find.text('برج');
+    final title = find.byKey(const ValueKey('today-title'));
 
-    expect(dashboard, findsOneWidget);
-    expect(Directionality.of(tester.element(dashboard)), TextDirection.rtl);
+    expect(title, findsOneWidget);
+    expect(Directionality.of(tester.element(title)), TextDirection.rtl);
 
     await tester.pumpWidget(const SizedBox.shrink());
     await tester.pump();

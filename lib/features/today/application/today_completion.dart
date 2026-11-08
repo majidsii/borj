@@ -8,28 +8,28 @@ import 'package:borj/features/today/domain/today_entry.dart';
 /// recurring occurrences record or clear their completion.
 final class TodayCompletion {
   TodayCompletion({
-    required this.repository,
-    required this.recurrence,
-    required this.clock,
+    required this._repository,
+    required this._recurrence,
+    required this._clock,
   });
 
-  final TaskRepository repository;
-  final TaskRecurrenceService recurrence;
-  final AppClock clock;
+  final TaskRepository _repository;
+  final TaskRecurrenceService _recurrence;
+  final AppClock _clock;
 
   Future<void> toggle(TodayEntry entry) {
     if (entry.recurring) {
-      return recurrence.setCompleted(
+      return _recurrence.setCompleted(
         taskId: entry.taskId,
         originalLocalDateTime: entry.originalLocalDateTime!,
         completed: !entry.done,
       );
     }
-    return repository.transition(
+    return _repository.transition(
       id: entry.taskId,
       status: entry.done ? TaskStatus.planned : TaskStatus.completed,
       targetPosition: 0,
-      changedAtUtc: clock.nowUtc(),
+      changedAtUtc: _clock.nowUtc(),
     );
   }
 }

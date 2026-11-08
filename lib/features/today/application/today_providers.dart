@@ -48,10 +48,13 @@ final todayNowProvider = Provider<AsyncValue<DateTime>>((ref) {
     return AsyncValue.error(zone.error!, zone.stackTrace ?? StackTrace.current);
   }
   if (!tick.hasValue || !zone.hasValue) return const AsyncValue.loading();
-  final local = timezone.TZDateTime.from(
-    tick.requireValue.toUtc(),
-    timezone.getLocation(zone.requireValue),
-  );
+  final timezone.Location location;
+  try {
+    location = timezone.getLocation(zone.requireValue);
+  } on timezone.LocationNotFoundException catch (error, stack) {
+    return AsyncValue.error(error, stack);
+  }
+  final local = timezone.TZDateTime.from(tick.requireValue.toUtc(), location);
   return AsyncValue.data(
     DateTime(local.year, local.month, local.day, local.hour, local.minute),
   );
@@ -88,18 +91,22 @@ final todayAgendaProvider = Provider<AsyncValue<TodayAgenda>>((ref) {
   }
   // The tick only decides the day here; it is read, not watched.
   final tickUtc = ref.read(minuteTickProvider).requireValue;
-  return AsyncValue.data(
-    ref
-        .watch(todayAgendaBuilderProvider)
-        .build(
-          tasks: tasks.requireValue,
-          rules: rules.requireValue,
-          exceptions: exceptions.requireValue,
-          completions: completions.requireValue,
-          nowUtc: tickUtc,
-          timeZoneId: zone.requireValue,
-        ),
-  );
+  try {
+    return AsyncValue.data(
+      ref
+          .watch(todayAgendaBuilderProvider)
+          .build(
+            tasks: tasks.requireValue,
+            rules: rules.requireValue,
+            exceptions: exceptions.requireValue,
+            completions: completions.requireValue,
+            nowUtc: tickUtc,
+            timeZoneId: zone.requireValue,
+          ),
+    );
+  } on timezone.LocationNotFoundException catch (error, stack) {
+    return AsyncValue.error(error, stack);
+  }
 });
 
 @immutable

@@ -23,6 +23,10 @@ enum AppTextTone {
   warn,
   danger,
   onTint,
+
+  /// Content on a fill that tracks the text colour (danger pills): the page
+  /// background colour, white in light and charcoal in dark.
+  inverse,
 }
 
 extension AppTextToneColor on AppTextTone {
@@ -37,6 +41,7 @@ extension AppTextToneColor on AppTextTone {
     AppTextTone.danger => colors.danger,
     // Content on an accent fill is white in both modes (brief: "onTint is white").
     AppTextTone.onTint => const Color(0xFFFFFFFF),
+    AppTextTone.inverse => colors.background,
   };
 }
 

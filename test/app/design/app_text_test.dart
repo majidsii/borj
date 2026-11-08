@@ -84,4 +84,10 @@ void main() {
       TextDecoration.lineThrough,
     );
   });
+
+  test('inverse resolves to the background colour in both themes', () {
+    for (final t in [AppTheme.light, AppTheme.dark]) {
+      expect(AppTextTone.inverse.resolve(t.colors), t.colors.background);
+    }
+  });
 }

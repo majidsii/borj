@@ -100,24 +100,28 @@ final class _GlassSheetRoute<T> extends PopupRoute<T> {
     // the sheet itself (grow from origin, or 1:1 under the finger).
     // The glass fades through the renderer (GlassVisibility), never through
     // a parent opacity, which would seed an extra backdrop capture.
-    // The route animation runs 1 -> 0 on close, so the reverse direction uses
-    // the flipped curve (as CurvedAnimation does): ease-out in time, never
-    // ease-in.
-    return reduced
-        ? AnimatedBuilder(
-            animation: animation,
-            builder: (context, child) {
-              final curve = animation.status == AnimationStatus.reverse
-                  ? AppMotion.reduced.curve.flipped
-                  : AppMotion.reduced.curve;
-              return GlassVisibility(
-                value: curve.transform(animation.value),
-                child: child!,
-              );
-            },
-            child: child,
-          )
-        : child;
+    // CurvedAnimation keeps the direction a run started with, so closing a
+    // reduced open mid-run does not jump. Reverse is ease-out in time.
+    if (!reduced) return child;
+    final fade = _fade ??= CurvedAnimation(
+      parent: animation,
+      curve: AppMotion.reduced.curve,
+      reverseCurve: AppMotion.reduced.curve.flipped,
+    );
+    return AnimatedBuilder(
+      animation: fade,
+      builder: (context, child) =>
+          GlassVisibility(value: fade.value, child: child!),
+      child: child,
+    );
+  }
+
+  CurvedAnimation? _fade;
+
+  @override
+  void dispose() {
+    _fade?.dispose();
+    super.dispose();
   }
 }
 

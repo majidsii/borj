@@ -287,6 +287,29 @@ void main() {
     await tester.pumpAndSettle();
   });
 
+  testWidgets('reduced fade keeps its curve direction when closed mid-open', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      glassTestApp(_launcher(), reduceMotion: true, overlayBackdrop: true),
+    );
+    await tester.tap(find.text('باز کن'));
+    await tester.pump();
+    await tester.pump(AppMotion.reduced.duration ~/ 2);
+    double visibility() => tester
+        .widget<LiquidGlass>(find.byType(LiquidGlass).last)
+        .appearance!
+        .visibility;
+    await tester.pump(const Duration(milliseconds: 16));
+    final before = visibility();
+    expect(before, inExclusiveRange(0.2, 0.95));
+    GlassSheet.close<void>(tester.element(find.text('تأیید')));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 16));
+    expect((visibility() - before).abs(), lessThan(0.15));
+    await tester.pumpAndSettle();
+  });
+
   testWidgets('system back closes the sheet', (tester) async {
     await tester.pumpWidget(glassTestApp(_launcher(), overlayBackdrop: true));
     await tester.tap(find.text('باز کن'));

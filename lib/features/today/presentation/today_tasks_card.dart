@@ -83,7 +83,7 @@ class TodayTasksCard extends StatelessWidget {
             rows.add(
               _Row(
                 entry: e,
-                isNext: identical(e, next) || e == next,
+                isNext: e == next,
                 onToggle: onToggle,
                 divider: shown > 0 && !needsHeader,
               ),
@@ -154,37 +154,44 @@ class _Row extends StatelessWidget {
             RoundCheck(
               checked: entry.done,
               onChanged: (_) => onToggle(entry),
-              semanticLabel: entry.title,
+              semanticLabel: time == null
+                  ? entry.title
+                  : '${entry.title}، $time',
             ),
             const SizedBox(width: AppSpacing.s12),
             Expanded(
-              child: Pressable(
-                onPressed: () => onToggle(entry),
-                semanticLabel: entry.title,
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: AppText(
-                        entry.title,
-                        maxLines: 1,
-                        tone: entry.done
-                            ? AppTextTone.tertiary
-                            : AppTextTone.primary,
-                        weight: isNext ? FontWeight.w700 : null,
-                        decoration: entry.done
-                            ? TextDecoration.lineThrough
-                            : null,
+              // RoundCheck announces title, time and state; the row only adds
+              // the larger tap target.
+              child: ExcludeSemantics(
+                child: Pressable(
+                  onPressed: () => onToggle(entry),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: AppText(
+                          entry.title,
+                          maxLines: 1,
+                          tone: entry.done
+                              ? AppTextTone.tertiary
+                              : AppTextTone.primary,
+                          weight: isNext ? FontWeight.w700 : null,
+                          decoration: entry.done
+                              ? TextDecoration.lineThrough
+                              : null,
+                        ),
                       ),
-                    ),
-                    if (time != null)
-                      AppText(
-                        time,
-                        role: AppTextRole.footnote,
-                        tabular: true,
-                        tone: isNext ? AppTextTone.link : AppTextTone.secondary,
-                        weight: isNext ? FontWeight.w800 : null,
-                      ),
-                  ],
+                      if (time != null)
+                        AppText(
+                          time,
+                          role: AppTextRole.footnote,
+                          tabular: true,
+                          tone: isNext
+                              ? AppTextTone.link
+                              : AppTextTone.secondary,
+                          weight: isNext ? FontWeight.w800 : null,
+                        ),
+                    ],
+                  ),
                 ),
               ),
             ),

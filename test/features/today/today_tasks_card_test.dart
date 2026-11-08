@@ -120,12 +120,126 @@ void main() {
     expect(find.text('امروز کاری نداری'), findsOneWidget);
   });
 
-  testWidgets('semantics: each check is a checkbox with the task title', (
+  testWidgets('semantics: one node per row with title, time and state', (
     tester,
   ) async {
     final handle = tester.ensureSemantics();
     await tester.pumpWidget(_card(agenda));
-    expect(find.bySemanticsLabel('کار a'), findsWidgets);
+    expect(
+      tester.getSemantics(find.bySemanticsLabel('کار b، ۱۵:۰۰')),
+      matchesSemantics(
+        label: 'کار b، ۱۵:۰۰',
+        hasCheckedState: true,
+        isChecked: false,
+        hasTapAction: true,
+        hasEnabledState: true,
+        isEnabled: true,
+        isFocusable: true,
+        hasFocusAction: true,
+      ),
+    );
+    expect(find.bySemanticsLabel('کار b، ۱۵:۰۰'), findsOneWidget);
+    expect(find.bySemanticsLabel('کار b'), findsNothing);
+    expect(
+      tester.getSemantics(find.bySemanticsLabel('کار a، ۷:۰۰')),
+      matchesSemantics(
+        label: 'کار a، ۷:۰۰',
+        hasCheckedState: true,
+        isChecked: true,
+        hasTapAction: true,
+        hasEnabledState: true,
+        isEnabled: true,
+        isFocusable: true,
+        hasFocusAction: true,
+      ),
+    );
+    expect(find.bySemanticsLabel('کار d'), findsOneWidget);
     handle.dispose();
+  });
+
+  final wideWindow = const Size(1440, 900);
+
+  for (final size in [TodayCardSize.small, TodayCardSize.wide]) {
+    testWidgets('grouped ${size.name}: header + 1 row + overflow', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _card(agenda, size: size, width: 300, window: wideWindow),
+      );
+      expect(find.text('صبح'), findsOneWidget);
+      expect(find.byKey(const ValueKey('today-task-a')), findsOneWidget);
+      expect(find.byKey(const ValueKey('today-task-b')), findsNothing);
+      expect(find.text('و ۳ کار دیگر'), findsOneWidget);
+    });
+
+    testWidgets('${size.name} at 1.3 text scale ellipsizes, no overflow', (
+      tester,
+    ) async {
+      final long = TodayAgenda(
+        day: _day,
+        timed: [
+          TodayEntry(
+            taskId: 'x',
+            title: 'یک عنوان خیلی خیلی طولانی برای آزمون کوتاه شدن متن',
+            done: false,
+            recurring: false,
+            localStart: DateTime(2026, 11, 4, 15),
+          ),
+        ],
+        untimed: [_u('y'), _u('z')],
+      );
+      await tester.pumpWidget(_card(long, size: size, width: 173, s: 1.3));
+      expect(tester.takeException(), isNull);
+      final t = tester.widget<Text>(
+        find.descendant(
+          of: find.byKey(const ValueKey('today-task-x')),
+          matching: find.textContaining('یک عنوان'),
+        ),
+      );
+      expect(t.overflow, TextOverflow.ellipsis);
+    });
+  }
+
+  testWidgets('large ungrouped: 8 entries show 5 rows + «و ۳ کار دیگر»', (
+    tester,
+  ) async {
+    final many = TodayAgenda(
+      day: _day,
+      timed: const [],
+      untimed: [for (var i = 0; i < 8; i++) _u('e$i')],
+    );
+    await tester.pumpWidget(_card(many));
+    expect(find.byKey(const ValueKey('today-task-e4')), findsOneWidget);
+    expect(find.byKey(const ValueKey('today-task-e5')), findsNothing);
+    expect(find.text('و ۳ کار دیگر'), findsOneWidget);
+  });
+
+  testWidgets('large with exactly 6 entries shows all, no overflow', (
+    tester,
+  ) async {
+    final six = TodayAgenda(
+      day: _day,
+      timed: const [],
+      untimed: [for (var i = 0; i < 6; i++) _u('e$i')],
+    );
+    await tester.pumpWidget(_card(six));
+    expect(find.byKey(const ValueKey('today-task-e5')), findsOneWidget);
+    expect(find.byKey(const ValueKey('today-tasks-more')), findsNothing);
+  });
+
+  testWidgets('row body and check each toggle exactly once', (tester) async {
+    final toggled = <String>[];
+    await tester.pumpWidget(
+      _card(agenda, onToggle: (e) => toggled.add(e.taskId)),
+    );
+    await tester.tap(find.text('کار b'));
+    expect(toggled, ['b']);
+    await tester.tap(
+      find.descendant(
+        of: find.byKey(const ValueKey('today-task-c')),
+        matching: find.byType(RoundCheck),
+      ),
+    );
+    expect(toggled, ['b', 'c']);
   });
 }

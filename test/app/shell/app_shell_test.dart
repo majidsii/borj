@@ -8,6 +8,9 @@ import 'package:go_router/go_router.dart';
 
 import '../../support/glass_test_app.dart';
 
+/// The padding the last built branch page saw.
+EdgeInsets _pagePadding = EdgeInsets.zero;
+
 final class _Counter extends StatefulWidget {
   const _Counter(this.name);
   final String name;
@@ -18,12 +21,25 @@ final class _Counter extends StatefulWidget {
 final class _CounterState extends State<_Counter> {
   int n = 0;
   @override
-  Widget build(BuildContext context) => Center(
-    child: TextButton(
-      onPressed: () => setState(() => n++),
-      child: Text('${widget.name} $n'),
-    ),
-  );
+  Widget build(BuildContext context) {
+    _pagePadding = MediaQuery.paddingOf(context);
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          TextButton(
+            onPressed: () => setState(() => n++),
+            child: Text('${widget.name} $n'),
+          ),
+          if (widget.name == 'today')
+            const SizedBox(
+              width: 200,
+              child: TextField(key: ValueKey('field')),
+            ),
+        ],
+      ),
+    );
+  }
 }
 
 ({GoRouter router, List<String> log}) _setup() {
@@ -262,5 +278,73 @@ void main() {
       expect(contentIndex, greaterThanOrEqualTo(0), reason: '$size');
       expect(chromeIndex, greaterThan(contentIndex), reason: '$size');
     }
+  });
+
+  for (final (from, to, toKey) in [
+    (const Size(390, 844), const Size(800, 844), 'shell-medium'),
+    (const Size(1440, 900), const Size(390, 844), 'shell-compact'),
+    (const Size(800, 844), const Size(1440, 900), 'shell-expanded'),
+  ]) {
+    testWidgets('branch state survives ${from.width} -> ${to.width}', (
+      tester,
+    ) async {
+      final s = _setup();
+      await _pump(tester, s.router, from);
+      await tester.tap(find.text('today 0'));
+      await tester.pump();
+      expect(find.text('today 1'), findsOneWidget);
+      tester.view.physicalSize = to;
+      await tester.pumpAndSettle();
+      expect(find.byKey(ValueKey(toKey)), findsOneWidget);
+      expect(find.text('today 1'), findsOneWidget);
+    });
+  }
+
+  testWidgets('compact: safe area moves the toolbar and pads the page', (
+    tester,
+  ) async {
+    tester.view.padding = const FakeViewPadding(top: 47, bottom: 34);
+    addTearDown(tester.view.resetPadding);
+    final s = _setup();
+    await _pump(tester, s.router, const Size(390, 844));
+    expect(
+      tester.getTopLeft(find.byKey(const ValueKey('toolbar-تنظیمات'))).dy,
+      61,
+    );
+    expect(_pagePadding.top, 105);
+    expect(_pagePadding.bottom, 34 + 24 + 62 + 16);
+  });
+
+  testWidgets('medium: rail and toolbar respect the safe area', (tester) async {
+    tester.view.padding = const FakeViewPadding(top: 24);
+    addTearDown(tester.view.resetPadding);
+    final s = _setup();
+    await _pump(tester, s.router, const Size(800, 844));
+    expect(tester.getTopLeft(find.byKey(const ValueKey('sidebar'))).dy, 8 + 24);
+    expect(
+      tester.getTopLeft(find.byKey(const ValueKey('toolbar-ورود سریع'))).dy,
+      14 + 24,
+    );
+  });
+
+  testWidgets('Ctrl+K survives text focus and a tab switch', (tester) async {
+    final s = _setup();
+    await _pump(tester, s.router, const Size(390, 844));
+    Future<void> ctrlK() async {
+      await tester.sendKeyDownEvent(LogicalKeyboardKey.controlLeft);
+      await tester.sendKeyEvent(LogicalKeyboardKey.keyK);
+      await tester.sendKeyUpEvent(LogicalKeyboardKey.controlLeft);
+    }
+
+    await tester.tap(find.byKey(const ValueKey('field')));
+    await tester.pump();
+    FocusManager.instance.primaryFocus?.unfocus();
+    await tester.pump();
+    await ctrlK();
+    expect(s.log, ['search']);
+    await tester.tap(find.byKey(const ValueKey('tab-tasks')));
+    await tester.pump();
+    await ctrlK();
+    expect(s.log, ['search', 'search']);
   });
 }

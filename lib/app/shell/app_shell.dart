@@ -55,12 +55,18 @@ class _AppShellState extends State<AppShell> {
     }
   }
 
-  Widget _content(EdgeInsets extraPadding) {
+  Widget _content(EdgeInsets extraPadding, {bool removeStart = false}) {
     final media = MediaQuery.of(context);
+    var padding = media.padding;
+    if (removeStart) {
+      // The chrome rail already sits inside the safe area on this side.
+      final rtl = Directionality.of(context) == TextDirection.rtl;
+      padding = rtl ? padding.copyWith(right: 0) : padding.copyWith(left: 0);
+    }
     return GlassBackdropGroup(
       key: const ValueKey('shell-content'),
       child: MediaQuery(
-        data: media.copyWith(padding: media.padding + extraPadding),
+        data: media.copyWith(padding: padding + extraPadding),
         child: KeyedSubtree(key: _navigatorKey, child: widget.navigationShell),
       ),
     );
@@ -84,6 +90,7 @@ class _AppShellState extends State<AppShell> {
       },
       child: Focus(
         autofocus: true,
+        skipTraversal: true,
         child: AppBackground(
           kind: AppBackgroundKind.phone,
           child: Material(type: MaterialType.transparency, child: layout),
@@ -148,15 +155,22 @@ class _AppShellState extends State<AppShell> {
   }) {
     final sideWidth = (rail ? GlassSidebar.railWidth : GlassSidebar.width) + 16;
     const toolbarHeight = 14.0 + 44;
+    final pad = MediaQuery.paddingOf(context);
+    final rtl = Directionality.of(context) == TextDirection.rtl;
+    final startPad = rtl ? pad.right : pad.left;
+    final endPad = rtl ? pad.left : pad.right;
     return Stack(
       key: const ValueKey('shell-stack'),
       children: [
         PositionedDirectional(
-          start: sideWidth,
+          start: sideWidth + startPad,
           end: 0,
           top: 0,
           bottom: 0,
-          child: _content(const EdgeInsets.only(top: toolbarHeight)),
+          child: _content(
+            const EdgeInsets.only(top: toolbarHeight),
+            removeStart: true,
+          ),
         ),
         Positioned.fill(
           child: GlassScope(
@@ -165,9 +179,9 @@ class _AppShellState extends State<AppShell> {
             child: Stack(
               children: [
                 PositionedDirectional(
-                  start: 8,
-                  top: 8,
-                  bottom: 8,
+                  start: 8 + startPad,
+                  top: 8 + pad.top,
+                  bottom: 8 + pad.bottom,
                   child: GlassSidebar(
                     groups: sidebarGroups(),
                     selectedLocation: widget.location,
@@ -177,9 +191,9 @@ class _AppShellState extends State<AppShell> {
                   ),
                 ),
                 PositionedDirectional(
-                  start: sideWidth + 16,
-                  end: 20,
-                  top: 14,
+                  start: sideWidth + 16 + startPad,
+                  end: 20 + endPad,
+                  top: 14 + pad.top,
                   child: ShellToolbar(actions: actions, buttonSize: 44),
                 ),
               ],

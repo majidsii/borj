@@ -1,3 +1,4 @@
+import 'dart:math' as math;
 import 'dart:ui' as ui;
 
 import 'package:borj/app/apple_visual/review/glass_probe_scene.dart';
@@ -103,14 +104,21 @@ void main() {
       .widget<GlassButton>(find.byKey(const ValueKey('probe-show-toast')))
       .onPressed!();
 
-  Future<int> sampleFrames(WidgetTester tester, int frames) async {
+  Future<({int worst, int naive, int passes})> sampleFrames(
+    WidgetTester tester,
+    int frames,
+  ) async {
     var worst = 0;
+    var naive = 0;
+    var passes = 0;
     for (var i = 0; i < frames; i++) {
       await tester.pump(const Duration(milliseconds: 16));
-      final n = countCompositedBackdrops(tester);
-      if (n > worst) worst = n;
+      final n = countCompositedBackdropsDetailed(tester);
+      if (n.captures > worst) worst = n.captures;
+      if (n.naive > naive) naive = n.naive;
+      if (n.activeSeededPasses > passes) passes = n.activeSeededPasses;
     }
-    return worst;
+    return (worst: worst, naive: naive, passes: passes);
   }
 
   // Scrolls the content behind an overlay for 3 s. The overlay's barrier sits
@@ -165,19 +173,26 @@ void main() {
     );
     await tester.pumpAndSettle();
     await tester.tap(find.byKey(const ValueKey('probe-open-sheet')));
-    final sheetWorst = await sampleFrames(tester, 30);
+    final sheet = await sampleFrames(tester, 30);
     await tester.pumpAndSettle();
     fireToast(tester);
-    final toastWorst = await sampleFrames(tester, 30);
-    final worst = sheetWorst > toastWorst ? sheetWorst : toastWorst;
+    final toast = await sampleFrames(tester, 30);
+    final worst = math.max(sheet.worst, toast.worst);
+    final passes = math.max(sheet.passes, toast.passes);
     // ignore: avoid_print
     print(
-      'LG_COMPOSITED scene=phoneWithSheetTrigger sheet=$sheetWorst toast=$toastWorst',
+      'LG_COMPOSITED scene=phoneWithSheetTrigger '
+      'sheet=${sheet.worst} sheet_naive=${sheet.naive} '
+      'toast=${toast.worst} toast_naive=${toast.naive} '
+      'active_seeded_passes=$passes',
     );
     // ignore: avoid_print
     print('LG_CAPTURES scene=phoneWithSheetTrigger path=real max=$worst');
     if (!kProfileMode) {
       expect(worst, lessThanOrEqualTo(3));
+      // A counter that under-reads must not pass vacuously.
+      expect(passes, greaterThan(0), reason: 'no active seeded pass seen');
+      expect(worst, greaterThanOrEqualTo(2));
     }
     await tester.pump(const Duration(seconds: 5)); // let the toast hide
 
@@ -196,13 +211,23 @@ void main() {
     );
     await tester.pumpAndSettle();
     fireToast(tester);
-    final worst = await sampleFrames(tester, 30);
+    final toast = await sampleFrames(tester, 30);
+    final worst = toast.worst;
     // ignore: avoid_print
-    print('LG_COMPOSITED scene=desktopWithToastTrigger toast=$worst');
+    print(
+      'LG_COMPOSITED scene=desktopWithToastTrigger toast=$worst '
+      'toast_naive=${toast.naive} active_seeded_passes=${toast.passes}',
+    );
     // ignore: avoid_print
     print('LG_CAPTURES scene=desktopWithToastTrigger path=real max=$worst');
     if (!kProfileMode) {
       expect(worst, lessThanOrEqualTo(4));
+      expect(
+        toast.passes,
+        greaterThan(0),
+        reason: 'no active seeded pass seen',
+      );
+      expect(worst, greaterThanOrEqualTo(3));
     }
 
     await binding.watchPerformance(() async {

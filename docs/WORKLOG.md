@@ -23,7 +23,7 @@ Entry template:
 - **Found:** on a device, the composited capture counter overcounted: glass inside a renderer seeded pass reads the pass, and only the pass's seed (keyed) reads the root. The counter now mirrors `SeededBackdropPassLayer.addToScene` (`b5a7120`); real glass is within budget (phone 3, desktop 4 with overlays).
 - **Decided:** (owner, 2026-11-07) «همه چیز باید کامل بشه بعدا منتشر میکنیم» — v2 ships only after the full redesign (phases 1–5) and release readiness; no interim release with the current look.
 - **Evidence / links:** checkpoint `docs/superpowers/checkpoints/2026-11-08-redesign-phase-1-checkpoint.md`; ledger `docs/superpowers/references/2026-11-07-phase-1b-progress-ledger.md`; at `1d4f747`: 1619 passed / 1 skipped, analyze and format clean, `tool/ci.sh --device` exit 0, profile raster p90 ≤ 2.12 ms.
-- **Follow-ups:** owner perceptual sign-off on the review page (light/dark, boards, glow corner); A34 profile run; merge into `feat/v2-complete-dashboard`; deferred minors listed in the checkpoint.
+- **Follow-ups:** owner signed off 2026-11-08 («اوکیه»); merged into `feat/v2-complete-dashboard` (fast-forward `785a6da`); A34 profile run moves to the Phase 2 checkpoint; deferred minors listed in the checkpoint. Next: Phase 2 plan (shell + Today).
 
 ## 2026-11-07 — Redesign Phase 1 Part B in progress (paused: owner out of tokens)
 - **Type:** implemented (partial) + handoff

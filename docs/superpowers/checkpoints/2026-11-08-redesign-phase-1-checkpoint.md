@@ -100,3 +100,7 @@ From the ledger, still open after the fix wave:
 - A34 profile run (owner's phone; spec §8 gate ≤ 16 ms).
 - Owner's perceptual sign-off on the review page (design section, light and dark, next to the boards; glow-corner sample).
 - Merge `feat/redesign-phase-1b` into `feat/v2-complete-dashboard` (fast-forward possible).
+
+## Owner sign-off (2026-11-08)
+
+Asked to look at the review page's design section and the Appearance settings, and to agree to run the A34 profile build after Phase 2 (recommended, since real screens exist then). The owner noted that the main screens still look like the previous version (expected: Phase 1 only builds the primitives; screens move in Phases 2–5), then replied «اوکیه». Recorded as Phase 1 sign-off; the A34 run moves to the Phase 2 checkpoint.

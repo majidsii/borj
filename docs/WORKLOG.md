@@ -17,6 +17,24 @@ Entry template:
 
 ---
 
+## 2026-11-08 — Redesign Phase 2 Part A (app shell) implemented; final fix wave pending (paused by owner)
+- **Type:** implemented + reviewed + decided (paused)
+- **What:** plan `docs/superpowers/plans/2026-11-08-redesign-phase-2a-shell.md` (Phase 2 split into A shell / B Today / C Today customization). Branch `feat/redesign-phase-2a` (worktree `~/projects/personal/borj/phase-2a`), base `c413149`, head `ee1e298`. Tasks 1–11 done and reviewed:
+  - window classes + shell destinations (habits/goals/budgets hidden behind `ShellFeatures`);
+  - `SlidingLens` + `GlassTabBar`; `GlassSidebar` + 44 pt rail; `ShellToolbar`, `LargeTitleHeader`, `EmptyState`; `GlassPushPage` (Cupertino RTL push, scrim, parallax, instant on desktop/reduced) + `GlassInspector`;
+  - `AppShell`: one content `GlassBackdropGroup`, one chrome `GlassScope` per class painted after content, Ctrl+, / Ctrl+K, safe areas;
+  - router: `StatefulShellRoute` (NoTransitionPage) with Today (interim) / Tasks / Finance branches, every notification location resolves, no `builder:` routes, old dashboard deleted;
+  - search shell (phone `/search`, desktop Ctrl+K overlay); review-page samples; device probe on the real shell; platform app icons.
+- **Decided:** owner 2026-11-08 «اره پیش برو ولی اونارو هم باید پیاده کنیم» — settings entry (Today circle on phone, sidebar row + Ctrl+, on desktop) and unbuilt sections hidden but required scope (`docs/superpowers/decisions/2026-11-08-shell-settings-entry-and-unbuilt-sections.md`; roadmap §0 item 4 now Habits, Goals and Budgets). Controller rulings (desktop toolbar 44 pt, sidebar rows 36 / rail 44, legacy Tasks/Finance/Settings glass printed not asserted, inspector slot + adaptive detail in Phase 3, pushed pages get a page group only outside a group) are in the ledger.
+- **Evidence:** at `ee1e298`: `flutter analyze` clean, `flutter test test/app` 478 pass / 1 skip (full suite 1765 / 1 at a39680b), `tool/ci.sh --device` exit 0. Real glass: phone shell 2 captures (search push 2, budget 3), desktop 2 (search overlay 2, budget 4); raster p90 profile phone 1.19 ms, desktop (legacy Tasks scroll) 1.60 ms. Legacy screens (printed only): Tasks 7, Finance 16, Settings push 4 / settled 3.
+- **Ledger:** `docs/superpowers/references/2026-11-08-phase-2a-progress-ledger.md` (every agent, review, ruling, deferred minor with triage).
+- **Resume steps (at home):**
+  1. `cd ~/projects/personal/borj/phase-2a` (or a fresh clone: `git checkout feat/redesign-phase-2a`); Flutter 3.47.5 on PATH; `flutter pub get`.
+  2. Run the final fix wave: `docs/superpowers/references/2026-11-08-phase-2a-final-fix-brief.md` (I1 keyboard covers legacy panel fields — shell must resize for `viewInsets`; I2 desktop «پول» rows → `/finance` and `/finance?section=debts` until Phase 4, sidebar section fallback; minors M1–M4 + rail tooltip semantics). One fix agent, then one scoped re-review.
+  3. Part A checkpoint (`docs/superpowers/checkpoints/2026-11-XX-redesign-phase-2a-checkpoint.md`), WORKLOG, roadmap; merge `feat/redesign-phase-2a` into `feat/v2-complete-dashboard` (fast-forward).
+  4. Then Phase 2 Part B (Today rebuilt to `Main` / `MacToday` / `PhoneEmptyToday`): write its plan.
+- **Follow-ups:** the sqlite3 native-asset download fails in the agent sandbox (agents copied a verified `libsqlite3.so` into `.dart_tool`); check a clean clone with network. Extra worktrees `../phase-2a-t2…t5`, `../phase-2a-t9`, `../phase-2a-t11` are merged and can be removed. Owner sign-off and the A34 run are at the end of Phase 2 (after Part C).
+
 ## 2026-11-08 — Redesign Phase 1 complete (Part B primitives, final review, checkpoint)
 - **Type:** implemented + reviewed + decided
 - **What:** Part B Tasks 1–11 merged on `feat/redesign-phase-1b` (primitives, sheet, toast, row transitions, Appearance section, review samples, device probe during interaction), then a whole-branch opus review and a fix wave (glass fades only through `GlassVisibility`, reduced-motion sheet jumps, flipped reduced curves, toast double removal, tokens, tests).

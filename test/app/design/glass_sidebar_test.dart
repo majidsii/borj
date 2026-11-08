@@ -127,4 +127,20 @@ void main() {
     await tester.tapAt(rect.bottomCenter + const Offset(0, 1));
     expect(picked, ['امروز']);
   });
+
+  testWidgets('rail rows are at least 44 x 44 for touch', (tester) async {
+    await tester.pumpWidget(_sidebar(rail: true));
+    final rows = find.byWidgetPredicate((w) {
+      final k = w.key;
+      return k is ValueKey<String> &&
+          (k.value.startsWith('sidebar-item-') ||
+              k.value == 'sidebar-settings');
+    });
+    expect(rows, findsNWidgets(6));
+    for (final e in rows.evaluate()) {
+      final size = tester.getSize(find.byElementPredicate((x) => x == e));
+      expect(size.height, greaterThanOrEqualTo(44));
+      expect(size.width, greaterThanOrEqualTo(44));
+    }
+  });
 }

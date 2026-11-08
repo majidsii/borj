@@ -145,7 +145,7 @@ class _Row extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final content = SizedBox(
-      height: 36,
+      height: rail ? 44 : 36,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10),
         child: rail

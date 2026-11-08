@@ -6,6 +6,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 import '../../support/backdrop_capture_log.dart';
 import '../../support/glass_fade_expectations.dart';
+import '../../support/glass_material_expectations.dart';
 import '../../support/glass_test_app.dart';
 import '../../support/reduced_motion_expectations.dart';
 
@@ -240,5 +241,15 @@ void main() {
       closeTo(AppMotion.reduced.curve.transform(0.25), 0.03),
     );
     await tester.pumpAndSettle();
+  });
+
+  testWidgets('reduce transparency: rows use the flat material', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      glassTestApp(_list(['یک', 'دو']), reduceTransparency: true),
+    );
+    expect(tester.takeException(), isNull);
+    expect(glassLayerFakeFlags(tester), [true]);
   });
 }

@@ -3,6 +3,7 @@ import 'package:borj/app/design/design.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import '../../support/glass_material_expectations.dart';
 import '../../support/glass_test_app.dart';
 
 void main() {
@@ -122,5 +123,23 @@ void main() {
       contains('عنوان'),
     );
     handle.dispose();
+  });
+
+  testWidgets('reduce transparency: the field uses the flat material', (
+    tester,
+  ) async {
+    final controller = TextEditingController();
+    addTearDown(controller.dispose);
+    await tester.pumpWidget(
+      glassTestApp(
+        SizedBox(
+          width: 300,
+          child: GlassTextField(controller: controller, label: 'عنوان'),
+        ),
+        reduceTransparency: true,
+      ),
+    );
+    expect(tester.takeException(), isNull);
+    expect(glassLayerFakeFlags(tester), [true]);
   });
 }

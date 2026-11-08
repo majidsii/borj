@@ -11,6 +11,7 @@ import 'package:liquid_glass_renderer/src/internal/backdrop_seed.dart';
 import '../../support/backdrop_capture_log.dart';
 import '../../support/backdrop_layer_count.dart';
 import '../../support/glass_fade_expectations.dart';
+import '../../support/glass_material_expectations.dart';
 import '../../support/glass_test_app.dart';
 import '../../support/reduced_motion_expectations.dart';
 
@@ -286,5 +287,18 @@ void main() {
     await tester.pump();
     expect(find.byKey(const ValueKey('pressable-hover')), findsOneWidget);
     await mouse.removePointer();
+  });
+
+  testWidgets('reduce transparency: chrome stays real glass, no errors', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      glassTestApp(
+        GlassButton(onPressed: () {}, label: 'یک'),
+        reduceTransparency: true,
+      ),
+    );
+    expect(tester.takeException(), isNull);
+    expect(glassLayerFakeFlags(tester), [false]);
   });
 }

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../support/glass_fade_expectations.dart';
+import '../../support/glass_material_expectations.dart';
 import '../../support/glass_test_app.dart';
 
 void main() {
@@ -87,5 +88,18 @@ void main() {
       glassTestApp(GlassChip(label: 'امروز', onPressed: () {})),
     );
     expect(GlassVisibility.of(tester.element(find.byType(AppGlass))), 1);
+  });
+
+  testWidgets('reduce transparency: the row chip uses the flat material', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      glassTestApp(
+        GlassChip(label: 'امروز', onPressed: () {}),
+        reduceTransparency: true,
+      ),
+    );
+    expect(tester.takeException(), isNull);
+    expect(glassLayerFakeFlags(tester), [true]);
   });
 }

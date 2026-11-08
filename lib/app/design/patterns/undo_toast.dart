@@ -41,7 +41,10 @@ void showUndoToast(
         bottomOffset: bottomOffset,
         reduced: reduced,
         onGone: () {
-          if (identical(_current, entry)) _current = null;
+          // A newer toast already removed and disposed this entry (its exit
+          // can end in the very frame the replacement is shown).
+          if (!identical(_current, entry)) return;
+          _current = null;
           entry.remove();
           entry.dispose();
         },

@@ -28,6 +28,12 @@ void main() {
     ]) {
       expect(find.text(label), findsOneWidget);
     }
+    // The list builds lazily and the notice sits below every design sample.
+    await tester.scrollUntilVisible(
+      find.text('No reference images'),
+      500,
+      scrollable: find.byType(Scrollable).first,
+    );
     expect(find.text('No reference images'), findsOneWidget);
   });
 

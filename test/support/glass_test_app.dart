@@ -17,6 +17,12 @@ const List<GlassTestVariant> glassTestVariants = [
   (name: 'dark 1.3', brightness: Brightness.dark, textScale: 1.3),
 ];
 
+/// The `ThemeData` [glassTestApp] uses; router-based tests pass it too.
+ThemeData glassTestTheme(Brightness brightness) => ThemeData(
+  brightness: brightness,
+  extensions: [brightness == Brightness.dark ? AppTheme.dark : AppTheme.light],
+);
+
 /// RTL app with AppTheme, the appearance scopes and the app background, as
 /// BorjApp provides them. `overlayBackdrop` adds the app-root group.
 Widget glassTestApp(
@@ -30,12 +36,7 @@ Widget glassTestApp(
 }) {
   return MaterialApp(
     debugShowCheckedModeBanner: false,
-    theme: ThemeData(
-      brightness: brightness,
-      extensions: [
-        brightness == Brightness.dark ? AppTheme.dark : AppTheme.light,
-      ],
-    ),
+    theme: glassTestTheme(brightness),
     builder: (context, navigator) {
       Widget app = MotionScope(
         reduceMotionSetting: false,

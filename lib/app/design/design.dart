@@ -8,6 +8,8 @@ export 'glass_segmented.dart';
 export 'glass_text_field.dart';
 export 'glass_toggle.dart';
 export 'patterns/empty_state.dart';
+export 'patterns/glass_inspector.dart';
+export 'patterns/glass_push_page.dart';
 export 'patterns/glass_row_transitions.dart';
 export 'patterns/glass_sheet.dart';
 export 'patterns/glass_sidebar.dart';

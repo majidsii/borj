@@ -114,6 +114,8 @@ A5. **Probe measures the cold start (Task 9).** Seed the task and the installmen
 4. **"Today" for tasks** = occurrences whose instant (due, else start) falls in the local calendar day `[00:00, 24:00)` in the task calendar time zone (`taskCalendarTimeZoneProvider`), excluding skipped and canceled occurrences, plus active one-off tasks with no start and no due time (untimed). Overdue tasks from earlier days are not shown (Phase 3 decides overdue handling with the Tasks screen).
 5. **Desktop has a timeline card too.** The `MacToday` board shows only tasks, budget and habits; with budget and habits hidden, the catalogue's timeline card keeps the desktop Today useful. The board wins again when those features ship.
 
+6. **Date chip text follows the theme** (controller, 2026-11-09, from the A3 contrast check): white `onTint` on the near-transparent clear glass over the white light background is 1.00:1. The chip keeps `GlassRole.clear` and uses `AppTextTone.primary` / `secondaryStrong`. The board's navy-tinted chip with white text needs a tinted-dark glass role and token: deferred.
+
 ## File structure
 
 ```

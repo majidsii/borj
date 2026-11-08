@@ -74,4 +74,14 @@ void main() {
       ),
     );
   });
+
+  testWidgets('decoration is applied to the resolved style', (tester) async {
+    await tester.pumpWidget(
+      glassTestApp(const AppText('x', decoration: TextDecoration.lineThrough)),
+    );
+    expect(
+      tester.widget<Text>(find.text('x')).style!.decoration,
+      TextDecoration.lineThrough,
+    );
+  });
 }

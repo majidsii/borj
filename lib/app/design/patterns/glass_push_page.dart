@@ -55,6 +55,25 @@ class _GlassPushRoute<T> extends PageRoute<T>
   @override
   bool get popGestureEnabled => _animatedNow && super.popGestureEnabled;
 
+  // The mixin's framework barrier (0x18000000) would stack under the token
+  // scrim; the scrim alone dims.
+  @override
+  Color? get barrierColor => null;
+
+  // Slide-only parallax for the covered route, whatever its own transition
+  // (only Cupertino routes would do it by themselves).
+  @override
+  DelegatedTransitionBuilder? get delegatedTransition =>
+      _animatedNow ? CupertinoPageTransition.delegatedTransition : null;
+
+  @override
+  bool didPop(T? result) {
+    // Durations are read once at controller creation; refresh the reverse one
+    // so a window resize or Reduce Motion since the push does not freeze it.
+    controller?.reverseDuration = reverseTransitionDuration;
+    return super.didPop(result);
+  }
+
   @override
   Widget buildContent(BuildContext context) => AppBackground(
     kind: AppBackgroundKind.phone,
@@ -80,7 +99,8 @@ class _GlassPushRoute<T> extends PageRoute<T>
         IgnorePointer(
           child: AnimatedBuilder(
             animation: animation,
-            builder: (context, _) => animation.value == 0
+            builder: (context, _) =>
+                animation.isDismissed || animation.isCompleted
                 ? const SizedBox.shrink()
                 : ColoredBox(
                     key: const ValueKey('push-scrim'),

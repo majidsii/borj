@@ -1,23 +1,52 @@
 import 'package:borj/app/design/design.dart';
+import 'package:borj/app/theme/motion_scope.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../support/glass_fade_expectations.dart';
 import '../../support/glass_test_app.dart';
+import '../../support/reduced_motion_expectations.dart';
 
-GoRouter _router() => GoRouter(
+class _GlassPage extends StatelessWidget {
+  const _GlassPage({required this.label});
+
+  final String label;
+
+  @override
+  Widget build(BuildContext context) => GlassScope(
+    kind: GlassLayerKind.content,
+    child: Center(
+      child: AppGlass(
+        role: GlassRole.panel,
+        shape: const AppleGlassShape.rounded(20),
+        child: SizedBox(
+          width: 120,
+          height: 60,
+          child: Center(child: Text(label, key: ValueKey(label))),
+        ),
+      ),
+    ),
+  );
+}
+
+GoRouter _router({bool materialHome = false}) => GoRouter(
   routes: [
     GoRoute(
       path: '/',
-      builder: (context, state) =>
-          const Center(child: Text('home', key: ValueKey('home'))),
+      builder: materialHome
+          ? (context, state) => const _GlassPage(label: 'home')
+          : null,
+      pageBuilder: materialHome
+          ? null
+          : (context, state) =>
+                const NoTransitionPage<void>(child: _GlassPage(label: 'home')),
       routes: [
         GoRoute(
           path: 'detail',
           pageBuilder: (context, state) => GlassPushPage<void>(
             key: state.pageKey,
-            child: const Center(child: Text('detail', key: ValueKey('detail'))),
+            child: const _GlassPage(label: 'detail'),
           ),
         ),
       ],
@@ -41,8 +70,17 @@ Widget _app(
     child: MaterialApp.router(
       routerConfig: router,
       theme: glassTestTheme(brightness),
-      builder: (context, child) =>
-          Directionality(textDirection: TextDirection.rtl, child: child!),
+      builder: (context, child) => Directionality(
+        textDirection: TextDirection.rtl,
+        child: MotionScope(
+          reduceMotionSetting: false,
+          child: GlassPreferencesScope(
+            intensity: 0.5,
+            reduceTransparency: false,
+            child: child!,
+          ),
+        ),
+      ),
     ),
   );
 }
@@ -80,6 +118,7 @@ void main() {
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 120));
     expect(find.byKey(const ValueKey('push-scrim')), findsWidgets);
+    expect(find.byType(AppGlass), findsWidgets);
     expect(bareFadesAboveGlass(tester, find.byType(Navigator)), isEmpty);
     await tester.pumpAndSettle();
   });
@@ -119,6 +158,88 @@ void main() {
         closeTo(width / 2, 0.5),
       );
       expect(find.byKey(const ValueKey('home')), findsNothing);
+    });
+  }
+
+  testWidgets('compact RTL: the outgoing page drifts right (parallax)', (
+    tester,
+  ) async {
+    await tester.binding.setSurfaceSize(const Size(390, 844));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    final router = _router(materialHome: true);
+    await tester.pumpWidget(_app(router));
+    router.go('/detail');
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 80));
+    final x = tester.getCenter(find.byKey(const ValueKey('home'))).dx;
+    expect(x, greaterThan(195));
+    await tester.pumpAndSettle();
+  });
+
+  testWidgets('no framework barrier colour stacks under the token scrim', (
+    tester,
+  ) async {
+    await tester.binding.setSurfaceSize(const Size(390, 844));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    final router = _router();
+    await tester.pumpWidget(_app(router));
+    router.go('/detail');
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 120));
+    for (final b in tester.widgetList<ModalBarrier>(
+      find.byType(ModalBarrier),
+    )) {
+      expect(b.color == null || b.color == Colors.transparent, isTrue);
+    }
+    await tester.pumpAndSettle();
+  });
+
+  testWidgets('a push on compact then widening, then pop, is not frozen', (
+    tester,
+  ) async {
+    await tester.binding.setSurfaceSize(const Size(390, 844));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    final router = _router();
+    await tester.pumpWidget(_app(router));
+    router.go('/detail');
+    await tester.pumpAndSettle();
+    await tester.binding.setSurfaceSize(const Size(1440, 844));
+    await tester.pumpWidget(_app(router, width: 1440));
+    router.pop();
+    await tester.pump();
+    await tester.pump();
+    expect(find.byKey(const ValueKey('home')), findsOneWidget);
+    expect(find.byKey(const ValueKey('detail')), findsNothing);
+  });
+
+  for (final (name, width, reduce) in [
+    ('expanded', 1440.0, false),
+    ('medium', 800.0, false),
+    ('compact reduced', 390.0, true),
+  ]) {
+    testWidgets('$name: no back swipe, no parallax, no movement', (
+      tester,
+    ) async {
+      await tester.binding.setSurfaceSize(Size(width, 844));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+      final router = _router();
+      await tester.pumpWidget(_app(router, width: width, reduceMotion: reduce));
+      final homeX = tester.getCenter(find.byKey(const ValueKey('home'))).dx;
+      await expectNoMovement(
+        tester,
+        within: find.byType(Navigator),
+        trigger: () async {
+          router.go('/detail');
+          await tester.pump();
+        },
+      );
+      await tester.pumpAndSettle();
+      expect(homeX, closeTo(width / 2, 0.5));
+      final gesture = await tester.startGesture(Offset(width - 2, 400));
+      await gesture.moveBy(const Offset(-300, 0));
+      await gesture.up();
+      await tester.pumpAndSettle();
+      expect(find.byKey(const ValueKey('detail')), findsOneWidget);
     });
   }
 

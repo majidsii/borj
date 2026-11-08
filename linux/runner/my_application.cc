@@ -54,6 +54,16 @@ static void my_application_activate(GApplication* application) {
 
   gtk_window_set_default_size(window, 1180, 780);
 
+  // The icon is installed next to the binary, under data/.
+  g_autoptr(GError) link_error = nullptr;
+  g_autofree gchar* exe_path = g_file_read_link("/proc/self/exe", &link_error);
+  if (exe_path != nullptr) {
+    g_autofree gchar* exe_dir = g_path_get_dirname(exe_path);
+    g_autofree gchar* icon_path =
+        g_build_filename(exe_dir, "data", "borj-app-icon-256.png", nullptr);
+    gtk_window_set_icon_from_file(window, icon_path, nullptr);
+  }
+
   g_autoptr(FlDartProject) project = fl_dart_project_new();
   fl_dart_project_set_enable_flutter_gpu(project, TRUE);
   fl_dart_project_set_dart_entrypoint_arguments(

@@ -50,17 +50,21 @@ class TimelineCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              const AppText(
-                'برنامهٔ امروز',
-                role: AppTextRole.footnote,
-                weight: FontWeight.w800,
+              const Flexible(
+                child: AppText(
+                  'برنامهٔ امروز',
+                  role: AppTextRole.footnote,
+                  weight: FontWeight.w800,
+                  maxLines: 1,
+                ),
               ),
-              const Spacer(),
               if (next != null) ...[
+                const SizedBox(width: AppSpacing.s8),
                 const AppText(
                   'بعدی:',
                   role: AppTextRole.footnote,
                   tone: AppTextTone.secondary,
+                  maxLines: 1,
                 ),
                 const SizedBox(width: AppSpacing.s4),
                 Flexible(

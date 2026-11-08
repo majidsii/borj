@@ -49,6 +49,25 @@ void main() {
   );
   final now = DateTime(2026, 11, 4, 14, 30);
 
+  for (final width in [222.0, 160.0]) {
+    testWidgets('header never overflows at ${width.toInt()} px, text 1.3', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        glassTestApp(
+          textScale: 1.3,
+          SizedBox(
+            width: width,
+            height: todayCardHeight(TodayCardSize.wide),
+            child: TimelineCard(agenda: agenda, now: now),
+          ),
+        ),
+      );
+      expect(tester.takeException(), isNull);
+      expect(find.text('بعدی:'), findsOneWidget);
+    });
+  }
+
   test('range: default 8–20, widened to even hours that cover every block', () {
     expect(timelineRange(const []), (8, 20));
     expect(timelineRange([_e('early', 6, 15)]), (6, 20));

@@ -1,6 +1,5 @@
 import 'dart:math' as math;
 
-import 'package:borj/app/shell/window_class.dart';
 import 'package:flutter/widgets.dart';
 
 /// Card sizes of motion spec §5.1.
@@ -21,8 +20,8 @@ const double todayGap = 12;
 double todayCardHeight(TodayCardSize size) =>
     size.rows * todayRowUnit + (size.rows - 1) * todayGap;
 
-int todayColumnsFor(WindowClass windowClass) =>
-    windowClass == WindowClass.compact ? 2 : 4;
+/// The column count follows the grid's own width (plan Decision 7).
+int todayColumnsForWidth(double width) => width >= 720 ? 4 : 2;
 
 @immutable
 final class TodaySlot {
@@ -99,12 +98,12 @@ class TodayGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final columns = todayColumnsFor(WindowClass.of(context));
-    final slots = packTodayGrid([
-      for (final i in items) i.size,
-    ], columns: columns);
     return LayoutBuilder(
       builder: (context, constraints) {
+        final columns = todayColumnsForWidth(constraints.maxWidth);
+        final slots = packTodayGrid([
+          for (final i in items) i.size,
+        ], columns: columns);
         final colWidth =
             (constraints.maxWidth - (columns - 1) * todayGap) / columns;
         var bottom = 0.0;

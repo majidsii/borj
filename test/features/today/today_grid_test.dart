@@ -1,4 +1,3 @@
-import 'package:borj/app/shell/window_class.dart';
 import 'package:borj/features/today/presentation/today_grid.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -14,10 +13,11 @@ void main() {
     expect(todayCardHeight(TodayCardSize.large), 340);
   });
 
-  test('columns per window class', () {
-    expect(todayColumnsFor(WindowClass.compact), 2);
-    expect(todayColumnsFor(WindowClass.medium), 4);
-    expect(todayColumnsFor(WindowClass.expanded), 4);
+  test('columns follow the grid width', () {
+    expect(todayColumnsForWidth(412), 2);
+    expect(todayColumnsForWidth(719), 2);
+    expect(todayColumnsForWidth(720), 4);
+    expect(todayColumnsForWidth(1188), 4);
   });
 
   String slots(List<TodayCardSize> sizes, int columns) => [

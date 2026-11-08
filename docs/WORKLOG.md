@@ -17,6 +17,12 @@ Entry template:
 
 ---
 
+## 2026-11-09 — Redesign Phase 2 Part A (app shell) complete
+- **Type:** implemented + reviewed
+- **What:** final fix wave after the paused session (owner «ادامه بده»): the shell resizes for the keyboard with a reveal above the tab bar (I1); desktop «پول» rows open the legacy FinancePanel until Phase 4 and sidebar rows always `go` to their location (I2 + re-review regression); no dark seam on branch pushes; debug review via push; ⌘ shortcuts on macOS; rail tooltip semantics; stable pushed-page tree across window classes. Commits `33bc38d`, `3636e7b`, `1292151`.
+- **Evidence:** checkpoint `docs/superpowers/checkpoints/2026-11-09-redesign-phase-2a-checkpoint.md`; at `1292151`: 1780 passed / 1 skipped, analyze and format clean, `tool/ci.sh --device` exit 0; real glass phone shell 2 captures (search push 2), desktop 2; profile raster p90 phone 1.29 ms, desktop 1.66 ms.
+- **Follow-ups:** Phase 2 Part B (Today rebuilt to `Main` / `MacToday` / `PhoneEmptyToday`): plan next. Deferred items with their phases are in the checkpoint.
+
 ## 2026-11-08 — Redesign Phase 2 Part A (app shell) implemented; final fix wave pending (paused by owner)
 - **Type:** implemented + reviewed + decided (paused)
 - **What:** plan `docs/superpowers/plans/2026-11-08-redesign-phase-2a-shell.md` (Phase 2 split into A shell / B Today / C Today customization). Branch `feat/redesign-phase-2a` (worktree `~/projects/personal/borj/phase-2a`), base `c413149`, head `ee1e298`. Tasks 1–11 done and reviewed:

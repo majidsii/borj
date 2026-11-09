@@ -17,6 +17,12 @@ Entry template:
 
 ---
 
+## 2026-11-09 — Paused by the owner before Phase 3 (weekly token budget)
+- **Type:** handoff
+- **What:** work stopped at the owner's request until the weekly session resets (Friday). State: Phase 2 Parts A and B merged into `feat/v2-complete-dashboard`; Part C deferred (draft plan saved); Phase 3 not started — no plan yet, no branch, no code.
+- **Phase 3 split (proposed, not yet planned):** 3A task list + kanban (phone paged / desktop flex) + view switch (`?view=`) + quick entry sheet; 3B task detail (sheet on phone, shell inspector slot on desktop, adaptive same-URL detail with resize tests) + reminder and recurrence editor; 3C month calendar + day timeline + timer; 3D templates manager and editor. Boards: PhoneTasks, PhoneKanban, MacTasks, PhoneQuickEntry, PhoneTaskDetail, PhoneReminderEdit, PhoneCalendar, MacCalendar, PhoneDay, PhoneTimer, PhoneTemplates, PhoneTemplateEdit.
+- **Resume steps:** (1) inventory the legacy `lib/features/dashboard/presentation/widgets/tasks_panel.dart` and `lib/features/tasks/presentation/**` (every feature, action and service call) against the 3A boards so nothing is lost; (2) write `docs/superpowers/plans/<date>-redesign-phase-3a-tasks.md` (constraints copied from the Part B plan, including the Phase 2 deferred items that belong to Phase 3: inspector slot, adaptive detail, time-zone database init and `Etc/UTC` fallback, DST-safe wall-clock carrier, toggle error handling); (3) execute with subagents as in Phase 2.
+
 ## 2026-11-09 — Decided: main screens before Today customization
 - **Type:** decided
 - **What:** the owner ran the app and saw that only the shell and Today use the new design; Tasks, Finance and Settings are still the legacy screens. Recommendation accepted («اره اوکیه»): build Phase 3 (Tasks), Phase 4 (Finance) and Phase 5 (Settings & data) next, and defer Phase 2 Part C (Today customization). The Part C plan is saved as a deferred draft.

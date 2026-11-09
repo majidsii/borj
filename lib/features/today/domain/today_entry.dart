@@ -29,6 +29,17 @@ final class TodayEntry {
 
   bool get timed => localStart != null;
 
+  /// Identity within one agenda: a recurring task can appear twice on one day
+  /// (its tomorrow occurrence moved into today), so the task id alone is not
+  /// unique. One-offs have no occurrence key.
+  String get key {
+    final o = originalLocalDateTime;
+    if (o == null) return '$taskId@one-off';
+    String two(int v) => v.toString().padLeft(2, '0');
+    return '$taskId@${o.year}-${two(o.month)}-${two(o.day)}'
+        'T${two(o.hour)}:${two(o.minute)}';
+  }
+
   @override
   bool operator ==(Object other) =>
       other is TodayEntry &&

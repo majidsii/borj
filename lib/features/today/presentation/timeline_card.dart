@@ -138,7 +138,7 @@ class _Scale extends StatelessWidget {
           s.isBefore(laneEnds[lane]!)) {
         lane++;
       }
-      laneOf[e.taskId] = lane;
+      laneOf[e.key] = lane;
       laneEnds[lane] = s.add(Duration(minutes: e.durationMinutes ?? 30));
     }
 
@@ -201,10 +201,10 @@ class _Scale extends StatelessWidget {
           final past =
               showNow &&
               s.add(Duration(minutes: e.durationMinutes ?? 30)).isBefore(now);
-          final lane = laneOf[e.taskId]!;
+          final lane = laneOf[e.key]!;
           children.add(
             PositionedDirectional(
-              key: ValueKey('timeline-block-${e.taskId}'),
+              key: ValueKey('timeline-block-${e.key}'),
               start: math.min(f0 * width, width - blockWidth),
               top: 4 + lane * laneHeight,
               width: blockWidth,

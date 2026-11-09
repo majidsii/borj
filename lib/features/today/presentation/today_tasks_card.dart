@@ -141,7 +141,7 @@ class _Row extends StatelessWidget {
     final colors = AppTheme.of(context).colors;
     final time = entry.timed ? formatClock(entry.localStart!) : null;
     return DecoratedBox(
-      key: ValueKey('today-task-${entry.taskId}'),
+      key: ValueKey('today-task-${entry.key}'),
       decoration: BoxDecoration(
         border: divider
             ? Border(top: BorderSide(color: colors.hairline, width: 0.5))

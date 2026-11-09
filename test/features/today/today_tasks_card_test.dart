@@ -66,7 +66,7 @@ void main() {
     await tester.pumpWidget(_card(agenda));
     final ys = [
       for (final id in ['a', 'b', 'c', 'd'])
-        tester.getTopLeft(find.byKey(ValueKey('today-task-$id'))).dy,
+        tester.getTopLeft(find.byKey(ValueKey('today-task-$id@one-off'))).dy,
     ];
     expect(ys, orderedEquals([...ys]..sort()));
     expect(find.text('صبح'), findsNothing);
@@ -89,7 +89,7 @@ void main() {
     await tester.pumpWidget(_card(agenda, onToggle: (e) => toggled = e));
     await tester.tap(
       find.descendant(
-        of: find.byKey(const ValueKey('today-task-b')),
+        of: find.byKey(const ValueKey('today-task-b@one-off')),
         matching: find.byType(RoundCheck),
       ),
     );
@@ -108,8 +108,8 @@ void main() {
         onShowAll: () => opened = 'all',
       ),
     );
-    expect(find.byKey(const ValueKey('today-task-a')), findsOneWidget);
-    expect(find.byKey(const ValueKey('today-task-b')), findsNothing);
+    expect(find.byKey(const ValueKey('today-task-a@one-off')), findsOneWidget);
+    expect(find.byKey(const ValueKey('today-task-b@one-off')), findsNothing);
     expect(find.text('و ۳ کار دیگر'), findsOneWidget);
     await tester.tap(find.byKey(const ValueKey('today-tasks-more')));
     expect(opened, 'all');
@@ -167,8 +167,11 @@ void main() {
         _card(agenda, size: size, width: 300, window: wideWindow),
       );
       expect(find.text('صبح'), findsOneWidget);
-      expect(find.byKey(const ValueKey('today-task-a')), findsOneWidget);
-      expect(find.byKey(const ValueKey('today-task-b')), findsNothing);
+      expect(
+        find.byKey(const ValueKey('today-task-a@one-off')),
+        findsOneWidget,
+      );
+      expect(find.byKey(const ValueKey('today-task-b@one-off')), findsNothing);
       expect(find.text('و ۳ کار دیگر'), findsOneWidget);
     });
 
@@ -192,7 +195,7 @@ void main() {
       expect(tester.takeException(), isNull);
       final t = tester.widget<Text>(
         find.descendant(
-          of: find.byKey(const ValueKey('today-task-x')),
+          of: find.byKey(const ValueKey('today-task-x@one-off')),
           matching: find.textContaining('یک عنوان'),
         ),
       );
@@ -209,8 +212,8 @@ void main() {
       untimed: [for (var i = 0; i < 8; i++) _u('e$i')],
     );
     await tester.pumpWidget(_card(many));
-    expect(find.byKey(const ValueKey('today-task-e4')), findsOneWidget);
-    expect(find.byKey(const ValueKey('today-task-e5')), findsNothing);
+    expect(find.byKey(const ValueKey('today-task-e4@one-off')), findsOneWidget);
+    expect(find.byKey(const ValueKey('today-task-e5@one-off')), findsNothing);
     expect(find.text('و ۳ کار دیگر'), findsOneWidget);
   });
 
@@ -223,7 +226,7 @@ void main() {
       untimed: [for (var i = 0; i < 6; i++) _u('e$i')],
     );
     await tester.pumpWidget(_card(six));
-    expect(find.byKey(const ValueKey('today-task-e5')), findsOneWidget);
+    expect(find.byKey(const ValueKey('today-task-e5@one-off')), findsOneWidget);
     expect(find.byKey(const ValueKey('today-tasks-more')), findsNothing);
   });
 
@@ -236,7 +239,7 @@ void main() {
     expect(toggled, ['b']);
     await tester.tap(
       find.descendant(
-        of: find.byKey(const ValueKey('today-task-c')),
+        of: find.byKey(const ValueKey('today-task-c@one-off')),
         matching: find.byType(RoundCheck),
       ),
     );

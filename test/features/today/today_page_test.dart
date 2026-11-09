@@ -107,7 +107,7 @@ void main() {
       find.descendant(of: timeline, matching: find.text('ورزش عصر')),
       findsWidgets,
     );
-    expect(find.byKey(const ValueKey('today-task-a')), findsOneWidget);
+    expect(find.byKey(const ValueKey('today-task-a@one-off')), findsOneWidget);
   });
 
   testWidgets('toggling the row completes the task, again plans it', (
@@ -120,7 +120,7 @@ void main() {
       seed: _seedTask,
     );
     final check = find.descendant(
-      of: find.byKey(const ValueKey('today-task-a')),
+      of: find.byKey(const ValueKey('today-task-a@one-off')),
       matching: find.byType(RoundCheck),
     );
     await tester.tap(check);
@@ -300,10 +300,10 @@ void main() {
       minuteTicks: ticks.stream,
       seed: _seedTask,
     );
-    expect(find.byKey(const ValueKey('today-task-a')), findsOneWidget);
+    expect(find.byKey(const ValueKey('today-task-a@one-off')), findsOneWidget);
     ticks.add(DateTime.utc(2026, 11, 5, 11));
     await tester.pumpAndSettle();
-    expect(find.byKey(const ValueKey('today-task-a')), findsNothing);
+    expect(find.byKey(const ValueKey('today-task-a@one-off')), findsNothing);
     expect(_grid, findsOneWidget);
     expect(find.text('امروز کاری نداری'), findsOneWidget);
   });

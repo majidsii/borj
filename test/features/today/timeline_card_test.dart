@@ -1,8 +1,10 @@
 import 'package:borj/app/design/design.dart';
 import 'package:borj/app/theme/app_theme.dart';
+import 'package:borj/core/recurrence/recurrence_local_date_time.dart';
 import 'package:borj/features/today/application/today_agenda_builder.dart';
 import 'package:borj/features/today/presentation/timeline_card.dart';
 import 'package:borj/features/today/presentation/today_grid.dart';
+import 'package:borj/features/today/presentation/today_tasks_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -108,10 +110,10 @@ void main() {
     (tester) async {
       await tester.pumpWidget(_card(agenda, now));
       final deep = tester.getRect(
-        find.byKey(const ValueKey('timeline-block-deep')),
+        find.byKey(const ValueKey('timeline-block-deep@one-off')),
       );
       final meet = tester.getRect(
-        find.byKey(const ValueKey('timeline-block-meet')),
+        find.byKey(const ValueKey('timeline-block-meet@one-off')),
       );
       final line = tester.getRect(find.byKey(const ValueKey('timeline-now')));
       expect(deep.center.dx, greaterThan(meet.center.dx));
@@ -135,7 +137,7 @@ void main() {
     expect(find.textContaining('deep ✓'), findsOneWidget);
     expect(
       find.descendant(
-        of: find.byKey(const ValueKey('timeline-block-meet')),
+        of: find.byKey(const ValueKey('timeline-block-meet@one-off')),
         matching: find.byType(GlassInner),
       ),
       findsOneWidget,
@@ -204,8 +206,12 @@ void main() {
       ),
     );
     expect(tester.takeException(), isNull);
-    final a = tester.getRect(find.byKey(const ValueKey('timeline-block-a')));
-    final b = tester.getRect(find.byKey(const ValueKey('timeline-block-b')));
+    final a = tester.getRect(
+      find.byKey(const ValueKey('timeline-block-a@one-off')),
+    );
+    final b = tester.getRect(
+      find.byKey(const ValueKey('timeline-block-b@one-off')),
+    );
     expect(b.top, greaterThan(a.top));
   });
 
@@ -325,10 +331,101 @@ void main() {
     );
     await tester.pumpWidget(_card(a, now));
     final block = tester.getRect(
-      find.byKey(const ValueKey('timeline-block-tail')),
+      find.byKey(const ValueKey('timeline-block-tail@one-off')),
     );
     final scale = tester.getRect(find.byKey(const ValueKey('timeline-scale')));
     expect(block.left, greaterThanOrEqualTo(scale.left - 0.01));
     expect(block.right, lessThanOrEqualTo(scale.right + 0.01));
+  });
+
+  group('two occurrences of one task on one day', () {
+    RecurrenceLocalDateTime k(int d, int h) => RecurrenceLocalDateTime(
+      year: 2026,
+      month: 11,
+      day: d,
+      hour: h,
+      minute: 0,
+    );
+    final dup = TodayAgenda(
+      day: _day,
+      timed: [
+        TodayEntry(
+          taskId: 'r',
+          title: 'daily',
+          done: false,
+          recurring: true,
+          localStart: DateTime(2026, 11, 4, 9),
+          originalLocalDateTime: k(4, 9),
+        ),
+        TodayEntry(
+          taskId: 'r',
+          title: 'daily',
+          done: false,
+          recurring: true,
+          localStart: DateTime(2026, 11, 4, 9),
+          originalLocalDateTime: k(5, 9),
+        ),
+      ],
+      untimed: const [],
+    );
+
+    test('entry keys differ per occurrence and one-offs are stable', () {
+      expect(dup.timed[0].key, isNot(dup.timed[1].key));
+      expect(_e('a', 9, 0).key, 'a@one-off');
+    });
+
+    testWidgets('timeline renders both blocks in separate lanes', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        glassTestApp(
+          brightness: Brightness.light,
+          textScale: 1.0,
+          SizedBox(
+            width: 358,
+            height: todayCardHeight(TodayCardSize.large),
+            child: TimelineCard(
+              agenda: dup,
+              now: DateTime(2026, 11, 4, 8),
+              size: TodayCardSize.large,
+            ),
+          ),
+        ),
+      );
+      expect(tester.takeException(), isNull);
+      final first = find.byKey(ValueKey('timeline-block-${dup.timed[0].key}'));
+      final second = find.byKey(ValueKey('timeline-block-${dup.timed[1].key}'));
+      expect(first, findsOneWidget);
+      expect(second, findsOneWidget);
+      expect(tester.getTopLeft(first).dy, isNot(tester.getTopLeft(second).dy));
+    });
+
+    testWidgets('tasks card renders both rows', (tester) async {
+      await tester.pumpWidget(
+        glassTestApp(
+          brightness: Brightness.light,
+          textScale: 1.0,
+          SizedBox(
+            width: 358,
+            height: todayCardHeight(TodayCardSize.large),
+            child: TodayTasksCard(
+              agenda: dup,
+              now: DateTime(2026, 11, 4, 8),
+              onToggle: (_) {},
+              onShowAll: () {},
+            ),
+          ),
+        ),
+      );
+      expect(tester.takeException(), isNull);
+      expect(
+        find.byKey(ValueKey('today-task-${dup.timed[0].key}')),
+        findsOneWidget,
+      );
+      expect(
+        find.byKey(ValueKey('today-task-${dup.timed[1].key}')),
+        findsOneWidget,
+      );
+    });
   });
 }

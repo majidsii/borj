@@ -6,6 +6,7 @@ import 'package:borj/features/today/presentation/timeline_card.dart';
 import 'package:borj/features/today/presentation/today_grid.dart';
 import 'package:borj/features/today/presentation/today_tasks_card.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../support/glass_fade_expectations.dart';
@@ -69,6 +70,43 @@ void main() {
       expect(find.text('بعدی:'), findsOneWidget);
     });
   }
+
+  testWidgets('the title keeps its natural width next to a long next title', (
+    tester,
+  ) async {
+    final long = TodayAgenda(
+      day: _day,
+      timed: [
+        TodayEntry(
+          taskId: 'long',
+          title: 'یک عنوان خیلی طولانی برای کار بعدی که در سربرگ جا نمی‌شود',
+          done: false,
+          recurring: false,
+          localStart: DateTime(2026, 11, 4, 15),
+        ),
+      ],
+      untimed: const [],
+    );
+    await tester.pumpWidget(
+      glassTestApp(
+        textScale: 1.3,
+        SizedBox(
+          width: 358,
+          height: todayCardHeight(TodayCardSize.wide),
+          child: TimelineCard(agenda: long, now: now),
+        ),
+      ),
+    );
+    expect(tester.takeException(), isNull);
+    final title = tester.renderObject<RenderParagraph>(
+      find.text('برنامهٔ امروز'),
+    );
+    expect(title.didExceedMaxLines, isFalse);
+    final next = tester.renderObject<RenderParagraph>(
+      find.textContaining('یک عنوان').first,
+    );
+    expect(next.didExceedMaxLines, isTrue, reason: 'the next title yields');
+  });
 
   testWidgets('«بعدی:» group sits at the end edge (left in RTL)', (
     tester,

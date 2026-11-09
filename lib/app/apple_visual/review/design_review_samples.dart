@@ -277,23 +277,25 @@ final List<DesignReviewSample> designReviewSamples = <DesignReviewSample>[
   DesignReviewSample(
     label: 'TimelineCard',
     board: 'Main',
-    build: (_) => _fixedBox(
-      358,
-      164,
-      TimelineCard(agenda: _sampleAgenda, now: _sampleNow),
+    build: (context) => _phoneToday(
+      context,
+      _fixedBox(358, 164, TimelineCard(agenda: _sampleAgenda, now: _sampleNow)),
     ),
   ),
   DesignReviewSample(
     label: 'TodayTasksCard large',
     board: 'Main',
-    build: (_) => _fixedBox(
-      358,
-      340,
-      TodayTasksCard(
-        agenda: _sampleAgenda,
-        now: _sampleNow,
-        onToggle: (_) {},
-        onShowAll: () {},
+    build: (context) => _phoneToday(
+      context,
+      _fixedBox(
+        358,
+        340,
+        TodayTasksCard(
+          agenda: _sampleAgenda,
+          now: _sampleNow,
+          onToggle: (_) {},
+          onShowAll: () {},
+        ),
       ),
     ),
   ),
@@ -317,22 +319,28 @@ final List<DesignReviewSample> designReviewSamples = <DesignReviewSample>[
   DesignReviewSample(
     label: 'InstallmentCard wide',
     board: 'Main',
-    build: (_) => _fixedBox(
-      358,
-      164,
-      InstallmentCard(installment: _sampleInstallment, onOpen: () {}),
+    build: (context) => _phoneToday(
+      context,
+      _fixedBox(
+        358,
+        164,
+        InstallmentCard(installment: _sampleInstallment, onOpen: () {}),
+      ),
     ),
   ),
   DesignReviewSample(
     label: 'InstallmentCard small',
     board: 'Main',
-    build: (_) => _fixedBox(
-      173,
-      164,
-      InstallmentCard(
-        installment: _sampleInstallment,
-        onOpen: () {},
-        size: TodayCardSize.small,
+    build: (context) => _phoneToday(
+      context,
+      _fixedBox(
+        173,
+        164,
+        InstallmentCard(
+          installment: _sampleInstallment,
+          onOpen: () {},
+          size: TodayCardSize.small,
+        ),
       ),
     ),
   ),
@@ -347,9 +355,16 @@ final List<DesignReviewSample> designReviewSamples = <DesignReviewSample>[
   DesignReviewSample(
     label: 'TodayOnboarding',
     board: 'PhoneEmptyToday',
-    build: (_) => TodayOnboarding(onAddTask: () {}),
+    build: (context) => _phoneToday(context, TodayOnboarding(onAddTask: () {})),
   ),
 ];
+
+/// The phone Today samples show the phone layout (no desktop group headers)
+/// whatever the size of the review window.
+Widget _phoneToday(BuildContext context, Widget child) => MediaQuery(
+  data: MediaQuery.of(context).copyWith(size: const Size(390, 844)),
+  child: child,
+);
 
 final DateTime _sampleNow = DateTime(2026, 11, 4, 14, 30);
 

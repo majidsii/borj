@@ -71,6 +71,36 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
+  testWidgets('phone Today samples keep the phone layout in a wide window', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(1440, 2400);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    await tester.pumpWidget(
+      const MaterialApp(home: GlassReviewScreen(referenceDir: null)),
+    );
+    await tester.pump();
+    Finder cardOf(String label) => find
+        .ancestor(of: find.text(label), matching: find.byType(Column))
+        .first;
+    for (final (label, grouped) in const [
+      ('TodayTasksCard large', false),
+      ('TodayTasksCard expanded grouping', true),
+    ]) {
+      await tester.scrollUntilVisible(
+        find.text(label),
+        300,
+        scrollable: find.byType(Scrollable).first,
+      );
+      expect(
+        find.descendant(of: cardOf(label), matching: find.text('صبح')),
+        grouped ? findsWidgets : findsNothing,
+        reason: label,
+      );
+    }
+  });
+
   test('every sample names an existing board', () {
     for (final s in designReviewSamples) {
       expect(

@@ -17,6 +17,12 @@ Entry template:
 
 ---
 
+## 2026-11-09 — Redesign Phase 2 Part B (Today) complete
+- **Type:** implemented + reviewed
+- **What:** Today rebuilt to the `Main` / `MacToday` / `PhoneEmptyToday` boards: agenda builder and providers on the task-zone wall clock, card grid (columns follow the grid width), timeline / today's tasks / installment cards, phone large title and desktop date chip, onboarding, once-per-process cold-start entrance, router `/` → TodayPage. Final review fixes: unique entry keys (a moved recurring occurrence crashed the timeline), completed untimed tasks stay (Decision 8), header alignment, semantics, one tab stop per row.
+- **Evidence:** checkpoint `docs/superpowers/checkpoints/2026-11-09-redesign-phase-2b-checkpoint.md`; at `9ab2cd0`: 1934 passed / 1 skipped, analyze and format clean, `TZ=UTC` today tests 148, `tool/ci.sh --device` exit 0; real glass phone shell max 3 (search push at budget), desktop 3; profile raster p90 phone 2.24 ms, desktop 2.13 ms.
+- **Follow-ups:** Part C (Today customization, schema 10) next; deferred items with their phases are in the checkpoint.
+
 ## 2026-11-09 — Redesign Phase 2 Part B (Today) in progress — paused by the owner (tokens)
 - **Type:** implemented (partial) + handoff
 - **What:** plan `docs/superpowers/plans/2026-11-09-redesign-phase-2b-today.md` (controller amendments A1–A5, Decisions 1–7). Branch `feat/redesign-phase-2b` (worktree `~/projects/personal/borj/phase-2b`). Done, reviewed and merged on the branch: Task 1 (date labels, `TodayAgendaBuilder`, nowUtc / task-zone wall clock), Task 2 (providers `minuteTickProvider`, `todayNowProvider`, `todayAgendaProvider`, `todayInstallmentProvider`, `todayIsNewUserProvider`, `TodayCompletion`; `pumpBorjTestApp` minuteTicks/seed), Task 3 (card grid + `TodayCard`), Task 4 (timeline card; `AppTextTone.inverse` for the now-pill), Task 5 (today's tasks card; `AppText.decoration`), Task 6 (installment card), Task 7 (header + date chip + onboarding; Decision 6 chip text follows the theme).

@@ -118,6 +118,8 @@ A5. **Probe measures the cold start (Task 9).** Seed the task and the installmen
 
 7. **Grid columns follow the grid's own width** (controller, 2026-11-09, from the A4 check): 4 columns when the grid is at least 720 px wide, otherwise 2. A 600 px medium window (grid ≈ 456 px) gets 2 columns; four would make a wide card ≈ 222 px and overflow its content. Deviation from motion spec §5.1 ("medium 4 columns"); Part C's customization uses the same rule.
 
+8. **Completed untimed tasks stay on Today** (controller, 2026-11-09, final review): an untimed one-off completed today (completedAtUtc within today's zone range) stays in the untimed list as done, so ticking it does not make it vanish and it can be reopened from Today. This resolves a contradiction between the "rows stay in place" constraint and Task 1's test, which is changed accordingly.
+
 ## File structure
 
 ```

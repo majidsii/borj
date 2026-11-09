@@ -20,6 +20,7 @@ TaskItem _task(
   int? minutes,
   int? number,
   TaskStatus status = TaskStatus.planned,
+  DateTime? completedUtc,
 }) {
   final t = DateTime.utc(2026, 11, 1);
   return TaskItem(
@@ -34,7 +35,7 @@ TaskItem _task(
     estimatedDurationMinutes: minutes,
     createdAtUtc: t,
     updatedAtUtc: t,
-    completedAtUtc: status == TaskStatus.completed ? t : null,
+    completedAtUtc: status == TaskStatus.completed ? (completedUtc ?? t) : null,
     canceledAtUtc: status == TaskStatus.canceled ? t : null,
   );
 }
@@ -83,17 +84,27 @@ void main() {
     expect(a.value.timed.first.durationMinutes, 60);
   });
 
-  test(
-    'untimed active one-offs; completed or canceled untimed are left out',
-    () {
-      final a = agenda([
-        _task('free'),
-        _task('freeDone', status: TaskStatus.completed),
-        _task('freeCanceled', status: TaskStatus.canceled),
-      ]);
-      expect(a.untimedIds, ['free']);
-    },
-  );
+  test('untimed: active and completed-today stay (done); completed earlier or '
+      'canceled are left out', () {
+    final a = agenda([
+      _task('free'),
+      // 2026-11-04 00:30 Tehran = 2026-11-03 21:00 UTC: today.
+      _task(
+        'doneToday',
+        status: TaskStatus.completed,
+        completedUtc: DateTime.utc(2026, 11, 3, 21, 0),
+      ),
+      // 23:59 Tehran on the 3rd: yesterday.
+      _task(
+        'doneYesterday',
+        status: TaskStatus.completed,
+        completedUtc: DateTime.utc(2026, 11, 3, 20, 29),
+      ),
+      _task('freeCanceled', status: TaskStatus.canceled),
+    ]);
+    expect(a.untimedIds, ['free', 'doneToday']);
+    expect(a.value.untimed.map((e) => e.done), [false, true]);
+  });
 
   test('a completed one-off today stays, marked done; canceled is dropped', () {
     final a = agenda([

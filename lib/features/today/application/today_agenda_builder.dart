@@ -66,16 +66,27 @@ base class TodayAgendaBuilder {
             t.startAtUtc == null &&
             t.dueAtUtc == null &&
             (t.status == TaskStatus.planned ||
-                t.status == TaskStatus.inProgress))
+                t.status == TaskStatus.inProgress ||
+                _completedToday(t, startUtc, endUtc)))
           TodayEntry(
             taskId: t.id,
             title: t.title,
-            done: false,
+            done: t.status == TaskStatus.completed,
             recurring: false,
           ),
     ];
 
     return TodayAgenda(day: day, timed: timed, untimed: untimed);
+  }
+
+  /// Plan Decision 8: an untimed task completed today stays (done), so a tick
+  /// does not make it vanish and a second tap can reopen it.
+  static bool _completedToday(TaskItem t, DateTime startUtc, DateTime endUtc) {
+    final at = t.completedAtUtc;
+    return t.status == TaskStatus.completed &&
+        at != null &&
+        !at.isBefore(startUtc) &&
+        at.isBefore(endUtc);
   }
 
   /// Stable order: start time, display number, task id, then occurrence key.

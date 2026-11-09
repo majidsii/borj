@@ -40,6 +40,21 @@ Future<void> _seedTask(ProviderContainer c) => c
       ),
     );
 
+Future<void> _seedUntimed(ProviderContainer c) => c
+    .read(taskRepositoryProvider)
+    .create(
+      TaskItem(
+        id: 'u',
+        displayNumber: 2,
+        title: 'خرید نان',
+        priority: 0,
+        status: TaskStatus.planned,
+        positionInStatus: 0,
+        createdAtUtc: _t0,
+        updatedAtUtc: _t0,
+      ),
+    );
+
 Future<void> _seedPlan(ProviderContainer c) => c
     .read(financeRepositoryProvider)
     .addInstallmentPlan(
@@ -131,6 +146,41 @@ void main() {
     await tester.pumpAndSettle();
     expect((await repository.getById('a'))!.status, TaskStatus.planned);
   });
+
+  testWidgets(
+    'an untimed task stays when ticked (struck through) and reopens',
+    (tester) async {
+      useWindowSize(tester, const Size(390, 844));
+      final c = await pumpBorjTestApp(
+        tester,
+        overrides: _overrides,
+        seed: _seedUntimed,
+      );
+      final row = find.byKey(const ValueKey('today-task-u@one-off'));
+      final check = find.descendant(of: row, matching: find.byType(RoundCheck));
+      TextDecoration? decoration() => tester
+          .widget<Text>(
+            find.descendant(of: row, matching: find.text('خرید نان')),
+          )
+          .style
+          ?.decoration;
+      expect(row, findsOneWidget);
+      await tester.tap(check);
+      await tester.pumpAndSettle();
+      final repository = c.read(taskRepositoryProvider);
+      expect((await repository.getById('u'))!.status, TaskStatus.completed);
+      expect(row, findsOneWidget);
+      expect(find.text('امروز کاری نداری'), findsNothing);
+      expect(tester.widget<RoundCheck>(check).checked, isTrue);
+      expect(decoration(), TextDecoration.lineThrough);
+      await tester.tap(check);
+      await tester.pumpAndSettle();
+      expect((await repository.getById('u'))!.status, TaskStatus.planned);
+      expect(row, findsOneWidget);
+      expect(tester.widget<RoundCheck>(check).checked, isFalse);
+      expect(decoration(), isNot(TextDecoration.lineThrough));
+    },
+  );
 
   testWidgets('an active plan shows the installment card; tap opens Finance', (
     tester,

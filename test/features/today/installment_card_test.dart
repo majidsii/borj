@@ -61,6 +61,18 @@ void main() {
     );
   });
 
+  testWidgets('the card announces title, progress and amount once', (
+    tester,
+  ) async {
+    final handle = tester.ensureSemantics();
+    await tester.pumpWidget(_card());
+    expect(
+      find.bySemanticsLabel('قسط وام مسکن، قسط ۲۵ از ۶۰، ۴٬۲۰۰٬۰۰۰'),
+      findsOneWidget,
+    );
+    handle.dispose();
+  });
+
   testWidgets('small: no track', (tester) async {
     await tester.pumpWidget(_card(size: TodayCardSize.small));
     expect(find.byType(ProgressTrack), findsNothing);

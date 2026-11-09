@@ -64,6 +64,8 @@ class _TodayPageState extends ConsumerState<TodayPage> {
     final nowAsync = ref.watch(todayNowProvider);
     final compact = WindowClass.of(context) == WindowClass.compact;
     final padding = MediaQuery.paddingOf(context);
+    // The header carries its own side inset (phone 20, desktop chip 28); only
+    // the banner and the body take the page side padding.
     final side = compact
         ? const EdgeInsets.symmetric(horizontal: 16)
         : const EdgeInsetsDirectional.fromSTEB(
@@ -129,7 +131,7 @@ class _TodayPageState extends ConsumerState<TodayPage> {
                 child: InstallmentCard(
                   installment: plan,
                   animateIn: play,
-                  onOpen: () => context.go('/finance'),
+                  onOpen: () => context.go(AppRoutes.finance),
                 ),
               ),
           ];
@@ -152,7 +154,7 @@ class _TodayPageState extends ConsumerState<TodayPage> {
 
     return ListView(
       key: const ValueKey('today-page'),
-      padding: padding + side,
+      padding: padding,
       children: [
         if (now != null)
           TodayHeader(
@@ -161,9 +163,17 @@ class _TodayPageState extends ConsumerState<TodayPage> {
                 ? () => context.push(AppRoutes.glassReview)
                 : null,
           ),
-        const LegacyImportBanner(),
-        const SizedBox(height: 20),
-        body,
+        Padding(
+          padding: side,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              const LegacyImportBanner(),
+              const SizedBox(height: 20),
+              body,
+            ],
+          ),
+        ),
       ],
     );
   }

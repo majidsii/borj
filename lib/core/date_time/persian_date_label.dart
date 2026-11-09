@@ -1,5 +1,8 @@
 import 'package:shamsi_date/shamsi_date.dart';
 
+/// Persian date labels. Every input is a naive wall-clock value in the task
+/// calendar zone (never UTC-flagged); the label reads its fields as they are
+/// and applies no zone conversion.
 abstract final class PersianDateLabel {
   static const List<String> _weekdays = <String>[
     'دوشنبه',

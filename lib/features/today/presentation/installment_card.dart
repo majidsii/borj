@@ -84,7 +84,8 @@ class InstallmentCard extends StatelessWidget {
     return TodayCard(
       child: Pressable(
         onPressed: onOpen,
-        semanticLabel: 'قسط ${i.title}',
+        semanticLabel:
+            '${i.title}، $progressText، ${i.amount.formatMajorUnits()}',
         child: SizedBox.expand(child: content),
       ),
     );

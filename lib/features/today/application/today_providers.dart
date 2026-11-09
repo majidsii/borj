@@ -131,10 +131,14 @@ final class TodayInstallment {
 
 final todayInstallmentProvider = Provider<AsyncValue<TodayInstallment?>>((ref) {
   return ref.watch(installmentPlansProvider).whenData((plans) {
-    final active = [
-      for (final p in plans)
-        if (p.remainingCount > 0) p,
-    ]..sort((a, b) => a.createdAtUtc.compareTo(b.createdAtUtc));
+    final active =
+        [
+          for (final p in plans)
+            if (p.remainingCount > 0) p,
+        ]..sort((a, b) {
+          final byCreated = a.createdAtUtc.compareTo(b.createdAtUtc);
+          return byCreated != 0 ? byCreated : a.id.compareTo(b.id);
+        });
     if (active.isEmpty) return null;
     final p = active.first;
     return TodayInstallment(

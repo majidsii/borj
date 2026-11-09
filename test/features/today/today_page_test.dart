@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:borj/app/design/design.dart';
 import 'package:borj/app/theme/app_motion.dart';
@@ -8,6 +9,7 @@ import 'package:borj/core/providers/persistence_providers.dart';
 import 'package:borj/features/dashboard/presentation/widgets/finance_panel.dart';
 import 'package:borj/features/dashboard/presentation/widgets/tasks_panel.dart';
 import 'package:borj/features/finance/domain/installment_plan.dart';
+import 'package:borj/features/legacy_import/presentation/legacy_import_providers.dart';
 import 'package:borj/features/tasks/domain/task_item.dart';
 import 'package:borj/features/tasks/domain/task_status.dart';
 import 'package:borj/features/today/presentation/today_page.dart';
@@ -376,21 +378,98 @@ void main() {
           ),
         );
         expect(_grid, findsOneWidget);
-        // Decision 7: the 1024 px window's grid is under 720 px wide.
-        const columns = 2;
+        // Decision 7: the grid is under 720 px wide here, so it has two
+        // columns: a wide card spans the whole grid and the tasks card
+        // stacks below the timeline.
+        final grid = tester.getRect(_grid);
+        expect(grid.width, lessThan(720));
         final timeline = tester.getRect(
           find.byKey(const ValueKey('today-slot-timeline')),
         );
         final tasks = tester.getRect(
           find.byKey(const ValueKey('today-slot-tasks')),
         );
-        expect(
-          timeline.top < tasks.top,
-          columns == 2,
-          reason: 'two columns stack timeline above tasks',
-        );
+        expect(timeline.width, closeTo(grid.width, 0.01));
+        expect(tasks.width, closeTo(grid.width, 0.01));
+        expect(timeline.left, closeTo(tasks.left, 0.01));
+        expect(tasks.top, closeTo(timeline.bottom + 12, 0.01));
         expect(tester.takeException(), isNull);
       });
     }
   }
+
+  testWidgets('phone: title 20 from the edge, cards 16', (tester) async {
+    useWindowSize(tester, const Size(390, 844));
+    await pumpBorjTestApp(tester, overrides: _overrides, seed: _seedTask);
+    final title = find.descendant(
+      of: find.byKey(const ValueKey('today-title')),
+      matching: find.text('امروز'),
+    );
+    // RTL: the start edge is the right one.
+    expect(tester.getTopRight(title).dx, closeTo(390 - 20, 0.01));
+    expect(
+      tester.getRect(find.byKey(const ValueKey('today-slot-timeline'))).right,
+      closeTo(390 - 16, 0.01),
+    );
+  });
+
+  testWidgets('desktop: the date chip and the grid share the start edge', (
+    tester,
+  ) async {
+    useWindowSize(tester, const Size(1440, 900));
+    await pumpBorjTestApp(tester, overrides: _overrides, seed: _seedTask);
+    final chip = tester.getRect(find.byKey(const ValueKey('today-date-chip')));
+    final timeline = tester.getRect(
+      find.byKey(const ValueKey('today-slot-timeline')),
+    );
+    expect(chip.right, closeTo(timeline.right, 0.01));
+  });
+
+  testWidgets('the header and the banner show while the agenda loads', (
+    tester,
+  ) async {
+    useWindowSize(tester, const Size(390, 844));
+    await pumpBorjTestApp(
+      tester,
+      overrides: [
+        ..._overrides,
+        taskItemsProvider.overrideWith((ref) => const Stream.empty()),
+        legacyBannerFileProvider.overrideWith((ref) async => File('v1.json')),
+      ],
+    );
+    expect(find.byKey(const ValueKey('today-title')), findsOneWidget);
+    expect(find.byKey(const ValueKey('legacy-banner-import')), findsOneWidget);
+    expect(_grid, findsNothing);
+    expect(find.byKey(const ValueKey('today-onboarding')), findsNothing);
+  });
+
+  testWidgets('an installment added later appears settled, with no entrance', (
+    tester,
+  ) async {
+    useWindowSize(tester, const Size(390, 844));
+    final c = await pumpBorjTestApp(
+      tester,
+      overrides: _overrides,
+      seed: _seedTask,
+    );
+    final slot = find.byKey(const ValueKey('today-slot-installment'));
+    expect(slot, findsNothing);
+    await _seedPlan(c);
+    for (var i = 0; i < 30 && slot.evaluate().isEmpty; i++) {
+      await tester.pump(const Duration(milliseconds: 1));
+    }
+    expect(slot, findsOneWidget, reason: 'the card appeared');
+    final fade = tester.widget<GlassVisibility>(
+      find.descendant(of: slot, matching: find.byType(GlassVisibility)).first,
+    );
+    expect(fade.value, 1);
+    expect(
+      tester
+          .widget<ProgressTrack>(
+            find.descendant(of: slot, matching: find.byType(ProgressTrack)),
+          )
+          .animateIn,
+      isFalse,
+    );
+  });
 }

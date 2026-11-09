@@ -296,6 +296,20 @@ void main() {
     );
   });
 
+  group('todayInstallmentProvider ties', () {
+    test('equal createdAt falls back to the smaller id', () async {
+      container.listen(todayInstallmentProvider, (_, _) {});
+      final finance = container.read(financeRepositoryProvider);
+      await finance.addInstallmentPlan(plan('z', 2));
+      await finance.addInstallmentPlan(plan('m', 2));
+      await finance.addInstallmentPlan(plan('a', 2));
+      await until(
+        () => container.read(installmentPlansProvider).value?.length == 3,
+      );
+      expect(container.read(todayInstallmentProvider).value?.planId, 'a');
+    });
+  });
+
   group('todayIsNewUserProvider', () {
     test('true when empty, false after a task', () async {
       container.listen(todayIsNewUserProvider, (_, _) {});

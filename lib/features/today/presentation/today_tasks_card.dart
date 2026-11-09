@@ -163,34 +163,37 @@ class _Row extends StatelessWidget {
               // RoundCheck announces title, time and state; the row only adds
               // the larger tap target.
               child: ExcludeSemantics(
-                child: Pressable(
-                  onPressed: () => onToggle(entry),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: AppText(
-                          entry.title,
-                          maxLines: 1,
-                          tone: entry.done
-                              ? AppTextTone.tertiary
-                              : AppTextTone.primary,
-                          weight: isNext ? FontWeight.w700 : null,
-                          decoration: entry.done
-                              ? TextDecoration.lineThrough
-                              : null,
+                // The check is the keyboard stop; the row adds only the tap.
+                child: ExcludeFocus(
+                  child: Pressable(
+                    onPressed: () => onToggle(entry),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: AppText(
+                            entry.title,
+                            maxLines: 1,
+                            tone: entry.done
+                                ? AppTextTone.tertiary
+                                : AppTextTone.primary,
+                            weight: isNext ? FontWeight.w700 : null,
+                            decoration: entry.done
+                                ? TextDecoration.lineThrough
+                                : null,
+                          ),
                         ),
-                      ),
-                      if (time != null)
-                        AppText(
-                          time,
-                          role: AppTextRole.footnote,
-                          tabular: true,
-                          tone: isNext
-                              ? AppTextTone.link
-                              : AppTextTone.secondary,
-                          weight: isNext ? FontWeight.w800 : null,
-                        ),
-                    ],
+                        if (time != null)
+                          AppText(
+                            time,
+                            role: AppTextRole.footnote,
+                            tabular: true,
+                            tone: isNext
+                                ? AppTextTone.link
+                                : AppTextTone.secondary,
+                            weight: isNext ? FontWeight.w800 : null,
+                          ),
+                      ],
+                    ),
                   ),
                 ),
               ),

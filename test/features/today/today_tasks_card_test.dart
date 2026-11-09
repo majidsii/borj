@@ -245,4 +245,22 @@ void main() {
     );
     expect(toggled, ['b', 'c']);
   });
+
+  testWidgets('one keyboard stop per row (the check only)', (tester) async {
+    final two = TodayAgenda(
+      day: _day,
+      timed: [_t('a', 15), _t('b', 18)],
+      untimed: const [],
+    );
+    await tester.pumpWidget(_card(two));
+    final stops = FocusManager.instance.rootScope.traversalDescendants.where(
+      (n) => n is! FocusScopeNode && n.canRequestFocus,
+    );
+    expect(stops.length, 2);
+    // The row tap still works.
+    var toggled = 0;
+    await tester.pumpWidget(_card(two, onToggle: (_) => toggled++));
+    await tester.tap(find.text('کار a'));
+    expect(toggled, 1);
+  });
 }

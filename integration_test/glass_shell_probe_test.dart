@@ -3,9 +3,16 @@ import 'dart:math' as math;
 import 'dart:ui' as ui;
 
 import 'package:borj/app/router/app_router.dart';
+import 'package:borj/core/money/money.dart';
+import 'package:borj/core/providers/persistence_providers.dart';
 import 'package:borj/features/dashboard/presentation/widgets/tasks_panel.dart';
+import 'package:borj/features/finance/domain/installment_plan.dart';
+import 'package:borj/features/tasks/domain/task_item.dart';
+import 'package:borj/features/tasks/domain/task_status.dart';
+import 'package:borj/features/today/presentation/today_page.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:liquid_glass_renderer/liquid_glass_renderer.dart';
@@ -29,6 +36,66 @@ void main() {
       worst = math.max(worst, n.captures);
       passes = math.max(passes, n.activeSeededPasses);
     }
+    return (worst: worst, passes: passes);
+  }
+
+  // One task due now (today) and one active installment plan, through the
+  // real repositories, before Today first builds.
+  Future<void> seedToday(ProviderContainer c) async {
+    final now = c.read(appClockProvider).nowUtc();
+    await c
+        .read(taskRepositoryProvider)
+        .create(
+          TaskItem(
+            id: 'probe-task',
+            displayNumber: 1,
+            title: 'ورزش عصر',
+            priority: 0,
+            status: TaskStatus.planned,
+            positionInStatus: 0,
+            dueAtUtc: now,
+            createdAtUtc: now,
+            updatedAtUtc: now,
+          ),
+        );
+    await c
+        .read(financeRepositoryProvider)
+        .addInstallmentPlan(
+          InstallmentPlan(
+            id: 'probe-plan',
+            title: 'قسط وام',
+            perInstallment: Money(
+              minorUnits: 4200000,
+              currencyCode: 'IRT',
+              scale: 0,
+            ),
+            installmentCount: 12,
+            paidCount: 3,
+            createdAtUtc: now,
+            updatedAtUtc: now,
+          ),
+        );
+  }
+
+  // Samples from the first frame the Today grid exists until the cold-start
+  // entrance has settled (at least [frames] frames).
+  Future<({int worst, int passes})> sampleEntrance(
+    WidgetTester tester, {
+    int frames = 30,
+  }) async {
+    final grid = find.byKey(const ValueKey('today-grid'));
+    var worst = 0;
+    var passes = 0;
+    var seen = 0;
+    for (var i = 0; i < 400 && seen < frames; i++) {
+      await tester.pump(const Duration(milliseconds: 16));
+      if (grid.evaluate().isEmpty) continue;
+      seen++;
+      final n = countCompositedBackdropsDetailed(tester);
+      worst = math.max(worst, n.captures);
+      passes = math.max(passes, n.activeSeededPasses);
+    }
+    expect(seen, frames, reason: 'the Today grid never appeared');
     return (worst: worst, passes: passes);
   }
 
@@ -60,8 +127,11 @@ void main() {
     const phone = Size(390, 844);
     await binding.setSurfaceSize(phone);
     addTearDown(() => binding.setSurfaceSize(null));
+    TodayEntrance.reset();
     final container = await pumpBorjTestApp(
       tester,
+      seed: seedToday,
+      settle: false,
       wrap: (app) => MediaQuery(
         data: MediaQueryData.fromView(tester.view).copyWith(size: phone),
         child: Align(
@@ -70,7 +140,10 @@ void main() {
         ),
       ),
     );
+    final entrance = await sampleEntrance(tester);
+    await tester.pumpAndSettle();
     expect(find.byKey(const ValueKey('shell-compact')), findsOneWidget);
+    expect(find.byKey(const ValueKey('today-grid')), findsOneWidget);
     final today = await sample(tester, 30);
     await tester.tap(find.byKey(const ValueKey('tab-tasks')));
     final tasks = await sample(tester, 30);
@@ -90,16 +163,26 @@ void main() {
     unawaited(router.push(AppRoutes.search));
     final searchPush = await sample(tester, 30);
     await pumpPage(tester);
-    final passes = math.max(today.passes, searchPush.passes);
+    final passes = math.max(
+      math.max(today.passes, entrance.passes),
+      searchPush.passes,
+    );
     // ignore: avoid_print
     print(
-      'LG_COMPOSITED scene=phoneShell today=${today.worst} tasks=${tasks.worst} finance=${finance.worst} settingsPush=${settingsPush.worst} settingsSettled=${settingsSettled.worst} searchPush=${searchPush.worst} active_seeded_passes=$passes',
+      'LG_COMPOSITED scene=phoneShell today=${today.worst} todayEntrance=${entrance.worst} tasks=${tasks.worst} finance=${finance.worst} settingsPush=${settingsPush.worst} settingsSettled=${settingsSettled.worst} searchPush=${searchPush.worst} active_seeded_passes=$passes',
     );
-    final worst = math.max(today.worst, searchPush.worst);
+    final worst = math.max(
+      math.max(today.worst, entrance.worst),
+      searchPush.worst,
+    );
     // ignore: avoid_print
     print('LG_CAPTURES scene=phoneShell path=real max=$worst');
     if (!kProfileMode) {
       expect(worst, lessThanOrEqualTo(3));
+      expect(today.worst, lessThanOrEqualTo(3));
+      expect(today.worst, greaterThanOrEqualTo(2));
+      expect(entrance.worst, lessThanOrEqualTo(3));
+      expect(entrance.worst, greaterThanOrEqualTo(2));
       expect(passes, greaterThan(0), reason: 'no active seeded pass seen');
       expect(searchPush.worst, greaterThanOrEqualTo(2));
     }
@@ -128,27 +211,42 @@ void main() {
       reason: 'real glass is not active',
     );
     useWindowSize(tester, const Size(1440, 900));
-    final container = await pumpBorjTestApp(tester);
+    TodayEntrance.reset();
+    final container = await pumpBorjTestApp(
+      tester,
+      seed: seedToday,
+      settle: false,
+    );
+    final entrance = await sampleEntrance(tester);
+    await tester.pumpAndSettle();
     expect(find.byKey(const ValueKey('shell-expanded')), findsOneWidget);
+    expect(find.byKey(const ValueKey('today-grid')), findsOneWidget);
     final today = await sample(tester, 30);
     await tester.tap(find.byKey(const ValueKey('toolbar-search')));
     final overlay = await sample(tester, 30);
     rootNavigatorKey.currentState!.pop();
     await tester.pumpAndSettle();
-    final worst = math.max(today.worst, overlay.worst);
+    final worst = math.max(
+      math.max(today.worst, entrance.worst),
+      overlay.worst,
+    );
+    final passes = math.max(
+      math.max(today.passes, entrance.passes),
+      overlay.passes,
+    );
     // ignore: avoid_print
     print(
-      'LG_COMPOSITED scene=desktopShell today=${today.worst} search=${overlay.worst} active_seeded_passes=${math.max(today.passes, overlay.passes)}',
+      'LG_COMPOSITED scene=desktopShell today=${today.worst} todayEntrance=${entrance.worst} search=${overlay.worst} active_seeded_passes=$passes',
     );
     // ignore: avoid_print
     print('LG_CAPTURES scene=desktopShell path=real max=$worst');
     if (!kProfileMode) {
       expect(worst, lessThanOrEqualTo(4));
-      expect(
-        math.max(today.passes, overlay.passes),
-        greaterThan(0),
-        reason: 'no active seeded pass seen',
-      );
+      expect(today.worst, lessThanOrEqualTo(4));
+      expect(today.worst, greaterThanOrEqualTo(2));
+      expect(entrance.worst, lessThanOrEqualTo(4));
+      expect(entrance.worst, greaterThanOrEqualTo(2));
+      expect(passes, greaterThan(0), reason: 'no active seeded pass seen');
       expect(
         overlay.worst,
         greaterThan(today.worst),

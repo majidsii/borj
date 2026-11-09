@@ -4,10 +4,19 @@ import 'package:borj/app/design/design.dart';
 import 'package:borj/app/shell/shell_destinations.dart';
 import 'package:borj/app/theme/app_theme.dart';
 import 'package:borj/core/formatting/persian_number.dart';
+import 'package:borj/core/money/money.dart';
 import 'package:borj/features/settings/application/appearance_preferences_controller.dart';
 import 'package:borj/features/settings/data/in_memory_appearance_preferences_store.dart';
 import 'package:borj/features/settings/domain/appearance_preferences.dart';
 import 'package:borj/features/settings/presentation/appearance_section.dart';
+import 'package:borj/features/today/application/today_agenda_builder.dart';
+import 'package:borj/features/today/application/today_providers.dart';
+import 'package:borj/features/today/presentation/installment_card.dart';
+import 'package:borj/features/today/presentation/timeline_card.dart';
+import 'package:borj/features/today/presentation/today_grid.dart';
+import 'package:borj/features/today/presentation/today_header.dart';
+import 'package:borj/features/today/presentation/today_onboarding.dart';
+import 'package:borj/features/today/presentation/today_tasks_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -265,7 +274,128 @@ final List<DesignReviewSample> designReviewSamples = <DesignReviewSample>[
     board: 'MacTasks',
     build: (_) => const _InspectorDemo(),
   ),
+  DesignReviewSample(
+    label: 'TimelineCard',
+    board: 'Main',
+    build: (_) => _fixedBox(
+      358,
+      164,
+      TimelineCard(agenda: _sampleAgenda, now: _sampleNow),
+    ),
+  ),
+  DesignReviewSample(
+    label: 'TodayTasksCard large',
+    board: 'Main',
+    build: (_) => _fixedBox(
+      358,
+      340,
+      TodayTasksCard(
+        agenda: _sampleAgenda,
+        now: _sampleNow,
+        onToggle: (_) {},
+        onShowAll: () {},
+      ),
+    ),
+  ),
+  DesignReviewSample(
+    label: 'TodayTasksCard expanded grouping',
+    board: 'MacToday',
+    build: (context) => MediaQuery(
+      data: MediaQuery.of(context).copyWith(size: const Size(1440, 900)),
+      child: _fixedBox(
+        572,
+        340,
+        TodayTasksCard(
+          agenda: _sampleAgenda,
+          now: _sampleNow,
+          onToggle: (_) {},
+          onShowAll: () {},
+        ),
+      ),
+    ),
+  ),
+  DesignReviewSample(
+    label: 'InstallmentCard wide',
+    board: 'Main',
+    build: (_) => _fixedBox(
+      358,
+      164,
+      InstallmentCard(installment: _sampleInstallment, onOpen: () {}),
+    ),
+  ),
+  DesignReviewSample(
+    label: 'InstallmentCard small',
+    board: 'Main',
+    build: (_) => _fixedBox(
+      173,
+      164,
+      InstallmentCard(
+        installment: _sampleInstallment,
+        onOpen: () {},
+        size: TodayCardSize.small,
+      ),
+    ),
+  ),
+  DesignReviewSample(
+    label: 'TodayHeader date chip',
+    board: 'MacToday',
+    build: (context) => MediaQuery(
+      data: MediaQuery.of(context).copyWith(size: const Size(1440, 900)),
+      child: TodayHeader(now: _sampleNow),
+    ),
+  ),
+  DesignReviewSample(
+    label: 'TodayOnboarding',
+    board: 'PhoneEmptyToday',
+    build: (_) => TodayOnboarding(onAddTask: () {}),
+  ),
 ];
+
+final DateTime _sampleNow = DateTime(2026, 11, 4, 14, 30);
+
+final TodayAgenda _sampleAgenda = TodayAgenda(
+  day: DateTime(2026, 11, 4),
+  timed: [
+    TodayEntry(
+      taskId: 's1',
+      title: 'جلسهٔ صبحگاهی',
+      done: true,
+      recurring: false,
+      localStart: DateTime(2026, 11, 4, 9),
+      durationMinutes: 60,
+    ),
+    TodayEntry(
+      taskId: 's2',
+      title: 'ورزش عصر',
+      done: false,
+      recurring: false,
+      localStart: DateTime(2026, 11, 4, 15),
+      durationMinutes: 60,
+    ),
+    TodayEntry(
+      taskId: 's3',
+      title: 'مرور هفتگی',
+      done: false,
+      recurring: false,
+      localStart: DateTime(2026, 11, 4, 17),
+      durationMinutes: 90,
+    ),
+  ],
+  untimed: const [
+    TodayEntry(taskId: 's4', title: 'خرید نان', done: false, recurring: false),
+  ],
+);
+
+const TodayInstallment _sampleInstallment = TodayInstallment(
+  planId: 'sample',
+  title: 'قسط وام',
+  nextNumber: 4,
+  count: 12,
+  amount: Money(minorUnits: 4200000, currencyCode: 'IRT', scale: 0),
+);
+
+Widget _fixedBox(double width, double height, Widget child) =>
+    SizedBox(width: width, height: height, child: child);
 
 class _TabBarDemo extends StatefulWidget {
   const _TabBarDemo();

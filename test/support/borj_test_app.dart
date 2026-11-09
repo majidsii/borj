@@ -12,13 +12,15 @@ import 'test_database.dart';
 /// Pumps the real [BorjApp] over an in-memory database, with no v1 data and
 /// no file IO for preferences (the appearance store defaults to in-memory).
 /// [seed] runs after the container exists and before the first frame.
-/// Tears everything down after the test.
+/// With [settle] false the first frame is pumped but not settled, so a probe
+/// can watch the cold start. Tears everything down after the test.
 Future<ProviderContainer> pumpBorjTestApp(
   WidgetTester tester, {
   List<Override> overrides = const <Override>[],
   Widget Function(Widget app)? wrap,
   Stream<DateTime>? minuteTicks,
   Future<void> Function(ProviderContainer container)? seed,
+  bool settle = true,
 }) async {
   tzdata.initializeTimeZones();
   final database = openTestDatabase();
@@ -54,7 +56,7 @@ Future<ProviderContainer> pumpBorjTestApp(
       child: wrap == null ? const BorjApp() : wrap(const BorjApp()),
     ),
   );
-  await tester.pumpAndSettle();
+  if (settle) await tester.pumpAndSettle();
   return container;
 }
 

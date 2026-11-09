@@ -17,6 +17,12 @@ Entry template:
 
 ---
 
+## 2026-11-09 — Decided: main screens before Today customization
+- **Type:** decided
+- **What:** the owner ran the app and saw that only the shell and Today use the new design; Tasks, Finance and Settings are still the legacy screens. Recommendation accepted («اره اوکیه»): build Phase 3 (Tasks), Phase 4 (Finance) and Phase 5 (Settings & data) next, and defer Phase 2 Part C (Today customization). The Part C plan is saved as a deferred draft.
+- **Evidence / links:** `docs/superpowers/plans/2026-11-09-redesign-phase-2c-today-customization.md` (draft).
+- **Follow-ups:** Phase 3 plan; the Phase 2 owner sign-off and the A34 run move to after Part C (or are asked with the first rebuilt main screen).
+
 ## 2026-11-09 — Redesign Phase 2 Part B (Today) complete
 - **Type:** implemented + reviewed
 - **What:** Today rebuilt to the `Main` / `MacToday` / `PhoneEmptyToday` boards: agenda builder and providers on the task-zone wall clock, card grid (columns follow the grid width), timeline / today's tasks / installment cards, phone large title and desktop date chip, onboarding, once-per-process cold-start entrance, router `/` → TodayPage. Final review fixes: unique entry keys (a moved recurring occurrence crashed the timeline), completed untimed tasks stay (Decision 8), header alignment, semantics, one tab stop per row.

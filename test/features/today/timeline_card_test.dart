@@ -68,6 +68,19 @@ void main() {
     });
   }
 
+  testWidgets('«بعدی:» group sits at the end edge (left in RTL)', (
+    tester,
+  ) async {
+    await tester.pumpWidget(_card(agenda, now));
+    final card = tester.getRect(find.byType(TimelineCard));
+    final next = tester.getRect(find.text('بعدی:'));
+    final title = tester.getRect(find.text('برنامهٔ امروز'));
+    final group = tester.getRect(find.text('meet').first);
+    expect(group.left - card.left, lessThan(20), reason: 'flush with the end');
+    expect(next.center.dx, lessThan(card.center.dx));
+    expect(title.center.dx, greaterThan(card.center.dx));
+  });
+
   test('range: default 8–20, widened to even hours that cover every block', () {
     expect(timelineRange(const []), (8, 20));
     expect(timelineRange([_e('early', 6, 15)]), (6, 20));

@@ -38,15 +38,25 @@ class TodayPage extends ConsumerStatefulWidget {
 }
 
 class _TodayPageState extends ConsumerState<TodayPage> {
-  late final bool _coldStart;
+  /// True until the first build that shows content (grid or onboarding) has
+  /// been laid out. The page state outlives tab switches, so the entrance must
+  /// not replay when onboarding turns into the grid or a card appears later.
+  late bool _entrancePending;
+  bool _clearScheduled = false;
 
   @override
   void initState() {
     super.initState();
-    _coldStart = !TodayEntrance.played;
-    WidgetsBinding.instance.addPostFrameCallback(
-      (_) => TodayEntrance.markPlayed(),
-    );
+    _entrancePending = !TodayEntrance.played;
+  }
+
+  void _clearEntranceAfterFrame() {
+    if (!_entrancePending || _clearScheduled) return;
+    _clearScheduled = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _entrancePending = false;
+      TodayEntrance.markPlayed();
+    });
   }
 
   @override
@@ -64,102 +74,93 @@ class _TodayPageState extends ConsumerState<TodayPage> {
           ).resolve(Directionality.of(context));
 
     final now = nowAsync.valueOrNull;
-    if (now == null) {
-      if (nowAsync.hasError) {
-        return ListView(
-          key: const ValueKey('today-page'),
-          padding: padding + side,
-          children: const [
-            EmptyState(icon: Icons.error_outline, title: 'امروز بارگذاری نشد'),
-          ],
-        );
-      }
-      return ListView(
-        key: const ValueKey('today-page'),
-        padding: padding + side,
-      );
-    }
-
-    final newUser = ref.watch(todayIsNewUserProvider);
-    final agenda = ref.watch(todayAgendaProvider);
-    final installment = ref.watch(todayInstallmentProvider);
-
-    Widget body;
-    if (newUser.hasError || agenda.hasError || installment.hasError) {
+    Widget body = const SizedBox.shrink();
+    if (nowAsync.hasError) {
       body = const EmptyState(
         icon: Icons.error_outline,
         title: 'امروز بارگذاری نشد',
       );
-    } else if (!newUser.hasValue || !agenda.hasValue || !installment.hasValue) {
-      body = const SizedBox.shrink();
-    } else if (newUser.requireValue) {
-      body = KeyedSubtree(
-        key: const ValueKey('today-onboarding'),
-        child: _Enter(
-          index: 0,
-          play: _coldStart,
-          child: TodayOnboarding(onAddTask: () => context.go(AppRoutes.tasks)),
-        ),
-      );
-    } else {
-      final a = agenda.requireValue;
-      final plan = installment.requireValue;
-      final items = <TodayGridItem>[
-        TodayGridItem(
-          id: 'timeline',
-          size: TodayCardSize.wide,
-          child: TimelineCard(agenda: a, now: now),
-        ),
-        TodayGridItem(
-          id: 'tasks',
-          size: TodayCardSize.large,
-          child: TodayTasksCard(
-            agenda: a,
-            now: now,
-            onToggle: ref.read(todayCompletionProvider).toggle,
-            onShowAll: () => context.go(AppRoutes.tasks),
-          ),
-        ),
-        if (plan != null)
-          TodayGridItem(
-            id: 'installment',
-            size: TodayCardSize.wide,
-            child: InstallmentCard(
-              installment: plan,
-              animateIn: _coldStart,
-              onOpen: () => context.go('/finance'),
+    } else if (now != null) {
+      final newUser = ref.watch(todayIsNewUserProvider);
+      final agenda = ref.watch(todayAgendaProvider);
+      final installment = ref.watch(todayInstallmentProvider);
+      final play = _entrancePending;
+      if (newUser.hasError || agenda.hasError || installment.hasError) {
+        body = const EmptyState(
+          icon: Icons.error_outline,
+          title: 'امروز بارگذاری نشد',
+        );
+      } else if (newUser.hasValue && agenda.hasValue && installment.hasValue) {
+        _clearEntranceAfterFrame();
+        if (newUser.requireValue) {
+          body = KeyedSubtree(
+            key: const ValueKey('today-onboarding'),
+            child: _Enter(
+              index: 0,
+              play: play,
+              child: TodayOnboarding(
+                onAddTask: () => context.go(AppRoutes.tasks),
+              ),
             ),
-          ),
-      ];
-      body = KeyedSubtree(
-        key: const ValueKey('today-grid'),
-        child: TodayGrid(
-          items: [
-            for (var i = 0; i < items.length; i++)
+          );
+        } else {
+          final a = agenda.requireValue;
+          final plan = installment.requireValue;
+          final items = <TodayGridItem>[
+            TodayGridItem(
+              id: 'timeline',
+              size: TodayCardSize.wide,
+              child: TimelineCard(agenda: a, now: now),
+            ),
+            TodayGridItem(
+              id: 'tasks',
+              size: TodayCardSize.large,
+              child: TodayTasksCard(
+                agenda: a,
+                now: now,
+                onToggle: ref.read(todayCompletionProvider).toggle,
+                onShowAll: () => context.go(AppRoutes.tasks),
+              ),
+            ),
+            if (plan != null)
               TodayGridItem(
-                id: items[i].id,
-                size: items[i].size,
-                child: _Enter(
-                  index: i,
-                  play: _coldStart,
-                  child: items[i].child,
+                id: 'installment',
+                size: TodayCardSize.wide,
+                child: InstallmentCard(
+                  installment: plan,
+                  animateIn: play,
+                  onOpen: () => context.go('/finance'),
                 ),
               ),
-          ],
-        ),
-      );
+          ];
+          body = KeyedSubtree(
+            key: const ValueKey('today-grid'),
+            child: TodayGrid(
+              items: [
+                for (var i = 0; i < items.length; i++)
+                  TodayGridItem(
+                    id: items[i].id,
+                    size: items[i].size,
+                    child: _Enter(index: i, play: play, child: items[i].child),
+                  ),
+              ],
+            ),
+          );
+        }
+      }
     }
 
     return ListView(
       key: const ValueKey('today-page'),
       padding: padding + side,
       children: [
-        TodayHeader(
-          now: now,
-          onTitleLongPress: kDebugMode
-              ? () => context.push(AppRoutes.glassReview)
-              : null,
-        ),
+        if (now != null)
+          TodayHeader(
+            now: now,
+            onTitleLongPress: kDebugMode
+                ? () => context.push(AppRoutes.glassReview)
+                : null,
+          ),
         const LegacyImportBanner(),
         const SizedBox(height: 20),
         body,
@@ -184,7 +185,7 @@ class _Enter extends StatefulWidget {
 
 class _EnterState extends State<_Enter> with SingleTickerProviderStateMixin {
   AnimationController? _controller;
-  Animation<double>? _t;
+  CurvedAnimation? _t;
   bool _reduced = false;
 
   @override
@@ -198,6 +199,9 @@ class _EnterState extends State<_Enter> with SingleTickerProviderStateMixin {
     final controller = _controller = AnimationController(
       vsync: this,
       duration: total,
+      // The reduced fade keeps its own duration (AppMotion.reduced); the
+      // default behaviour would shrink it 20x under disableAnimations.
+      animationBehavior: AnimationBehavior.preserve,
     );
     _t = CurvedAnimation(
       parent: controller,
@@ -213,6 +217,7 @@ class _EnterState extends State<_Enter> with SingleTickerProviderStateMixin {
 
   @override
   void dispose() {
+    _t?.dispose();
     _controller?.dispose();
     super.dispose();
   }

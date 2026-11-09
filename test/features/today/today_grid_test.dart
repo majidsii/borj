@@ -59,29 +59,26 @@ void main() {
   ) async {
     await tester.pumpWidget(
       glassTestApp(
-        MediaQuery(
-          data: const MediaQueryData(size: Size(412, 800)),
-          child: SizedBox(
-            width: 412, // 2 × 200 + 12
-            child: TodayGrid(
-              items: const [
-                TodayGridItem(
-                  id: 'a',
-                  size: TodayCardSize.small,
-                  child: SizedBox.expand(key: ValueKey('a')),
-                ),
-                TodayGridItem(
-                  id: 'b',
-                  size: TodayCardSize.small,
-                  child: SizedBox.expand(key: ValueKey('b')),
-                ),
-                TodayGridItem(
-                  id: 'c',
-                  size: TodayCardSize.wide,
-                  child: SizedBox.expand(key: ValueKey('c')),
-                ),
-              ],
-            ),
+        SizedBox(
+          width: 412, // 2 × 200 + 12
+          child: TodayGrid(
+            items: const [
+              TodayGridItem(
+                id: 'a',
+                size: TodayCardSize.small,
+                child: SizedBox.expand(key: ValueKey('a')),
+              ),
+              TodayGridItem(
+                id: 'b',
+                size: TodayCardSize.small,
+                child: SizedBox.expand(key: ValueKey('b')),
+              ),
+              TodayGridItem(
+                id: 'c',
+                size: TodayCardSize.wide,
+                child: SizedBox.expand(key: ValueKey('c')),
+              ),
+            ],
           ),
         ),
       ),
@@ -100,5 +97,38 @@ void main() {
     expect(c.top - a.bottom, 12);
     expect(c.width, 412);
     expect(tester.getSize(find.byType(TodayGrid)).height, 164 * 2 + 12);
+  });
+
+  testWidgets('a 1188 px grid has 4 columns: tasks beside the timeline', (
+    tester,
+  ) async {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(1300, 900);
+    addTearDown(tester.view.reset);
+    await tester.pumpWidget(
+      glassTestApp(
+        SizedBox(
+          width: 1188,
+          child: TodayGrid(
+            items: const [
+              TodayGridItem(
+                id: 'a',
+                size: TodayCardSize.wide,
+                child: SizedBox.expand(key: ValueKey('a')),
+              ),
+              TodayGridItem(
+                id: 'b',
+                size: TodayCardSize.large,
+                child: SizedBox.expand(key: ValueKey('b')),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+    final a = tester.getRect(find.byKey(const ValueKey('a')));
+    final b = tester.getRect(find.byKey(const ValueKey('b')));
+    expect(a.top, b.top, reason: 'two wide-ish cards share the first row');
+    expect(a.width, (1188 - 36) / 4 * 2 + 12);
   });
 }

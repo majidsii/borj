@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:borj/app/design/design.dart';
 import 'package:borj/core/date_time/app_clock.dart';
 import 'package:borj/core/money/money.dart';
 import 'package:borj/core/providers/persistence_providers.dart';
@@ -94,19 +95,28 @@ void main() {
         seed: _seed,
       );
       ticks.add(_nowUtc);
-      for (var i = 0; i < 5; i++) {
+      final grid = find.byKey(const ValueKey('today-grid'));
+      for (var i = 0; i < 5 && grid.evaluate().isEmpty; i++) {
         await tester.pump();
       }
-      var worst = 0;
+      expect(grid, findsOneWidget);
+      var worst = countCompositedBackdrops(tester);
+      var sawFractional = false;
       for (var i = 0; i < 30; i++) {
         await tester.pump(const Duration(milliseconds: 16));
         final n = countCompositedBackdrops(tester);
         if (n > worst) worst = n;
+        sawFractional |= tester
+            .widgetList<GlassVisibility>(
+              find.descendant(of: grid, matching: find.byType(GlassVisibility)),
+            )
+            .any((g) => g.value > 0 && g.value < 1);
         expect(
           bareFadesAboveGlass(tester, find.byKey(const ValueKey('today-page'))),
           isEmpty,
         );
       }
+      expect(sawFractional, isTrue, reason: 'an entrance ran while sampling');
       expect(worst, 2);
     });
   }

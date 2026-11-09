@@ -49,6 +49,7 @@ class TimelineCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               const Flexible(
                 child: AppText(
@@ -58,24 +59,35 @@ class TimelineCard extends StatelessWidget {
                   maxLines: 1,
                 ),
               ),
-              if (next != null) ...[
-                const SizedBox(width: AppSpacing.s8),
-                const AppText(
-                  'بعدی:',
-                  role: AppTextRole.footnote,
-                  tone: AppTextTone.secondary,
-                  maxLines: 1,
-                ),
-                const SizedBox(width: AppSpacing.s4),
+              if (next != null)
                 Flexible(
-                  child: AppText(
-                    next.title,
-                    role: AppTextRole.footnote,
-                    weight: FontWeight.w700,
-                    maxLines: 1,
+                  flex: 3,
+                  child: Padding(
+                    padding: const EdgeInsetsDirectional.only(
+                      start: AppSpacing.s8,
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const AppText(
+                          'بعدی:',
+                          role: AppTextRole.footnote,
+                          tone: AppTextTone.secondary,
+                          maxLines: 1,
+                        ),
+                        const SizedBox(width: AppSpacing.s4),
+                        Flexible(
+                          child: AppText(
+                            next.title,
+                            role: AppTextRole.footnote,
+                            weight: FontWeight.w700,
+                            maxLines: 1,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ],
             ],
           ),
           const SizedBox(height: AppSpacing.s8),

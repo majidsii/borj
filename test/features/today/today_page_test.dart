@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:borj/app/design/design.dart';
+import 'package:borj/app/theme/app_motion.dart';
 import 'package:borj/core/date_time/app_clock.dart';
 import 'package:borj/core/money/money.dart';
 import 'package:borj/core/providers/persistence_providers.dart';
@@ -97,8 +98,15 @@ void main() {
     expect(find.byKey(const ValueKey('today-slot-timeline')), findsOneWidget);
     expect(find.byKey(const ValueKey('today-slot-tasks')), findsOneWidget);
     expect(find.byKey(const ValueKey('today-slot-installment')), findsNothing);
-    expect(find.textContaining('بعدی:'), findsOneWidget);
-    expect(find.textContaining('ورزش عصر'), findsWidgets);
+    final timeline = find.byKey(const ValueKey('today-slot-timeline'));
+    expect(
+      find.descendant(of: timeline, matching: find.text('بعدی:')),
+      findsOneWidget,
+    );
+    expect(
+      find.descendant(of: timeline, matching: find.text('ورزش عصر')),
+      findsWidgets,
+    );
     expect(find.byKey(const ValueKey('today-task-a')), findsOneWidget);
   });
 
@@ -171,56 +179,84 @@ void main() {
     expect(find.byKey(const ValueKey('today-page')), findsNothing);
   });
 
-  group('entrance', () {
-    testWidgets(
-      'cold start: cards start at 0 and reach 1 by 300 ms + stagger',
-      (tester) async {
-        useWindowSize(tester, const Size(390, 844));
-        final ticks = StreamController<DateTime>();
-        addTearDown(ticks.close);
-        await pumpBorjTestApp(
-          tester,
-          overrides: _overrides,
-          minuteTicks: ticks.stream,
-          seed: _seedBoth,
-        );
-        ticks.add(_nowUtc);
-        for (var i = 0; i < 5 && _grid.evaluate().isEmpty; i++) {
-          await tester.pump();
-        }
-        expect(_grid, findsOneWidget);
-        final first = _enterValues(tester);
-        expect(first, isNotEmpty);
-        expect(first.every((v) => v == 0), isTrue);
-        expect(
-          bareFadesAboveGlass(tester, find.byKey(const ValueKey('today-page'))),
-          isEmpty,
-        );
-        await tester.pump(const Duration(milliseconds: 100));
-        expect(_enterValues(tester).any((v) => v > 0 && v < 1), isTrue);
-        await tester.pump(
-          const Duration(milliseconds: 300) + const Duration(milliseconds: 200),
-        );
-        await tester.pumpAndSettle();
-        expect(_enterValues(tester).every((v) => v == 1), isTrue);
-        expect(TodayEntrance.played, isTrue);
-      },
+  Future<StreamController<DateTime>> pumpToGrid(
+    WidgetTester tester, {
+    Future<void> Function(ProviderContainer)? seed = _seedBoth,
+  }) async {
+    final ticks = StreamController<DateTime>();
+    addTearDown(ticks.close);
+    await pumpBorjTestApp(
+      tester,
+      overrides: _overrides,
+      minuteTicks: ticks.stream,
+      seed: seed,
     );
+    ticks.add(_nowUtc);
+    for (var i = 0; i < 5 && _grid.evaluate().isEmpty; i++) {
+      await tester.pump();
+    }
+    expect(_grid, findsOneWidget);
+    return ticks;
+  }
+
+  group('entrance', () {
+    testWidgets('cold start: ordered stagger, done within the bound, no bare '
+        'fades', (tester) async {
+      useWindowSize(tester, const Size(390, 844));
+      await pumpToGrid(tester);
+      final first = _enterValues(tester);
+      expect(first.length, 3);
+      expect(first.every((v) => v == 0), isTrue);
+      expect(
+        bareFadesAboveGlass(tester, find.byKey(const ValueKey('today-page'))),
+        isEmpty,
+      );
+      await tester.pump(const Duration(milliseconds: 60));
+      final early = _enterValues(tester);
+      expect(early[0], greaterThan(0));
+      expect(early[2], 0, reason: 'item 2 waits for its stagger');
+      await tester.pump(
+        AppMotion.staggerAt(2) +
+            AppMotion.quick.duration -
+            const Duration(milliseconds: 60),
+      );
+      expect(_enterValues(tester).every((v) => v == 1), isTrue);
+      expect(TodayEntrance.played, isTrue);
+    });
 
     testWidgets('a later build has no entrance (value 1 on the first frame)', (
       tester,
     ) async {
       TodayEntrance.markPlayed();
       useWindowSize(tester, const Size(390, 844));
+      await pumpToGrid(tester);
+      expect(_enterValues(tester).every((v) => v == 1), isTrue);
+    });
+
+    testWidgets('onboarding plays; the grid after the first task does not', (
+      tester,
+    ) async {
+      useWindowSize(tester, const Size(390, 844));
       final ticks = StreamController<DateTime>();
       addTearDown(ticks.close);
-      await pumpBorjTestApp(
+      final c = await pumpBorjTestApp(
         tester,
         overrides: _overrides,
         minuteTicks: ticks.stream,
-        seed: _seedBoth,
       );
       ticks.add(_nowUtc);
+      for (var i = 0; i < 5; i++) {
+        await tester.pump();
+      }
+      final onboarding = find.byKey(const ValueKey('today-onboarding'));
+      expect(onboarding, findsOneWidget);
+      final enter = find.descendant(
+        of: onboarding,
+        matching: find.byType(GlassVisibility),
+      );
+      expect(tester.widget<GlassVisibility>(enter.first).value, 0);
+      await tester.pump(const Duration(milliseconds: 400));
+      await _seedTask(c);
       for (var i = 0; i < 5 && _grid.evaluate().isEmpty; i++) {
         await tester.pump();
       }
@@ -237,18 +273,10 @@ void main() {
       addTearDown(
         tester.platformDispatcher.clearAccessibilityFeaturesTestValue,
       );
-      final ticks = StreamController<DateTime>();
-      addTearDown(ticks.close);
-      await pumpBorjTestApp(
-        tester,
-        overrides: _overrides,
-        minuteTicks: ticks.stream,
-        seed: _seedBoth,
-      );
-      ticks.add(_nowUtc);
-      for (var i = 0; i < 5 && _grid.evaluate().isEmpty; i++) {
-        await tester.pump();
-      }
+      await pumpToGrid(tester);
+      expect(_enterValues(tester).every((v) => v < 1), isTrue);
+      await tester.pump(const Duration(milliseconds: 100));
+      expect(_enterValues(tester).any((v) => v > 0 && v < 1), isTrue);
       await expectNoMovement(
         tester,
         within: _grid,
@@ -276,6 +304,8 @@ void main() {
     ticks.add(DateTime.utc(2026, 11, 5, 11));
     await tester.pumpAndSettle();
     expect(find.byKey(const ValueKey('today-task-a')), findsNothing);
+    expect(_grid, findsOneWidget);
+    expect(find.text('امروز کاری نداری'), findsOneWidget);
   });
 
   for (final size in const [Size(600, 844), Size(1024, 800)]) {
@@ -296,6 +326,19 @@ void main() {
           ),
         );
         expect(_grid, findsOneWidget);
+        // Decision 7: the 1024 px window's grid is under 720 px wide.
+        const columns = 2;
+        final timeline = tester.getRect(
+          find.byKey(const ValueKey('today-slot-timeline')),
+        );
+        final tasks = tester.getRect(
+          find.byKey(const ValueKey('today-slot-tasks')),
+        );
+        expect(
+          timeline.top < tasks.top,
+          columns == 2,
+          reason: 'two columns stack timeline above tasks',
+        );
         expect(tester.takeException(), isNull);
       });
     }

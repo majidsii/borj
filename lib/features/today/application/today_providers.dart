@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:borj/core/money/money.dart';
 import 'package:borj/core/providers/persistence_providers.dart';
+import 'package:borj/features/tasks/application/tasks_screen_providers.dart';
 import 'package:borj/features/today/application/today_agenda_builder.dart';
 import 'package:borj/features/today/application/today_completion.dart';
 import 'package:flutter/foundation.dart';
@@ -70,7 +71,7 @@ final todayAgendaProvider = Provider<AsyncValue<TodayAgenda>>((ref) {
       (v) => v.whenData((t) => DateTime(t.year, t.month, t.day)),
     ),
   );
-  final tasks = ref.watch(taskItemsProvider);
+  final tasks = ref.watch(visibleTaskItemsProvider);
   final rules = ref.watch(taskRecurrenceRulesProvider);
   final exceptions = ref.watch(taskRecurrenceExceptionsProvider);
   final completions = ref.watch(taskOccurrenceCompletionsProvider);

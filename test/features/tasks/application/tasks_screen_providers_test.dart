@@ -1,9 +1,18 @@
 import 'package:borj/core/database/app_database.dart';
 import 'package:borj/core/date_time/app_clock.dart';
+import 'package:borj/core/notifications/device_time_zone_source.dart';
+import 'package:borj/core/notifications/notification_owner.dart';
+import 'package:borj/core/notifications/notification_request.dart';
+import 'package:borj/core/notifications/notification_scheduler.dart';
 import 'package:borj/core/providers/persistence_providers.dart';
+import 'package:borj/core/recurrence/recurrence_local_date_time.dart';
+import 'package:borj/core/recurrence/recurrence_rule.dart';
+import 'package:borj/core/recurrence/recurrence_time_zone.dart';
 import 'package:borj/features/tasks/application/task_list_query.dart';
 import 'package:borj/features/tasks/application/tasks_screen_providers.dart';
 import 'package:borj/features/tasks/domain/task_item.dart';
+import 'package:borj/features/tasks/domain/task_reminder_rule.dart';
+import 'package:borj/features/tasks/domain/task_reminder_trigger.dart';
 import 'package:borj/features/tasks/domain/task_status.dart';
 import 'package:borj/features/today/application/today_providers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -17,6 +26,27 @@ final _uuidV7 = RegExp(
   r'^[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$',
 );
 
+final class _TehranZone implements DeviceTimeZoneSource {
+  const _TehranZone();
+
+  @override
+  Future<String> localTimeZoneName() async => 'Asia/Tehran';
+}
+
+final class _NoopScheduler implements NotificationScheduler {
+  @override
+  Future<void> schedule(NotificationRequest request) async {}
+
+  @override
+  Future<void> cancel(String scheduleId) async {}
+
+  @override
+  Future<void> cancelByOwner(NotificationOwner owner) async {}
+
+  @override
+  Future<void> reconcile(List<NotificationRequest> expected) async {}
+}
+
 void main() {
   late AppDatabase db;
   late ProviderContainer container;
@@ -28,6 +58,8 @@ void main() {
     container = ProviderContainer(
       overrides: [
         appDatabaseProvider.overrideWithValue(db),
+        notificationSchedulerProvider.overrideWithValue(_NoopScheduler()),
+        deviceTimeZoneSourceProvider.overrideWithValue(const _TehranZone()),
         appClockProvider.overrideWithValue(
           FixedAppClock(utcValue: _now, localValue: _now),
         ),
@@ -132,42 +164,109 @@ void main() {
     expect(seen, [1, 2, 3, 0]);
   });
 
-  test('delete returns the task; restore keeps id, fields, number and '
-      'position', () async {
+  Future<void> seedChildren(String id) async {
     final due = DateTime.utc(2026, 11, 12, 6);
-    final a = await actions().createAndReturnId(title: 'a', priority: 0);
-    final b = await actions().createAndReturnId(
-      title: 'b',
-      priority: 3,
-      dueAtUtc: due,
+    final t = await byId(id);
+    await container
+        .read(taskRepositoryProvider)
+        .update(t.copyWith(dueAtUtc: due, startAtUtc: due));
+    await container.read(taskReminderRepositoryProvider).replaceForTask(id, [
+      TaskReminderRule(
+        id: 'rem-$id',
+        taskId: id,
+        trigger: TaskReminderTrigger.atDue,
+        createdAtUtc: _now,
+        updatedAtUtc: _now,
+      ),
+    ]);
+    await container
+        .read(taskRecurrenceServiceProvider)
+        .replaceRule(
+          taskId: id,
+          rule: RecurrenceRule.daily(
+            anchorLocalDateTime: RecurrenceLocalDateTime(
+              year: 2026,
+              month: 11,
+              day: 11,
+              hour: 9,
+            ),
+            timeZone: const RecurrenceTimeZone.floating(),
+          ),
+        );
+  }
+
+  Future<void> settle() async {
+    await container.read(taskItemsProvider.future);
+    await container.read(taskCalendarTimeZoneProvider.future);
+    await container.read(minuteTickProvider.future);
+    await Future<void>.delayed(Duration.zero);
+  }
+
+  List<String> listIds() => [
+    for (final s in container.read(taskListViewProvider).requireValue.sections)
+      for (final e in s.entries) e.task.id,
+  ];
+
+  test('delete hides everywhere; undo restores with children intact', () async {
+    final id = await actions().createAndReturnId(title: 'a', priority: 1);
+    await seedChildren(id);
+    final number = (await byId(id)).displayNumber;
+    final l1 = container.listen(taskListViewProvider, (_, _) {});
+    final l2 = container.listen(todayAgendaProvider, (_, _) {});
+    final l3 = container.listen(todayIsNewUserProvider, (_, _) {});
+    addTearDown(() {
+      l1.close();
+      l2.close();
+      l3.close();
+    });
+    await settle();
+    await container.read(taskRecurrenceRulesProvider.future);
+    await container.read(taskRecurrenceExceptionsProvider.future);
+    await container.read(taskOccurrenceCompletionsProvider.future);
+    await Future<void>.delayed(Duration.zero);
+    expect(listIds(), [id]);
+    expect(container.read(todayAgendaProvider).requireValue.timed, isNotEmpty);
+
+    final handle = await actions().delete(id);
+    await settle();
+    expect(listIds(), isEmpty);
+    expect(container.read(todayAgendaProvider).requireValue.timed, isEmpty);
+    expect(container.read(todayIsNewUserProvider).requireValue, isFalse);
+    expect((await all()).any((t) => t.id == id), isTrue);
+
+    handle!.undo();
+    await settle();
+    expect(listIds(), [id]);
+    expect(container.read(todayAgendaProvider).requireValue.timed, isNotEmpty);
+    expect((await byId(id)).displayNumber, number);
+    expect(
+      await container.read(taskReminderRepositoryProvider).getByTask(id),
+      hasLength(1),
     );
-    final c = await actions().createAndReturnId(title: 'c', priority: 0);
-    // newest created goes to position 0 of planned; re-read the real order.
-    final before = await idsIn(TaskStatus.planned);
-    final original = await byId(b);
-    final index = before.indexOf(b);
+    final bundle = await container
+        .read(taskRecurrenceRepositoryProvider)
+        .getByTask(id);
+    expect(bundle.rule, isNotNull);
 
-    final deleted = await actions().delete(b);
-    expect(deleted, isNotNull);
-    expect(deleted!.id, b);
-    expect((await all()).any((t) => t.id == b), isFalse);
-    await expectContiguous();
+    // undone handle: commit is a no-op
+    await handle.commit();
+    expect((await all()).any((t) => t.id == id), isTrue);
+  });
 
-    // Another task created meanwhile must not take the freed number.
-    final d = await actions().createAndReturnId(title: 'd', priority: 0);
-    expect((await byId(d)).displayNumber, isNot(original.displayNumber));
-
-    await actions().restore(deleted);
-    final restored = await byId(b);
-    expect(restored.displayNumber, original.displayNumber);
-    expect(restored.title, 'b');
-    expect(restored.priority, 3);
-    expect(restored.dueAtUtc, due);
-    expect(restored.status, TaskStatus.planned);
-    expect(restored.createdAtUtc, original.createdAtUtc);
-    expect(restored.positionInStatus, index);
-    expect((await idsIn(TaskStatus.planned)).indexOf(b), index);
-    expect({a, c}.every((id) => before.contains(id)), isTrue);
+  test('commit deletes from the repository; twice is a no-op', () async {
+    final id = await actions().createAndReturnId(title: 'a', priority: 1);
+    await seedChildren(id);
+    final handle = await actions().delete(id);
+    await handle!.commit();
+    expect((await all()).any((t) => t.id == id), isFalse);
+    expect(container.read(pendingTaskDeletionsProvider), isEmpty);
+    expect(
+      await container.read(taskReminderRepositoryProvider).getByTask(id),
+      isEmpty,
+    );
+    await handle.commit();
+    handle.undo();
+    expect((await all()), isEmpty);
     await expectContiguous();
   });
 
@@ -175,51 +274,59 @@ void main() {
     expect(await actions().delete('missing'), isNull);
   });
 
-  test('restore keeps the completed timestamp and status', () async {
-    final id = await actions().createAndReturnId(title: 'a', priority: 1);
-    await actions().toggleDone(await byId(id));
-    final done = await byId(id);
-    await actions().delete(id);
-    await actions().restore(done);
-    final t = await byId(id);
-    expect(t.status, TaskStatus.completed);
-    expect(t.completedAtUtc, done.completedAtUtc);
-    expect(t.displayNumber, done.displayNumber);
-    await expectContiguous();
+  test('max-number delete then create then undo: distinct numbers', () async {
+    final a = await actions().createAndReturnId(title: 'a', priority: 0);
+    final b = await actions().createAndReturnId(title: 'b', priority: 0);
+    final maxNumber = (await byId(b)).displayNumber;
+    final handle = await actions().delete(b);
+    final c = await actions().createAndReturnId(title: 'c', priority: 0);
+    expect((await byId(c)).displayNumber, maxNumber + 1);
+    handle!.undo();
+    final numbers = (await all()).map((t) => t.displayNumber).toList();
+    expect(numbers.toSet().length, 3);
+    expect((await byId(b)).displayNumber, maxNumber);
+    expect((await byId(a)).displayNumber, lessThan(maxNumber));
   });
 
-  test('deleteCompleted returns the deleted list and restoring brings them '
-      'back', () async {
+  test('deleteCompleted hides exactly the completed tasks', () async {
     final a = await actions().createAndReturnId(title: 'a', priority: 0);
     final b = await actions().createAndReturnId(title: 'b', priority: 0);
     final c = await actions().createAndReturnId(title: 'c', priority: 0);
     await actions().toggleDone(await byId(a));
     await actions().toggleDone(await byId(b));
-    final doneBefore = await idsIn(TaskStatus.completed);
-    final numbers = {for (final t in await all()) t.id: t.displayNumber};
+    final handle = await actions().deleteCompleted();
+    expect({for (final t in handle.tasks) t.id}, {a, b});
+    expect(container.read(pendingTaskDeletionsProvider), {a, b});
+    expect((await all()).length, 3);
 
-    final deleted = await actions().deleteCompleted();
-    expect({for (final t in deleted) t.id}, {a, b});
+    // A task completed during the window is not deleted by commit.
+    await actions().toggleDone(await byId(c));
+    await handle.commit();
     expect((await all()).map((t) => t.id), [c]);
-
-    for (final t in deleted) {
-      await actions().restore(t);
-    }
-    expect(await idsIn(TaskStatus.completed), doneBefore);
-    for (final t in await all()) {
-      expect(t.displayNumber, numbers[t.id]);
-    }
     await expectContiguous();
+
+    final none = await actions().deleteCompleted();
+    expect(none.tasks.map((t) => t.id), [c]);
+    none.undo();
+    expect((await all()).length, 1);
   });
 
-  test(
-    'deleteCompleted with nothing completed returns an empty list',
-    () async {
-      await actions().create(title: 'a', priority: 0);
-      expect(await actions().deleteCompleted(), isEmpty);
-      expect((await all()).length, 1);
-    },
-  );
+  test('deleteCompleted undo keeps everything', () async {
+    final a = await actions().createAndReturnId(title: 'a', priority: 0);
+    await actions().toggleDone(await byId(a));
+    final handle = await actions().deleteCompleted();
+    handle.undo();
+    await handle.commit();
+    expect((await all()).map((t) => t.id), [a]);
+    expect(container.read(pendingTaskDeletionsProvider), isEmpty);
+  });
+
+  test('move with an unknown task rethrows', () async {
+    expect(
+      () => actions().move('missing', TaskStatus.planned, 0),
+      throwsA(anything),
+    );
+  });
 
   test('move across statuses transitions to the target position', () async {
     final a = await actions().createAndReturnId(title: 'a', priority: 0);

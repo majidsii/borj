@@ -5,7 +5,7 @@ import 'package:borj/features/tasks/domain/task_repository.dart';
 import 'package:borj/features/tasks/domain/task_status.dart';
 import 'package:drift/drift.dart';
 
-final class DriftTaskRepository implements TaskRepository, TaskRestorer {
+final class DriftTaskRepository implements TaskRepository {
   const DriftTaskRepository(this._database);
 
   final AppDatabase _database;
@@ -77,46 +77,6 @@ final class DriftTaskRepository implements TaskRepository, TaskRestorer {
               positionInStatus: nextPosition,
             ),
           );
-    });
-  }
-
-  @override
-  Future<void> restore(TaskItem task) {
-    return _database.transaction(() async {
-      final taken = await (_database.select(
-        _database.taskRows,
-      )..where((row) => row.displayNumber.equals(task.displayNumber))).get();
-      var displayNumber = task.displayNumber;
-      if (taken.isNotEmpty) {
-        final max = await _database
-            .customSelect(
-              'SELECT COALESCE(MAX(display_number), 0) + 1 AS n FROM tasks',
-              readsFrom: {_database.taskRows},
-            )
-            .getSingle();
-        displayNumber = max.read<int>('n');
-      }
-
-      final existingIds = (await _orderedRowsForStatus(
-        task.status,
-      )).map((row) => row.id).toList(growable: true);
-      final position = _clampPosition(
-        task.positionInStatus,
-        existingIds.length,
-      );
-      await _database
-          .into(_database.taskRows)
-          .insert(
-            _companionFromTask(
-              task,
-              displayNumber: displayNumber,
-              positionInStatus: existingIds.length,
-            ),
-          );
-      if (position < existingIds.length) {
-        existingIds.insert(position, task.id);
-        await _writePositionsWithTemporaryOffset(existingIds);
-      }
     });
   }
 

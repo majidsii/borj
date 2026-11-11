@@ -18,10 +18,70 @@ final tasksSortProvider = StateProvider<TaskSort>((ref) => TaskSort.time);
 
 final tasksQueryProvider = StateProvider<String>((ref) => '');
 
+/// Ids deleted in the UI whose database delete has not been committed yet
+/// (the undo window). Hidden from every task list.
+final class PendingTaskDeletions extends StateNotifier<Set<String>> {
+  PendingTaskDeletions() : super(const <String>{});
+
+  void add(Iterable<String> ids) => state = {...state, ...ids};
+
+  void remove(Iterable<String> ids) {
+    final next = {...state}..removeAll(ids);
+    state = next;
+  }
+}
+
+final pendingTaskDeletionsProvider =
+    StateNotifierProvider<PendingTaskDeletions, Set<String>>(
+      (ref) => PendingTaskDeletions(),
+    );
+
+/// [taskItemsProvider] minus the tasks pending deletion.
+final visibleTaskItemsProvider = Provider<AsyncValue<List<TaskItem>>>((ref) {
+  final tasks = ref.watch(taskItemsProvider);
+  final pending = ref.watch(pendingTaskDeletionsProvider);
+  if (pending.isEmpty) return tasks;
+  return tasks.whenData(
+    (list) => list.where((t) => !pending.contains(t.id)).toList(),
+  );
+});
+
+/// A delete that is hidden but not yet applied. Call exactly one of [undo]
+/// or [commit]; whichever comes first wins and later calls do nothing.
+final class PendingDeletion {
+  PendingDeletion._(this.tasks, this._pending, this._repository);
+
+  /// The tasks hidden by this deletion (as stored).
+  final List<TaskItem> tasks;
+  final PendingTaskDeletions _pending;
+  final TaskRepository _repository;
+  bool _settled = false;
+
+  Iterable<String> get _ids => tasks.map((t) => t.id);
+
+  void undo() {
+    if (_settled) return;
+    _settled = true;
+    _pending.remove(_ids);
+  }
+
+  Future<void> commit() async {
+    if (_settled) return;
+    _settled = true;
+    try {
+      for (final id in _ids) {
+        await _repository.delete(id);
+      }
+    } finally {
+      _pending.remove(_ids);
+    }
+  }
+}
+
 /// The Tasks list, rebuilt on every data change, filter/sort/query change and
 /// minute tick (the day boundary decides overdue/today/upcoming).
 final taskListViewProvider = Provider<AsyncValue<TaskListView>>((ref) {
-  final tasks = ref.watch(taskItemsProvider);
+  final tasks = ref.watch(visibleTaskItemsProvider);
   final zone = ref.watch(taskCalendarTimeZoneProvider);
   final tick = ref.watch(minuteTickProvider);
   final filter = ref.watch(tasksFilterProvider);
@@ -58,17 +118,19 @@ final taskListViewProvider = Provider<AsyncValue<TaskListView>>((ref) {
 final class TaskActions {
   factory TaskActions({
     required TaskRepository repository,
+    required PendingTaskDeletions pending,
     required AppClock clock,
     IdGenerator idGenerator = const UuidV7IdGenerator(),
   }) {
-    return TaskActions._(repository, clock, idGenerator);
+    return TaskActions._(repository, clock, idGenerator, pending);
   }
 
-  const TaskActions._(this._repository, this._clock, this._ids);
+  const TaskActions._(this._repository, this._clock, this._ids, this._pending);
 
   final TaskRepository _repository;
   final AppClock _clock;
   final IdGenerator _ids;
+  final PendingTaskDeletions _pending;
 
   Future<void> create({
     required String title,
@@ -139,40 +201,26 @@ final class TaskActions {
     );
   }
 
-  /// Deletes the task and returns it (as stored) so the caller can offer undo.
-  Future<TaskItem?> delete(String id) async {
+  /// Hides the task now; the database delete happens on
+  /// [PendingDeletion.commit]. Null when the task does not exist.
+  Future<PendingDeletion?> delete(String id) async {
     final task = await _repository.getById(id);
     if (task == null) return null;
-    await _repository.delete(id);
-    return task;
+    _pending.add([id]);
+    return PendingDeletion._([task], _pending, _repository);
   }
 
-  /// Undo of [delete] / [deleteCompleted]: same id, fields, display number and
-  /// position.
-  Future<void> restore(TaskItem t) async {
-    final repository = _repository;
-    if (repository is TaskRestorer) {
-      await (repository as TaskRestorer).restore(t);
-      return;
-    }
-    await _repository.create(t);
-    await _repository.transition(
-      id: t.id,
-      status: t.status,
-      targetPosition: t.positionInStatus,
-      changedAtUtc: _clock.nowUtc().toUtc(),
-    );
-  }
-
-  Future<List<TaskItem>> deleteCompleted() async {
+  /// Hides every completed task now; commit deletes exactly those tasks.
+  Future<PendingDeletion> deleteCompleted() async {
     final completed =
         (await _repository.watchByStatus(TaskStatus.completed).first).toList()
           ..sort((a, b) => a.positionInStatus.compareTo(b.positionInStatus));
-    if (completed.isEmpty) return const <TaskItem>[];
-    await _repository.deleteCompleted();
-    return completed;
+    _pending.add(completed.map((t) => t.id));
+    return PendingDeletion._(completed, _pending, _repository);
   }
 
+  /// Moves a task. Throws the repository's failure when the move is invalid
+  /// (for example an unknown task id); callers decide how to surface it.
   Future<void> move(
     String taskId,
     TaskStatus status,
@@ -197,5 +245,6 @@ final taskActionsProvider = Provider<TaskActions>((ref) {
   return TaskActions(
     repository: ref.watch(taskRepositoryProvider),
     clock: ref.watch(appClockProvider),
+    pending: ref.read(pendingTaskDeletionsProvider.notifier),
   );
 });

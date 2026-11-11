@@ -167,4 +167,78 @@ void main() {
     expect(find.text('ب'), findsNothing);
     expect(tester.takeException(), isNull);
   });
+
+  testWidgets('onDismissed fires once on expiry, never after undo', (
+    tester,
+  ) async {
+    var dismissed = 0;
+    var undone = 0;
+    await tester.pumpWidget(
+      glassTestApp(
+        Builder(
+          builder: (context) => GlassButton(
+            label: 'حذف',
+            onPressed: () => showUndoToast(
+              context,
+              message: 'کار حذف شد',
+              onUndo: () => undone++,
+              onDismissed: () => dismissed++,
+            ),
+          ),
+        ),
+        overlayBackdrop: true,
+      ),
+    );
+    await tester.tap(find.text('حذف'));
+    await tester.pumpAndSettle();
+    expect(dismissed, 0);
+    await tester.pump(const Duration(seconds: 5));
+    await tester.pumpAndSettle();
+    expect(dismissed, 1);
+    expect(undone, 0);
+
+    await tester.tap(find.text('حذف'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('برگرداندن'));
+    await tester.pumpAndSettle();
+    expect(undone, 1);
+    expect(dismissed, 1);
+  });
+
+  testWidgets('onDismissed fires when another toast replaces the toast', (
+    tester,
+  ) async {
+    var first = 0;
+    var second = 0;
+    var n = 0;
+    await tester.pumpWidget(
+      glassTestApp(
+        Builder(
+          builder: (context) => GlassButton(
+            label: 'حذف',
+            onPressed: () {
+              final mine = ++n;
+              showUndoToast(
+                context,
+                message: 'کار حذف شد',
+                onUndo: () {},
+                onDismissed: () => mine == 1 ? first++ : second++,
+              );
+            },
+          ),
+        ),
+        overlayBackdrop: true,
+      ),
+    );
+    await tester.tap(find.text('حذف'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('حذف'));
+    await tester.pumpAndSettle();
+    expect(first, 1);
+    expect(second, 0);
+    await tester.pump(const Duration(seconds: 5));
+    await tester.pumpAndSettle();
+    expect(first, 1);
+    expect(second, 1);
+  });
 }

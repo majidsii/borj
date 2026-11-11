@@ -4,8 +4,7 @@ import 'package:borj/features/tasks/domain/task_reminder_repository.dart';
 import 'package:borj/features/tasks/domain/task_repository.dart';
 import 'package:borj/features/tasks/domain/task_status.dart';
 
-final class ReminderAwareTaskRepository
-    implements TaskRepository, TaskRestorer {
+final class ReminderAwareTaskRepository implements TaskRepository {
   factory ReminderAwareTaskRepository({
     required TaskRepository inner,
     required TaskReminderRepository reminderRepository,
@@ -38,16 +37,6 @@ final class ReminderAwareTaskRepository
   @override
   Future<void> create(TaskItem task) async {
     await _inner.create(task);
-    await _reprojectIfConfigured(task.id);
-  }
-
-  @override
-  Future<void> restore(TaskItem task) async {
-    final inner = _inner;
-    if (inner is! TaskRestorer) {
-      throw StateError('The wrapped task repository cannot restore tasks.');
-    }
-    await (inner as TaskRestorer).restore(task);
     await _reprojectIfConfigured(task.id);
   }
 

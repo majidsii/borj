@@ -11,6 +11,7 @@ import '../glass_button.dart';
 import 'spring_curve.dart';
 
 OverlayEntry? _current;
+VoidCallback? _currentDismissed;
 
 const double _rise = 16;
 const double _maxWidth = 420;
@@ -18,25 +19,45 @@ const double _inset = 16;
 
 /// Shows a toast with an undo action in the root overlay. One toast at a
 /// time: showing a new one removes the old one immediately.
+///
+/// [onDismissed] fires exactly once when the toast goes away without undo:
+/// after [visibleFor], or when another toast replaces it. Never after undo.
 void showUndoToast(
   BuildContext context, {
   required String message,
   required VoidCallback onUndo,
+  VoidCallback? onDismissed,
   String undoLabel = 'برگرداندن',
   Duration visibleFor = const Duration(seconds: 5),
   double bottomOffset = 24,
 }) {
   final overlay = Overlay.of(context, rootOverlay: true);
   final reduced = MotionScope.reducedOf(context);
+  _currentDismissed?.call();
+  _currentDismissed = null;
   _current?.remove();
   _current?.dispose();
+  var settled = false;
+  void dismissOnce() {
+    if (settled) return;
+    settled = true;
+    onDismissed?.call();
+  }
+
+  void undoOnce() {
+    if (settled) return;
+    settled = true;
+    onUndo();
+  }
+
   late final OverlayEntry entry;
   entry = OverlayEntry(
     builder: (_) => GlassOverlayContent(
       child: _UndoToast(
         message: message,
         undoLabel: undoLabel,
-        onUndo: onUndo,
+        onUndo: undoOnce,
+        onLeft: dismissOnce,
         visibleFor: visibleFor,
         bottomOffset: bottomOffset,
         reduced: reduced,
@@ -45,6 +66,7 @@ void showUndoToast(
           // can end in the very frame the replacement is shown).
           if (!identical(_current, entry)) return;
           _current = null;
+          _currentDismissed = null;
           entry.remove();
           entry.dispose();
         },
@@ -52,6 +74,7 @@ void showUndoToast(
     ),
   );
   _current = entry;
+  _currentDismissed = dismissOnce;
   overlay.insert(entry);
 }
 
@@ -60,6 +83,7 @@ final class _UndoToast extends StatefulWidget {
     required this.message,
     required this.undoLabel,
     required this.onUndo,
+    required this.onLeft,
     required this.visibleFor,
     required this.bottomOffset,
     required this.reduced,
@@ -69,6 +93,7 @@ final class _UndoToast extends StatefulWidget {
   final String message;
   final String undoLabel;
   final VoidCallback onUndo;
+  final VoidCallback onLeft;
   final Duration visibleFor;
   final double bottomOffset;
   final bool reduced;
@@ -112,8 +137,9 @@ final class _UndoToastState extends State<_UndoToast>
     _timer = Timer(widget.visibleFor, _leave);
   }
 
-  void _leave() {
+  void _leave({bool undone = false}) {
     if (_leaving) return;
+    if (!undone) widget.onLeft();
     setState(() => _leaving = true); // also stops the toast taking taps
     _timer?.cancel();
     unawaited(_controller.reverse());
@@ -182,7 +208,7 @@ final class _UndoToastState extends State<_UndoToast>
                         onPressed: () {
                           if (_leaving) return;
                           widget.onUndo();
-                          _leave();
+                          _leave(undone: true);
                         },
                       ),
                     ],

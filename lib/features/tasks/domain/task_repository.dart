@@ -28,11 +28,3 @@ abstract interface class TaskRepository {
 
   Future<void> deleteCompleted();
 }
-
-/// Re-inserts a previously deleted task with its original `displayNumber`,
-/// timestamps and fields, at [TaskItem.positionInStatus] (clamped) in its
-/// status. Used by undo. If the display number is taken, the next free one is
-/// allocated instead (display numbers are never reused).
-abstract interface class TaskRestorer {
-  Future<void> restore(TaskItem task);
-}

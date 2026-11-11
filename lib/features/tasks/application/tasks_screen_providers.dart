@@ -65,15 +65,23 @@ final class PendingDeletion {
     _pending.remove(_ids);
   }
 
+  /// Deletes the tasks. Committed ids stay in the pending set (task ids are
+  /// UUIDv7 and never reused), so a task cannot reappear for the frames
+  /// between the delete and the repository stream's next emission. If a
+  /// delete fails, the ids not yet deleted are shown again and the error
+  /// propagates.
   Future<void> commit() async {
     if (_settled) return;
     _settled = true;
+    final remaining = _ids.toList();
     try {
-      for (final id in _ids) {
-        await _repository.delete(id);
+      while (remaining.isNotEmpty) {
+        await _repository.delete(remaining.first);
+        remaining.removeAt(0);
       }
-    } finally {
-      _pending.remove(_ids);
+    } catch (_) {
+      _pending.remove(remaining);
+      rethrow;
     }
   }
 }

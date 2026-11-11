@@ -259,7 +259,8 @@ void main() {
     final handle = await actions().delete(id);
     await handle!.commit();
     expect((await all()).any((t) => t.id == id), isFalse);
-    expect(container.read(pendingTaskDeletionsProvider), isEmpty);
+    // Committed ids stay hidden: no flicker before the stream re-emits.
+    expect(container.read(pendingTaskDeletionsProvider), {id});
     expect(
       await container.read(taskReminderRepositoryProvider).getByTask(id),
       isEmpty,

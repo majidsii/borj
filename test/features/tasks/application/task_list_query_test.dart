@@ -111,7 +111,7 @@ void main() {
       final v = view([_task('a', dueUtc: tehran(4, 9, 15))]);
       expect(
         v.sections.single.entries.single.localInstant,
-        DateTime(2026, 11, 4, 9, 15),
+        DateTime.utc(2026, 11, 4, 9, 15),
       );
       final u = view([_task('n')]);
       expect(u.sections.single.entries.single.localInstant, isNull);
@@ -241,6 +241,38 @@ void main() {
       expect(ids(v, TaskSectionKind.untimed), ['a', 'b', 'z']);
     });
 
+    test('alphabetical differs from code-point order', () {
+      final v = view([
+        _task('k', title: 'کتاب', number: 1),
+        _task('m', title: 'ماست', number: 2),
+        _task('c', title: 'چای', number: 3),
+        _task('n', title: 'نان', number: 4),
+      ], sort: TaskSort.alphabetical);
+      expect(ids(v, TaskSectionKind.untimed), ['c', 'k', 'm', 'n']);
+    });
+
+    test('time sort puts undated entries last (done section)', () {
+      final v = view([
+        _task('u', status: TaskStatus.completed, number: 1),
+        _task(
+          'd',
+          status: TaskStatus.completed,
+          dueUtc: tehran(3, 9),
+          number: 2,
+        ),
+      ]);
+      expect(ids(v, TaskSectionKind.done), ['d', 'u']);
+    });
+
+    test('start-only task is timed', () {
+      final v = view([
+        _task('s', startUtc: tehran(6, 8)),
+        _task('n'),
+      ], filter: TaskSmartFilter.timed);
+      expect(ids(v, TaskSectionKind.upcoming), ['s']);
+      expect(v.counts.timed, 1);
+    });
+
     test('sort stays inside sections; done is completed before canceled', () {
       final v = view([
         _task('c1', status: TaskStatus.canceled, priority: 3, number: 1),
@@ -295,6 +327,13 @@ void main() {
       expect(m.first, 'ماست');
       expect(m.last, 'نان');
       expect(comparePersian('ا', 'abc') < 0, isTrue);
+      expect(comparePersian('abc', 'ا') > 0, isTrue);
+      expect(comparePersian('', 'ا') < 0, isTrue);
+      expect(comparePersian('ا', '') > 0, isTrue);
+      expect(comparePersian('', ''), 0);
+      expect(comparePersian('کتاب', 'گل') < 0, isTrue);
+      expect(comparePersian('گل', 'کتاب') > 0, isTrue);
+      expect(comparePersian('کـتَاب', 'کتاب'), 0);
     });
 
     test('taskMatches is case-insensitive', () {

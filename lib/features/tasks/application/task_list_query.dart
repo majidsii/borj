@@ -24,7 +24,7 @@ final class TaskListEntry {
   final TaskItem task;
 
   /// Wall clock of `dueAtUtc ?? startAtUtc` in the task calendar zone, held in
-  /// a naive `DateTime`; null when the task has neither.
+  /// a `DateTime.utc` used only as a zone-free carrier; null when the task has neither.
   final DateTime? localInstant;
 }
 
@@ -97,7 +97,11 @@ const _persianBase = {
 List<int> _persianKeys(String s) {
   final keys = <int>[];
   for (final rune in s.toLowerCase().runes) {
-    if (rune == 0x200C || rune == 0x20 || (rune >= 0x64B && rune <= 0x65F)) {
+    if (rune == 0x200C ||
+        rune == 0x20 ||
+        rune == 0x640 ||
+        rune == 0x670 ||
+        (rune >= 0x64B && rune <= 0x65F)) {
       continue;
     }
     final ch = String.fromCharCode(rune);
@@ -140,8 +144,12 @@ TaskListView buildTaskListView({
 }) {
   final location = timezone.getLocation(timeZoneId);
   final zonedNow = timezone.TZDateTime.from(nowUtc.toUtc(), location);
-  final today = DateTime(zonedNow.year, zonedNow.month, zonedNow.day);
-  final tomorrow = DateTime(zonedNow.year, zonedNow.month, zonedNow.day + 1);
+  final today = DateTime.utc(zonedNow.year, zonedNow.month, zonedNow.day);
+  final tomorrow = DateTime.utc(
+    zonedNow.year,
+    zonedNow.month,
+    zonedNow.day + 1,
+  );
 
   TaskListEntry entryOf(TaskItem t) {
     final at = t.dueAtUtc ?? t.startAtUtc;
@@ -149,7 +157,7 @@ TaskListView buildTaskListView({
     final l = timezone.TZDateTime.from(at, location);
     return TaskListEntry(
       task: t,
-      localInstant: DateTime(l.year, l.month, l.day, l.hour, l.minute),
+      localInstant: DateTime.utc(l.year, l.month, l.day, l.hour, l.minute),
     );
   }
 
@@ -265,14 +273,7 @@ int Function(TaskListEntry, TaskListEntry) _comparator(TaskSort sort) {
         b,
       );
     case TaskSort.alphabetical:
-      return (a, b) => chain(
-        [
-          (a, b) => normalizeTaskSearch(
-            a.task.title,
-          ).compareTo(normalizeTaskSearch(b.task.title)),
-        ],
-        a,
-        b,
-      );
+      return (a, b) =>
+          chain([(a, b) => comparePersian(a.task.title, b.task.title)], a, b);
   }
 }

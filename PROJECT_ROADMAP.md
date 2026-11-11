@@ -1147,7 +1147,8 @@ As of this document:
 - 2026-11-09: Phase 2 Part B (Today) COMPLETE; checkpoint `docs/superpowers/checkpoints/2026-11-09-redesign-phase-2b-checkpoint.md`; merged into `feat/v2-complete-dashboard`.
 - 2026-11-09: owner opened the app and noticed Tasks/Finance/Settings still look old; decision («اره اوکیه»): build the main screens first (Phase 3 Tasks, 4 Finance, 5 Settings & data), and defer Phase 2 Part C (Today customization; draft plan `docs/superpowers/plans/2026-11-09-redesign-phase-2c-today-customization.md`) until after them.
 - 2026-11-09: PAUSED by the owner (weekly token budget) before Phase 3; resume from the WORKLOG entry "Paused by the owner before Phase 3".
-- Next step: redesign Phase 3 (Tasks screens to their boards): inventory the legacy tasks panel, then the 3A plan; release part B (packaging + Android signing + Android CI build) follows the redesign.
+- 2026-11-11: Phase 3A plan written (`docs/superpowers/plans/2026-11-11-redesign-phase-3a-tasks.md`): tasks list + kanban + view switch + options sheet + quick entry; lists/subtasks/NL parsing stay hidden.
+- Next step: execute Phase 3A; release part B (packaging + Android signing + Android CI build) follows the redesign.
 - Tasks 2.10–2.11 remain pending and must be designed individually before implementation.
 
 ---

@@ -74,7 +74,50 @@ String normalizeTaskSearch(String s) {
       .toLowerCase()
       .replaceAll('ي', 'ی')
       .replaceAll('ك', 'ک')
-      .replaceAll(RegExp(r'\s+'), ' ');
+      .replaceAll(RegExp(r'[\u064B-\u065F\u0670\u0640]'), '')
+      .replaceAll('\u200C', ' ')
+      .replaceAll(RegExp(r'\s+'), ' ')
+      .trim();
+}
+
+const _persianAlphabet = 'ابپتثجچحخدذرزژسشصضطظعغفقکگلمنوهی';
+const _persianBase = {
+  'أ': 'ا',
+  'إ': 'ا',
+  'آ': 'ا',
+  'ء': 'ا',
+  'ؤ': 'و',
+  'ئ': 'ی',
+  'ة': 'ه',
+  'ي': 'ی',
+  'ى': 'ی',
+  'ك': 'ک',
+};
+
+List<int> _persianKeys(String s) {
+  final keys = <int>[];
+  for (final rune in s.toLowerCase().runes) {
+    if (rune == 0x200C || rune == 0x20 || (rune >= 0x64B && rune <= 0x65F)) {
+      continue;
+    }
+    final ch = String.fromCharCode(rune);
+    final index = _persianAlphabet.indexOf(_persianBase[ch] ?? ch);
+    keys.add(index >= 0 ? index : 1000 + rune);
+  }
+  return keys;
+}
+
+/// Compares in Persian alphabet order, letter by letter. Hamza forms fold to
+/// their base letter; other characters sort after Persian letters by code
+/// point; spaces and ZWNJ are ignored.
+int comparePersian(String a, String b) {
+  final x = _persianKeys(a);
+  final y = _persianKeys(b);
+  final n = x.length < y.length ? x.length : y.length;
+  for (var i = 0; i < n; i++) {
+    if (x[i] != y[i]) return x[i].compareTo(y[i]);
+  }
+  return x.length.compareTo(y.length);
 }
 
 bool taskMatches(TaskItem t, String query) {

@@ -276,6 +276,27 @@ void main() {
       expect(view(tasks, query: 'zzz').sections, isEmpty);
     });
 
+    test('diacritics and ZWNJ are normalised', () {
+      final v = view([
+        _task('a', title: 'کتاب', number: 1),
+        _task('b', title: 'می روم', number: 2),
+      ], query: 'كِتاب');
+      expect(ids(v, TaskSectionKind.untimed), ['a']);
+      final w = view([_task('b', title: 'می روم')], query: 'می\u200Cروم');
+      expect(ids(w, TaskSectionKind.untimed), ['b']);
+    });
+
+    test('comparePersian follows the Persian alphabet', () {
+      final l = ['گل', 'کتاب', 'چای', 'پنیر', 'باغ', 'آب']
+        ..sort(comparePersian);
+      expect(l, ['آب', 'باغ', 'پنیر', 'چای', 'کتاب', 'گل']);
+      expect(comparePersian('می\u200Cروم', 'میروم'), 0);
+      final m = ['میروم', 'می\u200Cروم', 'ماست', 'نان']..sort(comparePersian);
+      expect(m.first, 'ماست');
+      expect(m.last, 'نان');
+      expect(comparePersian('ا', 'abc') < 0, isTrue);
+    });
+
     test('taskMatches is case-insensitive', () {
       expect(taskMatches(_task('a', title: 'Buy Milk'), 'MILK'), isTrue);
     });

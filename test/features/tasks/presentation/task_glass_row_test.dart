@@ -107,6 +107,31 @@ void main() {
     expect(find.text('۹:۰۰'), findsNothing);
   });
 
+  testWidgets('a 23:59 instant is date-only: no clock in امروز', (
+    tester,
+  ) async {
+    final c = _Calls();
+    await tester.pumpWidget(
+      _app(c.row(_entry(at: DateTime.utc(2026, 11, 11, 23, 59)))),
+    );
+    expect(find.text('۲۳:۵۹'), findsNothing);
+    expect(find.text('۱۹ آبان'), findsNothing);
+    expect(find.text('خرید نان'), findsOneWidget);
+  });
+
+  testWidgets('a 23:59 instant shows the date when showDate is true', (
+    tester,
+  ) async {
+    final c = _Calls();
+    await tester.pumpWidget(
+      _app(
+        c.row(_entry(at: DateTime.utc(2026, 11, 5, 23, 59)), showDate: true),
+      ),
+    );
+    expect(find.text('۱۴ آبان'), findsOneWidget);
+    expect(find.text('۲۳:۵۹'), findsNothing);
+  });
+
   testWidgets('priority labels and tones', (tester) async {
     final c = _Calls();
     await tester.pumpWidget(_app(c.row(_entry(priority: 2))));

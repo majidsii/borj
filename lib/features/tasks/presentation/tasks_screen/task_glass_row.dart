@@ -173,9 +173,13 @@ class _TaskGlassRowState extends State<TaskGlassRow>
     final task = w.entry.task;
     final done = task.status == TaskStatus.completed;
     final at = w.entry.localInstant;
+    // Quick entry stores «امروز/فردا» as 23:59: a date, not a time of day.
+    final dateOnly = at != null && at.hour == 23 && at.minute == 59;
     final when = at == null
         ? null
-        : (w.showDate ? PersianDateLabel.dayMonth(at) : formatClock(at));
+        : (w.showDate
+              ? PersianDateLabel.dayMonth(at)
+              : (dateOnly ? null : formatClock(at)));
     final (priorityLabel, priorityTone) = switch (task.priority) {
       1 => ('اولویت پایین', AppTextTone.secondary),
       2 => ('اولویت متوسط', AppTextTone.warn),

@@ -61,11 +61,20 @@ class _TaskSectionListState extends State<TaskSectionList> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         for (final section in w.view.sections)
-          if (section.kind != TaskSectionKind.done || _showDone)
+          if (section.kind != TaskSectionKind.done)
             ..._sectionWidgets(section)
-          else
-            _ShowDone(
-              count: section.entries.length,
+          else if (_showDone) ...[
+            ..._sectionWidgets(section),
+            _DoneToggle(
+              key: const ValueKey('tasks-hide-done'),
+              label: 'پنهان کردن انجام‌شده‌ها',
+              onTap: () => setState(() => _showDone = false),
+            ),
+          ] else
+            _DoneToggle(
+              key: const ValueKey('tasks-show-done'),
+              label:
+                  'نمایش انجام‌شده‌ها (${Money.toPersianDigits('${section.entries.length}')})',
               onTap: () => setState(() => _showDone = true),
             ),
       ],
@@ -182,10 +191,10 @@ class _Header extends StatelessWidget {
   }
 }
 
-class _ShowDone extends StatelessWidget {
-  const _ShowDone({required this.count, required this.onTap});
+class _DoneToggle extends StatelessWidget {
+  const _DoneToggle({required this.label, required this.onTap, super.key});
 
-  final int count;
+  final String label;
   final VoidCallback onTap;
 
   @override
@@ -193,13 +202,12 @@ class _ShowDone extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(top: AppSpacing.s8),
       child: Pressable(
-        key: const ValueKey('tasks-show-done'),
         onPressed: onTap,
         child: ConstrainedBox(
           constraints: const BoxConstraints(minHeight: 44),
           child: Center(
             child: AppText(
-              'نمایش انجام‌شده‌ها (${Money.toPersianDigits('$count')})',
+              label,
               role: AppTextRole.subheadline,
               tone: AppTextTone.link,
               weight: FontWeight.w600,

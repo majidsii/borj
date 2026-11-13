@@ -133,6 +133,26 @@ void main() {
     expect(find.byKey(const ValueKey('task-row-done')), findsOneWidget);
     expect(find.byKey(const ValueKey('task-row-canc')), findsOneWidget);
     expect(find.byKey(const ValueKey('tasks-show-done')), findsNothing);
+    expect(find.text('لغوشده'), findsOneWidget);
+  });
+
+  testWidgets('expanded done section collapses again', (tester) async {
+    await _pump(tester, _list(_view(_mixed)));
+    await tester.tap(find.byKey(const ValueKey('tasks-show-done')));
+    await tester.pump();
+    final hide = find.byKey(const ValueKey('tasks-hide-done'));
+    expect(hide, findsOneWidget);
+    expect(find.text('پنهان کردن انجام‌شده‌ها'), findsOneWidget);
+    expect(
+      tester.getTopLeft(hide).dy,
+      greaterThan(
+        tester.getBottomLeft(find.byKey(const ValueKey('task-row-canc'))).dy,
+      ),
+    );
+    await tester.tap(hide);
+    await tester.pump();
+    expect(find.byKey(const ValueKey('task-row-done')), findsNothing);
+    expect(find.byKey(const ValueKey('tasks-show-done')), findsOneWidget);
   });
 
   testWidgets('a section of 20 rows renders two panels within the limit', (

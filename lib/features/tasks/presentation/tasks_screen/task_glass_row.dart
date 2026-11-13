@@ -171,7 +171,9 @@ class _TaskGlassRowState extends State<TaskGlassRow>
     final colors = AppTheme.of(context).colors;
     final w = widget;
     final task = w.entry.task;
-    final done = task.status == TaskStatus.completed;
+    final canceled = task.status == TaskStatus.canceled;
+    final done = task.status == TaskStatus.completed || canceled;
+    final checked = task.status == TaskStatus.completed;
     final at = w.entry.localInstant;
     // Quick entry stores «امروز/فردا» as 23:59: a date, not a time of day.
     final dateOnly = at != null && at.hour == 23 && at.minute == 59;
@@ -186,8 +188,13 @@ class _TaskGlassRowState extends State<TaskGlassRow>
       3 => ('اولویت بالا', AppTextTone.danger),
       _ => (null, AppTextTone.secondary),
     };
-    final hasSubline = when != null || priorityLabel != null;
-    final label = [task.title, ?when, ?priorityLabel].join('، ');
+    final hasSubline = canceled || when != null || priorityLabel != null;
+    final label = [
+      task.title,
+      if (canceled) 'لغوشده',
+      ?when,
+      ?priorityLabel,
+    ].join('، ');
 
     final content = DecoratedBox(
       decoration: BoxDecoration(
@@ -206,7 +213,7 @@ class _TaskGlassRowState extends State<TaskGlassRow>
                 const CustomSemanticsAction(label: 'ویرایش'): w.onOpen,
               },
               child: RoundCheck(
-                checked: done,
+                checked: checked,
                 onChanged: (_) => w.onToggle(),
                 semanticLabel: label,
               ),
@@ -244,6 +251,14 @@ class _TaskGlassRowState extends State<TaskGlassRow>
                             Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
+                                if (canceled)
+                                  const AppText(
+                                    'لغوشده',
+                                    role: AppTextRole.caption,
+                                    tone: AppTextTone.secondary,
+                                  ),
+                                if (canceled && when != null)
+                                  const SizedBox(width: AppSpacing.s8),
                                 if (when != null)
                                   AppText(
                                     when,
@@ -251,7 +266,8 @@ class _TaskGlassRowState extends State<TaskGlassRow>
                                     tabular: true,
                                     tone: AppTextTone.secondary,
                                   ),
-                                if (when != null && priorityLabel != null)
+                                if ((canceled || when != null) &&
+                                    priorityLabel != null)
                                   const SizedBox(width: AppSpacing.s8),
                                 if (priorityLabel != null)
                                   AppText(

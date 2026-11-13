@@ -287,7 +287,6 @@ void main() {
       'جدیدترین',
       'الفبا',
       'پاک کردن انجام‌شده‌ها (۱)',
-      'خروجی',
       'افزودن با جزئیات',
       'انتخاب قالب',
       'مدیریت قالب‌ها',
@@ -296,7 +295,6 @@ void main() {
     }
     for (final k in [
       'option-clear',
-      'option-export',
       'option-add-details',
       'option-template-pick',
       'option-template-manage',
@@ -429,24 +427,14 @@ void main() {
     expect((await _stored(tester, c, 't1'))!.status, TaskStatus.canceled);
   });
 
-  testWidgets('export closes the sheet; the legacy handler has no effect', (
+  testWidgets('the options sheet has no export item (never implemented)', (
     tester,
   ) async {
-    final c = await _pump(tester);
-    final before = await _run(
-      tester,
-      () => c.read(taskRepositoryProvider).watchAll().first,
-    );
+    await _pump(tester);
     await _openOptionsCompact(tester);
-    await tester.tap(_key('option-export'));
-    await tester.pumpAndSettle();
+    expect(find.text('خروجی'), findsNothing);
     expect(_key('option-export'), findsNothing);
-    expect(tester.takeException(), isNull);
-    final after = await _run(
-      tester,
-      () => c.read(taskRepositoryProvider).watchAll().first,
-    );
-    expect(after.length, before.length);
+    expect(_key('option-add-details'), findsOneWidget);
   });
 
   testWidgets('add with details opens the legacy dialog and creates', (

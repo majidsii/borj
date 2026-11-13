@@ -28,14 +28,6 @@ const IdGenerator _ids = UuidV7IdGenerator();
 DateTime _nowUtc(ProviderContainer container) =>
     container.read(appClockProvider).nowUtc().toUtc();
 
-/// The legacy «خروجی» button. The legacy panel wired it to an empty handler
-/// (`onPressed: () {}`), so exporting does nothing yet; this keeps that
-/// behaviour in one place for both entry points.
-Future<void> exportTasks(
-  BuildContext context,
-  ProviderContainer container,
-) async {}
-
 /// Creates a task through the legacy details dialog (create mode).
 Future<void> addTaskWithDetails(
   BuildContext context,

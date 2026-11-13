@@ -13,14 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-enum _Option {
-  clear,
-  export,
-  addDetails,
-  pickTemplate,
-  manageTemplates,
-  calendar,
-}
+enum _Option { clear, addDetails, pickTemplate, manageTemplates, calendar }
 
 /// Opens the Tasks options sheet («گزینه‌ها»). The sort control applies at
 /// once; every other entry closes the sheet and then runs its action with
@@ -50,8 +43,6 @@ Future<void> showTasksOptions(BuildContext context) async {
             '${Money.toPersianDigits('${handle.tasks.length}')} '
             'کار انجام‌شده پاک شد',
       );
-    case _Option.export:
-      if (context.mounted) await exportTasks(context, container);
     case _Option.addDetails:
       if (context.mounted) await addTaskWithDetails(context, container);
     case _Option.pickTemplate:
@@ -112,12 +103,6 @@ class _OptionsSheet extends ConsumerWidget {
               label: clearLabel,
               enabled: completed > 0,
               onTap: () => GlassSheet.close(context, _Option.clear),
-            ),
-            _Item(
-              id: 'option-export',
-              icon: Icons.file_download_outlined,
-              label: 'خروجی',
-              onTap: () => GlassSheet.close(context, _Option.export),
             ),
             _Item(
               id: 'option-add-details',

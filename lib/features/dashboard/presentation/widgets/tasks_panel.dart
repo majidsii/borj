@@ -589,12 +589,7 @@ final class _Toolbar extends StatelessWidget {
               compact: true,
               icon: Icons.file_download_outlined,
               label: 'خروجی',
-              onPressed: () => unawaited(
-                exportTasks(
-                  context,
-                  ProviderScope.containerOf(context, listen: false),
-                ),
-              ),
+              onPressed: () {},
             ),
           ],
         );
@@ -645,12 +640,7 @@ final class _DesktopToolbar extends StatelessWidget {
           compact: true,
           icon: Icons.file_download_outlined,
           label: 'خروجی',
-          onPressed: () => unawaited(
-            exportTasks(
-              context,
-              ProviderScope.containerOf(context, listen: false),
-            ),
-          ),
+          onPressed: () {},
         ),
       ],
     );

@@ -3,12 +3,24 @@ import 'dart:async';
 import 'package:borj/app/design/design.dart';
 import 'package:borj/app/shell/shell_destinations.dart';
 import 'package:borj/app/theme/app_theme.dart';
+import 'package:borj/core/date_time/app_clock.dart';
 import 'package:borj/core/formatting/persian_number.dart';
 import 'package:borj/core/money/money.dart';
 import 'package:borj/features/settings/application/appearance_preferences_controller.dart';
 import 'package:borj/features/settings/data/in_memory_appearance_preferences_store.dart';
 import 'package:borj/features/settings/domain/appearance_preferences.dart';
 import 'package:borj/features/settings/presentation/appearance_section.dart';
+import 'package:borj/features/tasks/application/task_list_query.dart';
+import 'package:borj/features/tasks/application/tasks_screen_providers.dart';
+import 'package:borj/features/tasks/domain/task_item.dart';
+import 'package:borj/features/tasks/domain/task_repository.dart';
+import 'package:borj/features/tasks/domain/task_status.dart';
+import 'package:borj/features/tasks/presentation/task_quick_entry.dart';
+import 'package:borj/features/tasks/presentation/tasks_screen/task_glass_row.dart';
+import 'package:borj/features/tasks/presentation/tasks_screen/task_kanban_desktop.dart';
+import 'package:borj/features/tasks/presentation/tasks_screen/task_kanban_phone.dart';
+import 'package:borj/features/tasks/presentation/tasks_screen/task_list_view.dart';
+import 'package:borj/features/tasks/presentation/tasks_screen/task_smart_tiles.dart';
 import 'package:borj/features/today/application/today_agenda_builder.dart';
 import 'package:borj/features/today/application/today_providers.dart';
 import 'package:borj/features/today/presentation/installment_card.dart';
@@ -19,6 +31,7 @@ import 'package:borj/features/today/presentation/today_onboarding.dart';
 import 'package:borj/features/today/presentation/today_tasks_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:timezone/data/latest.dart' as timezone_data;
 
 /// One design-review sample: a label, the board it is compared with (file name
 /// without extension) and a builder. The review screen builds it once per side
@@ -357,7 +370,278 @@ final List<DesignReviewSample> designReviewSamples = <DesignReviewSample>[
     board: 'PhoneEmptyToday',
     build: (context) => _phoneToday(context, TodayOnboarding(onAddTask: () {})),
   ),
+  DesignReviewSample(
+    label: 'TaskGlassRow normal, done, swiped open',
+    board: 'PhoneTasks',
+    build: (context) => _phoneToday(
+      context,
+      _fixedBox(
+        358,
+        190,
+        _panel(
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _sampleRow(_taskEntries[0], showDate: false),
+              _sampleRow(_taskEntries[1], showDate: false),
+              _sampleRow(_taskEntries[2], divider: false, swiped: true),
+            ],
+          ),
+        ),
+      ),
+    ),
+  ),
+  DesignReviewSample(
+    label: 'TaskSmartTiles',
+    board: 'PhoneTasks',
+    build: (context) => _phoneToday(
+      context,
+      _fixedBox(
+        358,
+        122,
+        TaskSmartTiles(
+          counts: _sampleTaskView.counts,
+          selected: TaskSmartFilter.all,
+          onSelected: (_) {},
+        ),
+      ),
+    ),
+  ),
+  DesignReviewSample(
+    label: 'TaskSectionList',
+    board: 'PhoneTasks',
+    build: (context) => _phoneToday(
+      context,
+      SizedBox(
+        width: 358,
+        child: TaskSectionList(
+          view: _sampleTaskView,
+          filter: TaskSmartFilter.all,
+          callbacks: _sampleRowCallbacks,
+        ),
+      ),
+    ),
+  ),
+  DesignReviewSample(
+    label: 'TaskKanbanPhone',
+    board: 'PhoneKanban',
+    build: (context) => _phoneToday(
+      context,
+      _fixedBox(
+        390,
+        640,
+        TaskKanbanPhone(
+          tasks: _sampleTasks,
+          actions: _sampleTaskActions(),
+          onOpen: (_) {},
+          onDelete: (_) {},
+          timeZoneId: 'Asia/Tehran',
+        ),
+      ),
+    ),
+  ),
+  DesignReviewSample(
+    label: 'TaskKanbanDesktop',
+    board: 'MacTasks',
+    build: (context) => MediaQuery(
+      data: MediaQuery.of(context).copyWith(size: const Size(1440, 900)),
+      child: _fixedBox(
+        1000,
+        520,
+        TaskKanbanDesktop(
+          tasks: _sampleTasks,
+          actions: _sampleTaskActions(),
+          onOpen: (_) {},
+          onDelete: (_) {},
+          timeZoneId: 'Asia/Tehran',
+        ),
+      ),
+    ),
+  ),
+  DesignReviewSample(
+    label: 'Task quick entry content',
+    board: 'PhoneQuickEntry',
+    build: (context) => _phoneToday(
+      context,
+      _fixedBox(
+        390,
+        460,
+        _panel(const TaskQuickEntryContent(autofocus: false)),
+      ),
+    ),
+  ),
 ];
+
+final DateTime _sampleTaskUtc = DateTime.utc(2026, 11, 4, 9);
+
+TaskItem _sampleTask(
+  int number,
+  String title,
+  TaskStatus status, {
+  int priority = 0,
+  DateTime? dueAtUtc,
+}) => TaskItem(
+  id: 'sample-$number',
+  displayNumber: number,
+  title: title,
+  priority: priority,
+  status: status,
+  positionInStatus: number,
+  dueAtUtc: dueAtUtc,
+  createdAtUtc: _sampleTaskUtc,
+  updatedAtUtc: _sampleTaskUtc,
+  completedAtUtc: status == TaskStatus.completed ? _sampleTaskUtc : null,
+  canceledAtUtc: status == TaskStatus.canceled ? _sampleTaskUtc : null,
+);
+
+final List<TaskItem> _sampleTasks = <TaskItem>[
+  _sampleTask(
+    1,
+    'تحویل گزارش',
+    TaskStatus.planned,
+    priority: 3,
+    dueAtUtc: DateTime.utc(2026, 11, 4, 11, 30),
+  ),
+  _sampleTask(2, 'خرید نان', TaskStatus.planned),
+  _sampleTask(
+    3,
+    'ورزش عصر',
+    TaskStatus.inProgress,
+    priority: 2,
+    dueAtUtc: DateTime.utc(2026, 11, 4, 12),
+  ),
+  _sampleTask(
+    4,
+    'مرور هفتگی',
+    TaskStatus.completed,
+    dueAtUtc: DateTime.utc(2026, 11, 3, 14),
+  ),
+  _sampleTask(5, 'پرداخت قبض', TaskStatus.canceled),
+];
+
+// Wall clock in a DateTime.utc carrier, as the task list builds it.
+final List<TaskListEntry> _taskEntries = <TaskListEntry>[
+  TaskListEntry(
+    task: _sampleTasks[0],
+    localInstant: DateTime.utc(2026, 11, 4, 15),
+  ),
+  TaskListEntry(task: _sampleTasks[1], localInstant: null),
+  TaskListEntry(
+    task: _sampleTasks[3],
+    localInstant: DateTime.utc(2026, 11, 3, 17, 30),
+  ),
+];
+
+final TaskListView _sampleTaskView = TaskListView(
+  sections: <TaskSection>[
+    TaskSection(
+      kind: TaskSectionKind.today,
+      entries: <TaskListEntry>[
+        _taskEntries[0],
+        TaskListEntry(
+          task: _sampleTasks[2],
+          localInstant: DateTime.utc(2026, 11, 4, 16, 30),
+        ),
+      ],
+    ),
+    TaskSection(
+      kind: TaskSectionKind.untimed,
+      entries: <TaskListEntry>[_taskEntries[1]],
+    ),
+  ],
+  counts: const TaskSmartCounts(today: 2, timed: 2, overdue: 1, all: 3),
+  activeCount: 3,
+  doneCount: 2,
+);
+
+final TaskRowCallbacks _sampleRowCallbacks = TaskRowCallbacks(
+  onToggle: (_) {},
+  onOpen: (_) {},
+  onDelete: (_) {},
+  menuFor: (_) => _sampleMenu,
+);
+
+final TaskRowMenuActions _sampleMenu = TaskRowMenuActions(
+  onEdit: () {},
+  onCyclePriority: () {},
+  onToggleInProgress: () {},
+  onToggleCanceled: () {},
+  onDelete: () {},
+);
+
+Widget _sampleRow(
+  TaskListEntry entry, {
+  bool showDate = false,
+  bool divider = true,
+  bool swiped = false,
+}) {
+  return TaskGlassRow(
+    entry: entry,
+    onToggle: () {},
+    onOpen: () {},
+    onDelete: () {},
+    menu: _sampleMenu,
+    divider: divider,
+    showDate: showDate,
+    initiallyOpen: swiped,
+  );
+}
+
+/// Samples never write: the repository is inert. Also makes sure the zone
+/// database is loaded (the kanban cards format their date in a zone).
+TaskActions _sampleTaskActions() {
+  timezone_data.initializeTimeZones();
+  return _inertActions();
+}
+
+TaskActions _inertActions() => TaskActions(
+  repository: _InertTaskRepository(),
+  pending: PendingTaskDeletions(),
+  clock: FixedAppClock(
+    utcValue: _sampleTaskUtc,
+    localValue: DateTime(2026, 11, 4, 12, 30),
+  ),
+);
+
+final class _InertTaskRepository implements TaskRepository {
+  @override
+  Stream<List<TaskItem>> watchAll() => Stream.value(_sampleTasks);
+
+  @override
+  Stream<List<TaskItem>> watchByStatus(TaskStatus status) => Stream.value([
+    for (final t in _sampleTasks)
+      if (t.status == status) t,
+  ]);
+
+  @override
+  Future<TaskItem?> getById(String id) async => null;
+
+  @override
+  Future<void> create(TaskItem task) async {}
+
+  @override
+  Future<void> update(TaskItem task) async {}
+
+  @override
+  Future<void> transition({
+    required String id,
+    required TaskStatus status,
+    required int targetPosition,
+    required DateTime changedAtUtc,
+  }) async {}
+
+  @override
+  Future<void> reorderWithinStatus({
+    required TaskStatus status,
+    required List<String> orderedIds,
+  }) async {}
+
+  @override
+  Future<void> delete(String id) async {}
+
+  @override
+  Future<void> deleteCompleted() async {}
+}
 
 /// The phone Today samples show the phone layout (no desktop group headers)
 /// whatever the size of the review window.

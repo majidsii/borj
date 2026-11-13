@@ -101,6 +101,33 @@ void main() {
     }
   });
 
+  testWidgets('the swiped TaskGlassRow sample shows its actions', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(1440, 2400);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    await tester.pumpWidget(
+      const MaterialApp(home: GlassReviewScreen(referenceDir: null)),
+    );
+    await tester.scrollUntilVisible(
+      find.text('TaskGlassRow normal, done, swiped open'),
+      300,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.pumpAndSettle();
+    final card = find
+        .ancestor(
+          of: find.text('TaskGlassRow normal, done, swiped open'),
+          matching: find.byType(Column),
+        )
+        .first;
+    expect(
+      find.descendant(of: card, matching: find.text('حذف').hitTestable()),
+      findsWidgets,
+    );
+  });
+
   test('every sample names an existing board', () {
     for (final s in designReviewSamples) {
       expect(

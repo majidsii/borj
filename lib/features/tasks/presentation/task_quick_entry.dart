@@ -37,7 +37,7 @@ Future<void> showTaskQuickEntry(BuildContext context, {Rect? origin}) async {
     context,
     origin: origin,
     semanticLabel: 'کار جدید',
-    builder: (_) => const _QuickEntrySheet(),
+    builder: (_) => const TaskQuickEntryContent(),
   );
   if (result == null || !context.mounted) return;
 
@@ -145,14 +145,18 @@ Future<void> _createWithDetails(
   }
 }
 
-final class _QuickEntrySheet extends StatefulWidget {
-  const _QuickEntrySheet();
+/// The body of the quick-entry sheet (public for the design-review samples;
+/// [autofocus] is off there so the review page keeps its focus).
+final class TaskQuickEntryContent extends StatefulWidget {
+  const TaskQuickEntryContent({this.autofocus = true, super.key});
+
+  final bool autofocus;
 
   @override
-  State<_QuickEntrySheet> createState() => _QuickEntrySheetState();
+  State<TaskQuickEntryContent> createState() => _TaskQuickEntryContentState();
 }
 
-final class _QuickEntrySheetState extends State<_QuickEntrySheet> {
+final class _TaskQuickEntryContentState extends State<TaskQuickEntryContent> {
   final TextEditingController _title = TextEditingController();
   _Day _day = _Day.none;
   int _priority = 0;
@@ -203,7 +207,7 @@ final class _QuickEntrySheetState extends State<_QuickEntrySheet> {
           GlassTextField(
             controller: _title,
             label: 'عنوان کار',
-            autofocus: true,
+            autofocus: widget.autofocus,
             onSubmitted: (_) => _finish(details: false),
           ),
           const SizedBox(height: AppSpacing.s12),

@@ -12,20 +12,14 @@ import 'package:borj/features/tasks/domain/task_item.dart';
 import 'package:borj/features/tasks/domain/task_occurrence_completion.dart';
 import 'package:borj/features/tasks/domain/task_recurrence_exception.dart';
 import 'package:borj/features/tasks/domain/task_recurrence_rule.dart';
-import 'package:borj/features/tasks/domain/task_reminder_rule.dart';
 import 'package:borj/features/tasks/domain/task_status.dart';
-import 'package:borj/features/tasks/domain/task_template.dart';
+import 'package:borj/features/tasks/presentation/legacy_task_flows.dart';
 import 'package:borj/features/tasks/presentation/task_board/task_board_operations.dart';
 import 'package:borj/features/tasks/presentation/task_board/task_kanban_board.dart';
 import 'package:borj/features/tasks/presentation/task_board/task_view_mode.dart';
 import 'package:borj/features/tasks/presentation/task_calendar/task_calendar_board.dart';
-import 'package:borj/features/tasks/presentation/task_details/task_details_dialog.dart';
 import 'package:borj/features/tasks/presentation/task_details/task_details_draft.dart';
 import 'package:borj/features/tasks/presentation/task_details/task_planning_labels.dart';
-import 'package:borj/features/tasks/presentation/task_templates/task_template_draft.dart';
-import 'package:borj/features/tasks/presentation/task_templates/task_template_editor_dialog.dart';
-import 'package:borj/features/tasks/presentation/task_templates/task_template_manager_dialog.dart';
-import 'package:borj/features/tasks/presentation/task_templates/task_template_picker.dart';
 import 'package:borj/features/tasks/presentation/task_timer/task_timer_panel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -404,225 +398,13 @@ final class _TasksPanelState extends ConsumerState<TasksPanel> {
     }
   }
 
-  Future<void> _addTaskWithDetails({TaskDetailsDraft? initialDraft}) async {
-    final result = await showTaskDetailsEditorDialog(
-      context: context,
-      mode: TaskDetailsDialogMode.create,
-      initialCreateDraft: initialDraft,
-      nextId: _idGenerator.next,
-    );
-    if (!mounted || result == null) return;
+  ProviderContainer get _container =>
+      ProviderScope.containerOf(context, listen: false);
 
-    final repository = ref.read(taskRepositoryProvider);
-    await repository.create(result.task);
-    await repository.transition(
-      id: result.task.id,
-      status: TaskStatus.planned,
-      targetPosition: 0,
-      changedAtUtc: result.task.updatedAtUtc,
-    );
-    if (result.reminderRules.isNotEmpty) {
-      final persisted = await repository.getById(result.task.id);
-      if (persisted != null) {
-        await ref
-            .read(taskReminderRulesServiceProvider)
-            .replaceForTask(task: persisted, rules: result.reminderRules);
-      }
-    }
-    if (result.recurrenceRule != null) {
-      await ref
-          .read(taskRecurrenceServiceProvider)
-          .replaceRule(
-            taskId: result.task.id,
-            rule: result.recurrenceRule!.rule,
-          );
-    }
-  }
+  Future<void> _addTaskWithDetails({TaskDetailsDraft? initialDraft}) =>
+      addTaskWithDetails(context, _container, initialDraft: initialDraft);
 
-  Future<void> _openTemplatePicker() async {
-    final templates = await ref.read(taskTemplateRepositoryProvider).getAll();
-    if (!mounted) return;
-
-    var manageRequested = false;
-    final selected = await showDialog<TaskTemplate>(
-      context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: const Text('انتخاب قالب'),
-        content: SizedBox(
-          width: 620,
-          child: TaskTemplatePicker(
-            templates: templates,
-            onSelected: (template) => Navigator.of(dialogContext).pop(template),
-            onManage: () {
-              manageRequested = true;
-              Navigator.of(dialogContext).pop();
-            },
-          ),
-        ),
-      ),
-    );
-
-    if (!mounted) return;
-    if (manageRequested) {
-      await _openTemplateManager();
-      return;
-    }
-    if (selected == null) return;
-
-    final draft = ref
-        .read(taskTemplateMapperProvider)
-        .toTaskDetailsDraft(selected);
-    await _addTaskWithDetails(initialDraft: draft);
-  }
-
-  Future<void> _openTemplateManager() {
-    return showDialog<void>(
-      context: context,
-      builder: (dialogContext) => Dialog(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 800, maxHeight: 760),
-          child: Consumer(
-            builder: (context, dialogRef, _) {
-              final templatesAsync = dialogRef.watch(taskTemplatesProvider);
-              return templatesAsync.when(
-                loading: () => const Center(
-                  child: Padding(
-                    padding: EdgeInsets.all(32),
-                    child: CircularProgressIndicator(),
-                  ),
-                ),
-                error: (_, _) => const Padding(
-                  padding: EdgeInsets.all(24),
-                  child: Text('بارگذاری قالب‌ها انجام نشد.'),
-                ),
-                data: (templates) => TaskTemplateManagerDialog(
-                  templates: templates,
-                  onCreate: () => unawaited(_createCustomTemplate()),
-                  onEdit: (template) =>
-                      unawaited(_editCustomTemplate(template)),
-                  onDelete: (template) => ref
-                      .read(taskTemplateRepositoryProvider)
-                      .deleteCustom(template.id),
-                  onDuplicate: (template) async {
-                    await ref
-                        .read(taskTemplateRepositoryProvider)
-                        .duplicateAsCustom(
-                          sourceId: template.id,
-                          newId: _idGenerator.next(),
-                          savedAtUtc: DateTime.now().toUtc(),
-                        );
-                  },
-                  onSetHidden: (template, hidden) => ref
-                      .read(taskTemplateRepositoryProvider)
-                      .setHidden(
-                        id: template.id,
-                        hidden: hidden,
-                        changedAtUtc: DateTime.now().toUtc(),
-                      ),
-                  onReorder: (kind, orderedIds) => ref
-                      .read(taskTemplateRepositoryProvider)
-                      .reorderKind(
-                        kind: kind,
-                        orderedIds: orderedIds,
-                        changedAtUtc: DateTime.now().toUtc(),
-                      ),
-                  onRestoreSystemDefaults: () => ref
-                      .read(taskTemplateSynchronizerProvider)
-                      .restoreDefaults(nowUtc: DateTime.now().toUtc()),
-                ),
-              );
-            },
-          ),
-        ),
-      ),
-    );
-  }
-
-  Future<void> _createCustomTemplate() async {
-    final draft = await showTaskTemplateEditorDialog(
-      context: context,
-      initialDraft: TaskTemplateDraft.create(),
-    );
-    if (!mounted || draft == null) return;
-
-    final now = DateTime.now().toUtc();
-    final template = draft.buildCustom(
-      id: _idGenerator.next(),
-      displayOrder: 0,
-      savedAtUtc: now,
-    );
-    await ref.read(taskTemplateRepositoryProvider).createCustom(template);
-  }
-
-  Future<void> _editCustomTemplate(TaskTemplate template) async {
-    final draft = await showTaskTemplateEditorDialog(
-      context: context,
-      initialDraft: TaskTemplateDraft.fromTemplate(template),
-    );
-    if (!mounted || draft == null) return;
-
-    final now = DateTime.now().toUtc();
-    final built = draft.buildCustom(
-      id: template.id,
-      displayOrder: template.displayOrder,
-      savedAtUtc: now,
-    );
-    final updated = TaskTemplate(
-      id: template.id,
-      kind: TaskTemplateKind.custom,
-      templateName: built.templateName,
-      initialTaskTitle: built.initialTaskTitle,
-      description: built.description,
-      priority: built.priority,
-      estimatedDurationMinutes: built.estimatedDurationMinutes,
-      reminderDefaults: built.reminderDefaults,
-      recurrenceDefault: built.recurrenceDefault,
-      hidden: template.hidden,
-      displayOrder: template.displayOrder,
-      createdAtUtc: template.createdAtUtc,
-      updatedAtUtc: now,
-    );
-    await ref.read(taskTemplateRepositoryProvider).updateCustom(updated);
-  }
-
-  Future<void> _saveTaskDraftAsTemplate(TaskDetailsDraft source) async {
-    final repository = ref.read(taskTemplateRepositoryProvider);
-    final existing = await repository.getAll();
-    final customCount = existing
-        .where((item) => item.kind == TaskTemplateKind.custom)
-        .length;
-    final now = DateTime.now().toUtc();
-    final id = _idGenerator.next();
-    final defaultName = source.title.trim().isEmpty
-        ? 'قالب کار'
-        : source.title.trim();
-
-    final provisional = ref
-        .read(taskTemplateMapperProvider)
-        .toCustomTemplate(
-          source: source,
-          id: id,
-          templateName: defaultName,
-          displayOrder: customCount,
-          savedAtUtc: now,
-        );
-
-    if (!mounted) return;
-    final edited = await showTaskTemplateEditorDialog(
-      context: context,
-      initialDraft: TaskTemplateDraft.fromTemplate(provisional),
-    );
-    if (!mounted || edited == null) return;
-
-    final savedAt = DateTime.now().toUtc();
-    await repository.createCustom(
-      edited.buildCustom(
-        id: id,
-        displayOrder: customCount,
-        savedAtUtc: savedAt,
-      ),
-    );
-  }
+  Future<void> _openTemplatePicker() => openTemplatePicker(context, _container);
 
   Future<void> _toggleTask(TaskItem task) {
     final targetStatus = task.status == TaskStatus.completed
@@ -649,95 +431,24 @@ final class _TasksPanelState extends ConsumerState<TasksPanel> {
         );
   }
 
-  Future<void> _editTask(TaskItem task) async {
-    final initialReminderRules = await ref
-        .read(taskReminderRepositoryProvider)
-        .getByTask(task.id);
-    final initialRecurrence = await ref
-        .read(taskRecurrenceRepositoryProvider)
-        .getByTask(task.id);
-    if (!mounted) return;
+  Future<void> _editTask(TaskItem task) => editTask(context, _container, task);
 
-    final result = await showTaskDetailsEditorDialog(
-      context: context,
-      mode: TaskDetailsDialogMode.edit,
-      initialTask: task,
-      initialReminderRules: initialReminderRules,
-      initialRecurrenceRule: initialRecurrence.rule,
-      onSaveAsTemplate: _saveTaskDraftAsTemplate,
-      nextId: _idGenerator.next,
-    );
-    if (!mounted || result == null) return;
+  Future<void> _toggleOccurrenceCompleted(TaskCalendarOccurrence occurrence) =>
+      toggleOccurrenceCompleted(_container, occurrence);
 
-    final repository = ref.read(taskRepositoryProvider);
-    await repository.update(result.task);
-    if (!_sameReminderRules(initialReminderRules, result.reminderRules)) {
-      final persisted = await repository.getById(result.task.id);
-      if (persisted != null) {
-        await ref
-            .read(taskReminderRulesServiceProvider)
-            .replaceForTask(task: persisted, rules: result.reminderRules);
-      }
-    }
-    if (initialRecurrence.rule != null || result.recurrenceRule != null) {
-      await ref
-          .read(taskRecurrenceServiceProvider)
-          .replaceRule(
-            taskId: result.task.id,
-            rule: result.recurrenceRule?.rule,
-          );
-    }
-  }
+  Future<void> _skipOccurrence(TaskCalendarOccurrence occurrence) =>
+      skipOccurrence(_container, occurrence);
 
-  Future<void> _toggleOccurrenceCompleted(TaskCalendarOccurrence occurrence) {
-    return ref
-        .read(taskRecurrenceServiceProvider)
-        .setCompleted(
-          taskId: occurrence.task.id,
-          originalLocalDateTime: occurrence.originalLocalDateTime,
-          completed: !occurrence.isCompleted,
-        );
-  }
+  Future<void> _cancelOccurrence(TaskCalendarOccurrence occurrence) =>
+      cancelOccurrence(_container, occurrence);
 
-  Future<void> _skipOccurrence(TaskCalendarOccurrence occurrence) {
-    return ref
-        .read(taskRecurrenceServiceProvider)
-        .skip(
-          taskId: occurrence.task.id,
-          originalLocalDateTime: occurrence.originalLocalDateTime,
-        );
-  }
-
-  Future<void> _cancelOccurrence(TaskCalendarOccurrence occurrence) {
-    return ref
-        .read(taskRecurrenceServiceProvider)
-        .cancel(
-          taskId: occurrence.task.id,
-          originalLocalDateTime: occurrence.originalLocalDateTime,
-        );
-  }
-
-  Future<void> _restoreOccurrence(TaskCalendarOccurrence occurrence) {
-    return ref
-        .read(taskRecurrenceServiceProvider)
-        .restore(
-          taskId: occurrence.task.id,
-          originalLocalDateTime: occurrence.originalLocalDateTime,
-        );
-  }
+  Future<void> _restoreOccurrence(TaskCalendarOccurrence occurrence) =>
+      restoreOccurrence(_container, occurrence);
 
   Future<void> _moveOccurrence(
     TaskCalendarOccurrence occurrence,
     DateTime movedGregorianLocal,
-  ) {
-    return ref
-        .read(taskRecurrenceServiceProvider)
-        .moveToDeviceLocal(
-          taskId: occurrence.task.id,
-          originalLocalDateTime: occurrence.originalLocalDateTime,
-          movedGregorianLocal: movedGregorianLocal,
-        );
-  }
+  ) => moveOccurrence(_container, occurrence, movedGregorianLocal);
 
   Future<void> _removeTask(TaskItem task) async {
     if (_removingTaskIds.contains(task.id)) return;
@@ -878,7 +589,12 @@ final class _Toolbar extends StatelessWidget {
               compact: true,
               icon: Icons.file_download_outlined,
               label: 'خروجی',
-              onPressed: () {},
+              onPressed: () => unawaited(
+                exportTasks(
+                  context,
+                  ProviderScope.containerOf(context, listen: false),
+                ),
+              ),
             ),
           ],
         );
@@ -929,7 +645,12 @@ final class _DesktopToolbar extends StatelessWidget {
           compact: true,
           icon: Icons.file_download_outlined,
           label: 'خروجی',
-          onPressed: () {},
+          onPressed: () => unawaited(
+            exportTasks(
+              context,
+              ProviderScope.containerOf(context, listen: false),
+            ),
+          ),
         ),
       ],
     );
@@ -1810,26 +1531,6 @@ _PriorityVisual _priorityVisual(BuildContext context, int priority) {
       soft: Colors.transparent,
     ),
   };
-}
-
-bool _sameReminderRules(
-  List<TaskReminderRule> left,
-  List<TaskReminderRule> right,
-) {
-  if (left.length != right.length) return false;
-  final rightByTrigger = <Object, TaskReminderRule>{
-    for (final rule in right) rule.trigger: rule,
-  };
-  for (final rule in left) {
-    final other = rightByTrigger[rule.trigger];
-    if (other == null ||
-        other.id != rule.id ||
-        other.enabled != rule.enabled ||
-        other.privacyMode != rule.privacyMode) {
-      return false;
-    }
-  }
-  return true;
 }
 
 String _normalize(String value) {

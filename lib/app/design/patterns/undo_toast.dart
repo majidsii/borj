@@ -30,6 +30,37 @@ void showUndoToast(
   String undoLabel = 'برگرداندن',
   Duration visibleFor = const Duration(seconds: 5),
   double bottomOffset = 24,
+}) => _showToast(
+  context,
+  message: message,
+  onUndo: onUndo,
+  onDismissed: onDismissed,
+  undoLabel: undoLabel,
+  visibleFor: visibleFor,
+  bottomOffset: bottomOffset,
+);
+
+/// Shows the same toast with no action: a plain notice.
+void showToast(
+  BuildContext context, {
+  required String message,
+  Duration visibleFor = const Duration(seconds: 5),
+  double bottomOffset = 24,
+}) => _showToast(
+  context,
+  message: message,
+  visibleFor: visibleFor,
+  bottomOffset: bottomOffset,
+);
+
+void _showToast(
+  BuildContext context, {
+  required String message,
+  VoidCallback? onUndo,
+  VoidCallback? onDismissed,
+  String? undoLabel,
+  required Duration visibleFor,
+  required double bottomOffset,
 }) {
   final overlay = Overlay.of(context, rootOverlay: true);
   final reduced = MotionScope.reducedOf(context);
@@ -47,7 +78,7 @@ void showUndoToast(
   void undoOnce() {
     if (settled) return;
     settled = true;
-    onUndo();
+    onUndo?.call();
   }
 
   late final OverlayEntry entry;
@@ -91,7 +122,7 @@ final class _UndoToast extends StatefulWidget {
   });
 
   final String message;
-  final String undoLabel;
+  final String? undoLabel;
   final VoidCallback onUndo;
   final VoidCallback onLeft;
   final Duration visibleFor;
@@ -201,16 +232,18 @@ final class _UndoToastState extends State<_UndoToast>
                           ),
                         ),
                       ),
-                      const SizedBox(width: AppSpacing.s12),
-                      GlassButton(
-                        label: widget.undoLabel,
-                        variant: GlassButtonVariant.plain,
-                        onPressed: () {
-                          if (_leaving) return;
-                          widget.onUndo();
-                          _leave(undone: true);
-                        },
-                      ),
+                      if (widget.undoLabel != null) ...[
+                        const SizedBox(width: AppSpacing.s12),
+                        GlassButton(
+                          label: widget.undoLabel!,
+                          variant: GlassButtonVariant.plain,
+                          onPressed: () {
+                            if (_leaving) return;
+                            widget.onUndo();
+                            _leave(undone: true);
+                          },
+                        ),
+                      ],
                     ],
                   ),
                 ),

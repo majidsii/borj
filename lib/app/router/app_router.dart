@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:borj/app/apple_visual/review/glass_review_screen.dart';
@@ -6,9 +7,13 @@ import 'package:borj/app/shell/app_shell.dart';
 import 'package:borj/app/shell/pending_screen.dart';
 import 'package:borj/app/shell/search_shell.dart';
 import 'package:borj/app/shell/window_class.dart';
+import 'package:borj/core/providers/persistence_providers.dart';
 import 'package:borj/features/dashboard/presentation/widgets/finance_panel.dart';
-import 'package:borj/features/dashboard/presentation/widgets/tasks_panel.dart';
 import 'package:borj/features/settings/presentation/settings_screen.dart';
+import 'package:borj/features/tasks/presentation/legacy_task_flows.dart';
+import 'package:borj/features/tasks/presentation/task_quick_entry.dart';
+import 'package:borj/features/tasks/presentation/tasks_screen/tasks_options_sheet.dart';
+import 'package:borj/features/tasks/presentation/tasks_screen/tasks_screen.dart';
 import 'package:borj/features/today/presentation/today_page.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -35,32 +40,38 @@ abstract final class AppRoutes {
 
 final rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
 
-void _quickEntryPlaceholder(BuildContext c) {
-  showGlassSheet<void>(
-    c,
-    builder: (_) => const Padding(
-      padding: EdgeInsets.all(16),
-      child: EmptyState(
-        icon: Icons.bolt_outlined,
-        title: 'ورود سریع',
-        message: 'در مرحلهٔ کارها ساخته می‌شود',
-      ),
-    ),
-  );
-}
+void _quickEntry(BuildContext c) => unawaited(showTaskQuickEntry(c));
 
 List<ShellAction> _actionsFor(
   BuildContext context,
   WindowClass windowClass,
   int branch,
 ) {
-  if (windowClass != WindowClass.compact) {
+  final compact = windowClass == WindowClass.compact;
+  if (branch == 1) {
+    return [
+      if (compact)
+        ShellAction(
+          icon: Icons.more_horiz,
+          label: 'گزینه‌ها',
+          leading: true,
+          onPressed: (c) => unawaited(showTasksOptions(c)),
+        ),
+      const ShellAction(
+        icon: Icons.add,
+        label: 'کار جدید',
+        primary: true,
+        onPressed: _quickEntry,
+      ),
+    ];
+  }
+  if (!compact) {
     return [
       const ShellAction(
         icon: Icons.add,
         label: 'افزودن',
         primary: true,
-        onPressed: _quickEntryPlaceholder,
+        onPressed: _quickEntry,
       ),
     ];
   }
@@ -82,7 +93,7 @@ List<ShellAction> _actionsFor(
       icon: Icons.add,
       label: 'ورود سریع',
       primary: true,
-      onPressed: _quickEntryPlaceholder,
+      onPressed: _quickEntry,
     ),
   ];
 }
@@ -146,9 +157,17 @@ final appRouterProvider = Provider<GoRouter>((ref) {
                 path: AppRoutes.tasks,
                 pageBuilder: (context, state) => NoTransitionPage(
                   key: state.pageKey,
-                  child: const _BranchPage(child: TasksPanel()),
+                  child: TasksScreen(
+                    view: state.uri.queryParameters['view'] ?? '',
+                  ),
                 ),
-                routes: <RouteBase>[_pending(':taskId', 'جزئیات کار')],
+              ),
+              GoRoute(
+                path: '${AppRoutes.tasks}/:taskId',
+                pageBuilder: (context, state) => NoTransitionPage(
+                  key: state.pageKey,
+                  child: _TaskDeepLink(taskId: state.pathParameters['taskId']!),
+                ),
               ),
             ],
           ),
@@ -325,4 +344,55 @@ final class _BranchPageState extends State<_BranchPage> {
       child: widget.child,
     );
   }
+}
+
+/// `/tasks/:taskId`: the Tasks screen with the legacy edit dialog opened for
+/// the task on the first frame. Closing it (or a missing task) goes to
+/// `/tasks`.
+final class _TaskDeepLink extends StatefulWidget {
+  const _TaskDeepLink({required this.taskId});
+
+  final String taskId;
+
+  @override
+  State<_TaskDeepLink> createState() => _TaskDeepLinkState();
+}
+
+final class _TaskDeepLinkState extends State<_TaskDeepLink> {
+  bool _started = false;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => unawaited(_open()));
+  }
+
+  Future<void> _open() async {
+    if (_started || !mounted) return;
+    _started = true;
+    final container = ProviderScope.containerOf(context, listen: false);
+    final task = await container
+        .read(taskRepositoryProvider)
+        .getById(widget.taskId);
+    if (!mounted) return;
+    if (task == null) {
+      showToast(context, message: 'این کار پیدا نشد');
+    } else {
+      try {
+        await editTask(context, container, task);
+      } on Object catch (error, stack) {
+        FlutterError.reportError(
+          FlutterErrorDetails(
+            exception: error,
+            stack: stack,
+            library: 'tasks route',
+          ),
+        );
+      }
+    }
+    if (mounted) context.go(AppRoutes.tasks);
+  }
+
+  @override
+  Widget build(BuildContext context) => const TasksScreen(view: '');
 }

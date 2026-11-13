@@ -7,11 +7,11 @@ import 'package:borj/core/date_time/app_clock.dart';
 import 'package:borj/core/money/money.dart';
 import 'package:borj/core/providers/persistence_providers.dart';
 import 'package:borj/features/dashboard/presentation/widgets/finance_panel.dart';
-import 'package:borj/features/dashboard/presentation/widgets/tasks_panel.dart';
 import 'package:borj/features/finance/domain/installment_plan.dart';
 import 'package:borj/features/legacy_import/presentation/legacy_import_providers.dart';
 import 'package:borj/features/tasks/domain/task_item.dart';
 import 'package:borj/features/tasks/domain/task_status.dart';
+import 'package:borj/features/tasks/presentation/tasks_screen/tasks_screen.dart';
 import 'package:borj/features/today/presentation/today_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -103,7 +103,7 @@ void main() {
     expect(_grid, findsNothing);
     await tester.tap(find.byKey(const ValueKey('onboarding-add-task')));
     await tester.pumpAndSettle();
-    expect(find.byType(TasksPanel), findsOneWidget);
+    expect(find.byType(TasksScreen), findsOneWidget);
   });
 
   testWidgets('one task today: grid with timeline and tasks, no installment', (

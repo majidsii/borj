@@ -134,6 +134,21 @@ bool taskMatches(TaskItem t, String query) {
 /// Builds the task list. Every "today" is the task calendar zone's day, so the
 /// device zone never matters. A recurring task appears once, by its own
 /// start/due.
+/// [task] with its due (else start) as a task-zone wall clock in a
+/// `DateTime.utc` carrier (for the kanban cards, which take plain tasks).
+TaskListEntry taskListEntryOf(TaskItem task, String timeZoneId) =>
+    _entryAt(task, timezone.getLocation(timeZoneId));
+
+TaskListEntry _entryAt(TaskItem t, timezone.Location location) {
+  final at = t.dueAtUtc ?? t.startAtUtc;
+  if (at == null) return TaskListEntry(task: t, localInstant: null);
+  final l = timezone.TZDateTime.from(at, location);
+  return TaskListEntry(
+    task: t,
+    localInstant: DateTime.utc(l.year, l.month, l.day, l.hour, l.minute),
+  );
+}
+
 TaskListView buildTaskListView({
   required List<TaskItem> tasks,
   required DateTime nowUtc,
@@ -151,15 +166,7 @@ TaskListView buildTaskListView({
     zonedNow.day + 1,
   );
 
-  TaskListEntry entryOf(TaskItem t) {
-    final at = t.dueAtUtc ?? t.startAtUtc;
-    if (at == null) return TaskListEntry(task: t, localInstant: null);
-    final l = timezone.TZDateTime.from(at, location);
-    return TaskListEntry(
-      task: t,
-      localInstant: DateTime.utc(l.year, l.month, l.day, l.hour, l.minute),
-    );
-  }
+  TaskListEntry entryOf(TaskItem t) => _entryAt(t, location);
 
   TaskSectionKind kindOf(TaskListEntry e) {
     switch (e.task.status) {

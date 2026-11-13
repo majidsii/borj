@@ -86,6 +86,22 @@ Future<void> _swipeOpen(WidgetTester tester) async {
 }
 
 void main() {
+  test('taskWhenLabel: clock, date, 23:59 is date-only', () {
+    expect(taskWhenLabel(null, showDate: false), isNull);
+    expect(
+      taskWhenLabel(DateTime.utc(2026, 11, 5, 15), showDate: false),
+      '۱۵:۰۰',
+    );
+    expect(
+      taskWhenLabel(DateTime.utc(2026, 11, 5, 23, 59), showDate: false),
+      isNull,
+    );
+    expect(
+      taskWhenLabel(DateTime.utc(2026, 11, 5, 23, 59), showDate: true),
+      '۱۴ آبان',
+    );
+  });
+
   final at = DateTime.utc(2026, 11, 11, 15);
 
   testWidgets('anatomy: title, time, priority in danger', (tester) async {
@@ -105,6 +121,58 @@ void main() {
     );
     expect(find.text('۱۴ آبان'), findsOneWidget);
     expect(find.text('۹:۰۰'), findsNothing);
+  });
+
+  testWidgets('a 23:59 instant is date-only: no clock in امروز', (
+    tester,
+  ) async {
+    final c = _Calls();
+    await tester.pumpWidget(
+      _app(c.row(_entry(at: DateTime.utc(2026, 11, 11, 23, 59)))),
+    );
+    expect(find.text('۲۳:۵۹'), findsNothing);
+    expect(find.text('۱۹ آبان'), findsNothing);
+    expect(find.text('خرید نان'), findsOneWidget);
+  });
+
+  testWidgets('a 23:59 instant shows the date when showDate is true', (
+    tester,
+  ) async {
+    final c = _Calls();
+    await tester.pumpWidget(
+      _app(
+        c.row(_entry(at: DateTime.utc(2026, 11, 5, 23, 59)), showDate: true),
+      ),
+    );
+    expect(find.text('۱۴ آبان'), findsOneWidget);
+    expect(find.text('۲۳:۵۹'), findsNothing);
+  });
+
+  testWidgets('canceled: لغوشده first in the subline, title struck', (
+    tester,
+  ) async {
+    final c = _Calls();
+    await tester.pumpWidget(
+      _app(
+        c.row(
+          _entry(status: TaskStatus.canceled, at: at, priority: 3),
+          showDate: true,
+        ),
+      ),
+    );
+    expect(find.text('لغوشده'), findsOneWidget);
+    final canceled = tester.widget<Text>(find.text('لغوشده'));
+    expect(canceled.style!.color, AppTheme.light.colors.textSecondary);
+    final title = tester.widget<Text>(find.text('خرید نان'));
+    expect(title.style!.color, AppTheme.light.colors.textTertiary);
+    expect(title.style!.decoration, TextDecoration.lineThrough);
+    expect(
+      tester.getTopLeft(find.text('لغوشده')).dx,
+      greaterThan(tester.getTopLeft(find.text('اولویت بالا')).dx),
+    );
+    final handle = tester.ensureSemantics();
+    expect(find.bySemanticsLabel(RegExp('^خرید نان، لغوشده')), findsOneWidget);
+    handle.dispose();
   });
 
   testWidgets('priority labels and tones', (tester) async {

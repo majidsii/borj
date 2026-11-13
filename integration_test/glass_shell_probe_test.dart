@@ -8,9 +8,11 @@ import 'package:borj/core/providers/persistence_providers.dart';
 import 'package:borj/features/finance/domain/installment_plan.dart';
 import 'package:borj/features/tasks/domain/task_item.dart';
 import 'package:borj/features/tasks/domain/task_status.dart';
+import 'package:borj/features/tasks/presentation/tasks_screen/task_glass_row.dart';
 import 'package:borj/features/tasks/presentation/tasks_screen/tasks_screen.dart';
 import 'package:borj/features/today/presentation/today_page.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -212,11 +214,7 @@ void main() {
     );
     useWindowSize(tester, const Size(1440, 900));
     TodayEntrance.reset();
-    final container = await pumpBorjTestApp(
-      tester,
-      seed: seedToday,
-      settle: false,
-    );
+    await pumpBorjTestApp(tester, seed: seedToday, settle: false);
     final entrance = await sampleEntrance(tester);
     await tester.pumpAndSettle();
     expect(find.byKey(const ValueKey('shell-expanded')), findsOneWidget);
@@ -254,6 +252,265 @@ void main() {
       );
       expect(overlay.worst, greaterThanOrEqualTo(2));
     }
+  });
+
+  // 30 tasks over every section and status, through the real repository,
+  // before the app first builds. Offsets are whole hours/days from now.
+  Future<void> seedTasks(ProviderContainer c) async {
+    final now = c.read(appClockProvider).nowUtc();
+    final repo = c.read(taskRepositoryProvider);
+    final position = <TaskStatus, int>{};
+    for (var i = 1; i <= 30; i++) {
+      final status = switch (i % 10) {
+        0 || 1 => TaskStatus.inProgress,
+        2 || 3 => TaskStatus.completed,
+        4 => TaskStatus.canceled,
+        _ => TaskStatus.planned,
+      };
+      // Mixed sections: overdue, today, upcoming, untimed.
+      final due = switch (i % 4) {
+        0 => null,
+        1 => now.subtract(Duration(days: 1 + i % 3)),
+        2 => now.add(Duration(hours: i % 5)),
+        _ => now.add(Duration(days: 1 + i % 6)),
+      };
+      final slot = position.update(status, (p) => p + 1, ifAbsent: () => 0);
+      await repo.create(
+        TaskItem(
+          id: 'probe-t${i.toString().padLeft(2, '0')}',
+          displayNumber: i,
+          title: 'کار شمارهٔ $i',
+          priority: i % 4,
+          status: status,
+          positionInStatus: slot,
+          dueAtUtc: due,
+          createdAtUtc: now,
+          updatedAtUtc: now,
+          completedAtUtc: status == TaskStatus.completed ? now : null,
+          canceledAtUtc: status == TaskStatus.canceled ? now : null,
+        ),
+      );
+    }
+  }
+
+  Finder tasksScrollable() => find
+      .descendant(
+        of: find.byType(TasksScreen),
+        matching: find.byType(Scrollable),
+      )
+      .first;
+
+  // Presses [from], optionally waits [hold], moves in steps toward [to] and
+  // samples every frame of the gesture, then releases.
+  Future<({int worst, int passes})> sampleDrag(
+    WidgetTester tester,
+    Offset from,
+    Offset to, {
+    Duration hold = Duration.zero,
+    PointerDeviceKind kind = PointerDeviceKind.touch,
+    int steps = 20,
+    VoidCallback? beforeRelease,
+  }) async {
+    var worst = 0;
+    var passes = 0;
+    void take() {
+      final n = countCompositedBackdropsDetailed(tester);
+      worst = math.max(worst, n.captures);
+      passes = math.max(passes, n.activeSeededPasses);
+    }
+
+    final g = await tester.startGesture(from, kind: kind);
+    if (hold > Duration.zero) {
+      await tester.pump(hold);
+      take();
+    }
+    await g.moveBy(const Offset(0, 8));
+    await tester.pump(const Duration(milliseconds: 16));
+    take();
+    for (var i = 1; i <= steps; i++) {
+      await g.moveTo(Offset.lerp(from, to, i / steps)!);
+      await tester.pump(const Duration(milliseconds: 16));
+      take();
+    }
+    beforeRelease?.call();
+    await g.up();
+    for (var i = 0; i < 20; i++) {
+      await tester.pump(const Duration(milliseconds: 16));
+      take();
+    }
+    return (worst: worst, passes: passes);
+  }
+
+  testWidgets('phoneTasks within budget on real glass', (tester) async {
+    expect(
+      ui.ImageFilter.isShaderFilterSupported,
+      isTrue,
+      reason: 'real glass is not active',
+    );
+    const phone = Size(390, 844);
+    await binding.setSurfaceSize(phone);
+    addTearDown(() => binding.setSurfaceSize(null));
+    final container = await pumpBorjTestApp(
+      tester,
+      seed: seedTasks,
+      wrap: (app) => MediaQuery(
+        data: MediaQueryData.fromView(tester.view).copyWith(size: phone),
+        child: Align(
+          alignment: Alignment.topLeft,
+          child: SizedBox(width: 390, height: 844, child: app),
+        ),
+      ),
+    );
+    await tester.tap(find.byKey(const ValueKey('tab-tasks')));
+    await tester.pumpAndSettle();
+    expect(find.byType(TasksScreen), findsOneWidget);
+    expect(find.byType(TaskGlassRow), findsWidgets);
+    final list = await sample(tester, 30);
+
+    // Scroll: a fling, sampled while it runs.
+    var scrollWorst = 0;
+    await tester.fling(tasksScrollable(), const Offset(0, -500), 1800);
+    for (var i = 0; i < 40; i++) {
+      await tester.pump(const Duration(milliseconds: 16));
+      scrollWorst = math.max(
+        scrollWorst,
+        countCompositedBackdropsDetailed(tester).captures,
+      );
+    }
+    await tester.fling(tasksScrollable(), const Offset(0, 900), 3000);
+    await tester.pumpAndSettle();
+
+    // Swipe the first row open (RTL: toward the start side is rightward).
+    final row = find.byType(TaskGlassRow).first;
+    final rowCentre = tester.getCenter(row);
+    final swipe = await sampleDrag(
+      tester,
+      rowCentre,
+      rowCentre + const Offset(130, 0),
+      steps: 10,
+    );
+    expect(find.byKey(const ValueKey('swipe-delete')), findsWidgets);
+
+    // Kanban: page through the columns, then drag a card onto a segment.
+    container.read(appRouterProvider).go('${AppRoutes.tasks}?view=board');
+    await tester.pumpAndSettle();
+    final kanbanIdle = await sample(tester, 30);
+    var pagingWorst = 0;
+    for (final s in const ['inProgress', 'completed', 'planned']) {
+      await tester.tap(find.byKey(ValueKey('kanban-status-$s')));
+      for (var i = 0; i < 25; i++) {
+        await tester.pump(const Duration(milliseconds: 16));
+        pagingWorst = math.max(
+          pagingWorst,
+          countCompositedBackdropsDetailed(tester).captures,
+        );
+      }
+    }
+    final card = find.byWidgetPredicate((w) => w is Draggable<TaskItem>).first;
+    final target = tester.getCenter(
+      find.byKey(const ValueKey('kanban-status-inProgress')),
+    );
+    final drag = await sampleDrag(
+      tester,
+      tester.getCenter(card),
+      target,
+      hold: const Duration(milliseconds: 600),
+      beforeRelease: () => expect(
+        find.byKey(const ValueKey('kanban-drop-hint')),
+        findsOneWidget,
+        reason: 'the drag never lifted the card',
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    final kanban = math.max(kanbanIdle.worst, pagingWorst);
+    final listWorst = math.max(list.worst, scrollWorst);
+    final passes = [
+      list.passes,
+      swipe.passes,
+      kanbanIdle.passes,
+      drag.passes,
+    ].reduce(math.max);
+    final worst = [listWorst, swipe.worst, kanban, drag.worst].reduce(math.max);
+    // ignore: avoid_print
+    print(
+      'LG_COMPOSITED scene=phoneTasks tasksList=$listWorst tasksSwipe=${swipe.worst} tasksKanban=$kanban tasksDrag=${drag.worst} active_seeded_passes=$passes',
+    );
+    // ignore: avoid_print
+    print('LG_CAPTURES scene=phoneTasks path=real max=$worst');
+    if (!kProfileMode) {
+      expect(worst, lessThanOrEqualTo(3));
+      expect(listWorst, greaterThanOrEqualTo(2));
+      expect(kanban, greaterThanOrEqualTo(2));
+      expect(passes, greaterThan(0), reason: 'no active seeded pass seen');
+    }
+
+    container.read(appRouterProvider).go('${AppRoutes.tasks}?view=list');
+    await tester.pumpAndSettle();
+    await binding.watchPerformance(() async {
+      final watch = Stopwatch()..start();
+      var up = true;
+      while (watch.elapsed < const Duration(milliseconds: 1500)) {
+        await tester.fling(tasksScrollable(), Offset(0, up ? -600 : 600), 2400);
+        await tester.pumpAndSettle();
+        up = !up;
+      }
+      container.read(appRouterProvider).go('${AppRoutes.tasks}?view=board');
+      await tester.pumpAndSettle();
+      watch
+        ..reset()
+        ..start();
+      var i = 0;
+      const order = ['inProgress', 'completed', 'canceled', 'planned'];
+      while (watch.elapsed < const Duration(milliseconds: 1500)) {
+        await tester.tap(
+          find.byKey(ValueKey('kanban-status-${order[i++ % 4]}')),
+        );
+        for (var f = 0; f < 25; f++) {
+          await tester.pump(const Duration(milliseconds: 16));
+        }
+      }
+    }, reportKey: 'glass_tasks_phone');
+    reportPerf('phoneTasks', 'glass_tasks_phone');
+  });
+
+  testWidgets('desktopTasks within budget on real glass', (tester) async {
+    expect(
+      ui.ImageFilter.isShaderFilterSupported,
+      isTrue,
+      reason: 'real glass is not active',
+    );
+    useWindowSize(tester, const Size(1440, 900));
+    final container = await pumpBorjTestApp(tester, seed: seedTasks);
+    container.read(appRouterProvider).go('${AppRoutes.tasks}?view=board');
+    await tester.pumpAndSettle();
+    expect(find.byKey(const ValueKey('shell-expanded')), findsOneWidget);
+    expect(find.byType(TasksScreen), findsOneWidget);
+    final kanban = await sample(tester, 30);
+    final card = find.byType(Draggable<TaskItem>).first;
+    final target = tester.getCenter(
+      find.byKey(const ValueKey('kanban-column-inProgress')),
+    );
+    final drag = await sampleDrag(
+      tester,
+      tester.getCenter(card),
+      target,
+      kind: PointerDeviceKind.mouse,
+    );
+    await tester.pumpAndSettle();
+    final worst = math.max(kanban.worst, drag.worst);
+    final passes = math.max(kanban.passes, drag.passes);
+    // ignore: avoid_print
+    print(
+      'LG_COMPOSITED scene=desktopTasks tasksKanban=${kanban.worst} tasksDrag=${drag.worst} active_seeded_passes=$passes',
+    );
+    // ignore: avoid_print
+    print('LG_CAPTURES scene=desktopTasks path=real max=$worst');
+    if (!kProfileMode) {
+      expect(worst, lessThanOrEqualTo(4));
+      expect(kanban.worst, greaterThanOrEqualTo(2));
+      expect(passes, greaterThan(0), reason: 'no active seeded pass seen');
+    }
     // A physicalSize override makes the engine report ~0 ms raster times, so
     // the perf run uses the real OS window (1180 wide: still expanded).
     tester.view.reset();
@@ -261,19 +518,31 @@ void main() {
     expect(find.byKey(const ValueKey('shell-expanded')), findsOneWidget);
     container.read(appRouterProvider).go('${AppRoutes.tasks}?view=list');
     await tester.pumpAndSettle();
-    final scrollable = find.descendant(
-      of: find.byType(TasksScreen),
-      matching: find.byType(Scrollable),
-    );
     await binding.watchPerformance(() async {
       final watch = Stopwatch()..start();
       var up = true;
-      while (watch.elapsed < const Duration(seconds: 3)) {
-        await tester.fling(scrollable.first, Offset(0, up ? -600 : 600), 2400);
+      while (watch.elapsed < const Duration(milliseconds: 1500)) {
+        await tester.fling(tasksScrollable(), Offset(0, up ? -600 : 600), 2400);
         await tester.pumpAndSettle();
         up = !up;
       }
-    }, reportKey: 'glass_shell_desktop');
-    reportPerf('desktopShellLegacyTasks', 'glass_shell_desktop');
+      container.read(appRouterProvider).go('${AppRoutes.tasks}?view=board');
+      await tester.pumpAndSettle();
+      final horizontal = find.byKey(const ValueKey('kanban-horizontal-scroll'));
+      watch
+        ..reset()
+        ..start();
+      var left = true;
+      while (watch.elapsed < const Duration(milliseconds: 1500)) {
+        if (horizontal.evaluate().isNotEmpty) {
+          await tester.fling(horizontal, Offset(left ? -400 : 400, 0), 2000);
+        }
+        for (var f = 0; f < 25; f++) {
+          await tester.pump(const Duration(milliseconds: 16));
+        }
+        left = !left;
+      }
+    }, reportKey: 'glass_tasks_desktop');
+    reportPerf('desktopTasks', 'glass_tasks_desktop');
   });
 }

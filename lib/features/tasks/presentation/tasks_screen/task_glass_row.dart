@@ -53,6 +53,7 @@ class TaskGlassRow extends StatefulWidget {
     required this.menu,
     this.divider = true,
     this.showDate = false,
+    this.initiallyOpen = false,
     Key? key,
   }) : super(key: key ?? ValueKey('task-row-${entry.task.id}'));
 
@@ -64,6 +65,9 @@ class TaskGlassRow extends StatefulWidget {
   final bool divider;
   final bool showDate;
 
+  /// Starts with the swipe actions revealed (design-review samples).
+  final bool initiallyOpen;
+
   @override
   State<TaskGlassRow> createState() => _TaskGlassRowState();
 }
@@ -73,6 +77,12 @@ class _TaskGlassRowState extends State<TaskGlassRow>
   /// 0 closed .. 1 fully open (actions revealed).
   late final AnimationController _open = AnimationController(vsync: this);
   bool _reduced = false;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.initiallyOpen) _open.value = 1;
+  }
 
   @override
   void dispose() {

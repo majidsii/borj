@@ -86,6 +86,22 @@ Future<void> _swipeOpen(WidgetTester tester) async {
 }
 
 void main() {
+  test('taskWhenLabel: clock, date, 23:59 is date-only', () {
+    expect(taskWhenLabel(null, showDate: false), isNull);
+    expect(
+      taskWhenLabel(DateTime.utc(2026, 11, 5, 15), showDate: false),
+      '۱۵:۰۰',
+    );
+    expect(
+      taskWhenLabel(DateTime.utc(2026, 11, 5, 23, 59), showDate: false),
+      isNull,
+    );
+    expect(
+      taskWhenLabel(DateTime.utc(2026, 11, 5, 23, 59), showDate: true),
+      '۱۴ آبان',
+    );
+  });
+
   final at = DateTime.utc(2026, 11, 11, 15);
 
   testWidgets('anatomy: title, time, priority in danger', (tester) async {

@@ -9,6 +9,18 @@ import 'package:borj/features/today/presentation/today_format.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
+/// The time-or-date label of a task row or card. [localInstant] is a
+/// task-zone wall clock in a `DateTime.utc` carrier. [showDate] gives «۱۴ آبان»;
+/// otherwise the clock «۱۵:۰۰», or nothing at 23:59 (quick entry stores
+/// «امروز/فردا» as 23:59: a date, not a time of day).
+String? taskWhenLabel(DateTime? localInstant, {required bool showDate}) {
+  final at = localInstant;
+  if (at == null) return null;
+  if (showDate) return PersianDateLabel.dayMonth(at);
+  if (at.hour == 23 && at.minute == 59) return null;
+  return formatClock(at);
+}
+
 /// Callbacks behind the row menu (long-press or secondary click).
 final class TaskRowMenuActions {
   const TaskRowMenuActions({
@@ -174,14 +186,7 @@ class _TaskGlassRowState extends State<TaskGlassRow>
     final canceled = task.status == TaskStatus.canceled;
     final done = task.status == TaskStatus.completed || canceled;
     final checked = task.status == TaskStatus.completed;
-    final at = w.entry.localInstant;
-    // Quick entry stores «امروز/فردا» as 23:59: a date, not a time of day.
-    final dateOnly = at != null && at.hour == 23 && at.minute == 59;
-    final when = at == null
-        ? null
-        : (w.showDate
-              ? PersianDateLabel.dayMonth(at)
-              : (dateOnly ? null : formatClock(at)));
+    final when = taskWhenLabel(w.entry.localInstant, showDate: w.showDate);
     final (priorityLabel, priorityTone) = switch (task.priority) {
       1 => ('اولویت پایین', AppTextTone.secondary),
       2 => ('اولویت متوسط', AppTextTone.warn),

@@ -37,6 +37,21 @@ TaskItem _task(
 
 void main() {
   setUpAll(tzdata.initializeTimeZones);
+
+  test('taskListEntryOf: due (else start) as a Tehran wall clock', () {
+    // 2026-11-13 11:30Z = 15:00 Tehran.
+    final due = taskListEntryOf(
+      _task('a', dueUtc: DateTime.utc(2026, 11, 13, 11, 30)),
+      'Asia/Tehran',
+    );
+    expect(due.localInstant, DateTime.utc(2026, 11, 13, 15));
+    final start = taskListEntryOf(
+      _task('b', startUtc: DateTime.utc(2026, 11, 13, 20, 29)),
+      'Asia/Tehran',
+    );
+    expect(start.localInstant, DateTime.utc(2026, 11, 13, 23, 59));
+    expect(taskListEntryOf(_task('c'), 'Asia/Tehran').localInstant, isNull);
+  });
   // 2026-11-04 14:30 Tehran (UTC+3:30) = 11:00 UTC.
   final now = DateTime.utc(2026, 11, 4, 11, 0);
 

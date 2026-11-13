@@ -51,6 +51,12 @@ abstract final class PersianDateLabel {
     return '$weekday ${_fa(jalali.day)} ${_months[jalali.month - 1]}';
   }
 
+  /// «۱۴ آبان» (task row date).
+  static String dayMonth(DateTime dateTime) {
+    final jalali = Jalali.fromDateTime(dateTime);
+    return '${_fa(jalali.day)} ${_months[jalali.month - 1]}';
+  }
+
   /// «چهارشنبه، ۴ نوامبر» (desktop date chip subtitle).
   static String gregorianShort(DateTime dateTime) {
     final weekday = _weekdays[dateTime.weekday - 1];

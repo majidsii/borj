@@ -5,10 +5,10 @@ import 'dart:ui' as ui;
 import 'package:borj/app/router/app_router.dart';
 import 'package:borj/core/money/money.dart';
 import 'package:borj/core/providers/persistence_providers.dart';
-import 'package:borj/features/dashboard/presentation/widgets/tasks_panel.dart';
 import 'package:borj/features/finance/domain/installment_plan.dart';
 import 'package:borj/features/tasks/domain/task_item.dart';
 import 'package:borj/features/tasks/domain/task_status.dart';
+import 'package:borj/features/tasks/presentation/tasks_screen/tasks_screen.dart';
 import 'package:borj/features/today/presentation/today_page.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -259,10 +259,10 @@ void main() {
     tester.view.reset();
     await tester.pumpAndSettle();
     expect(find.byKey(const ValueKey('shell-expanded')), findsOneWidget);
-    container.read(appRouterProvider).go(AppRoutes.tasks);
+    container.read(appRouterProvider).go('${AppRoutes.tasks}?view=list');
     await tester.pumpAndSettle();
     final scrollable = find.descendant(
-      of: find.byType(TasksPanel),
+      of: find.byType(TasksScreen),
       matching: find.byType(Scrollable),
     );
     await binding.watchPerformance(() async {

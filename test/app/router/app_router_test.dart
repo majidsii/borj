@@ -7,8 +7,8 @@ import 'package:borj/app/router/app_router.dart';
 import 'package:borj/app/shell/pending_screen.dart';
 import 'package:borj/app/theme/app_background.dart';
 import 'package:borj/features/dashboard/presentation/widgets/finance_panel.dart';
-import 'package:borj/features/dashboard/presentation/widgets/tasks_panel.dart';
 import 'package:borj/features/settings/presentation/settings_screen.dart';
+import 'package:borj/features/tasks/presentation/tasks_screen/tasks_screen.dart';
 import 'package:borj/features/today/presentation/today_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -30,16 +30,16 @@ void main() {
     expect(find.byKey(const ValueKey('shell-compact')), findsOneWidget);
   });
 
-  testWidgets('tabs show the tasks and finance panels', (tester) async {
+  testWidgets('tabs show the tasks screen and finance panel', (tester) async {
     await _size(tester, const Size(390, 844));
     await pumpBorjTestApp(tester);
     await tester.tap(find.byKey(const ValueKey('tab-tasks')));
     await tester.pumpAndSettle();
-    expect(find.text('کارهای من'), findsOneWidget);
+    expect(find.byType(TasksScreen), findsOneWidget);
     await tester.tap(find.byKey(const ValueKey('tab-finance')));
     await tester.pumpAndSettle();
     expect(find.text('مالی من'), findsOneWidget);
-    expect(find.text('کارهای من'), findsNothing);
+    expect(find.byType(TasksScreen), findsNothing);
   });
 
   testWidgets(
@@ -281,12 +281,12 @@ void main() {
     expect(find.byType(TodayPage), findsOneWidget);
   });
 
-  testWidgets('expanded: no 780 px cap on the panels', (tester) async {
+  testWidgets('expanded: no 780 px cap on the tasks screen', (tester) async {
     await _size(tester, const Size(1440, 900));
     final container = await pumpBorjTestApp(tester);
     container.read(appRouterProvider).go('/tasks');
     await tester.pumpAndSettle();
-    expect(tester.getSize(find.byType(TasksPanel)).width, greaterThan(1000));
+    expect(tester.getSize(find.byType(TasksScreen)).width, greaterThan(1000));
   });
 
   test('no GoRoute uses a builder (builder routes become MaterialPages)', () {
@@ -313,7 +313,9 @@ void main() {
     (tester) async {
       await _size(tester, const Size(390, 844));
       final container = await pumpBorjTestApp(tester);
-      unawaited(container.read(appRouterProvider).push('/tasks/t1'));
+      unawaited(
+        container.read(appRouterProvider).push('/finance/debts/debt_1'),
+      );
       var worst = 0;
       for (var i = 0; i < 20; i++) {
         await tester.pump(const Duration(milliseconds: 16));

@@ -3,9 +3,11 @@ import 'dart:async';
 import 'package:borj/app/design/design.dart';
 import 'package:borj/app/theme/app_theme.dart';
 import 'package:borj/core/money/money.dart';
+import 'package:borj/features/tasks/application/task_list_query.dart';
 import 'package:borj/features/tasks/application/tasks_screen_providers.dart';
 import 'package:borj/features/tasks/domain/task_item.dart';
 import 'package:borj/features/tasks/domain/task_status.dart';
+import 'package:borj/features/tasks/presentation/tasks_screen/task_glass_row.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -19,14 +21,15 @@ const double _columnGap = 12;
 /// Mouse drag moves a card between and within columns; a focused card moves
 /// with the arrow keys (toward the next status column, up and down) and opens
 /// with Enter. The widget never shows toasts: [onDelete] lets the screen
-/// hide the task and offer undo; when it is null the task is deleted at once.
+/// hide the task and offer undo.
 /// Failed moves go to [onError] (default: reported to Flutter's error log).
 class TaskKanbanDesktop extends StatefulWidget {
   const TaskKanbanDesktop({
     required this.tasks,
     required this.actions,
     required this.onOpen,
-    this.onDelete,
+    required this.onDelete,
+    required this.timeZoneId,
     this.onError,
     super.key,
   });
@@ -34,7 +37,10 @@ class TaskKanbanDesktop extends StatefulWidget {
   final List<TaskItem> tasks;
   final TaskActions actions;
   final void Function(TaskItem task) onOpen;
-  final void Function(TaskItem task)? onDelete;
+  final void Function(TaskItem task) onDelete;
+
+  /// Task calendar zone id, for the cards' date/time.
+  final String timeZoneId;
   final void Function(Object error)? onError;
 
   @override
@@ -123,20 +129,6 @@ class _TaskKanbanDesktopState extends State<TaskKanbanDesktop> {
         () => widget.actions.move(task.id, status, position),
         refocusId: refocus ? task.id : null,
       ),
-    );
-  }
-
-  void _delete(TaskItem task) {
-    final custom = widget.onDelete;
-    if (custom != null) {
-      custom(task);
-      return;
-    }
-    unawaited(
-      _guard(() async {
-        final pending = await widget.actions.delete(task.id);
-        await pending?.commit();
-      }),
     );
   }
 
@@ -236,7 +228,7 @@ class _TaskKanbanDesktopState extends State<TaskKanbanDesktop> {
       if (index > 0) ('بالا', () => _moveRow(task, -1), false),
       if (index >= 0 && index < list.length - 1)
         ('پایین', () => _moveRow(task, 1), false),
-      ('حذف', () => _delete(task), true),
+      ('حذف', () => widget.onDelete(task), true),
     ];
     unawaited(
       showGlassSheet<void>(
@@ -294,6 +286,7 @@ class _TaskKanbanDesktopState extends State<TaskKanbanDesktop> {
           final column = _KanbanColumn(
             status: status,
             tasks: _column(status),
+            timeZoneId: widget.timeZoneId,
             nodeOf: _nodeOf,
             onKey: _onKey,
             onOpen: widget.onOpen,
@@ -353,6 +346,7 @@ class _KanbanColumn extends StatelessWidget {
   const _KanbanColumn({
     required this.status,
     required this.tasks,
+    required this.timeZoneId,
     required this.nodeOf,
     required this.onKey,
     required this.onOpen,
@@ -362,6 +356,7 @@ class _KanbanColumn extends StatelessWidget {
 
   final TaskStatus status;
   final List<TaskItem> tasks;
+  final String timeZoneId;
   final FocusNode Function(String id) nodeOf;
   final KeyEventResult Function(TaskItem task, KeyEvent event) onKey;
   final void Function(TaskItem task) onOpen;
@@ -445,6 +440,10 @@ class _KanbanColumn extends StatelessWidget {
                             key: ValueKey('kanban-slot-${task.id}'),
                             task: task,
                             index: index,
+                            when: taskWhenLabel(
+                              taskListEntryOf(task, timeZoneId).localInstant,
+                              showDate: true,
+                            ),
                             focusNode: nodeOf(task.id),
                             onKey: onKey,
                             onOpen: onOpen,
@@ -469,6 +468,7 @@ class _CardSlot extends StatefulWidget {
   const _CardSlot({
     required this.task,
     required this.index,
+    required this.when,
     required this.focusNode,
     required this.onKey,
     required this.onOpen,
@@ -479,6 +479,7 @@ class _CardSlot extends StatefulWidget {
 
   final TaskItem task;
   final int index;
+  final String? when;
   final FocusNode focusNode;
   final KeyEventResult Function(TaskItem task, KeyEvent event) onKey;
   final void Function(TaskItem task) onOpen;
@@ -526,6 +527,7 @@ class _CardSlotState extends State<_CardSlot> {
               builder: (context, constraints) {
                 final body = _CardBody(
                   task: task,
+                  when: widget.when,
                   onOpen: () => onOpen(task),
                   onMenu: () => onMenu(context, task),
                 );
@@ -553,7 +555,7 @@ class _CardSlotState extends State<_CardSlot> {
                           width: constraints.maxWidth,
                           child: Material(
                             type: MaterialType.transparency,
-                            child: _CardBody(task: task),
+                            child: _CardBody(task: task, when: widget.when),
                           ),
                         ),
                         onDragStarted: () => _setDragging(true),
@@ -578,15 +580,23 @@ class _CardSlotState extends State<_CardSlot> {
 }
 
 class _CardBody extends StatelessWidget {
-  const _CardBody({required this.task, this.onOpen, this.onMenu});
+  const _CardBody({
+    required this.task,
+    required this.when,
+    this.onOpen,
+    this.onMenu,
+  });
 
   final TaskItem task;
+  final String? when;
   final VoidCallback? onOpen;
   final VoidCallback? onMenu;
 
   @override
   Widget build(BuildContext context) {
-    final done = task.status == TaskStatus.completed;
+    final done =
+        task.status == TaskStatus.completed ||
+        task.status == TaskStatus.canceled;
     final (priorityLabel, priorityTone) = switch (task.priority) {
       1 => ('اولویت پایین', AppTextTone.secondary),
       2 => ('اولویت متوسط', AppTextTone.warn),
@@ -606,11 +616,24 @@ class _CardBody extends StatelessWidget {
             tone: done ? AppTextTone.tertiary : AppTextTone.primary,
             decoration: done ? TextDecoration.lineThrough : null,
           ),
-          if (priorityLabel != null)
-            AppText(
-              priorityLabel,
-              role: AppTextRole.caption,
-              tone: priorityTone,
+          if (when != null || priorityLabel != null)
+            Wrap(
+              spacing: AppSpacing.s8,
+              children: [
+                if (when != null)
+                  AppText(
+                    when!,
+                    role: AppTextRole.caption,
+                    tabular: true,
+                    tone: AppTextTone.secondary,
+                  ),
+                if (priorityLabel != null)
+                  AppText(
+                    priorityLabel,
+                    role: AppTextRole.caption,
+                    tone: priorityTone,
+                  ),
+              ],
             ),
         ],
       ),

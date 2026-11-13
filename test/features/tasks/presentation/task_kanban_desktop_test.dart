@@ -10,6 +10,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:timezone/data/latest.dart' as tzdata;
 
 import '../../../support/backdrop_layer_count.dart';
 import '../../../support/glass_shape_limit.dart';
@@ -63,6 +64,7 @@ class _Env {
       actions: actions,
       onOpen: (t) => opened.add(t.title),
       onDelete: (t) => deleted.add(t.title),
+      timeZoneId: 'Asia/Tehran',
       onError: errors.add,
     ),
   );
@@ -123,6 +125,8 @@ Future<_Env> _setup(WidgetTester tester) async {
 Finder _column(TaskStatus s) => find.byKey(ValueKey('kanban-column-${s.name}'));
 
 void main() {
+  setUpAll(tzdata.initializeTimeZones);
+
   testWidgets('four columns in RTL order with counts', (tester) async {
     tester.view
       ..physicalSize = const Size(1280, 800)
@@ -417,4 +421,24 @@ void main() {
       expect(tester.takeException(), isNull);
     });
   }
+
+  testWidgets('card shows the Jalali date in the task zone', (tester) async {
+    tester.view
+      ..physicalSize = const Size(1280, 800)
+      ..devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    final env = await _setup(tester);
+    await tester.runAsync(() async {
+      final id = await env.actions.createAndReturnId(
+        title: 'سررسیددار',
+        priority: 2,
+        dueAtUtc: DateTime.utc(2026, 11, 13, 11, 30),
+      );
+      expect(id, isNotEmpty);
+    });
+    await tester.pumpWidget(_app(env));
+    await _pump(tester);
+    expect(find.text('۲۲ آبان'), findsOneWidget);
+    expect(find.text('اولویت متوسط'), findsOneWidget);
+  });
 }

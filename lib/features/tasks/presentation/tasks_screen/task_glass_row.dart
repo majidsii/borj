@@ -253,8 +253,8 @@ class _TaskGlassRowState extends State<TaskGlassRow>
                                 : null,
                           ),
                           if (hasSubline)
-                            Row(
-                              mainAxisSize: MainAxisSize.min,
+                            Wrap(
+                              spacing: AppSpacing.s8,
                               children: [
                                 if (canceled)
                                   const AppText(
@@ -262,8 +262,6 @@ class _TaskGlassRowState extends State<TaskGlassRow>
                                     role: AppTextRole.caption,
                                     tone: AppTextTone.secondary,
                                   ),
-                                if (canceled && when != null)
-                                  const SizedBox(width: AppSpacing.s8),
                                 if (when != null)
                                   AppText(
                                     when,
@@ -271,9 +269,6 @@ class _TaskGlassRowState extends State<TaskGlassRow>
                                     tabular: true,
                                     tone: AppTextTone.secondary,
                                   ),
-                                if ((canceled || when != null) &&
-                                    priorityLabel != null)
-                                  const SizedBox(width: AppSpacing.s8),
                                 if (priorityLabel != null)
                                   AppText(
                                     priorityLabel,
